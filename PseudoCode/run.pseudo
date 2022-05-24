@@ -1,4 +1,8 @@
 DECLARE a : REAL
 DECLARE b : ARRAY[1:10] OF INTEGER
+a <- 2
+OUTPUT a
 a <- 1 + 2.3
+OUTPUT a
+a <- a + a
 OUTPUT a

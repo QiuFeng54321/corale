@@ -8,7 +8,7 @@ public class IntegerType : PrimitiveType<int>
 
     public override Instance Add(Instance i1, Instance i2)
     {
-        return ParentScope.FindType("REAL").Add(CastToReal(i1), CastToReal(i2));
+        return ParentScope.FindType(RealId).Add(CastToReal(i1), CastToReal(i2));
     }
 
     public override Instance CastFrom(Instance i)
@@ -18,6 +18,6 @@ public class IntegerType : PrimitiveType<int>
 
     public Instance CastToReal(Instance i)
     {
-        return ParentScope.FindType("REAL").CastFrom(i);
+        return ParentScope.FindType(RealId).CastFrom(i);
     }
 }

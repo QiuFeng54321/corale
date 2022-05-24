@@ -17,6 +17,11 @@ public class Scope : Operation
     {
         return Types.ContainsKey(typeName) ? Types[typeName] : Parent?.FindType(typeName);
     }
+    public Type FindType(uint id)
+    {
+        var t = Types.FirstOrDefault(t => t.Value.Id == id, new KeyValuePair<string, Type>());
+        return t.Value ?? Parent?.FindType(id);
+    }
 
     public Scope AddScope()
     {
