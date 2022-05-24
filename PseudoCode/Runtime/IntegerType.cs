@@ -8,7 +8,9 @@ public class IntegerType : PrimitiveType<int>
 
     public override Instance Add(Instance i1, Instance i2)
     {
-        return ParentScope.FindType(RealId).Add(CastToReal(i1), CastToReal(i2));
+        return i2.Type == this
+            ? ArithmeticOperation(i1, i2, (arg1, arg2) => arg1 + arg2)
+            : ParentScope.FindType(RealId).Add(CastToReal(i1), CastToReal(i2));
     }
 
     public override Instance CastFrom(Instance i)

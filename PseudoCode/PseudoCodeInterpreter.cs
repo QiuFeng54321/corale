@@ -88,8 +88,8 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
     {
         base.ExitIoStatement(context);
         // Console.WriteLine($"{context.IO_KEYWORD()} {context.expression().GetText()}");
-        if (context.IO_KEYWORD().GetText() == "OUTPUT" || context.IO_KEYWORD().GetText() == "PRINT")
-            CurrentScope.Operations.Enqueue(new OutputOperation { Scope = CurrentScope });
+        if (context.IO_KEYWORD().GetText() == "OUTPUT")
+            CurrentScope.Operations.Enqueue(new OutputOperation { Scope = CurrentScope, ArgumentCount = context.tuple().expression().Length});
     }
 
     public override void EnterIfStatement(PseudoCodeParser.IfStatementContext context)
