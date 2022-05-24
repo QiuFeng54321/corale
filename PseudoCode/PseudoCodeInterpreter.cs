@@ -5,8 +5,8 @@ namespace PseudoCode;
 
 public class PseudoCodeInterpreter : PseudoCodeBaseListener
 {
-    public Scope GlobalScope = new();
     public Scope CurrentScope;
+    public Scope GlobalScope = new();
 
     public override void EnterFileInput(PseudoCodeParser.FileInputContext context)
     {
@@ -79,9 +79,8 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
         switch (context.op?.Text)
         {
             case "+":
-                CurrentScope.Operations.Enqueue(new AddOperation{Scope = CurrentScope});
+                CurrentScope.Operations.Enqueue(new AddOperation { Scope = CurrentScope });
                 break;
-            
         }
     }
 
@@ -90,9 +89,7 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
         base.ExitIoStatement(context);
         // Console.WriteLine($"{context.IO_KEYWORD()} {context.expression().GetText()}");
         if (context.IO_KEYWORD().GetText() == "OUTPUT" || context.IO_KEYWORD().GetText() == "PRINT")
-        {
-            CurrentScope.Operations.Enqueue(new OutputOperation{Scope = CurrentScope});
-        }
+            CurrentScope.Operations.Enqueue(new OutputOperation { Scope = CurrentScope });
     }
 
     public override void EnterIfStatement(PseudoCodeParser.IfStatementContext context)

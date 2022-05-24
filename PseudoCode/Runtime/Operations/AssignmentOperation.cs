@@ -12,6 +12,6 @@ public class AssignmentOperation : Operation
 
     public override string ToString()
     {
-        return $"Assign";
+        return "Assign";
     }
 }

@@ -6,7 +6,10 @@ public class Instance
     public virtual Dictionary<string, Instance> Members { get; init; } = new();
     public virtual object Value { get; set; } = null!;
 
-    public virtual T Get<T>() => (T)Value;
+    public virtual T Get<T>()
+    {
+        return (T)Value;
+    }
 
     public override string ToString()
     {

@@ -13,6 +13,6 @@ public class AddOperation : Operation
 
     public override string ToString()
     {
-        return $"Add";
+        return "Add";
     }
 }

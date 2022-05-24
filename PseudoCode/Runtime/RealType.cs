@@ -1,6 +1,5 @@
 namespace PseudoCode.Runtime;
 
-
 public class RealType : PrimitiveType<decimal>
 {
     public override uint Id => RealId;

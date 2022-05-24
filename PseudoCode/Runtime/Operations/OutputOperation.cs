@@ -11,6 +11,6 @@ public class OutputOperation : Operation
 
     public override string ToString()
     {
-        return $"Output";
+        return "Output";
     }
 }

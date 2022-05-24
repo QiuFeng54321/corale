@@ -4,8 +4,8 @@ public class IntegerType : PrimitiveType<int>
 {
     public override uint Id => IntegerId;
     public override string Name => "INTEGER";
-    
-    
+
+
     public override Instance Add(Instance i1, Instance i2)
     {
         return ParentScope.FindType("REAL").Add(CastToReal(i1), CastToReal(i2));

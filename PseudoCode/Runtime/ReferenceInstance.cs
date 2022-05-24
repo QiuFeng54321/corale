@@ -2,10 +2,10 @@ using PseudoCode.Runtime.Operations;
 
 namespace PseudoCode.Runtime;
 
-public class ReferenceInstance: Instance
+public class ReferenceInstance : Instance
 {
-    public Scope Scope;
     public string ReferenceName;
+    public Scope Scope;
 
     public Instance ReferencedInstance => Scope.FindInstance(ReferenceName);
 
@@ -18,7 +18,6 @@ public class ReferenceInstance: Instance
         set => ReferencedInstance.Value = value;
     }
 
-    
 
     public override string ToString()
     {

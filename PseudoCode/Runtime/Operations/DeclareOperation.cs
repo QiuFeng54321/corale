@@ -2,16 +2,19 @@ namespace PseudoCode.Runtime.Operations;
 
 public class DeclareOperation : Operation
 {
+    public List<Range> Dimensions = new();
     public string Name;
     public Type Type;
-    public List<Range> Dimensions = new();
+
     public override void Operate()
     {
         base.Operate();
         if (Scope.Instances.ContainsKey(Name))
             throw new InvalidOperationException($"{Name} is already declared under this scope!");
         if (Dimensions.Count == 0)
+        {
             Scope.Instances.Add(Name, Type.Instance());
+        }
         else
         {
             var arrayInstance = ((ArrayType)Scope.FindType("ARRAY")).Instance(Dimensions, Type);

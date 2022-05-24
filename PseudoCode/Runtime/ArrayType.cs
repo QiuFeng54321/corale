@@ -4,6 +4,7 @@ public class ArrayType : Type
 {
     public override string Name => "ARRAY";
     public override uint Id => ArrayId;
+
     public override Instance Instance(object value = null)
     {
         return new ArrayInstance();

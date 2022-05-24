@@ -3,6 +3,7 @@ namespace PseudoCode.Runtime.Operations;
 public class LoadImmediateOperation : Operation
 {
     public Instance Intermediate;
+
     public override void Operate()
     {
         base.Operate();
