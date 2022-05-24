@@ -40,20 +40,20 @@ public partial class PseudoCodeParser : Parser {
 	protected static DFA[] decisionToDFA;
 	protected static PredictionContextCache sharedContextCache = new PredictionContextCache();
 	public const int
-		STRING=1, CHAR=2, DECIMAL=3, INTEGER=4, BOOLEAN=5, DATE=6, NL=7, NEWLINE=8, 
-		DECLARE=9, CONSTANT=10, IO_KEYWORD=11, TYPENAME=12, ARRAY=13, CASE=14, 
-		OF=15, OTHERWISE=16, ENDCASE=17, FOR=18, TO=19, STEP=20, NEXT=21, WHILE=22, 
-		DO=23, ENDWHILE=24, REPEAT=25, UNTIL=26, IF=27, THEN=28, ELSE=29, ENDIF=30, 
-		PROCEDURE=31, ENDPROCEDURE=32, CALL=33, FUNCTION=34, ENDFUNCTION=35, BYVAL=36, 
-		BYREF=37, RETURNS=38, RETURN=39, TYPE=40, ENDTYPE=41, OPENFILE=42, READFILE=43, 
-		WRITEFILE=44, CLOSEFILE=45, SEEK=46, GETRECORD=47, PUTRECORD=48, READ=49, 
-		WRITE=50, APPEND=51, RANDOM=52, CLASS=53, ENDCLASS=54, INHERITS=55, PRIVATE=56, 
-		PUBLIC=57, NEW=58, AND=59, OR=60, NOT=61, OPEN_PAREN=62, CLOSE_PAREN=63, 
-		OPEN_BRACK=64, CLOSE_BRACK=65, OPEN_BRACE=66, CLOSE_BRACE=67, COLON=68, 
-		COMMA=69, DOT=70, ADD=71, SUB=72, MULT=73, INTDIV=74, DIV=75, MOD=76, 
-		POW=77, CARET=78, EQUAL=79, GREATER=80, SMALLER=81, GREATER_EQUAL=82, 
-		SMALLER_EQUAL=83, UNEQUAL=84, ASSIGNMENT_NOTATION=85, IDENTIFIER=86, SKIP_=87, 
-		UNKNOWN_CHAR=88, INDENT=89, DEDENT=90;
+		String=1, Char=2, Decimal=3, Integer=4, Boolean=5, Date=6, NL=7, Newline=8, 
+		Declare=9, Constant=10, IoKeyword=11, Typename=12, Array=13, Case=14, 
+		Of=15, Otherwise=16, Endcase=17, For=18, To=19, Step=20, Next=21, While=22, 
+		Do=23, Endwhile=24, Repeat=25, Until=26, If=27, Then=28, Else=29, Endif=30, 
+		Procedure=31, Endprocedure=32, Call=33, Function=34, Endfunction=35, Byval=36, 
+		Byref=37, Returns=38, Return=39, Type=40, Endtype=41, Openfile=42, Readfile=43, 
+		Writefile=44, Closefile=45, Seek=46, Getrecord=47, Putrecord=48, Read=49, 
+		Write=50, Append=51, Random=52, Class=53, Endclass=54, Inherits=55, Private=56, 
+		Public=57, New=58, And=59, Or=60, Not=61, OpenParen=62, CloseParen=63, 
+		OpenBrack=64, CloseBrack=65, OpenBrace=66, CloseBrace=67, Colon=68, Comma=69, 
+		Dot=70, Add=71, Subtract=72, Multiply=73, IntDivide=74, Divide=75, Mod=76, 
+		Pow=77, Caret=78, Equal=79, Greater=80, Smaller=81, GreaterEqual=82, SmallerEqual=83, 
+		NotEqual=84, AssignmentNotation=85, Identifier=86, Skip=87, UnknownChar=88, 
+		INDENT=89, DEDENT=90;
 	public const int
 		RULE_fileInput = 0, RULE_singleInput = 1, RULE_statement = 2, RULE_simpleStatement = 3, 
 		RULE_smallStatement = 4, RULE_assignmentStatement = 5, RULE_declarationStatement = 6, 
@@ -94,23 +94,24 @@ public partial class PseudoCodeParser : Parser {
 		"'CLOSEFILE'", "'SEEK'", "'GETRECORD'", "'PUTRECORD'", "'READ'", "'WRITE'", 
 		"'APPEND'", "'RANDOM'", "'CLASS'", "'ENDCLASS'", "'INHERITS'", "'PRIVATE'", 
 		"'PUBLIC'", "'NEW'", "'AND'", "'OR'", "'NOT'", "'('", "')'", "'['", "']'", 
-		"'{'", "'}'", "':'", "','", "'.'", "'+'", "'-'", "'*'", null, "'/'", null, 
-		"'POW'", "'^'", "'='", "'>'", "'<'", "'>='", "'<='", "'<>'", "'<-'"
+		"'{'", "'}'", "':'", "','", "'.'", "'+'", "'-'", "'*'", "'DIV'", "'/'", 
+		"'MOD'", "'POW'", "'^'", "'='", "'>'", "'<'", "'>='", "'<='", "'<>'", 
+		"'<-'"
 	};
 	private static readonly string[] _SymbolicNames = {
-		null, "STRING", "CHAR", "DECIMAL", "INTEGER", "BOOLEAN", "DATE", "NL", 
-		"NEWLINE", "DECLARE", "CONSTANT", "IO_KEYWORD", "TYPENAME", "ARRAY", "CASE", 
-		"OF", "OTHERWISE", "ENDCASE", "FOR", "TO", "STEP", "NEXT", "WHILE", "DO", 
-		"ENDWHILE", "REPEAT", "UNTIL", "IF", "THEN", "ELSE", "ENDIF", "PROCEDURE", 
-		"ENDPROCEDURE", "CALL", "FUNCTION", "ENDFUNCTION", "BYVAL", "BYREF", "RETURNS", 
-		"RETURN", "TYPE", "ENDTYPE", "OPENFILE", "READFILE", "WRITEFILE", "CLOSEFILE", 
-		"SEEK", "GETRECORD", "PUTRECORD", "READ", "WRITE", "APPEND", "RANDOM", 
-		"CLASS", "ENDCLASS", "INHERITS", "PRIVATE", "PUBLIC", "NEW", "AND", "OR", 
-		"NOT", "OPEN_PAREN", "CLOSE_PAREN", "OPEN_BRACK", "CLOSE_BRACK", "OPEN_BRACE", 
-		"CLOSE_BRACE", "COLON", "COMMA", "DOT", "ADD", "SUB", "MULT", "INTDIV", 
-		"DIV", "MOD", "POW", "CARET", "EQUAL", "GREATER", "SMALLER", "GREATER_EQUAL", 
-		"SMALLER_EQUAL", "UNEQUAL", "ASSIGNMENT_NOTATION", "IDENTIFIER", "SKIP_", 
-		"UNKNOWN_CHAR", "INDENT", "DEDENT"
+		null, "String", "Char", "Decimal", "Integer", "Boolean", "Date", "NL", 
+		"Newline", "Declare", "Constant", "IoKeyword", "Typename", "Array", "Case", 
+		"Of", "Otherwise", "Endcase", "For", "To", "Step", "Next", "While", "Do", 
+		"Endwhile", "Repeat", "Until", "If", "Then", "Else", "Endif", "Procedure", 
+		"Endprocedure", "Call", "Function", "Endfunction", "Byval", "Byref", "Returns", 
+		"Return", "Type", "Endtype", "Openfile", "Readfile", "Writefile", "Closefile", 
+		"Seek", "Getrecord", "Putrecord", "Read", "Write", "Append", "Random", 
+		"Class", "Endclass", "Inherits", "Private", "Public", "New", "And", "Or", 
+		"Not", "OpenParen", "CloseParen", "OpenBrack", "CloseBrack", "OpenBrace", 
+		"CloseBrace", "Colon", "Comma", "Dot", "Add", "Subtract", "Multiply", 
+		"IntDivide", "Divide", "Mod", "Pow", "Caret", "Equal", "Greater", "Smaller", 
+		"GreaterEqual", "SmallerEqual", "NotEqual", "AssignmentNotation", "Identifier", 
+		"Skip", "UnknownChar", "INDENT", "DEDENT"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -180,7 +181,7 @@ public partial class PseudoCodeParser : Parser {
 			State = 105;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NL) | (1L << DECLARE) | (1L << CONSTANT) | (1L << IO_KEYWORD) | (1L << CASE) | (1L << FOR) | (1L << WHILE) | (1L << REPEAT) | (1L << IF) | (1L << PROCEDURE) | (1L << CALL) | (1L << FUNCTION) | (1L << RETURN) | (1L << TYPE) | (1L << OPENFILE) | (1L << READFILE) | (1L << WRITEFILE) | (1L << CLOSEFILE) | (1L << SEEK) | (1L << GETRECORD) | (1L << PUTRECORD) | (1L << CLASS))) != 0) || _la==IDENTIFIER) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NL) | (1L << Declare) | (1L << Constant) | (1L << IoKeyword) | (1L << Case) | (1L << For) | (1L << While) | (1L << Repeat) | (1L << If) | (1L << Procedure) | (1L << Call) | (1L << Function) | (1L << Return) | (1L << Type) | (1L << Openfile) | (1L << Readfile) | (1L << Writefile) | (1L << Closefile) | (1L << Seek) | (1L << Getrecord) | (1L << Putrecord) | (1L << Class))) != 0) || _la==Identifier) {
 				{
 				{
 				State = 102;
@@ -285,60 +286,60 @@ public partial class PseudoCodeParser : Parser {
 			State = 118;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
-			case DECLARE:
-			case CONSTANT:
-			case IO_KEYWORD:
-			case CASE:
-			case FOR:
-			case WHILE:
-			case REPEAT:
-			case IF:
-			case PROCEDURE:
-			case CALL:
-			case FUNCTION:
-			case RETURN:
-			case TYPE:
-			case OPENFILE:
-			case READFILE:
-			case WRITEFILE:
-			case CLOSEFILE:
-			case SEEK:
-			case GETRECORD:
-			case PUTRECORD:
-			case CLASS:
-			case IDENTIFIER:
+			case Declare:
+			case Constant:
+			case IoKeyword:
+			case Case:
+			case For:
+			case While:
+			case Repeat:
+			case If:
+			case Procedure:
+			case Call:
+			case Function:
+			case Return:
+			case Type:
+			case Openfile:
+			case Readfile:
+			case Writefile:
+			case Closefile:
+			case Seek:
+			case Getrecord:
+			case Putrecord:
+			case Class:
+			case Identifier:
 				EnterOuterAlt(_localctx, 1);
 				{
 				State = 115;
 				ErrorHandler.Sync(this);
 				switch (TokenStream.LA(1)) {
-				case DECLARE:
-				case CONSTANT:
-				case IO_KEYWORD:
-				case CALL:
-				case RETURN:
-				case OPENFILE:
-				case READFILE:
-				case WRITEFILE:
-				case CLOSEFILE:
-				case SEEK:
-				case GETRECORD:
-				case PUTRECORD:
-				case IDENTIFIER:
+				case Declare:
+				case Constant:
+				case IoKeyword:
+				case Call:
+				case Return:
+				case Openfile:
+				case Readfile:
+				case Writefile:
+				case Closefile:
+				case Seek:
+				case Getrecord:
+				case Putrecord:
+				case Identifier:
 					{
 					State = 113;
 					simpleStatement();
 					}
 					break;
-				case CASE:
-				case FOR:
-				case WHILE:
-				case REPEAT:
-				case IF:
-				case PROCEDURE:
-				case FUNCTION:
-				case TYPE:
-				case CLASS:
+				case Case:
+				case For:
+				case While:
+				case Repeat:
+				case If:
+				case Procedure:
+				case Function:
+				case Type:
+				case Class:
 					{
 					State = 114;
 					compoundStatement();
@@ -461,55 +462,55 @@ public partial class PseudoCodeParser : Parser {
 			State = 129;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
-			case IDENTIFIER:
+			case Identifier:
 				EnterOuterAlt(_localctx, 1);
 				{
 				State = 122;
 				assignmentStatement();
 				}
 				break;
-			case DECLARE:
+			case Declare:
 				EnterOuterAlt(_localctx, 2);
 				{
 				State = 123;
 				declarationStatement();
 				}
 				break;
-			case CONSTANT:
+			case Constant:
 				EnterOuterAlt(_localctx, 3);
 				{
 				State = 124;
 				constantStatement();
 				}
 				break;
-			case IO_KEYWORD:
+			case IoKeyword:
 				EnterOuterAlt(_localctx, 4);
 				{
 				State = 125;
 				ioStatement();
 				}
 				break;
-			case OPENFILE:
-			case READFILE:
-			case WRITEFILE:
-			case CLOSEFILE:
-			case SEEK:
-			case GETRECORD:
-			case PUTRECORD:
+			case Openfile:
+			case Readfile:
+			case Writefile:
+			case Closefile:
+			case Seek:
+			case Getrecord:
+			case Putrecord:
 				EnterOuterAlt(_localctx, 5);
 				{
 				State = 126;
 				fileStatement();
 				}
 				break;
-			case RETURN:
+			case Return:
 				EnterOuterAlt(_localctx, 6);
 				{
 				State = 127;
 				returnStatement();
 				}
 				break;
-			case CALL:
+			case Call:
 				EnterOuterAlt(_localctx, 7);
 				{
 				State = 128;
@@ -535,7 +536,7 @@ public partial class PseudoCodeParser : Parser {
 		[System.Diagnostics.DebuggerNonUserCode] public LvalueContext lvalue() {
 			return GetRuleContext<LvalueContext>(0);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ASSIGNMENT_NOTATION() { return GetToken(PseudoCodeParser.ASSIGNMENT_NOTATION, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode AssignmentNotation() { return GetToken(PseudoCodeParser.AssignmentNotation, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
 			return GetRuleContext<ExpressionContext>(0);
 		}
@@ -566,7 +567,7 @@ public partial class PseudoCodeParser : Parser {
 			State = 131;
 			lvalue(0);
 			State = 132;
-			Match(ASSIGNMENT_NOTATION);
+			Match(AssignmentNotation);
 			State = 133;
 			expression();
 			}
@@ -583,9 +584,9 @@ public partial class PseudoCodeParser : Parser {
 	}
 
 	public partial class DeclarationStatementContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DECLARE() { return GetToken(PseudoCodeParser.DECLARE, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode IDENTIFIER() { return GetToken(PseudoCodeParser.IDENTIFIER, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COLON() { return GetToken(PseudoCodeParser.COLON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Declare() { return GetToken(PseudoCodeParser.Declare, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Identifier() { return GetToken(PseudoCodeParser.Identifier, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Colon() { return GetToken(PseudoCodeParser.Colon, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public DataTypeContext dataType() {
 			return GetRuleContext<DataTypeContext>(0);
 		}
@@ -614,11 +615,11 @@ public partial class PseudoCodeParser : Parser {
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 135;
-			Match(DECLARE);
+			Match(Declare);
 			State = 136;
-			Match(IDENTIFIER);
+			Match(Identifier);
 			State = 137;
-			Match(COLON);
+			Match(Colon);
 			State = 138;
 			dataType();
 			}
@@ -635,9 +636,9 @@ public partial class PseudoCodeParser : Parser {
 	}
 
 	public partial class ConstantStatementContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CONSTANT() { return GetToken(PseudoCodeParser.CONSTANT, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode IDENTIFIER() { return GetToken(PseudoCodeParser.IDENTIFIER, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode EQUAL() { return GetToken(PseudoCodeParser.EQUAL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Constant() { return GetToken(PseudoCodeParser.Constant, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Identifier() { return GetToken(PseudoCodeParser.Identifier, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Equal() { return GetToken(PseudoCodeParser.Equal, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
 			return GetRuleContext<ExpressionContext>(0);
 		}
@@ -666,11 +667,11 @@ public partial class PseudoCodeParser : Parser {
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 140;
-			Match(CONSTANT);
+			Match(Constant);
 			State = 141;
-			Match(IDENTIFIER);
+			Match(Identifier);
 			State = 142;
-			Match(EQUAL);
+			Match(Equal);
 			State = 143;
 			expression();
 			}
@@ -687,7 +688,7 @@ public partial class PseudoCodeParser : Parser {
 	}
 
 	public partial class IoStatementContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode IO_KEYWORD() { return GetToken(PseudoCodeParser.IO_KEYWORD, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode IoKeyword() { return GetToken(PseudoCodeParser.IoKeyword, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public TupleContext tuple() {
 			return GetRuleContext<TupleContext>(0);
 		}
@@ -716,7 +717,7 @@ public partial class PseudoCodeParser : Parser {
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 145;
-			Match(IO_KEYWORD);
+			Match(IoKeyword);
 			State = 146;
 			tuple();
 			}
@@ -733,7 +734,7 @@ public partial class PseudoCodeParser : Parser {
 	}
 
 	public partial class ReturnStatementContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RETURN() { return GetToken(PseudoCodeParser.RETURN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Return() { return GetToken(PseudoCodeParser.Return, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
 			return GetRuleContext<ExpressionContext>(0);
 		}
@@ -762,7 +763,7 @@ public partial class PseudoCodeParser : Parser {
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 148;
-			Match(RETURN);
+			Match(Return);
 			State = 149;
 			expression();
 			}
@@ -779,7 +780,7 @@ public partial class PseudoCodeParser : Parser {
 	}
 
 	public partial class CallStatementContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CALL() { return GetToken(PseudoCodeParser.CALL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Call() { return GetToken(PseudoCodeParser.Call, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
 			return GetRuleContext<ExpressionContext>(0);
 		}
@@ -811,7 +812,7 @@ public partial class PseudoCodeParser : Parser {
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 151;
-			Match(CALL);
+			Match(Call);
 			State = 152;
 			expression();
 			State = 154;
@@ -839,28 +840,28 @@ public partial class PseudoCodeParser : Parser {
 
 	public partial class FileStatementContext : ParserRuleContext {
 		public IToken fileMode;
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OPENFILE() { return GetToken(PseudoCodeParser.OPENFILE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Openfile() { return GetToken(PseudoCodeParser.Openfile, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext[] expression() {
 			return GetRuleContexts<ExpressionContext>();
 		}
 		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression(int i) {
 			return GetRuleContext<ExpressionContext>(i);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FOR() { return GetToken(PseudoCodeParser.FOR, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode READ() { return GetToken(PseudoCodeParser.READ, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode WRITE() { return GetToken(PseudoCodeParser.WRITE, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode APPEND() { return GetToken(PseudoCodeParser.APPEND, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RANDOM() { return GetToken(PseudoCodeParser.RANDOM, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode READFILE() { return GetToken(PseudoCodeParser.READFILE, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COMMA() { return GetToken(PseudoCodeParser.COMMA, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode For() { return GetToken(PseudoCodeParser.For, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Read() { return GetToken(PseudoCodeParser.Read, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Write() { return GetToken(PseudoCodeParser.Write, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Append() { return GetToken(PseudoCodeParser.Append, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Random() { return GetToken(PseudoCodeParser.Random, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Readfile() { return GetToken(PseudoCodeParser.Readfile, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Comma() { return GetToken(PseudoCodeParser.Comma, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public LvalueContext lvalue() {
 			return GetRuleContext<LvalueContext>(0);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode WRITEFILE() { return GetToken(PseudoCodeParser.WRITEFILE, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLOSEFILE() { return GetToken(PseudoCodeParser.CLOSEFILE, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SEEK() { return GetToken(PseudoCodeParser.SEEK, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode GETRECORD() { return GetToken(PseudoCodeParser.GETRECORD, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode PUTRECORD() { return GetToken(PseudoCodeParser.PUTRECORD, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Writefile() { return GetToken(PseudoCodeParser.Writefile, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Closefile() { return GetToken(PseudoCodeParser.Closefile, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Seek() { return GetToken(PseudoCodeParser.Seek, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Getrecord() { return GetToken(PseudoCodeParser.Getrecord, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Putrecord() { return GetToken(PseudoCodeParser.Putrecord, 0); }
 		public FileStatementContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -887,19 +888,19 @@ public partial class PseudoCodeParser : Parser {
 			State = 188;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
-			case OPENFILE:
+			case Openfile:
 				EnterOuterAlt(_localctx, 1);
 				{
 				State = 156;
-				Match(OPENFILE);
+				Match(Openfile);
 				State = 157;
 				expression();
 				State = 158;
-				Match(FOR);
+				Match(For);
 				State = 159;
 				_localctx.fileMode = TokenStream.LT(1);
 				_la = TokenStream.LA(1);
-				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << READ) | (1L << WRITE) | (1L << APPEND) | (1L << RANDOM))) != 0)) ) {
+				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Read) | (1L << Write) | (1L << Append) | (1L << Random))) != 0)) ) {
 					_localctx.fileMode = ErrorHandler.RecoverInline(this);
 				}
 				else {
@@ -908,76 +909,76 @@ public partial class PseudoCodeParser : Parser {
 				}
 				}
 				break;
-			case READFILE:
+			case Readfile:
 				EnterOuterAlt(_localctx, 2);
 				{
 				State = 161;
-				Match(READFILE);
+				Match(Readfile);
 				State = 162;
 				expression();
 				State = 163;
-				Match(COMMA);
+				Match(Comma);
 				State = 164;
 				lvalue(0);
 				}
 				break;
-			case WRITEFILE:
+			case Writefile:
 				EnterOuterAlt(_localctx, 3);
 				{
 				State = 166;
-				Match(WRITEFILE);
+				Match(Writefile);
 				State = 167;
 				expression();
 				State = 168;
-				Match(COMMA);
+				Match(Comma);
 				State = 169;
 				expression();
 				}
 				break;
-			case CLOSEFILE:
+			case Closefile:
 				EnterOuterAlt(_localctx, 4);
 				{
 				State = 171;
-				Match(CLOSEFILE);
+				Match(Closefile);
 				State = 172;
 				expression();
 				}
 				break;
-			case SEEK:
+			case Seek:
 				EnterOuterAlt(_localctx, 5);
 				{
 				State = 173;
-				Match(SEEK);
+				Match(Seek);
 				State = 174;
 				expression();
 				State = 175;
-				Match(COMMA);
+				Match(Comma);
 				State = 176;
 				expression();
 				}
 				break;
-			case GETRECORD:
+			case Getrecord:
 				EnterOuterAlt(_localctx, 6);
 				{
 				State = 178;
-				Match(GETRECORD);
+				Match(Getrecord);
 				State = 179;
 				expression();
 				State = 180;
-				Match(COMMA);
+				Match(Comma);
 				State = 181;
 				lvalue(0);
 				}
 				break;
-			case PUTRECORD:
+			case Putrecord:
 				EnterOuterAlt(_localctx, 7);
 				{
 				State = 183;
-				Match(PUTRECORD);
+				Match(Putrecord);
 				State = 184;
 				expression();
 				State = 185;
-				Match(COMMA);
+				Match(Comma);
 				State = 186;
 				expression();
 				}
@@ -1195,7 +1196,7 @@ public partial class PseudoCodeParser : Parser {
 				State = 207;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NL) | (1L << DECLARE) | (1L << CONSTANT) | (1L << IO_KEYWORD) | (1L << CASE) | (1L << FOR) | (1L << WHILE) | (1L << REPEAT) | (1L << IF) | (1L << PROCEDURE) | (1L << CALL) | (1L << FUNCTION) | (1L << RETURN) | (1L << TYPE) | (1L << OPENFILE) | (1L << READFILE) | (1L << WRITEFILE) | (1L << CLOSEFILE) | (1L << SEEK) | (1L << GETRECORD) | (1L << PUTRECORD) | (1L << CLASS))) != 0) || _la==IDENTIFIER );
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NL) | (1L << Declare) | (1L << Constant) | (1L << IoKeyword) | (1L << Case) | (1L << For) | (1L << While) | (1L << Repeat) | (1L << If) | (1L << Procedure) | (1L << Call) | (1L << Function) | (1L << Return) | (1L << Type) | (1L << Openfile) | (1L << Readfile) | (1L << Writefile) | (1L << Closefile) | (1L << Seek) | (1L << Getrecord) | (1L << Putrecord) | (1L << Class))) != 0) || _la==Identifier );
 			State = 209;
 			Match(DEDENT);
 			}
@@ -1267,7 +1268,7 @@ public partial class PseudoCodeParser : Parser {
 					State = 216;
 					ErrorHandler.Sync(this);
 					_la = TokenStream.LA(1);
-				} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NL) | (1L << DECLARE) | (1L << CONSTANT) | (1L << IO_KEYWORD) | (1L << CASE) | (1L << FOR) | (1L << WHILE) | (1L << REPEAT) | (1L << IF) | (1L << PROCEDURE) | (1L << CALL) | (1L << FUNCTION) | (1L << RETURN) | (1L << TYPE) | (1L << OPENFILE) | (1L << READFILE) | (1L << WRITEFILE) | (1L << CLOSEFILE) | (1L << SEEK) | (1L << GETRECORD) | (1L << PUTRECORD) | (1L << CLASS))) != 0) || _la==IDENTIFIER );
+				} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NL) | (1L << Declare) | (1L << Constant) | (1L << IoKeyword) | (1L << Case) | (1L << For) | (1L << While) | (1L << Repeat) | (1L << If) | (1L << Procedure) | (1L << Call) | (1L << Function) | (1L << Return) | (1L << Type) | (1L << Openfile) | (1L << Readfile) | (1L << Writefile) | (1L << Closefile) | (1L << Seek) | (1L << Getrecord) | (1L << Putrecord) | (1L << Class))) != 0) || _la==Identifier );
 				State = 218;
 				Match(DEDENT);
 				}
@@ -1287,19 +1288,19 @@ public partial class PseudoCodeParser : Parser {
 	}
 
 	public partial class IfStatementContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode IF() { return GetToken(PseudoCodeParser.IF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode If() { return GetToken(PseudoCodeParser.If, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
 			return GetRuleContext<ExpressionContext>(0);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode THEN() { return GetToken(PseudoCodeParser.THEN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Then() { return GetToken(PseudoCodeParser.Then, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public BlockContext[] block() {
 			return GetRuleContexts<BlockContext>();
 		}
 		[System.Diagnostics.DebuggerNonUserCode] public BlockContext block(int i) {
 			return GetRuleContext<BlockContext>(i);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ENDIF() { return GetToken(PseudoCodeParser.ENDIF, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ELSE() { return GetToken(PseudoCodeParser.ELSE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Endif() { return GetToken(PseudoCodeParser.Endif, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Else() { return GetToken(PseudoCodeParser.Else, 0); }
 		public IfStatementContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -1326,27 +1327,27 @@ public partial class PseudoCodeParser : Parser {
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 222;
-			Match(IF);
+			Match(If);
 			State = 223;
 			expression();
 			State = 224;
-			Match(THEN);
+			Match(Then);
 			State = 225;
 			block();
 			State = 228;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			if (_la==ELSE) {
+			if (_la==Else) {
 				{
 				State = 226;
-				Match(ELSE);
+				Match(Else);
 				State = 227;
 				block();
 				}
 			}
 
 			State = 230;
-			Match(ENDIF);
+			Match(Endif);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1361,20 +1362,20 @@ public partial class PseudoCodeParser : Parser {
 	}
 
 	public partial class ForStatementContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FOR() { return GetToken(PseudoCodeParser.FOR, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode For() { return GetToken(PseudoCodeParser.For, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public LvalueContext lvalue() {
 			return GetRuleContext<LvalueContext>(0);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ASSIGNMENT_NOTATION() { return GetToken(PseudoCodeParser.ASSIGNMENT_NOTATION, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode AssignmentNotation() { return GetToken(PseudoCodeParser.AssignmentNotation, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ValueRangeContext valueRange() {
 			return GetRuleContext<ValueRangeContext>(0);
 		}
 		[System.Diagnostics.DebuggerNonUserCode] public BlockContext block() {
 			return GetRuleContext<BlockContext>(0);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NEXT() { return GetToken(PseudoCodeParser.NEXT, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode IDENTIFIER() { return GetToken(PseudoCodeParser.IDENTIFIER, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode STEP() { return GetToken(PseudoCodeParser.STEP, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Next() { return GetToken(PseudoCodeParser.Next, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Identifier() { return GetToken(PseudoCodeParser.Identifier, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Step() { return GetToken(PseudoCodeParser.Step, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ArithmeticExpressionContext arithmeticExpression() {
 			return GetRuleContext<ArithmeticExpressionContext>(0);
 		}
@@ -1404,20 +1405,20 @@ public partial class PseudoCodeParser : Parser {
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 232;
-			Match(FOR);
+			Match(For);
 			State = 233;
 			lvalue(0);
 			State = 234;
-			Match(ASSIGNMENT_NOTATION);
+			Match(AssignmentNotation);
 			State = 235;
 			valueRange();
 			State = 238;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			if (_la==STEP) {
+			if (_la==Step) {
 				{
 				State = 236;
-				Match(STEP);
+				Match(Step);
 				State = 237;
 				arithmeticExpression(0);
 				}
@@ -1426,9 +1427,9 @@ public partial class PseudoCodeParser : Parser {
 			State = 240;
 			block();
 			State = 241;
-			Match(NEXT);
+			Match(Next);
 			State = 242;
-			Match(IDENTIFIER);
+			Match(Identifier);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1443,15 +1444,15 @@ public partial class PseudoCodeParser : Parser {
 	}
 
 	public partial class WhileStatementContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode WHILE() { return GetToken(PseudoCodeParser.WHILE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode While() { return GetToken(PseudoCodeParser.While, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public LogicExpressionContext logicExpression() {
 			return GetRuleContext<LogicExpressionContext>(0);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DO() { return GetToken(PseudoCodeParser.DO, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Do() { return GetToken(PseudoCodeParser.Do, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public BlockContext block() {
 			return GetRuleContext<BlockContext>(0);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ENDWHILE() { return GetToken(PseudoCodeParser.ENDWHILE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Endwhile() { return GetToken(PseudoCodeParser.Endwhile, 0); }
 		public WhileStatementContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -1477,15 +1478,15 @@ public partial class PseudoCodeParser : Parser {
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 244;
-			Match(WHILE);
+			Match(While);
 			State = 245;
 			logicExpression(0);
 			State = 246;
-			Match(DO);
+			Match(Do);
 			State = 247;
 			block();
 			State = 248;
-			Match(ENDWHILE);
+			Match(Endwhile);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1500,11 +1501,11 @@ public partial class PseudoCodeParser : Parser {
 	}
 
 	public partial class RepeatStatementContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode REPEAT() { return GetToken(PseudoCodeParser.REPEAT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Repeat() { return GetToken(PseudoCodeParser.Repeat, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public BlockContext block() {
 			return GetRuleContext<BlockContext>(0);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode UNTIL() { return GetToken(PseudoCodeParser.UNTIL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Until() { return GetToken(PseudoCodeParser.Until, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
 			return GetRuleContext<ExpressionContext>(0);
 		}
@@ -1533,11 +1534,11 @@ public partial class PseudoCodeParser : Parser {
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 250;
-			Match(REPEAT);
+			Match(Repeat);
 			State = 251;
 			block();
 			State = 252;
-			Match(UNTIL);
+			Match(Until);
 			State = 253;
 			expression();
 			}
@@ -1554,15 +1555,15 @@ public partial class PseudoCodeParser : Parser {
 	}
 
 	public partial class CaseStatementContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CASE() { return GetToken(PseudoCodeParser.CASE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Case() { return GetToken(PseudoCodeParser.Case, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ArithmeticExpressionContext arithmeticExpression() {
 			return GetRuleContext<ArithmeticExpressionContext>(0);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OF() { return GetToken(PseudoCodeParser.OF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Of() { return GetToken(PseudoCodeParser.Of, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public CaseBodyContext caseBody() {
 			return GetRuleContext<CaseBodyContext>(0);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ENDCASE() { return GetToken(PseudoCodeParser.ENDCASE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Endcase() { return GetToken(PseudoCodeParser.Endcase, 0); }
 		public CaseStatementContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -1588,15 +1589,15 @@ public partial class PseudoCodeParser : Parser {
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 255;
-			Match(CASE);
+			Match(Case);
 			State = 256;
 			arithmeticExpression(0);
 			State = 257;
-			Match(OF);
+			Match(Of);
 			State = 258;
 			caseBody();
 			State = 259;
-			Match(ENDCASE);
+			Match(Endcase);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1611,11 +1612,11 @@ public partial class PseudoCodeParser : Parser {
 	}
 
 	public partial class CaseBranchContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COLON() { return GetToken(PseudoCodeParser.COLON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Colon() { return GetToken(PseudoCodeParser.Colon, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public Aligned_blockContext aligned_block() {
 			return GetRuleContext<Aligned_blockContext>(0);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OTHERWISE() { return GetToken(PseudoCodeParser.OTHERWISE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Otherwise() { return GetToken(PseudoCodeParser.Otherwise, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public AtomContext atom() {
 			return GetRuleContext<AtomContext>(0);
 		}
@@ -1648,20 +1649,20 @@ public partial class PseudoCodeParser : Parser {
 			State = 269;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
-			case STRING:
-			case CHAR:
-			case DECIMAL:
-			case INTEGER:
-			case BOOLEAN:
-			case DATE:
-			case OTHERWISE:
-			case NEW:
-			case NOT:
-			case OPEN_PAREN:
-			case OPEN_BRACK:
-			case SUB:
-			case CARET:
-			case IDENTIFIER:
+			case String:
+			case Char:
+			case Decimal:
+			case Integer:
+			case Boolean:
+			case Date:
+			case Otherwise:
+			case New:
+			case Not:
+			case OpenParen:
+			case OpenBrack:
+			case Subtract:
+			case Caret:
+			case Identifier:
 				EnterOuterAlt(_localctx, 1);
 				{
 				State = 264;
@@ -1670,7 +1671,7 @@ public partial class PseudoCodeParser : Parser {
 				case 1:
 					{
 					State = 261;
-					Match(OTHERWISE);
+					Match(Otherwise);
 					}
 					break;
 				case 2:
@@ -1687,7 +1688,7 @@ public partial class PseudoCodeParser : Parser {
 					break;
 				}
 				State = 266;
-				Match(COLON);
+				Match(Colon);
 				State = 267;
 				aligned_block();
 				}
@@ -1763,7 +1764,7 @@ public partial class PseudoCodeParser : Parser {
 				State = 275;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << STRING) | (1L << CHAR) | (1L << DECIMAL) | (1L << INTEGER) | (1L << BOOLEAN) | (1L << DATE) | (1L << NL) | (1L << OTHERWISE) | (1L << NEW) | (1L << NOT) | (1L << OPEN_PAREN))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (OPEN_BRACK - 64)) | (1L << (SUB - 64)) | (1L << (CARET - 64)) | (1L << (IDENTIFIER - 64)))) != 0) );
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << String) | (1L << Char) | (1L << Decimal) | (1L << Integer) | (1L << Boolean) | (1L << Date) | (1L << NL) | (1L << Otherwise) | (1L << New) | (1L << Not) | (1L << OpenParen))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (OpenBrack - 64)) | (1L << (Subtract - 64)) | (1L << (Caret - 64)) | (1L << (Identifier - 64)))) != 0) );
 			State = 277;
 			Match(DEDENT);
 			}
@@ -1786,7 +1787,7 @@ public partial class PseudoCodeParser : Parser {
 		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression(int i) {
 			return GetRuleContext<ExpressionContext>(i);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TO() { return GetToken(PseudoCodeParser.TO, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode To() { return GetToken(PseudoCodeParser.To, 0); }
 		public ValueRangeContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -1814,7 +1815,7 @@ public partial class PseudoCodeParser : Parser {
 			State = 279;
 			expression();
 			State = 280;
-			Match(TO);
+			Match(To);
 			State = 281;
 			expression();
 			}
@@ -1831,14 +1832,14 @@ public partial class PseudoCodeParser : Parser {
 	}
 
 	public partial class ProcedureDefinitionContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode PROCEDURE() { return GetToken(PseudoCodeParser.PROCEDURE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Procedure() { return GetToken(PseudoCodeParser.Procedure, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public IdentifierWithNewContext identifierWithNew() {
 			return GetRuleContext<IdentifierWithNewContext>(0);
 		}
 		[System.Diagnostics.DebuggerNonUserCode] public BlockContext block() {
 			return GetRuleContext<BlockContext>(0);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ENDPROCEDURE() { return GetToken(PseudoCodeParser.ENDPROCEDURE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Endprocedure() { return GetToken(PseudoCodeParser.Endprocedure, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ArgumentsDeclarationContext argumentsDeclaration() {
 			return GetRuleContext<ArgumentsDeclarationContext>(0);
 		}
@@ -1868,13 +1869,13 @@ public partial class PseudoCodeParser : Parser {
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 283;
-			Match(PROCEDURE);
+			Match(Procedure);
 			State = 284;
 			identifierWithNew();
 			State = 286;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			if (_la==OPEN_PAREN) {
+			if (_la==OpenParen) {
 				{
 				State = 285;
 				argumentsDeclaration();
@@ -1884,7 +1885,7 @@ public partial class PseudoCodeParser : Parser {
 			State = 288;
 			block();
 			State = 289;
-			Match(ENDPROCEDURE);
+			Match(Endprocedure);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1899,16 +1900,16 @@ public partial class PseudoCodeParser : Parser {
 	}
 
 	public partial class FunctionDefinitionContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FUNCTION() { return GetToken(PseudoCodeParser.FUNCTION, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode IDENTIFIER() { return GetToken(PseudoCodeParser.IDENTIFIER, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RETURNS() { return GetToken(PseudoCodeParser.RETURNS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Function() { return GetToken(PseudoCodeParser.Function, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Identifier() { return GetToken(PseudoCodeParser.Identifier, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Returns() { return GetToken(PseudoCodeParser.Returns, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public DataTypeContext dataType() {
 			return GetRuleContext<DataTypeContext>(0);
 		}
 		[System.Diagnostics.DebuggerNonUserCode] public BlockContext block() {
 			return GetRuleContext<BlockContext>(0);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ENDFUNCTION() { return GetToken(PseudoCodeParser.ENDFUNCTION, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Endfunction() { return GetToken(PseudoCodeParser.Endfunction, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ArgumentsDeclarationContext argumentsDeclaration() {
 			return GetRuleContext<ArgumentsDeclarationContext>(0);
 		}
@@ -1938,13 +1939,13 @@ public partial class PseudoCodeParser : Parser {
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 291;
-			Match(FUNCTION);
+			Match(Function);
 			State = 292;
-			Match(IDENTIFIER);
+			Match(Identifier);
 			State = 294;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			if (_la==OPEN_PAREN) {
+			if (_la==OpenParen) {
 				{
 				State = 293;
 				argumentsDeclaration();
@@ -1952,13 +1953,13 @@ public partial class PseudoCodeParser : Parser {
 			}
 
 			State = 296;
-			Match(RETURNS);
+			Match(Returns);
 			State = 297;
 			dataType();
 			State = 298;
 			block();
 			State = 299;
-			Match(ENDFUNCTION);
+			Match(Endfunction);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1973,17 +1974,17 @@ public partial class PseudoCodeParser : Parser {
 	}
 
 	public partial class ArgumentsDeclarationContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OPEN_PAREN() { return GetToken(PseudoCodeParser.OPEN_PAREN, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLOSE_PAREN() { return GetToken(PseudoCodeParser.CLOSE_PAREN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OpenParen() { return GetToken(PseudoCodeParser.OpenParen, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CloseParen() { return GetToken(PseudoCodeParser.CloseParen, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ArgumentDeclarationContext[] argumentDeclaration() {
 			return GetRuleContexts<ArgumentDeclarationContext>();
 		}
 		[System.Diagnostics.DebuggerNonUserCode] public ArgumentDeclarationContext argumentDeclaration(int i) {
 			return GetRuleContext<ArgumentDeclarationContext>(i);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] COMMA() { return GetTokens(PseudoCodeParser.COMMA); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COMMA(int i) {
-			return GetToken(PseudoCodeParser.COMMA, i);
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] Comma() { return GetTokens(PseudoCodeParser.Comma); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Comma(int i) {
+			return GetToken(PseudoCodeParser.Comma, i);
 		}
 		public ArgumentsDeclarationContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -2011,22 +2012,22 @@ public partial class PseudoCodeParser : Parser {
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 301;
-			Match(OPEN_PAREN);
+			Match(OpenParen);
 			State = 310;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			if (((((_la - 36)) & ~0x3f) == 0 && ((1L << (_la - 36)) & ((1L << (BYVAL - 36)) | (1L << (BYREF - 36)) | (1L << (IDENTIFIER - 36)))) != 0)) {
+			if (((((_la - 36)) & ~0x3f) == 0 && ((1L << (_la - 36)) & ((1L << (Byval - 36)) | (1L << (Byref - 36)) | (1L << (Identifier - 36)))) != 0)) {
 				{
 				State = 302;
 				argumentDeclaration();
 				State = 307;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
-				while (_la==COMMA) {
+				while (_la==Comma) {
 					{
 					{
 					State = 303;
-					Match(COMMA);
+					Match(Comma);
 					State = 304;
 					argumentDeclaration();
 					}
@@ -2039,7 +2040,7 @@ public partial class PseudoCodeParser : Parser {
 			}
 
 			State = 312;
-			Match(CLOSE_PAREN);
+			Match(CloseParen);
 			}
 		}
 		catch (RecognitionException re) {
@@ -2055,13 +2056,13 @@ public partial class PseudoCodeParser : Parser {
 
 	public partial class ArgumentDeclarationContext : ParserRuleContext {
 		public IToken passMethod;
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode IDENTIFIER() { return GetToken(PseudoCodeParser.IDENTIFIER, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COLON() { return GetToken(PseudoCodeParser.COLON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Identifier() { return GetToken(PseudoCodeParser.Identifier, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Colon() { return GetToken(PseudoCodeParser.Colon, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public DataTypeContext dataType() {
 			return GetRuleContext<DataTypeContext>(0);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode BYVAL() { return GetToken(PseudoCodeParser.BYVAL, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode BYREF() { return GetToken(PseudoCodeParser.BYREF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Byval() { return GetToken(PseudoCodeParser.Byval, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Byref() { return GetToken(PseudoCodeParser.Byref, 0); }
 		public ArgumentDeclarationContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -2090,12 +2091,12 @@ public partial class PseudoCodeParser : Parser {
 			State = 315;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			if (_la==BYVAL || _la==BYREF) {
+			if (_la==Byval || _la==Byref) {
 				{
 				State = 314;
 				_localctx.passMethod = TokenStream.LT(1);
 				_la = TokenStream.LA(1);
-				if ( !(_la==BYVAL || _la==BYREF) ) {
+				if ( !(_la==Byval || _la==Byref) ) {
 					_localctx.passMethod = ErrorHandler.RecoverInline(this);
 				}
 				else {
@@ -2106,9 +2107,9 @@ public partial class PseudoCodeParser : Parser {
 			}
 
 			State = 317;
-			Match(IDENTIFIER);
+			Match(Identifier);
 			State = 318;
-			Match(COLON);
+			Match(Colon);
 			State = 319;
 			dataType();
 			}
@@ -2131,9 +2132,9 @@ public partial class PseudoCodeParser : Parser {
 		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression(int i) {
 			return GetRuleContext<ExpressionContext>(i);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] COMMA() { return GetTokens(PseudoCodeParser.COMMA); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COMMA(int i) {
-			return GetToken(PseudoCodeParser.COMMA, i);
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] Comma() { return GetTokens(PseudoCodeParser.Comma); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Comma(int i) {
+			return GetToken(PseudoCodeParser.Comma, i);
 		}
 		public TupleContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -2165,11 +2166,11 @@ public partial class PseudoCodeParser : Parser {
 			State = 326;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			while (_la==COMMA) {
+			while (_la==Comma) {
 				{
 				{
 				State = 322;
-				Match(COMMA);
+				Match(Comma);
 				State = 323;
 				expression();
 				}
@@ -2192,17 +2193,17 @@ public partial class PseudoCodeParser : Parser {
 	}
 
 	public partial class EnumDefinitionContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TYPE() { return GetToken(PseudoCodeParser.TYPE, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] IDENTIFIER() { return GetTokens(PseudoCodeParser.IDENTIFIER); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode IDENTIFIER(int i) {
-			return GetToken(PseudoCodeParser.IDENTIFIER, i);
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Type() { return GetToken(PseudoCodeParser.Type, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] Identifier() { return GetTokens(PseudoCodeParser.Identifier); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Identifier(int i) {
+			return GetToken(PseudoCodeParser.Identifier, i);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode EQUAL() { return GetToken(PseudoCodeParser.EQUAL, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OPEN_PAREN() { return GetToken(PseudoCodeParser.OPEN_PAREN, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLOSE_PAREN() { return GetToken(PseudoCodeParser.CLOSE_PAREN, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] COMMA() { return GetTokens(PseudoCodeParser.COMMA); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COMMA(int i) {
-			return GetToken(PseudoCodeParser.COMMA, i);
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Equal() { return GetToken(PseudoCodeParser.Equal, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OpenParen() { return GetToken(PseudoCodeParser.OpenParen, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CloseParen() { return GetToken(PseudoCodeParser.CloseParen, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] Comma() { return GetTokens(PseudoCodeParser.Comma); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Comma(int i) {
+			return GetToken(PseudoCodeParser.Comma, i);
 		}
 		public EnumDefinitionContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -2230,25 +2231,25 @@ public partial class PseudoCodeParser : Parser {
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 329;
-			Match(TYPE);
+			Match(Type);
 			State = 330;
-			Match(IDENTIFIER);
+			Match(Identifier);
 			State = 331;
-			Match(EQUAL);
+			Match(Equal);
 			State = 332;
-			Match(OPEN_PAREN);
+			Match(OpenParen);
 			State = 333;
-			Match(IDENTIFIER);
+			Match(Identifier);
 			State = 338;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			while (_la==COMMA) {
+			while (_la==Comma) {
 				{
 				{
 				State = 334;
-				Match(COMMA);
+				Match(Comma);
 				State = 335;
-				Match(IDENTIFIER);
+				Match(Identifier);
 				}
 				}
 				State = 340;
@@ -2256,7 +2257,7 @@ public partial class PseudoCodeParser : Parser {
 				_la = TokenStream.LA(1);
 			}
 			State = 341;
-			Match(CLOSE_PAREN);
+			Match(CloseParen);
 			}
 		}
 		catch (RecognitionException re) {
@@ -2271,10 +2272,10 @@ public partial class PseudoCodeParser : Parser {
 	}
 
 	public partial class PointerDefinitionContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TYPE() { return GetToken(PseudoCodeParser.TYPE, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode IDENTIFIER() { return GetToken(PseudoCodeParser.IDENTIFIER, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode EQUAL() { return GetToken(PseudoCodeParser.EQUAL, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CARET() { return GetToken(PseudoCodeParser.CARET, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Type() { return GetToken(PseudoCodeParser.Type, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Identifier() { return GetToken(PseudoCodeParser.Identifier, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Equal() { return GetToken(PseudoCodeParser.Equal, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Caret() { return GetToken(PseudoCodeParser.Caret, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public DataTypeContext dataType() {
 			return GetRuleContext<DataTypeContext>(0);
 		}
@@ -2303,13 +2304,13 @@ public partial class PseudoCodeParser : Parser {
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 343;
-			Match(TYPE);
+			Match(Type);
 			State = 344;
-			Match(IDENTIFIER);
+			Match(Identifier);
 			State = 345;
-			Match(EQUAL);
+			Match(Equal);
 			State = 346;
-			Match(CARET);
+			Match(Caret);
 			State = 347;
 			dataType();
 			}
@@ -2326,12 +2327,12 @@ public partial class PseudoCodeParser : Parser {
 	}
 
 	public partial class TypeDefinitionContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TYPE() { return GetToken(PseudoCodeParser.TYPE, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode IDENTIFIER() { return GetToken(PseudoCodeParser.IDENTIFIER, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Type() { return GetToken(PseudoCodeParser.Type, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Identifier() { return GetToken(PseudoCodeParser.Identifier, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public TypeBodyContext typeBody() {
 			return GetRuleContext<TypeBodyContext>(0);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ENDTYPE() { return GetToken(PseudoCodeParser.ENDTYPE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Endtype() { return GetToken(PseudoCodeParser.Endtype, 0); }
 		public TypeDefinitionContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -2357,13 +2358,13 @@ public partial class PseudoCodeParser : Parser {
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 349;
-			Match(TYPE);
+			Match(Type);
 			State = 350;
-			Match(IDENTIFIER);
+			Match(Identifier);
 			State = 351;
 			typeBody();
 			State = 352;
-			Match(ENDTYPE);
+			Match(Endtype);
 			}
 		}
 		catch (RecognitionException re) {
@@ -2426,7 +2427,7 @@ public partial class PseudoCodeParser : Parser {
 				State = 358;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
-			} while ( _la==NL || _la==DECLARE );
+			} while ( _la==NL || _la==Declare );
 			State = 360;
 			Match(DEDENT);
 			}
@@ -2472,7 +2473,7 @@ public partial class PseudoCodeParser : Parser {
 			State = 364;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
-			case DECLARE:
+			case Declare:
 				EnterOuterAlt(_localctx, 1);
 				{
 				State = 362;
@@ -2504,16 +2505,16 @@ public partial class PseudoCodeParser : Parser {
 	public partial class ClassDefinitionContext : ParserRuleContext {
 		public IToken className;
 		public IToken inheritClass;
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLASS() { return GetToken(PseudoCodeParser.CLASS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Class() { return GetToken(PseudoCodeParser.Class, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ClassBodyContext classBody() {
 			return GetRuleContext<ClassBodyContext>(0);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ENDCLASS() { return GetToken(PseudoCodeParser.ENDCLASS, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] IDENTIFIER() { return GetTokens(PseudoCodeParser.IDENTIFIER); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode IDENTIFIER(int i) {
-			return GetToken(PseudoCodeParser.IDENTIFIER, i);
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Endclass() { return GetToken(PseudoCodeParser.Endclass, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] Identifier() { return GetTokens(PseudoCodeParser.Identifier); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Identifier(int i) {
+			return GetToken(PseudoCodeParser.Identifier, i);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode INHERITS() { return GetToken(PseudoCodeParser.INHERITS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Inherits() { return GetToken(PseudoCodeParser.Inherits, 0); }
 		public ClassDefinitionContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -2540,25 +2541,25 @@ public partial class PseudoCodeParser : Parser {
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 366;
-			Match(CLASS);
+			Match(Class);
 			State = 367;
-			_localctx.className = Match(IDENTIFIER);
+			_localctx.className = Match(Identifier);
 			State = 370;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			if (_la==INHERITS) {
+			if (_la==Inherits) {
 				{
 				State = 368;
-				Match(INHERITS);
+				Match(Inherits);
 				State = 369;
-				_localctx.inheritClass = Match(IDENTIFIER);
+				_localctx.inheritClass = Match(Identifier);
 				}
 			}
 
 			State = 372;
 			classBody();
 			State = 373;
-			Match(ENDCLASS);
+			Match(Endclass);
 			}
 		}
 		catch (RecognitionException re) {
@@ -2661,7 +2662,7 @@ public partial class PseudoCodeParser : Parser {
 				State = 382;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NL) | (1L << PROCEDURE) | (1L << FUNCTION) | (1L << PRIVATE) | (1L << PUBLIC))) != 0) || _la==IDENTIFIER );
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NL) | (1L << Procedure) | (1L << Function) | (1L << Private) | (1L << Public))) != 0) || _la==Identifier );
 			State = 384;
 			Match(DEDENT);
 			}
@@ -2678,8 +2679,8 @@ public partial class PseudoCodeParser : Parser {
 	}
 
 	public partial class ClassDataMemberContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode IDENTIFIER() { return GetToken(PseudoCodeParser.IDENTIFIER, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COLON() { return GetToken(PseudoCodeParser.COLON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Identifier() { return GetToken(PseudoCodeParser.Identifier, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Colon() { return GetToken(PseudoCodeParser.Colon, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public DataTypeContext dataType() {
 			return GetRuleContext<DataTypeContext>(0);
 		}
@@ -2714,7 +2715,7 @@ public partial class PseudoCodeParser : Parser {
 			State = 387;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			if (_la==PRIVATE || _la==PUBLIC) {
+			if (_la==Private || _la==Public) {
 				{
 				State = 386;
 				accessLevel();
@@ -2722,9 +2723,9 @@ public partial class PseudoCodeParser : Parser {
 			}
 
 			State = 389;
-			Match(IDENTIFIER);
+			Match(Identifier);
 			State = 390;
-			Match(COLON);
+			Match(Colon);
 			State = 391;
 			dataType();
 			}
@@ -2778,7 +2779,7 @@ public partial class PseudoCodeParser : Parser {
 			State = 394;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			if (_la==PRIVATE || _la==PUBLIC) {
+			if (_la==Private || _la==Public) {
 				{
 				State = 393;
 				accessLevel();
@@ -2788,13 +2789,13 @@ public partial class PseudoCodeParser : Parser {
 			State = 398;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
-			case PROCEDURE:
+			case Procedure:
 				{
 				State = 396;
 				procedureDefinition();
 				}
 				break;
-			case FUNCTION:
+			case Function:
 				{
 				State = 397;
 				functionDefinition();
@@ -2817,8 +2818,8 @@ public partial class PseudoCodeParser : Parser {
 	}
 
 	public partial class AccessLevelContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode PUBLIC() { return GetToken(PseudoCodeParser.PUBLIC, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode PRIVATE() { return GetToken(PseudoCodeParser.PRIVATE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Public() { return GetToken(PseudoCodeParser.Public, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Private() { return GetToken(PseudoCodeParser.Private, 0); }
 		public AccessLevelContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -2846,7 +2847,7 @@ public partial class PseudoCodeParser : Parser {
 			{
 			State = 400;
 			_la = TokenStream.LA(1);
-			if ( !(_la==PRIVATE || _la==PUBLIC) ) {
+			if ( !(_la==Private || _la==Public) ) {
 			ErrorHandler.RecoverInline(this);
 			}
 			else {
@@ -2910,7 +2911,7 @@ public partial class PseudoCodeParser : Parser {
 	}
 
 	public partial class LogicExpressionContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NOT() { return GetToken(PseudoCodeParser.NOT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Not() { return GetToken(PseudoCodeParser.Not, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public LogicExpressionContext[] logicExpression() {
 			return GetRuleContexts<LogicExpressionContext>();
 		}
@@ -2920,13 +2921,13 @@ public partial class PseudoCodeParser : Parser {
 		[System.Diagnostics.DebuggerNonUserCode] public ArithmeticExpressionContext arithmeticExpression() {
 			return GetRuleContext<ArithmeticExpressionContext>(0);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OPEN_PAREN() { return GetToken(PseudoCodeParser.OPEN_PAREN, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLOSE_PAREN() { return GetToken(PseudoCodeParser.CLOSE_PAREN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OpenParen() { return GetToken(PseudoCodeParser.OpenParen, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CloseParen() { return GetToken(PseudoCodeParser.CloseParen, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ComparisonOpContext comparisonOp() {
 			return GetRuleContext<ComparisonOpContext>(0);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode AND() { return GetToken(PseudoCodeParser.AND, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OR() { return GetToken(PseudoCodeParser.OR, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode And() { return GetToken(PseudoCodeParser.And, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Or() { return GetToken(PseudoCodeParser.Or, 0); }
 		public LogicExpressionContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -2966,7 +2967,7 @@ public partial class PseudoCodeParser : Parser {
 			case 1:
 				{
 				State = 405;
-				Match(NOT);
+				Match(Not);
 				State = 406;
 				logicExpression(5);
 				}
@@ -2980,11 +2981,11 @@ public partial class PseudoCodeParser : Parser {
 			case 3:
 				{
 				State = 408;
-				Match(OPEN_PAREN);
+				Match(OpenParen);
 				State = 409;
 				logicExpression(0);
 				State = 410;
-				Match(CLOSE_PAREN);
+				Match(CloseParen);
 				}
 				break;
 			}
@@ -3020,7 +3021,7 @@ public partial class PseudoCodeParser : Parser {
 						State = 418;
 						if (!(Precpred(Context, 4))) throw new FailedPredicateException(this, "Precpred(Context, 4)");
 						State = 419;
-						Match(AND);
+						Match(And);
 						State = 420;
 						logicExpression(5);
 						}
@@ -3032,7 +3033,7 @@ public partial class PseudoCodeParser : Parser {
 						State = 421;
 						if (!(Precpred(Context, 3))) throw new FailedPredicateException(this, "Precpred(Context, 3)");
 						State = 422;
-						Match(OR);
+						Match(Or);
 						State = 423;
 						logicExpression(4);
 						}
@@ -3058,12 +3059,12 @@ public partial class PseudoCodeParser : Parser {
 	}
 
 	public partial class ComparisonOpContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SMALLER() { return GetToken(PseudoCodeParser.SMALLER, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode GREATER() { return GetToken(PseudoCodeParser.GREATER, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode EQUAL() { return GetToken(PseudoCodeParser.EQUAL, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode GREATER_EQUAL() { return GetToken(PseudoCodeParser.GREATER_EQUAL, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SMALLER_EQUAL() { return GetToken(PseudoCodeParser.SMALLER_EQUAL, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode UNEQUAL() { return GetToken(PseudoCodeParser.UNEQUAL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Smaller() { return GetToken(PseudoCodeParser.Smaller, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Greater() { return GetToken(PseudoCodeParser.Greater, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Equal() { return GetToken(PseudoCodeParser.Equal, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode GreaterEqual() { return GetToken(PseudoCodeParser.GreaterEqual, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SmallerEqual() { return GetToken(PseudoCodeParser.SmallerEqual, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NotEqual() { return GetToken(PseudoCodeParser.NotEqual, 0); }
 		public ComparisonOpContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -3091,7 +3092,7 @@ public partial class PseudoCodeParser : Parser {
 			{
 			State = 429;
 			_la = TokenStream.LA(1);
-			if ( !(((((_la - 79)) & ~0x3f) == 0 && ((1L << (_la - 79)) & ((1L << (EQUAL - 79)) | (1L << (GREATER - 79)) | (1L << (SMALLER - 79)) | (1L << (GREATER_EQUAL - 79)) | (1L << (SMALLER_EQUAL - 79)) | (1L << (UNEQUAL - 79)))) != 0)) ) {
+			if ( !(((((_la - 79)) & ~0x3f) == 0 && ((1L << (_la - 79)) & ((1L << (Equal - 79)) | (1L << (Greater - 79)) | (1L << (Smaller - 79)) | (1L << (GreaterEqual - 79)) | (1L << (SmallerEqual - 79)) | (1L << (NotEqual - 79)))) != 0)) ) {
 			ErrorHandler.RecoverInline(this);
 			}
 			else {
@@ -3117,8 +3118,8 @@ public partial class PseudoCodeParser : Parser {
 		public ArithmeticExpressionContext operand1;
 		public IToken op;
 		public ArithmeticExpressionContext operand2;
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NEW() { return GetToken(PseudoCodeParser.NEW, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode IDENTIFIER() { return GetToken(PseudoCodeParser.IDENTIFIER, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode New() { return GetToken(PseudoCodeParser.New, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Identifier() { return GetToken(PseudoCodeParser.Identifier, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ArgumentsContext arguments() {
 			return GetRuleContext<ArgumentsContext>(0);
 		}
@@ -3128,23 +3129,23 @@ public partial class PseudoCodeParser : Parser {
 		[System.Diagnostics.DebuggerNonUserCode] public AtomContext atom() {
 			return GetRuleContext<AtomContext>(0);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CARET() { return GetToken(PseudoCodeParser.CARET, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Caret() { return GetToken(PseudoCodeParser.Caret, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ArithmeticExpressionContext[] arithmeticExpression() {
 			return GetRuleContexts<ArithmeticExpressionContext>();
 		}
 		[System.Diagnostics.DebuggerNonUserCode] public ArithmeticExpressionContext arithmeticExpression(int i) {
 			return GetRuleContext<ArithmeticExpressionContext>(i);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SUB() { return GetToken(PseudoCodeParser.SUB, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OPEN_PAREN() { return GetToken(PseudoCodeParser.OPEN_PAREN, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLOSE_PAREN() { return GetToken(PseudoCodeParser.CLOSE_PAREN, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode POW() { return GetToken(PseudoCodeParser.POW, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode MOD() { return GetToken(PseudoCodeParser.MOD, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DIV() { return GetToken(PseudoCodeParser.DIV, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode INTDIV() { return GetToken(PseudoCodeParser.INTDIV, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode MULT() { return GetToken(PseudoCodeParser.MULT, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ADD() { return GetToken(PseudoCodeParser.ADD, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DOT() { return GetToken(PseudoCodeParser.DOT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Subtract() { return GetToken(PseudoCodeParser.Subtract, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OpenParen() { return GetToken(PseudoCodeParser.OpenParen, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CloseParen() { return GetToken(PseudoCodeParser.CloseParen, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Pow() { return GetToken(PseudoCodeParser.Pow, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Divide() { return GetToken(PseudoCodeParser.Divide, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode IntDivide() { return GetToken(PseudoCodeParser.IntDivide, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Multiply() { return GetToken(PseudoCodeParser.Multiply, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Mod() { return GetToken(PseudoCodeParser.Mod, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Add() { return GetToken(PseudoCodeParser.Add, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Dot() { return GetToken(PseudoCodeParser.Dot, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ArrayContext array() {
 			return GetRuleContext<ArrayContext>(0);
 		}
@@ -3181,64 +3182,65 @@ public partial class PseudoCodeParser : Parser {
 			int _alt;
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 452;
+			State = 454;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
-			case NEW:
+			case New:
 				{
 				State = 432;
-				Match(NEW);
+				Match(New);
 				State = 433;
-				Match(IDENTIFIER);
+				Match(Identifier);
 				State = 434;
 				arguments();
 				}
 				break;
-			case IDENTIFIER:
+			case Identifier:
 				{
 				State = 435;
 				lvalue(0);
 				_localctx.IsUnary =  true;
 				}
 				break;
-			case STRING:
-			case CHAR:
-			case DECIMAL:
-			case INTEGER:
-			case BOOLEAN:
-			case DATE:
-			case OPEN_BRACK:
+			case String:
+			case Char:
+			case Decimal:
+			case Integer:
+			case Boolean:
+			case Date:
+			case OpenBrack:
 				{
 				State = 438;
 				atom();
 				_localctx.IsUnary =  true;
 				}
 				break;
-			case CARET:
+			case Caret:
 				{
 				State = 441;
-				_localctx.op = Match(CARET);
+				_localctx.op = Match(Caret);
 				State = 442;
 				_localctx.operand = arithmeticExpression(11);
-				}
-				break;
-			case SUB:
-				{
-				State = 443;
-				_localctx.op = Match(SUB);
-				State = 444;
-				_localctx.operand = arithmeticExpression(9);
 				_localctx.IsUnary =  true;
 				}
 				break;
-			case OPEN_PAREN:
+			case Subtract:
 				{
-				State = 447;
-				Match(OPEN_PAREN);
-				State = 448;
-				arithmeticExpression(0);
+				State = 445;
+				_localctx.op = Match(Subtract);
+				State = 446;
+				_localctx.operand = arithmeticExpression(8);
+				_localctx.IsUnary =  true;
+				}
+				break;
+			case OpenParen:
+				{
 				State = 449;
-				Match(CLOSE_PAREN);
+				Match(OpenParen);
+				State = 450;
+				arithmeticExpression(0);
+				State = 451;
+				Match(CloseParen);
 				_localctx.IsUnary =  true;
 				}
 				break;
@@ -3246,7 +3248,7 @@ public partial class PseudoCodeParser : Parser {
 				throw new NoViableAltException(this);
 			}
 			Context.Stop = TokenStream.LT(-1);
-			State = 486;
+			State = 489;
 			ErrorHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(TokenStream,35,Context);
 			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.INVALID_ALT_NUMBER ) {
@@ -3255,7 +3257,7 @@ public partial class PseudoCodeParser : Parser {
 						TriggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					State = 484;
+					State = 487;
 					ErrorHandler.Sync(this);
 					switch ( Interpreter.AdaptivePredict(TokenStream,34,Context) ) {
 					case 1:
@@ -3263,12 +3265,12 @@ public partial class PseudoCodeParser : Parser {
 						_localctx = new ArithmeticExpressionContext(_parentctx, _parentState);
 						_localctx.operand1 = _prevctx;
 						PushNewRecursionContext(_localctx, _startState, RULE_arithmeticExpression);
-						State = 454;
-						if (!(Precpred(Context, 8))) throw new FailedPredicateException(this, "Precpred(Context, 8)");
-						State = 455;
-						_localctx.op = Match(POW);
 						State = 456;
-						_localctx.operand2 = arithmeticExpression(8);
+						if (!(Precpred(Context, 9))) throw new FailedPredicateException(this, "Precpred(Context, 9)");
+						State = 457;
+						_localctx.op = Match(Pow);
+						State = 458;
+						_localctx.operand2 = arithmeticExpression(9);
 						}
 						break;
 					case 2:
@@ -3276,11 +3278,11 @@ public partial class PseudoCodeParser : Parser {
 						_localctx = new ArithmeticExpressionContext(_parentctx, _parentState);
 						_localctx.operand1 = _prevctx;
 						PushNewRecursionContext(_localctx, _startState, RULE_arithmeticExpression);
-						State = 457;
-						if (!(Precpred(Context, 7))) throw new FailedPredicateException(this, "Precpred(Context, 7)");
-						State = 458;
-						_localctx.op = Match(MOD);
 						State = 459;
+						if (!(Precpred(Context, 7))) throw new FailedPredicateException(this, "Precpred(Context, 7)");
+						State = 460;
+						_localctx.op = Match(Divide);
+						State = 461;
 						_localctx.operand2 = arithmeticExpression(8);
 						}
 						break;
@@ -3289,11 +3291,11 @@ public partial class PseudoCodeParser : Parser {
 						_localctx = new ArithmeticExpressionContext(_parentctx, _parentState);
 						_localctx.operand1 = _prevctx;
 						PushNewRecursionContext(_localctx, _startState, RULE_arithmeticExpression);
-						State = 460;
-						if (!(Precpred(Context, 6))) throw new FailedPredicateException(this, "Precpred(Context, 6)");
-						State = 461;
-						_localctx.op = Match(DIV);
 						State = 462;
+						if (!(Precpred(Context, 6))) throw new FailedPredicateException(this, "Precpred(Context, 6)");
+						State = 463;
+						_localctx.op = Match(IntDivide);
+						State = 464;
 						_localctx.operand2 = arithmeticExpression(7);
 						}
 						break;
@@ -3302,11 +3304,11 @@ public partial class PseudoCodeParser : Parser {
 						_localctx = new ArithmeticExpressionContext(_parentctx, _parentState);
 						_localctx.operand1 = _prevctx;
 						PushNewRecursionContext(_localctx, _startState, RULE_arithmeticExpression);
-						State = 463;
-						if (!(Precpred(Context, 5))) throw new FailedPredicateException(this, "Precpred(Context, 5)");
-						State = 464;
-						_localctx.op = Match(INTDIV);
 						State = 465;
+						if (!(Precpred(Context, 5))) throw new FailedPredicateException(this, "Precpred(Context, 5)");
+						State = 466;
+						_localctx.op = Match(Multiply);
+						State = 467;
 						_localctx.operand2 = arithmeticExpression(6);
 						}
 						break;
@@ -3315,11 +3317,11 @@ public partial class PseudoCodeParser : Parser {
 						_localctx = new ArithmeticExpressionContext(_parentctx, _parentState);
 						_localctx.operand1 = _prevctx;
 						PushNewRecursionContext(_localctx, _startState, RULE_arithmeticExpression);
-						State = 466;
-						if (!(Precpred(Context, 4))) throw new FailedPredicateException(this, "Precpred(Context, 4)");
-						State = 467;
-						_localctx.op = Match(MULT);
 						State = 468;
+						if (!(Precpred(Context, 4))) throw new FailedPredicateException(this, "Precpred(Context, 4)");
+						State = 469;
+						_localctx.op = Match(Mod);
+						State = 470;
 						_localctx.operand2 = arithmeticExpression(5);
 						}
 						break;
@@ -3328,11 +3330,11 @@ public partial class PseudoCodeParser : Parser {
 						_localctx = new ArithmeticExpressionContext(_parentctx, _parentState);
 						_localctx.operand1 = _prevctx;
 						PushNewRecursionContext(_localctx, _startState, RULE_arithmeticExpression);
-						State = 469;
-						if (!(Precpred(Context, 3))) throw new FailedPredicateException(this, "Precpred(Context, 3)");
-						State = 470;
-						_localctx.op = Match(SUB);
 						State = 471;
+						if (!(Precpred(Context, 3))) throw new FailedPredicateException(this, "Precpred(Context, 3)");
+						State = 472;
+						_localctx.op = Match(Subtract);
+						State = 473;
 						_localctx.operand2 = arithmeticExpression(4);
 						}
 						break;
@@ -3341,11 +3343,11 @@ public partial class PseudoCodeParser : Parser {
 						_localctx = new ArithmeticExpressionContext(_parentctx, _parentState);
 						_localctx.operand1 = _prevctx;
 						PushNewRecursionContext(_localctx, _startState, RULE_arithmeticExpression);
-						State = 472;
-						if (!(Precpred(Context, 2))) throw new FailedPredicateException(this, "Precpred(Context, 2)");
-						State = 473;
-						_localctx.op = Match(ADD);
 						State = 474;
+						if (!(Precpred(Context, 2))) throw new FailedPredicateException(this, "Precpred(Context, 2)");
+						State = 475;
+						_localctx.op = Match(Add);
+						State = 476;
 						_localctx.operand2 = arithmeticExpression(3);
 						}
 						break;
@@ -3353,21 +3355,21 @@ public partial class PseudoCodeParser : Parser {
 						{
 						_localctx = new ArithmeticExpressionContext(_parentctx, _parentState);
 						PushNewRecursionContext(_localctx, _startState, RULE_arithmeticExpression);
-						State = 475;
-						if (!(Precpred(Context, 14))) throw new FailedPredicateException(this, "Precpred(Context, 14)");
-						State = 476;
-						Match(DOT);
 						State = 477;
-						Match(IDENTIFIER);
+						if (!(Precpred(Context, 14))) throw new FailedPredicateException(this, "Precpred(Context, 14)");
+						State = 478;
+						Match(Dot);
+						State = 479;
+						Match(Identifier);
 						}
 						break;
 					case 9:
 						{
 						_localctx = new ArithmeticExpressionContext(_parentctx, _parentState);
 						PushNewRecursionContext(_localctx, _startState, RULE_arithmeticExpression);
-						State = 478;
+						State = 480;
 						if (!(Precpred(Context, 13))) throw new FailedPredicateException(this, "Precpred(Context, 13)");
-						State = 479;
+						State = 481;
 						array();
 						}
 						break;
@@ -3375,9 +3377,9 @@ public partial class PseudoCodeParser : Parser {
 						{
 						_localctx = new ArithmeticExpressionContext(_parentctx, _parentState);
 						PushNewRecursionContext(_localctx, _startState, RULE_arithmeticExpression);
-						State = 480;
+						State = 482;
 						if (!(Precpred(Context, 12))) throw new FailedPredicateException(this, "Precpred(Context, 12)");
-						State = 481;
+						State = 483;
 						arguments();
 						}
 						break;
@@ -3386,16 +3388,17 @@ public partial class PseudoCodeParser : Parser {
 						_localctx = new ArithmeticExpressionContext(_parentctx, _parentState);
 						_localctx.operand = _prevctx;
 						PushNewRecursionContext(_localctx, _startState, RULE_arithmeticExpression);
-						State = 482;
+						State = 484;
 						if (!(Precpred(Context, 10))) throw new FailedPredicateException(this, "Precpred(Context, 10)");
-						State = 483;
-						_localctx.op = Match(CARET);
+						State = 485;
+						_localctx.op = Match(Caret);
+						_localctx.IsUnary =  true;
 						}
 						break;
 					}
 					} 
 				}
-				State = 488;
+				State = 491;
 				ErrorHandler.Sync(this);
 				_alt = Interpreter.AdaptivePredict(TokenStream,35,Context);
 			}
@@ -3413,14 +3416,14 @@ public partial class PseudoCodeParser : Parser {
 	}
 
 	public partial class LvalueContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode IDENTIFIER() { return GetToken(PseudoCodeParser.IDENTIFIER, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Identifier() { return GetToken(PseudoCodeParser.Identifier, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public LvalueContext lvalue() {
 			return GetRuleContext<LvalueContext>(0);
 		}
 		[System.Diagnostics.DebuggerNonUserCode] public ArrayContext array() {
 			return GetRuleContext<ArrayContext>(0);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DOT() { return GetToken(PseudoCodeParser.DOT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Dot() { return GetToken(PseudoCodeParser.Dot, 0); }
 		public LvalueContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -3455,11 +3458,11 @@ public partial class PseudoCodeParser : Parser {
 			EnterOuterAlt(_localctx, 1);
 			{
 			{
-			State = 490;
-			Match(IDENTIFIER);
+			State = 493;
+			Match(Identifier);
 			}
 			Context.Stop = TokenStream.LT(-1);
-			State = 499;
+			State = 502;
 			ErrorHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(TokenStream,37,Context);
 			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.INVALID_ALT_NUMBER ) {
@@ -3468,16 +3471,16 @@ public partial class PseudoCodeParser : Parser {
 						TriggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					State = 497;
+					State = 500;
 					ErrorHandler.Sync(this);
 					switch ( Interpreter.AdaptivePredict(TokenStream,36,Context) ) {
 					case 1:
 						{
 						_localctx = new LvalueContext(_parentctx, _parentState);
 						PushNewRecursionContext(_localctx, _startState, RULE_lvalue);
-						State = 492;
+						State = 495;
 						if (!(Precpred(Context, 2))) throw new FailedPredicateException(this, "Precpred(Context, 2)");
-						State = 493;
+						State = 496;
 						array();
 						}
 						break;
@@ -3485,18 +3488,18 @@ public partial class PseudoCodeParser : Parser {
 						{
 						_localctx = new LvalueContext(_parentctx, _parentState);
 						PushNewRecursionContext(_localctx, _startState, RULE_lvalue);
-						State = 494;
+						State = 497;
 						if (!(Precpred(Context, 1))) throw new FailedPredicateException(this, "Precpred(Context, 1)");
-						State = 495;
-						Match(DOT);
-						State = 496;
-						Match(IDENTIFIER);
+						State = 498;
+						Match(Dot);
+						State = 499;
+						Match(Identifier);
 						}
 						break;
 					}
 					} 
 				}
-				State = 501;
+				State = 504;
 				ErrorHandler.Sync(this);
 				_alt = Interpreter.AdaptivePredict(TokenStream,37,Context);
 			}
@@ -3514,8 +3517,8 @@ public partial class PseudoCodeParser : Parser {
 	}
 
 	public partial class ArgumentsContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OPEN_PAREN() { return GetToken(PseudoCodeParser.OPEN_PAREN, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLOSE_PAREN() { return GetToken(PseudoCodeParser.CLOSE_PAREN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OpenParen() { return GetToken(PseudoCodeParser.OpenParen, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CloseParen() { return GetToken(PseudoCodeParser.CloseParen, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public TupleContext tuple() {
 			return GetRuleContext<TupleContext>(0);
 		}
@@ -3544,20 +3547,20 @@ public partial class PseudoCodeParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 502;
-			Match(OPEN_PAREN);
-			State = 504;
+			State = 505;
+			Match(OpenParen);
+			State = 507;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << STRING) | (1L << CHAR) | (1L << DECIMAL) | (1L << INTEGER) | (1L << BOOLEAN) | (1L << DATE) | (1L << NEW) | (1L << NOT) | (1L << OPEN_PAREN))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (OPEN_BRACK - 64)) | (1L << (SUB - 64)) | (1L << (CARET - 64)) | (1L << (IDENTIFIER - 64)))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << String) | (1L << Char) | (1L << Decimal) | (1L << Integer) | (1L << Boolean) | (1L << Date) | (1L << New) | (1L << Not) | (1L << OpenParen))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (OpenBrack - 64)) | (1L << (Subtract - 64)) | (1L << (Caret - 64)) | (1L << (Identifier - 64)))) != 0)) {
 				{
-				State = 503;
+				State = 506;
 				tuple();
 				}
 			}
 
-			State = 506;
-			Match(CLOSE_PAREN);
+			State = 509;
+			Match(CloseParen);
 			}
 		}
 		catch (RecognitionException re) {
@@ -3572,15 +3575,15 @@ public partial class PseudoCodeParser : Parser {
 	}
 
 	public partial class AtomContext : ParserRuleContext {
-		public string Type;
+		public string AtomType;
 		public object Value;
 		[System.Diagnostics.DebuggerNonUserCode] public NumberContext number() {
 			return GetRuleContext<NumberContext>(0);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode STRING() { return GetToken(PseudoCodeParser.STRING, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CHAR() { return GetToken(PseudoCodeParser.CHAR, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode BOOLEAN() { return GetToken(PseudoCodeParser.BOOLEAN, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DATE() { return GetToken(PseudoCodeParser.DATE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode String() { return GetToken(PseudoCodeParser.String, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Char() { return GetToken(PseudoCodeParser.Char, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Boolean() { return GetToken(PseudoCodeParser.Boolean, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Date() { return GetToken(PseudoCodeParser.Date, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ArrayContext array() {
 			return GetRuleContext<ArrayContext>(0);
 		}
@@ -3606,49 +3609,49 @@ public partial class PseudoCodeParser : Parser {
 		AtomContext _localctx = new AtomContext(Context, State);
 		EnterRule(_localctx, 88, RULE_atom);
 		try {
-			State = 514;
+			State = 517;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
-			case DECIMAL:
-			case INTEGER:
+			case Decimal:
+			case Integer:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 508;
+				State = 511;
 				number();
 				}
 				break;
-			case STRING:
+			case String:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 509;
-				Match(STRING);
+				State = 512;
+				Match(String);
 				}
 				break;
-			case CHAR:
+			case Char:
 				EnterOuterAlt(_localctx, 3);
 				{
-				State = 510;
-				Match(CHAR);
+				State = 513;
+				Match(Char);
 				}
 				break;
-			case BOOLEAN:
+			case Boolean:
 				EnterOuterAlt(_localctx, 4);
 				{
-				State = 511;
-				Match(BOOLEAN);
+				State = 514;
+				Match(Boolean);
 				}
 				break;
-			case DATE:
+			case Date:
 				EnterOuterAlt(_localctx, 5);
 				{
-				State = 512;
-				Match(DATE);
+				State = 515;
+				Match(Date);
 				}
 				break;
-			case OPEN_BRACK:
+			case OpenBrack:
 				EnterOuterAlt(_localctx, 6);
 				{
-				State = 513;
+				State = 516;
 				array();
 				}
 				break;
@@ -3672,22 +3675,22 @@ public partial class PseudoCodeParser : Parser {
 		public bool IsArray;
 		public List<Range> Dimensions = new();
 		public BasicDataTypeContext _basicDataType;
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ARRAY() { return GetToken(PseudoCodeParser.ARRAY, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OPEN_BRACK() { return GetToken(PseudoCodeParser.OPEN_BRACK, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Array() { return GetToken(PseudoCodeParser.Array, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OpenBrack() { return GetToken(PseudoCodeParser.OpenBrack, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ArrayRangeContext[] arrayRange() {
 			return GetRuleContexts<ArrayRangeContext>();
 		}
 		[System.Diagnostics.DebuggerNonUserCode] public ArrayRangeContext arrayRange(int i) {
 			return GetRuleContext<ArrayRangeContext>(i);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLOSE_BRACK() { return GetToken(PseudoCodeParser.CLOSE_BRACK, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OF() { return GetToken(PseudoCodeParser.OF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CloseBrack() { return GetToken(PseudoCodeParser.CloseBrack, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Of() { return GetToken(PseudoCodeParser.Of, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public BasicDataTypeContext basicDataType() {
 			return GetRuleContext<BasicDataTypeContext>(0);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] COMMA() { return GetTokens(PseudoCodeParser.COMMA); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COMMA(int i) {
-			return GetToken(PseudoCodeParser.COMMA, i);
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] Comma() { return GetTokens(PseudoCodeParser.Comma); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Comma(int i) {
+			return GetToken(PseudoCodeParser.Comma, i);
 		}
 		public DataTypeContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -3712,39 +3715,39 @@ public partial class PseudoCodeParser : Parser {
 		EnterRule(_localctx, 90, RULE_dataType);
 		int _la;
 		try {
-			State = 534;
+			State = 537;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
-			case ARRAY:
+			case Array:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 516;
-				Match(ARRAY);
-				State = 517;
-				Match(OPEN_BRACK);
-				State = 518;
+				State = 519;
+				Match(Array);
+				State = 520;
+				Match(OpenBrack);
+				State = 521;
 				arrayRange();
-				State = 523;
+				State = 526;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
-				while (_la==COMMA) {
+				while (_la==Comma) {
 					{
 					{
-					State = 519;
-					Match(COMMA);
-					State = 520;
+					State = 522;
+					Match(Comma);
+					State = 523;
 					arrayRange();
 					}
 					}
-					State = 525;
+					State = 528;
 					ErrorHandler.Sync(this);
 					_la = TokenStream.LA(1);
 				}
-				State = 526;
-				Match(CLOSE_BRACK);
-				State = 527;
-				Match(OF);
-				State = 528;
+				State = 529;
+				Match(CloseBrack);
+				State = 530;
+				Match(Of);
+				State = 531;
 				_localctx._basicDataType = basicDataType();
 
 				    _localctx.IsArray =  true;
@@ -3752,11 +3755,11 @@ public partial class PseudoCodeParser : Parser {
 				 
 				}
 				break;
-			case TYPENAME:
-			case IDENTIFIER:
+			case Typename:
+			case Identifier:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 531;
+				State = 534;
 				_localctx._basicDataType = basicDataType();
 				_localctx.TypeName =  (_localctx._basicDataType!=null?TokenStream.GetText(_localctx._basicDataType.Start,_localctx._basicDataType.Stop):null);
 				}
@@ -3777,8 +3780,8 @@ public partial class PseudoCodeParser : Parser {
 	}
 
 	public partial class BasicDataTypeContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TYPENAME() { return GetToken(PseudoCodeParser.TYPENAME, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode IDENTIFIER() { return GetToken(PseudoCodeParser.IDENTIFIER, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Typename() { return GetToken(PseudoCodeParser.Typename, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Identifier() { return GetToken(PseudoCodeParser.Identifier, 0); }
 		public BasicDataTypeContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -3804,9 +3807,9 @@ public partial class PseudoCodeParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 536;
+			State = 539;
 			_la = TokenStream.LA(1);
-			if ( !(_la==TYPENAME || _la==IDENTIFIER) ) {
+			if ( !(_la==Typename || _la==Identifier) ) {
 			ErrorHandler.RecoverInline(this);
 			}
 			else {
@@ -3829,10 +3832,10 @@ public partial class PseudoCodeParser : Parser {
 	public partial class ArrayRangeContext : ParserRuleContext {
 		public IToken s;
 		public IToken e;
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COLON() { return GetToken(PseudoCodeParser.COLON, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] INTEGER() { return GetTokens(PseudoCodeParser.INTEGER); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode INTEGER(int i) {
-			return GetToken(PseudoCodeParser.INTEGER, i);
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Colon() { return GetToken(PseudoCodeParser.Colon, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] Integer() { return GetTokens(PseudoCodeParser.Integer); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Integer(int i) {
+			return GetToken(PseudoCodeParser.Integer, i);
 		}
 		public ArrayRangeContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -3858,12 +3861,12 @@ public partial class PseudoCodeParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 538;
-			_localctx.s = Match(INTEGER);
-			State = 539;
-			Match(COLON);
-			State = 540;
-			_localctx.e = Match(INTEGER);
+			State = 541;
+			_localctx.s = Match(Integer);
+			State = 542;
+			Match(Colon);
+			State = 543;
+			_localctx.e = Match(Integer);
 			(((DataTypeContext)GetInvokingContext(45)).Dimensions).Add(new Range{Start = int.Parse((_localctx.s!=null?_localctx.s.Text:null)), End = int.Parse((_localctx.e!=null?_localctx.e.Text:null))});
 			}
 		}
@@ -3879,17 +3882,17 @@ public partial class PseudoCodeParser : Parser {
 	}
 
 	public partial class ArrayContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OPEN_BRACK() { return GetToken(PseudoCodeParser.OPEN_BRACK, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OpenBrack() { return GetToken(PseudoCodeParser.OpenBrack, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext[] expression() {
 			return GetRuleContexts<ExpressionContext>();
 		}
 		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression(int i) {
 			return GetRuleContext<ExpressionContext>(i);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLOSE_BRACK() { return GetToken(PseudoCodeParser.CLOSE_BRACK, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] COMMA() { return GetTokens(PseudoCodeParser.COMMA); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COMMA(int i) {
-			return GetToken(PseudoCodeParser.COMMA, i);
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CloseBrack() { return GetToken(PseudoCodeParser.CloseBrack, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] Comma() { return GetTokens(PseudoCodeParser.Comma); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Comma(int i) {
+			return GetToken(PseudoCodeParser.Comma, i);
 		}
 		public ArrayContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -3916,28 +3919,28 @@ public partial class PseudoCodeParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 543;
-			Match(OPEN_BRACK);
-			State = 544;
+			State = 546;
+			Match(OpenBrack);
+			State = 547;
 			expression();
-			State = 549;
+			State = 552;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			while (_la==COMMA) {
+			while (_la==Comma) {
 				{
 				{
-				State = 545;
-				Match(COMMA);
-				State = 546;
+				State = 548;
+				Match(Comma);
+				State = 549;
 				expression();
 				}
 				}
-				State = 551;
+				State = 554;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			}
-			State = 552;
-			Match(CLOSE_BRACK);
+			State = 555;
+			Match(CloseBrack);
 			}
 		}
 		catch (RecognitionException re) {
@@ -3952,10 +3955,10 @@ public partial class PseudoCodeParser : Parser {
 	}
 
 	public partial class NumberContext : ParserRuleContext {
-		public IToken _INTEGER;
-		public IToken _DECIMAL;
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode INTEGER() { return GetToken(PseudoCodeParser.INTEGER, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DECIMAL() { return GetToken(PseudoCodeParser.DECIMAL, 0); }
+		public IToken _Integer;
+		public IToken _Decimal;
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Integer() { return GetToken(PseudoCodeParser.Integer, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Decimal() { return GetToken(PseudoCodeParser.Decimal, 0); }
 		public NumberContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -3978,23 +3981,23 @@ public partial class PseudoCodeParser : Parser {
 		NumberContext _localctx = new NumberContext(Context, State);
 		EnterRule(_localctx, 98, RULE_number);
 		try {
-			State = 558;
+			State = 561;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
-			case INTEGER:
+			case Integer:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 554;
-				_localctx._INTEGER = Match(INTEGER);
-				((AtomContext)GetInvokingContext(44)).Type =  "INTEGER"; ((AtomContext)GetInvokingContext(44)).Value =  int.Parse((_localctx._INTEGER!=null?_localctx._INTEGER.Text:null));
+				State = 557;
+				_localctx._Integer = Match(Integer);
+				((AtomContext)GetInvokingContext(44)).AtomType =  "INTEGER"; ((AtomContext)GetInvokingContext(44)).Value =  int.Parse((_localctx._Integer!=null?_localctx._Integer.Text:null));
 				}
 				break;
-			case DECIMAL:
+			case Decimal:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 556;
-				_localctx._DECIMAL = Match(DECIMAL);
-				((AtomContext)GetInvokingContext(44)).Type =  "REAL"; ((AtomContext)GetInvokingContext(44)).Value =  decimal.Parse((_localctx._DECIMAL!=null?_localctx._DECIMAL.Text:null));
+				State = 559;
+				_localctx._Decimal = Match(Decimal);
+				((AtomContext)GetInvokingContext(44)).AtomType =  "REAL"; ((AtomContext)GetInvokingContext(44)).Value =  decimal.Parse((_localctx._Decimal!=null?_localctx._Decimal.Text:null));
 				}
 				break;
 			default:
@@ -4013,8 +4016,8 @@ public partial class PseudoCodeParser : Parser {
 	}
 
 	public partial class IdentifierWithNewContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode IDENTIFIER() { return GetToken(PseudoCodeParser.IDENTIFIER, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NEW() { return GetToken(PseudoCodeParser.NEW, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Identifier() { return GetToken(PseudoCodeParser.Identifier, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode New() { return GetToken(PseudoCodeParser.New, 0); }
 		public IdentifierWithNewContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -4040,9 +4043,9 @@ public partial class PseudoCodeParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 560;
+			State = 563;
 			_la = TokenStream.LA(1);
-			if ( !(_la==NEW || _la==IDENTIFIER) ) {
+			if ( !(_la==New || _la==Identifier) ) {
 			ErrorHandler.RecoverInline(this);
 			}
 			else {
@@ -4080,7 +4083,7 @@ public partial class PseudoCodeParser : Parser {
 	}
 	private bool arithmeticExpression_sempred(ArithmeticExpressionContext _localctx, int predIndex) {
 		switch (predIndex) {
-		case 3: return Precpred(Context, 8);
+		case 3: return Precpred(Context, 9);
 		case 4: return Precpred(Context, 7);
 		case 5: return Precpred(Context, 6);
 		case 6: return Precpred(Context, 5);
@@ -4103,7 +4106,7 @@ public partial class PseudoCodeParser : Parser {
 	}
 
 	private static int[] _serializedATN = {
-		4,1,90,563,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,7,
+		4,1,90,566,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,7,
 		7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,2,13,7,13,2,14,7,14,
 		2,15,7,15,2,16,7,16,2,17,7,17,2,18,7,18,2,19,7,19,2,20,7,20,2,21,7,21,
 		2,22,7,22,2,23,7,23,2,24,7,24,2,25,7,25,2,26,7,26,2,27,7,27,2,28,7,28,
@@ -4136,160 +4139,161 @@ public partial class PseudoCodeParser : Parser {
 		38,1,38,1,39,1,39,1,39,1,39,1,39,1,39,1,39,1,39,3,39,413,8,39,1,39,1,39,
 		1,39,1,39,1,39,1,39,1,39,1,39,1,39,1,39,5,39,425,8,39,10,39,12,39,428,
 		9,39,1,40,1,40,1,41,1,41,1,41,1,41,1,41,1,41,1,41,1,41,1,41,1,41,1,41,
-		1,41,1,41,1,41,1,41,1,41,1,41,1,41,1,41,1,41,1,41,3,41,453,8,41,1,41,1,
+		1,41,1,41,1,41,1,41,1,41,1,41,1,41,1,41,1,41,1,41,1,41,1,41,3,41,455,8,
 		41,1,41,1,41,1,41,1,41,1,41,1,41,1,41,1,41,1,41,1,41,1,41,1,41,1,41,1,
 		41,1,41,1,41,1,41,1,41,1,41,1,41,1,41,1,41,1,41,1,41,1,41,1,41,1,41,1,
-		41,5,41,485,8,41,10,41,12,41,488,9,41,1,42,1,42,1,42,1,42,1,42,1,42,1,
-		42,1,42,5,42,498,8,42,10,42,12,42,501,9,42,1,43,1,43,3,43,505,8,43,1,43,
-		1,43,1,44,1,44,1,44,1,44,1,44,1,44,3,44,515,8,44,1,45,1,45,1,45,1,45,1,
-		45,5,45,522,8,45,10,45,12,45,525,9,45,1,45,1,45,1,45,1,45,1,45,1,45,1,
-		45,1,45,3,45,535,8,45,1,46,1,46,1,47,1,47,1,47,1,47,1,47,1,48,1,48,1,48,
-		1,48,5,48,548,8,48,10,48,12,48,551,9,48,1,48,1,48,1,49,1,49,1,49,1,49,
-		3,49,559,8,49,1,50,1,50,1,50,0,3,78,82,84,51,0,2,4,6,8,10,12,14,16,18,
-		20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,66,
-		68,70,72,74,76,78,80,82,84,86,88,90,92,94,96,98,100,0,6,1,0,49,52,1,0,
-		36,37,1,0,56,57,1,0,79,84,2,0,12,12,86,86,2,0,58,58,86,86,596,0,105,1,
-		0,0,0,2,110,1,0,0,0,4,118,1,0,0,0,6,120,1,0,0,0,8,129,1,0,0,0,10,131,1,
-		0,0,0,12,135,1,0,0,0,14,140,1,0,0,0,16,145,1,0,0,0,18,148,1,0,0,0,20,151,
-		1,0,0,0,22,188,1,0,0,0,24,201,1,0,0,0,26,203,1,0,0,0,28,211,1,0,0,0,30,
-		222,1,0,0,0,32,232,1,0,0,0,34,244,1,0,0,0,36,250,1,0,0,0,38,255,1,0,0,
-		0,40,269,1,0,0,0,42,271,1,0,0,0,44,279,1,0,0,0,46,283,1,0,0,0,48,291,1,
-		0,0,0,50,301,1,0,0,0,52,315,1,0,0,0,54,321,1,0,0,0,56,329,1,0,0,0,58,343,
-		1,0,0,0,60,349,1,0,0,0,62,354,1,0,0,0,64,364,1,0,0,0,66,366,1,0,0,0,68,
-		375,1,0,0,0,70,387,1,0,0,0,72,394,1,0,0,0,74,400,1,0,0,0,76,402,1,0,0,
-		0,78,412,1,0,0,0,80,429,1,0,0,0,82,452,1,0,0,0,84,489,1,0,0,0,86,502,1,
-		0,0,0,88,514,1,0,0,0,90,534,1,0,0,0,92,536,1,0,0,0,94,538,1,0,0,0,96,543,
-		1,0,0,0,98,558,1,0,0,0,100,560,1,0,0,0,102,104,3,4,2,0,103,102,1,0,0,0,
-		104,107,1,0,0,0,105,103,1,0,0,0,105,106,1,0,0,0,106,108,1,0,0,0,107,105,
-		1,0,0,0,108,109,5,0,0,1,109,1,1,0,0,0,110,111,3,4,2,0,111,112,5,7,0,0,
-		112,3,1,0,0,0,113,116,3,6,3,0,114,116,3,24,12,0,115,113,1,0,0,0,115,114,
-		1,0,0,0,116,119,1,0,0,0,117,119,5,7,0,0,118,115,1,0,0,0,118,117,1,0,0,
-		0,119,5,1,0,0,0,120,121,3,8,4,0,121,7,1,0,0,0,122,130,3,10,5,0,123,130,
-		3,12,6,0,124,130,3,14,7,0,125,130,3,16,8,0,126,130,3,22,11,0,127,130,3,
-		18,9,0,128,130,3,20,10,0,129,122,1,0,0,0,129,123,1,0,0,0,129,124,1,0,0,
-		0,129,125,1,0,0,0,129,126,1,0,0,0,129,127,1,0,0,0,129,128,1,0,0,0,130,
-		9,1,0,0,0,131,132,3,84,42,0,132,133,5,85,0,0,133,134,3,76,38,0,134,11,
-		1,0,0,0,135,136,5,9,0,0,136,137,5,86,0,0,137,138,5,68,0,0,138,139,3,90,
-		45,0,139,13,1,0,0,0,140,141,5,10,0,0,141,142,5,86,0,0,142,143,5,79,0,0,
-		143,144,3,76,38,0,144,15,1,0,0,0,145,146,5,11,0,0,146,147,3,54,27,0,147,
-		17,1,0,0,0,148,149,5,39,0,0,149,150,3,76,38,0,150,19,1,0,0,0,151,152,5,
-		33,0,0,152,154,3,76,38,0,153,155,3,86,43,0,154,153,1,0,0,0,154,155,1,0,
-		0,0,155,21,1,0,0,0,156,157,5,42,0,0,157,158,3,76,38,0,158,159,5,18,0,0,
-		159,160,7,0,0,0,160,189,1,0,0,0,161,162,5,43,0,0,162,163,3,76,38,0,163,
-		164,5,69,0,0,164,165,3,84,42,0,165,189,1,0,0,0,166,167,5,44,0,0,167,168,
-		3,76,38,0,168,169,5,69,0,0,169,170,3,76,38,0,170,189,1,0,0,0,171,172,5,
-		45,0,0,172,189,3,76,38,0,173,174,5,46,0,0,174,175,3,76,38,0,175,176,5,
-		69,0,0,176,177,3,76,38,0,177,189,1,0,0,0,178,179,5,47,0,0,179,180,3,76,
-		38,0,180,181,5,69,0,0,181,182,3,84,42,0,182,189,1,0,0,0,183,184,5,48,0,
-		0,184,185,3,76,38,0,185,186,5,69,0,0,186,187,3,76,38,0,187,189,1,0,0,0,
-		188,156,1,0,0,0,188,161,1,0,0,0,188,166,1,0,0,0,188,171,1,0,0,0,188,173,
-		1,0,0,0,188,178,1,0,0,0,188,183,1,0,0,0,189,23,1,0,0,0,190,202,3,30,15,
-		0,191,202,3,38,19,0,192,202,3,34,17,0,193,202,3,32,16,0,194,202,3,36,18,
-		0,195,202,3,46,23,0,196,202,3,48,24,0,197,202,3,60,30,0,198,202,3,56,28,
-		0,199,202,3,58,29,0,200,202,3,66,33,0,201,190,1,0,0,0,201,191,1,0,0,0,
-		201,192,1,0,0,0,201,193,1,0,0,0,201,194,1,0,0,0,201,195,1,0,0,0,201,196,
-		1,0,0,0,201,197,1,0,0,0,201,198,1,0,0,0,201,199,1,0,0,0,201,200,1,0,0,
-		0,202,25,1,0,0,0,203,205,5,89,0,0,204,206,3,4,2,0,205,204,1,0,0,0,206,
-		207,1,0,0,0,207,205,1,0,0,0,207,208,1,0,0,0,208,209,1,0,0,0,209,210,5,
-		90,0,0,210,27,1,0,0,0,211,220,3,4,2,0,212,214,5,89,0,0,213,215,3,4,2,0,
-		214,213,1,0,0,0,215,216,1,0,0,0,216,214,1,0,0,0,216,217,1,0,0,0,217,218,
-		1,0,0,0,218,219,5,90,0,0,219,221,1,0,0,0,220,212,1,0,0,0,220,221,1,0,0,
-		0,221,29,1,0,0,0,222,223,5,27,0,0,223,224,3,76,38,0,224,225,5,28,0,0,225,
-		228,3,26,13,0,226,227,5,29,0,0,227,229,3,26,13,0,228,226,1,0,0,0,228,229,
-		1,0,0,0,229,230,1,0,0,0,230,231,5,30,0,0,231,31,1,0,0,0,232,233,5,18,0,
-		0,233,234,3,84,42,0,234,235,5,85,0,0,235,238,3,44,22,0,236,237,5,20,0,
-		0,237,239,3,82,41,0,238,236,1,0,0,0,238,239,1,0,0,0,239,240,1,0,0,0,240,
-		241,3,26,13,0,241,242,5,21,0,0,242,243,5,86,0,0,243,33,1,0,0,0,244,245,
-		5,22,0,0,245,246,3,78,39,0,246,247,5,23,0,0,247,248,3,26,13,0,248,249,
-		5,24,0,0,249,35,1,0,0,0,250,251,5,25,0,0,251,252,3,26,13,0,252,253,5,26,
-		0,0,253,254,3,76,38,0,254,37,1,0,0,0,255,256,5,14,0,0,256,257,3,82,41,
-		0,257,258,5,15,0,0,258,259,3,42,21,0,259,260,5,17,0,0,260,39,1,0,0,0,261,
-		265,5,16,0,0,262,265,3,88,44,0,263,265,3,44,22,0,264,261,1,0,0,0,264,262,
-		1,0,0,0,264,263,1,0,0,0,265,266,1,0,0,0,266,267,5,68,0,0,267,270,3,28,
-		14,0,268,270,5,7,0,0,269,264,1,0,0,0,269,268,1,0,0,0,270,41,1,0,0,0,271,
-		273,5,89,0,0,272,274,3,40,20,0,273,272,1,0,0,0,274,275,1,0,0,0,275,273,
-		1,0,0,0,275,276,1,0,0,0,276,277,1,0,0,0,277,278,5,90,0,0,278,43,1,0,0,
-		0,279,280,3,76,38,0,280,281,5,19,0,0,281,282,3,76,38,0,282,45,1,0,0,0,
-		283,284,5,31,0,0,284,286,3,100,50,0,285,287,3,50,25,0,286,285,1,0,0,0,
-		286,287,1,0,0,0,287,288,1,0,0,0,288,289,3,26,13,0,289,290,5,32,0,0,290,
-		47,1,0,0,0,291,292,5,34,0,0,292,294,5,86,0,0,293,295,3,50,25,0,294,293,
-		1,0,0,0,294,295,1,0,0,0,295,296,1,0,0,0,296,297,5,38,0,0,297,298,3,90,
-		45,0,298,299,3,26,13,0,299,300,5,35,0,0,300,49,1,0,0,0,301,310,5,62,0,
-		0,302,307,3,52,26,0,303,304,5,69,0,0,304,306,3,52,26,0,305,303,1,0,0,0,
-		306,309,1,0,0,0,307,305,1,0,0,0,307,308,1,0,0,0,308,311,1,0,0,0,309,307,
-		1,0,0,0,310,302,1,0,0,0,310,311,1,0,0,0,311,312,1,0,0,0,312,313,5,63,0,
-		0,313,51,1,0,0,0,314,316,7,1,0,0,315,314,1,0,0,0,315,316,1,0,0,0,316,317,
-		1,0,0,0,317,318,5,86,0,0,318,319,5,68,0,0,319,320,3,90,45,0,320,53,1,0,
-		0,0,321,326,3,76,38,0,322,323,5,69,0,0,323,325,3,76,38,0,324,322,1,0,0,
-		0,325,328,1,0,0,0,326,324,1,0,0,0,326,327,1,0,0,0,327,55,1,0,0,0,328,326,
-		1,0,0,0,329,330,5,40,0,0,330,331,5,86,0,0,331,332,5,79,0,0,332,333,5,62,
-		0,0,333,338,5,86,0,0,334,335,5,69,0,0,335,337,5,86,0,0,336,334,1,0,0,0,
-		337,340,1,0,0,0,338,336,1,0,0,0,338,339,1,0,0,0,339,341,1,0,0,0,340,338,
-		1,0,0,0,341,342,5,63,0,0,342,57,1,0,0,0,343,344,5,40,0,0,344,345,5,86,
-		0,0,345,346,5,79,0,0,346,347,5,78,0,0,347,348,3,90,45,0,348,59,1,0,0,0,
-		349,350,5,40,0,0,350,351,5,86,0,0,351,352,3,62,31,0,352,353,5,41,0,0,353,
-		61,1,0,0,0,354,356,5,89,0,0,355,357,3,64,32,0,356,355,1,0,0,0,357,358,
-		1,0,0,0,358,356,1,0,0,0,358,359,1,0,0,0,359,360,1,0,0,0,360,361,5,90,0,
-		0,361,63,1,0,0,0,362,365,3,12,6,0,363,365,5,7,0,0,364,362,1,0,0,0,364,
-		363,1,0,0,0,365,65,1,0,0,0,366,367,5,53,0,0,367,370,5,86,0,0,368,369,5,
-		55,0,0,369,371,5,86,0,0,370,368,1,0,0,0,370,371,1,0,0,0,371,372,1,0,0,
-		0,372,373,3,68,34,0,373,374,5,54,0,0,374,67,1,0,0,0,375,380,5,89,0,0,376,
-		381,3,70,35,0,377,381,3,72,36,0,378,381,3,10,5,0,379,381,5,7,0,0,380,376,
-		1,0,0,0,380,377,1,0,0,0,380,378,1,0,0,0,380,379,1,0,0,0,381,382,1,0,0,
-		0,382,380,1,0,0,0,382,383,1,0,0,0,383,384,1,0,0,0,384,385,5,90,0,0,385,
-		69,1,0,0,0,386,388,3,74,37,0,387,386,1,0,0,0,387,388,1,0,0,0,388,389,1,
-		0,0,0,389,390,5,86,0,0,390,391,5,68,0,0,391,392,3,90,45,0,392,71,1,0,0,
-		0,393,395,3,74,37,0,394,393,1,0,0,0,394,395,1,0,0,0,395,398,1,0,0,0,396,
-		399,3,46,23,0,397,399,3,48,24,0,398,396,1,0,0,0,398,397,1,0,0,0,399,73,
-		1,0,0,0,400,401,7,2,0,0,401,75,1,0,0,0,402,403,3,78,39,0,403,77,1,0,0,
-		0,404,405,6,39,-1,0,405,406,5,61,0,0,406,413,3,78,39,5,407,413,3,82,41,
-		0,408,409,5,62,0,0,409,410,3,78,39,0,410,411,5,63,0,0,411,413,1,0,0,0,
-		412,404,1,0,0,0,412,407,1,0,0,0,412,408,1,0,0,0,413,426,1,0,0,0,414,415,
-		10,6,0,0,415,416,3,80,40,0,416,417,3,78,39,7,417,425,1,0,0,0,418,419,10,
-		4,0,0,419,420,5,59,0,0,420,425,3,78,39,5,421,422,10,3,0,0,422,423,5,60,
-		0,0,423,425,3,78,39,4,424,414,1,0,0,0,424,418,1,0,0,0,424,421,1,0,0,0,
-		425,428,1,0,0,0,426,424,1,0,0,0,426,427,1,0,0,0,427,79,1,0,0,0,428,426,
-		1,0,0,0,429,430,7,3,0,0,430,81,1,0,0,0,431,432,6,41,-1,0,432,433,5,58,
-		0,0,433,434,5,86,0,0,434,453,3,86,43,0,435,436,3,84,42,0,436,437,6,41,
-		-1,0,437,453,1,0,0,0,438,439,3,88,44,0,439,440,6,41,-1,0,440,453,1,0,0,
-		0,441,442,5,78,0,0,442,453,3,82,41,11,443,444,5,72,0,0,444,445,3,82,41,
-		9,445,446,6,41,-1,0,446,453,1,0,0,0,447,448,5,62,0,0,448,449,3,82,41,0,
-		449,450,5,63,0,0,450,451,6,41,-1,0,451,453,1,0,0,0,452,431,1,0,0,0,452,
-		435,1,0,0,0,452,438,1,0,0,0,452,441,1,0,0,0,452,443,1,0,0,0,452,447,1,
-		0,0,0,453,486,1,0,0,0,454,455,10,8,0,0,455,456,5,77,0,0,456,485,3,82,41,
-		8,457,458,10,7,0,0,458,459,5,76,0,0,459,485,3,82,41,8,460,461,10,6,0,0,
-		461,462,5,75,0,0,462,485,3,82,41,7,463,464,10,5,0,0,464,465,5,74,0,0,465,
-		485,3,82,41,6,466,467,10,4,0,0,467,468,5,73,0,0,468,485,3,82,41,5,469,
-		470,10,3,0,0,470,471,5,72,0,0,471,485,3,82,41,4,472,473,10,2,0,0,473,474,
-		5,71,0,0,474,485,3,82,41,3,475,476,10,14,0,0,476,477,5,70,0,0,477,485,
-		5,86,0,0,478,479,10,13,0,0,479,485,3,96,48,0,480,481,10,12,0,0,481,485,
-		3,86,43,0,482,483,10,10,0,0,483,485,5,78,0,0,484,454,1,0,0,0,484,457,1,
-		0,0,0,484,460,1,0,0,0,484,463,1,0,0,0,484,466,1,0,0,0,484,469,1,0,0,0,
-		484,472,1,0,0,0,484,475,1,0,0,0,484,478,1,0,0,0,484,480,1,0,0,0,484,482,
-		1,0,0,0,485,488,1,0,0,0,486,484,1,0,0,0,486,487,1,0,0,0,487,83,1,0,0,0,
-		488,486,1,0,0,0,489,490,6,42,-1,0,490,491,5,86,0,0,491,499,1,0,0,0,492,
-		493,10,2,0,0,493,498,3,96,48,0,494,495,10,1,0,0,495,496,5,70,0,0,496,498,
-		5,86,0,0,497,492,1,0,0,0,497,494,1,0,0,0,498,501,1,0,0,0,499,497,1,0,0,
-		0,499,500,1,0,0,0,500,85,1,0,0,0,501,499,1,0,0,0,502,504,5,62,0,0,503,
-		505,3,54,27,0,504,503,1,0,0,0,504,505,1,0,0,0,505,506,1,0,0,0,506,507,
-		5,63,0,0,507,87,1,0,0,0,508,515,3,98,49,0,509,515,5,1,0,0,510,515,5,2,
-		0,0,511,515,5,5,0,0,512,515,5,6,0,0,513,515,3,96,48,0,514,508,1,0,0,0,
-		514,509,1,0,0,0,514,510,1,0,0,0,514,511,1,0,0,0,514,512,1,0,0,0,514,513,
-		1,0,0,0,515,89,1,0,0,0,516,517,5,13,0,0,517,518,5,64,0,0,518,523,3,94,
-		47,0,519,520,5,69,0,0,520,522,3,94,47,0,521,519,1,0,0,0,522,525,1,0,0,
-		0,523,521,1,0,0,0,523,524,1,0,0,0,524,526,1,0,0,0,525,523,1,0,0,0,526,
-		527,5,65,0,0,527,528,5,15,0,0,528,529,3,92,46,0,529,530,6,45,-1,0,530,
-		535,1,0,0,0,531,532,3,92,46,0,532,533,6,45,-1,0,533,535,1,0,0,0,534,516,
-		1,0,0,0,534,531,1,0,0,0,535,91,1,0,0,0,536,537,7,4,0,0,537,93,1,0,0,0,
-		538,539,5,4,0,0,539,540,5,68,0,0,540,541,5,4,0,0,541,542,6,47,-1,0,542,
-		95,1,0,0,0,543,544,5,64,0,0,544,549,3,76,38,0,545,546,5,69,0,0,546,548,
-		3,76,38,0,547,545,1,0,0,0,548,551,1,0,0,0,549,547,1,0,0,0,549,550,1,0,
-		0,0,550,552,1,0,0,0,551,549,1,0,0,0,552,553,5,65,0,0,553,97,1,0,0,0,554,
-		555,5,4,0,0,555,559,6,49,-1,0,556,557,5,3,0,0,557,559,6,49,-1,0,558,554,
-		1,0,0,0,558,556,1,0,0,0,559,99,1,0,0,0,560,561,7,5,0,0,561,101,1,0,0,0,
-		44,105,115,118,129,154,188,201,207,216,220,228,238,264,269,275,286,294,
-		307,310,315,326,338,358,364,370,380,382,387,394,398,412,424,426,452,484,
-		486,497,499,504,514,523,534,549,558
+		41,1,41,1,41,1,41,5,41,488,8,41,10,41,12,41,491,9,41,1,42,1,42,1,42,1,
+		42,1,42,1,42,1,42,1,42,5,42,501,8,42,10,42,12,42,504,9,42,1,43,1,43,3,
+		43,508,8,43,1,43,1,43,1,44,1,44,1,44,1,44,1,44,1,44,3,44,518,8,44,1,45,
+		1,45,1,45,1,45,1,45,5,45,525,8,45,10,45,12,45,528,9,45,1,45,1,45,1,45,
+		1,45,1,45,1,45,1,45,1,45,3,45,538,8,45,1,46,1,46,1,47,1,47,1,47,1,47,1,
+		47,1,48,1,48,1,48,1,48,5,48,551,8,48,10,48,12,48,554,9,48,1,48,1,48,1,
+		49,1,49,1,49,1,49,3,49,562,8,49,1,50,1,50,1,50,0,3,78,82,84,51,0,2,4,6,
+		8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,
+		56,58,60,62,64,66,68,70,72,74,76,78,80,82,84,86,88,90,92,94,96,98,100,
+		0,6,1,0,49,52,1,0,36,37,1,0,56,57,1,0,79,84,2,0,12,12,86,86,2,0,58,58,
+		86,86,599,0,105,1,0,0,0,2,110,1,0,0,0,4,118,1,0,0,0,6,120,1,0,0,0,8,129,
+		1,0,0,0,10,131,1,0,0,0,12,135,1,0,0,0,14,140,1,0,0,0,16,145,1,0,0,0,18,
+		148,1,0,0,0,20,151,1,0,0,0,22,188,1,0,0,0,24,201,1,0,0,0,26,203,1,0,0,
+		0,28,211,1,0,0,0,30,222,1,0,0,0,32,232,1,0,0,0,34,244,1,0,0,0,36,250,1,
+		0,0,0,38,255,1,0,0,0,40,269,1,0,0,0,42,271,1,0,0,0,44,279,1,0,0,0,46,283,
+		1,0,0,0,48,291,1,0,0,0,50,301,1,0,0,0,52,315,1,0,0,0,54,321,1,0,0,0,56,
+		329,1,0,0,0,58,343,1,0,0,0,60,349,1,0,0,0,62,354,1,0,0,0,64,364,1,0,0,
+		0,66,366,1,0,0,0,68,375,1,0,0,0,70,387,1,0,0,0,72,394,1,0,0,0,74,400,1,
+		0,0,0,76,402,1,0,0,0,78,412,1,0,0,0,80,429,1,0,0,0,82,454,1,0,0,0,84,492,
+		1,0,0,0,86,505,1,0,0,0,88,517,1,0,0,0,90,537,1,0,0,0,92,539,1,0,0,0,94,
+		541,1,0,0,0,96,546,1,0,0,0,98,561,1,0,0,0,100,563,1,0,0,0,102,104,3,4,
+		2,0,103,102,1,0,0,0,104,107,1,0,0,0,105,103,1,0,0,0,105,106,1,0,0,0,106,
+		108,1,0,0,0,107,105,1,0,0,0,108,109,5,0,0,1,109,1,1,0,0,0,110,111,3,4,
+		2,0,111,112,5,7,0,0,112,3,1,0,0,0,113,116,3,6,3,0,114,116,3,24,12,0,115,
+		113,1,0,0,0,115,114,1,0,0,0,116,119,1,0,0,0,117,119,5,7,0,0,118,115,1,
+		0,0,0,118,117,1,0,0,0,119,5,1,0,0,0,120,121,3,8,4,0,121,7,1,0,0,0,122,
+		130,3,10,5,0,123,130,3,12,6,0,124,130,3,14,7,0,125,130,3,16,8,0,126,130,
+		3,22,11,0,127,130,3,18,9,0,128,130,3,20,10,0,129,122,1,0,0,0,129,123,1,
+		0,0,0,129,124,1,0,0,0,129,125,1,0,0,0,129,126,1,0,0,0,129,127,1,0,0,0,
+		129,128,1,0,0,0,130,9,1,0,0,0,131,132,3,84,42,0,132,133,5,85,0,0,133,134,
+		3,76,38,0,134,11,1,0,0,0,135,136,5,9,0,0,136,137,5,86,0,0,137,138,5,68,
+		0,0,138,139,3,90,45,0,139,13,1,0,0,0,140,141,5,10,0,0,141,142,5,86,0,0,
+		142,143,5,79,0,0,143,144,3,76,38,0,144,15,1,0,0,0,145,146,5,11,0,0,146,
+		147,3,54,27,0,147,17,1,0,0,0,148,149,5,39,0,0,149,150,3,76,38,0,150,19,
+		1,0,0,0,151,152,5,33,0,0,152,154,3,76,38,0,153,155,3,86,43,0,154,153,1,
+		0,0,0,154,155,1,0,0,0,155,21,1,0,0,0,156,157,5,42,0,0,157,158,3,76,38,
+		0,158,159,5,18,0,0,159,160,7,0,0,0,160,189,1,0,0,0,161,162,5,43,0,0,162,
+		163,3,76,38,0,163,164,5,69,0,0,164,165,3,84,42,0,165,189,1,0,0,0,166,167,
+		5,44,0,0,167,168,3,76,38,0,168,169,5,69,0,0,169,170,3,76,38,0,170,189,
+		1,0,0,0,171,172,5,45,0,0,172,189,3,76,38,0,173,174,5,46,0,0,174,175,3,
+		76,38,0,175,176,5,69,0,0,176,177,3,76,38,0,177,189,1,0,0,0,178,179,5,47,
+		0,0,179,180,3,76,38,0,180,181,5,69,0,0,181,182,3,84,42,0,182,189,1,0,0,
+		0,183,184,5,48,0,0,184,185,3,76,38,0,185,186,5,69,0,0,186,187,3,76,38,
+		0,187,189,1,0,0,0,188,156,1,0,0,0,188,161,1,0,0,0,188,166,1,0,0,0,188,
+		171,1,0,0,0,188,173,1,0,0,0,188,178,1,0,0,0,188,183,1,0,0,0,189,23,1,0,
+		0,0,190,202,3,30,15,0,191,202,3,38,19,0,192,202,3,34,17,0,193,202,3,32,
+		16,0,194,202,3,36,18,0,195,202,3,46,23,0,196,202,3,48,24,0,197,202,3,60,
+		30,0,198,202,3,56,28,0,199,202,3,58,29,0,200,202,3,66,33,0,201,190,1,0,
+		0,0,201,191,1,0,0,0,201,192,1,0,0,0,201,193,1,0,0,0,201,194,1,0,0,0,201,
+		195,1,0,0,0,201,196,1,0,0,0,201,197,1,0,0,0,201,198,1,0,0,0,201,199,1,
+		0,0,0,201,200,1,0,0,0,202,25,1,0,0,0,203,205,5,89,0,0,204,206,3,4,2,0,
+		205,204,1,0,0,0,206,207,1,0,0,0,207,205,1,0,0,0,207,208,1,0,0,0,208,209,
+		1,0,0,0,209,210,5,90,0,0,210,27,1,0,0,0,211,220,3,4,2,0,212,214,5,89,0,
+		0,213,215,3,4,2,0,214,213,1,0,0,0,215,216,1,0,0,0,216,214,1,0,0,0,216,
+		217,1,0,0,0,217,218,1,0,0,0,218,219,5,90,0,0,219,221,1,0,0,0,220,212,1,
+		0,0,0,220,221,1,0,0,0,221,29,1,0,0,0,222,223,5,27,0,0,223,224,3,76,38,
+		0,224,225,5,28,0,0,225,228,3,26,13,0,226,227,5,29,0,0,227,229,3,26,13,
+		0,228,226,1,0,0,0,228,229,1,0,0,0,229,230,1,0,0,0,230,231,5,30,0,0,231,
+		31,1,0,0,0,232,233,5,18,0,0,233,234,3,84,42,0,234,235,5,85,0,0,235,238,
+		3,44,22,0,236,237,5,20,0,0,237,239,3,82,41,0,238,236,1,0,0,0,238,239,1,
+		0,0,0,239,240,1,0,0,0,240,241,3,26,13,0,241,242,5,21,0,0,242,243,5,86,
+		0,0,243,33,1,0,0,0,244,245,5,22,0,0,245,246,3,78,39,0,246,247,5,23,0,0,
+		247,248,3,26,13,0,248,249,5,24,0,0,249,35,1,0,0,0,250,251,5,25,0,0,251,
+		252,3,26,13,0,252,253,5,26,0,0,253,254,3,76,38,0,254,37,1,0,0,0,255,256,
+		5,14,0,0,256,257,3,82,41,0,257,258,5,15,0,0,258,259,3,42,21,0,259,260,
+		5,17,0,0,260,39,1,0,0,0,261,265,5,16,0,0,262,265,3,88,44,0,263,265,3,44,
+		22,0,264,261,1,0,0,0,264,262,1,0,0,0,264,263,1,0,0,0,265,266,1,0,0,0,266,
+		267,5,68,0,0,267,270,3,28,14,0,268,270,5,7,0,0,269,264,1,0,0,0,269,268,
+		1,0,0,0,270,41,1,0,0,0,271,273,5,89,0,0,272,274,3,40,20,0,273,272,1,0,
+		0,0,274,275,1,0,0,0,275,273,1,0,0,0,275,276,1,0,0,0,276,277,1,0,0,0,277,
+		278,5,90,0,0,278,43,1,0,0,0,279,280,3,76,38,0,280,281,5,19,0,0,281,282,
+		3,76,38,0,282,45,1,0,0,0,283,284,5,31,0,0,284,286,3,100,50,0,285,287,3,
+		50,25,0,286,285,1,0,0,0,286,287,1,0,0,0,287,288,1,0,0,0,288,289,3,26,13,
+		0,289,290,5,32,0,0,290,47,1,0,0,0,291,292,5,34,0,0,292,294,5,86,0,0,293,
+		295,3,50,25,0,294,293,1,0,0,0,294,295,1,0,0,0,295,296,1,0,0,0,296,297,
+		5,38,0,0,297,298,3,90,45,0,298,299,3,26,13,0,299,300,5,35,0,0,300,49,1,
+		0,0,0,301,310,5,62,0,0,302,307,3,52,26,0,303,304,5,69,0,0,304,306,3,52,
+		26,0,305,303,1,0,0,0,306,309,1,0,0,0,307,305,1,0,0,0,307,308,1,0,0,0,308,
+		311,1,0,0,0,309,307,1,0,0,0,310,302,1,0,0,0,310,311,1,0,0,0,311,312,1,
+		0,0,0,312,313,5,63,0,0,313,51,1,0,0,0,314,316,7,1,0,0,315,314,1,0,0,0,
+		315,316,1,0,0,0,316,317,1,0,0,0,317,318,5,86,0,0,318,319,5,68,0,0,319,
+		320,3,90,45,0,320,53,1,0,0,0,321,326,3,76,38,0,322,323,5,69,0,0,323,325,
+		3,76,38,0,324,322,1,0,0,0,325,328,1,0,0,0,326,324,1,0,0,0,326,327,1,0,
+		0,0,327,55,1,0,0,0,328,326,1,0,0,0,329,330,5,40,0,0,330,331,5,86,0,0,331,
+		332,5,79,0,0,332,333,5,62,0,0,333,338,5,86,0,0,334,335,5,69,0,0,335,337,
+		5,86,0,0,336,334,1,0,0,0,337,340,1,0,0,0,338,336,1,0,0,0,338,339,1,0,0,
+		0,339,341,1,0,0,0,340,338,1,0,0,0,341,342,5,63,0,0,342,57,1,0,0,0,343,
+		344,5,40,0,0,344,345,5,86,0,0,345,346,5,79,0,0,346,347,5,78,0,0,347,348,
+		3,90,45,0,348,59,1,0,0,0,349,350,5,40,0,0,350,351,5,86,0,0,351,352,3,62,
+		31,0,352,353,5,41,0,0,353,61,1,0,0,0,354,356,5,89,0,0,355,357,3,64,32,
+		0,356,355,1,0,0,0,357,358,1,0,0,0,358,356,1,0,0,0,358,359,1,0,0,0,359,
+		360,1,0,0,0,360,361,5,90,0,0,361,63,1,0,0,0,362,365,3,12,6,0,363,365,5,
+		7,0,0,364,362,1,0,0,0,364,363,1,0,0,0,365,65,1,0,0,0,366,367,5,53,0,0,
+		367,370,5,86,0,0,368,369,5,55,0,0,369,371,5,86,0,0,370,368,1,0,0,0,370,
+		371,1,0,0,0,371,372,1,0,0,0,372,373,3,68,34,0,373,374,5,54,0,0,374,67,
+		1,0,0,0,375,380,5,89,0,0,376,381,3,70,35,0,377,381,3,72,36,0,378,381,3,
+		10,5,0,379,381,5,7,0,0,380,376,1,0,0,0,380,377,1,0,0,0,380,378,1,0,0,0,
+		380,379,1,0,0,0,381,382,1,0,0,0,382,380,1,0,0,0,382,383,1,0,0,0,383,384,
+		1,0,0,0,384,385,5,90,0,0,385,69,1,0,0,0,386,388,3,74,37,0,387,386,1,0,
+		0,0,387,388,1,0,0,0,388,389,1,0,0,0,389,390,5,86,0,0,390,391,5,68,0,0,
+		391,392,3,90,45,0,392,71,1,0,0,0,393,395,3,74,37,0,394,393,1,0,0,0,394,
+		395,1,0,0,0,395,398,1,0,0,0,396,399,3,46,23,0,397,399,3,48,24,0,398,396,
+		1,0,0,0,398,397,1,0,0,0,399,73,1,0,0,0,400,401,7,2,0,0,401,75,1,0,0,0,
+		402,403,3,78,39,0,403,77,1,0,0,0,404,405,6,39,-1,0,405,406,5,61,0,0,406,
+		413,3,78,39,5,407,413,3,82,41,0,408,409,5,62,0,0,409,410,3,78,39,0,410,
+		411,5,63,0,0,411,413,1,0,0,0,412,404,1,0,0,0,412,407,1,0,0,0,412,408,1,
+		0,0,0,413,426,1,0,0,0,414,415,10,6,0,0,415,416,3,80,40,0,416,417,3,78,
+		39,7,417,425,1,0,0,0,418,419,10,4,0,0,419,420,5,59,0,0,420,425,3,78,39,
+		5,421,422,10,3,0,0,422,423,5,60,0,0,423,425,3,78,39,4,424,414,1,0,0,0,
+		424,418,1,0,0,0,424,421,1,0,0,0,425,428,1,0,0,0,426,424,1,0,0,0,426,427,
+		1,0,0,0,427,79,1,0,0,0,428,426,1,0,0,0,429,430,7,3,0,0,430,81,1,0,0,0,
+		431,432,6,41,-1,0,432,433,5,58,0,0,433,434,5,86,0,0,434,455,3,86,43,0,
+		435,436,3,84,42,0,436,437,6,41,-1,0,437,455,1,0,0,0,438,439,3,88,44,0,
+		439,440,6,41,-1,0,440,455,1,0,0,0,441,442,5,78,0,0,442,443,3,82,41,11,
+		443,444,6,41,-1,0,444,455,1,0,0,0,445,446,5,72,0,0,446,447,3,82,41,8,447,
+		448,6,41,-1,0,448,455,1,0,0,0,449,450,5,62,0,0,450,451,3,82,41,0,451,452,
+		5,63,0,0,452,453,6,41,-1,0,453,455,1,0,0,0,454,431,1,0,0,0,454,435,1,0,
+		0,0,454,438,1,0,0,0,454,441,1,0,0,0,454,445,1,0,0,0,454,449,1,0,0,0,455,
+		489,1,0,0,0,456,457,10,9,0,0,457,458,5,77,0,0,458,488,3,82,41,9,459,460,
+		10,7,0,0,460,461,5,75,0,0,461,488,3,82,41,8,462,463,10,6,0,0,463,464,5,
+		74,0,0,464,488,3,82,41,7,465,466,10,5,0,0,466,467,5,73,0,0,467,488,3,82,
+		41,6,468,469,10,4,0,0,469,470,5,76,0,0,470,488,3,82,41,5,471,472,10,3,
+		0,0,472,473,5,72,0,0,473,488,3,82,41,4,474,475,10,2,0,0,475,476,5,71,0,
+		0,476,488,3,82,41,3,477,478,10,14,0,0,478,479,5,70,0,0,479,488,5,86,0,
+		0,480,481,10,13,0,0,481,488,3,96,48,0,482,483,10,12,0,0,483,488,3,86,43,
+		0,484,485,10,10,0,0,485,486,5,78,0,0,486,488,6,41,-1,0,487,456,1,0,0,0,
+		487,459,1,0,0,0,487,462,1,0,0,0,487,465,1,0,0,0,487,468,1,0,0,0,487,471,
+		1,0,0,0,487,474,1,0,0,0,487,477,1,0,0,0,487,480,1,0,0,0,487,482,1,0,0,
+		0,487,484,1,0,0,0,488,491,1,0,0,0,489,487,1,0,0,0,489,490,1,0,0,0,490,
+		83,1,0,0,0,491,489,1,0,0,0,492,493,6,42,-1,0,493,494,5,86,0,0,494,502,
+		1,0,0,0,495,496,10,2,0,0,496,501,3,96,48,0,497,498,10,1,0,0,498,499,5,
+		70,0,0,499,501,5,86,0,0,500,495,1,0,0,0,500,497,1,0,0,0,501,504,1,0,0,
+		0,502,500,1,0,0,0,502,503,1,0,0,0,503,85,1,0,0,0,504,502,1,0,0,0,505,507,
+		5,62,0,0,506,508,3,54,27,0,507,506,1,0,0,0,507,508,1,0,0,0,508,509,1,0,
+		0,0,509,510,5,63,0,0,510,87,1,0,0,0,511,518,3,98,49,0,512,518,5,1,0,0,
+		513,518,5,2,0,0,514,518,5,5,0,0,515,518,5,6,0,0,516,518,3,96,48,0,517,
+		511,1,0,0,0,517,512,1,0,0,0,517,513,1,0,0,0,517,514,1,0,0,0,517,515,1,
+		0,0,0,517,516,1,0,0,0,518,89,1,0,0,0,519,520,5,13,0,0,520,521,5,64,0,0,
+		521,526,3,94,47,0,522,523,5,69,0,0,523,525,3,94,47,0,524,522,1,0,0,0,525,
+		528,1,0,0,0,526,524,1,0,0,0,526,527,1,0,0,0,527,529,1,0,0,0,528,526,1,
+		0,0,0,529,530,5,65,0,0,530,531,5,15,0,0,531,532,3,92,46,0,532,533,6,45,
+		-1,0,533,538,1,0,0,0,534,535,3,92,46,0,535,536,6,45,-1,0,536,538,1,0,0,
+		0,537,519,1,0,0,0,537,534,1,0,0,0,538,91,1,0,0,0,539,540,7,4,0,0,540,93,
+		1,0,0,0,541,542,5,4,0,0,542,543,5,68,0,0,543,544,5,4,0,0,544,545,6,47,
+		-1,0,545,95,1,0,0,0,546,547,5,64,0,0,547,552,3,76,38,0,548,549,5,69,0,
+		0,549,551,3,76,38,0,550,548,1,0,0,0,551,554,1,0,0,0,552,550,1,0,0,0,552,
+		553,1,0,0,0,553,555,1,0,0,0,554,552,1,0,0,0,555,556,5,65,0,0,556,97,1,
+		0,0,0,557,558,5,4,0,0,558,562,6,49,-1,0,559,560,5,3,0,0,560,562,6,49,-1,
+		0,561,557,1,0,0,0,561,559,1,0,0,0,562,99,1,0,0,0,563,564,7,5,0,0,564,101,
+		1,0,0,0,44,105,115,118,129,154,188,201,207,216,220,228,238,264,269,275,
+		286,294,307,310,315,326,338,358,364,370,380,382,387,394,398,412,424,426,
+		454,487,489,500,502,507,517,526,537,552,561
 	};
 
 	public static readonly ATN _ATN =

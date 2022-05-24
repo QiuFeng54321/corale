@@ -86,20 +86,20 @@ smallStatement
  | returnStatement
  | callStatement
  ;
-assignmentStatement: lvalue ASSIGNMENT_NOTATION expression;
-declarationStatement: DECLARE IDENTIFIER COLON dataType;
-constantStatement: CONSTANT IDENTIFIER EQUAL expression;
-ioStatement: IO_KEYWORD tuple;
-returnStatement: RETURN expression;
-callStatement: CALL expression arguments?;
+assignmentStatement: lvalue AssignmentNotation expression;
+declarationStatement: Declare Identifier Colon dataType;
+constantStatement: Constant Identifier Equal expression;
+ioStatement: IoKeyword tuple;
+returnStatement: Return expression;
+callStatement: Call expression arguments?;
 fileStatement
- : OPENFILE expression FOR fileMode=(READ | WRITE | APPEND | RANDOM)
- | READFILE expression COMMA lvalue
- | WRITEFILE expression COMMA expression
- | CLOSEFILE expression
- | SEEK expression COMMA expression
- | GETRECORD expression COMMA lvalue
- | PUTRECORD expression COMMA expression
+ : Openfile expression For fileMode=(Read | Write | Append | Random)
+ | Readfile expression Comma lvalue
+ | Writefile expression Comma expression
+ | Closefile expression
+ | Seek expression Comma expression
+ | Getrecord expression Comma lvalue
+ | Putrecord expression Comma expression
  ;
 
 compoundStatement
@@ -117,40 +117,40 @@ compoundStatement
  ;
 block: INDENT statement+ DEDENT;
 aligned_block: statement (INDENT statement+ DEDENT)?;
-ifStatement: IF expression THEN block (ELSE block)? ENDIF;
-forStatement: FOR lvalue ASSIGNMENT_NOTATION valueRange (STEP arithmeticExpression)? block NEXT IDENTIFIER;
-whileStatement: WHILE logicExpression DO block ENDWHILE;
-repeatStatement: REPEAT block UNTIL expression;
+ifStatement: If expression Then block (Else block)? Endif;
+forStatement: For lvalue AssignmentNotation valueRange (Step arithmeticExpression)? block Next Identifier;
+whileStatement: While logicExpression Do block Endwhile;
+repeatStatement: Repeat block Until expression;
 
-caseStatement: CASE arithmeticExpression OF caseBody ENDCASE;
+caseStatement: Case arithmeticExpression Of caseBody Endcase;
 caseBranch
- : (OTHERWISE | atom | valueRange) COLON aligned_block
+ : (Otherwise | atom | valueRange) Colon aligned_block
  | NL
  ;
 caseBody: INDENT caseBranch+ DEDENT;
 
-valueRange: expression TO expression;
+valueRange: expression To expression;
 
-procedureDefinition: PROCEDURE identifierWithNew argumentsDeclaration? block ENDPROCEDURE;
-functionDefinition: FUNCTION IDENTIFIER argumentsDeclaration? RETURNS dataType block ENDFUNCTION;
-argumentsDeclaration: OPEN_PAREN (argumentDeclaration (COMMA argumentDeclaration)*)? CLOSE_PAREN;
-argumentDeclaration: passMethod=(BYVAL | BYREF)? IDENTIFIER COLON dataType;
-tuple: expression (COMMA expression)*;
+procedureDefinition: Procedure identifierWithNew argumentsDeclaration? block Endprocedure;
+functionDefinition: Function Identifier argumentsDeclaration? Returns dataType block Endfunction;
+argumentsDeclaration: OpenParen (argumentDeclaration (Comma argumentDeclaration)*)? CloseParen;
+argumentDeclaration: passMethod=(Byval | Byref)? Identifier Colon dataType;
+tuple: expression (Comma expression)*;
 
-enumDefinition: TYPE IDENTIFIER EQUAL OPEN_PAREN IDENTIFIER (COMMA IDENTIFIER)* CLOSE_PAREN;
-pointerDefinition: TYPE IDENTIFIER EQUAL CARET dataType;
-typeDefinition: TYPE IDENTIFIER typeBody ENDTYPE;
+enumDefinition: Type Identifier Equal OpenParen Identifier (Comma Identifier)* CloseParen;
+pointerDefinition: Type Identifier Equal Caret dataType;
+typeDefinition: Type Identifier typeBody Endtype;
 typeBody: INDENT typeChild+ DEDENT;
 typeChild
  : declarationStatement
  | NL
  ;
  
-classDefinition: CLASS className=IDENTIFIER (INHERITS inheritClass=IDENTIFIER)? classBody ENDCLASS;
+classDefinition: Class className=Identifier (Inherits inheritClass=Identifier)? classBody Endclass;
 classBody: INDENT (classDataMember | classMethod | assignmentStatement | NL)+ DEDENT;
-classDataMember: accessLevel? IDENTIFIER COLON dataType;
+classDataMember: accessLevel? Identifier Colon dataType;
 classMethod: accessLevel? (procedureDefinition | functionDefinition);
-accessLevel: PUBLIC | PRIVATE;
+accessLevel: Public | Private;
 
 expression
  : logicExpression
@@ -158,13 +158,13 @@ expression
 
 logicExpression
  : logicExpression comparisonOp logicExpression
- | NOT logicExpression
- | logicExpression AND logicExpression
- | logicExpression OR logicExpression
+ | Not logicExpression
+ | logicExpression And logicExpression
+ | logicExpression Or logicExpression
  | arithmeticExpression
  | '(' logicExpression ')'
  ;
-comparisonOp: SMALLER | GREATER | EQUAL | GREATER_EQUAL | SMALLER_EQUAL | UNEQUAL;
+comparisonOp: Smaller | Greater | Equal | GreaterEqual | SmallerEqual | NotEqual;
 
 //expr: xorExpression ('|' xorExpression)*;
 //xorExpression: andExpression ('^' andExpression)*;
@@ -177,31 +177,31 @@ comparisonOp: SMALLER | GREATER | EQUAL | GREATER_EQUAL | SMALLER_EQUAL | UNEQUA
 // : rvalue ('**' factor)?
 // ;
 arithmeticExpression locals [bool IsUnary]
- : NEW IDENTIFIER arguments
+ : New Identifier arguments
  | lvalue {$IsUnary = true;}
  | atom {$IsUnary = true;}
- | arithmeticExpression DOT IDENTIFIER
+ | arithmeticExpression Dot Identifier
  | arithmeticExpression array
  | arithmeticExpression arguments
- | op=CARET operand=arithmeticExpression
- | operand=arithmeticExpression op=CARET
- | op=SUB operand=arithmeticExpression {$IsUnary = true;}
- | <assoc=right> operand1=arithmeticExpression op=POW operand2=arithmeticExpression
- | operand1=arithmeticExpression op=MOD operand2=arithmeticExpression
- | operand1=arithmeticExpression op=DIV operand2=arithmeticExpression
- | operand1=arithmeticExpression op=INTDIV operand2=arithmeticExpression
- | operand1=arithmeticExpression op=MULT operand2=arithmeticExpression
- | operand1=arithmeticExpression op=SUB operand2=arithmeticExpression
- | operand1=arithmeticExpression op=ADD operand2=arithmeticExpression
+ | op=Caret operand=arithmeticExpression {$IsUnary = true;}
+ | operand=arithmeticExpression op=Caret {$IsUnary = true;}
+ | <assoc=right> operand1=arithmeticExpression op=Pow operand2=arithmeticExpression
+ | op=Subtract operand=arithmeticExpression {$IsUnary = true;}
+ | operand1=arithmeticExpression op=Divide operand2=arithmeticExpression
+ | operand1=arithmeticExpression op=IntDivide operand2=arithmeticExpression
+ | operand1=arithmeticExpression op=Multiply operand2=arithmeticExpression
+ | operand1=arithmeticExpression op=Mod operand2=arithmeticExpression
+ | operand1=arithmeticExpression op=Subtract operand2=arithmeticExpression
+ | operand1=arithmeticExpression op=Add operand2=arithmeticExpression
  | '(' arithmeticExpression ')' {$IsUnary = true;}
  ;
 
  
 // Values that can be altered
 lvalue
- : IDENTIFIER
+ : Identifier
  | lvalue array
- | lvalue DOT IDENTIFIER
+ | lvalue Dot Identifier
  ;
 
 // an rvalue cannot be assigned a value
@@ -213,32 +213,32 @@ lvalue
 // | rvalue arguments
 // ;
 
-arguments: OPEN_PAREN tuple? CLOSE_PAREN;
+arguments: OpenParen tuple? CloseParen;
 
-atom locals [string Type, object Value]
+atom locals [string AtomType, object Value]
  : number
- | STRING
- | CHAR
- | BOOLEAN
- | DATE
+ | String
+ | Char
+ | Boolean
+ | Date
  | array
  ;
 
 dataType locals [string TypeName, bool IsArray, List<Range> Dimensions = new()]
- : ARRAY OPEN_BRACK arrayRange (COMMA arrayRange)* CLOSE_BRACK OF basicDataType {
+ : Array OpenBrack arrayRange (Comma arrayRange)* CloseBrack Of basicDataType {
     $IsArray = true;
     $TypeName = $basicDataType.text;
  }
  | basicDataType {$TypeName = $basicDataType.text;}
  ;
-basicDataType : TYPENAME | IDENTIFIER;
+basicDataType : Typename | Identifier;
  
 arrayRange
- : s=INTEGER COLON e=INTEGER {($dataType::Dimensions).Add(new Range{Start = int.Parse($s.text), End = int.Parse($e.text)});}
+ : s=Integer Colon e=Integer {($dataType::Dimensions).Add(new Range{Start = int.Parse($s.text), End = int.Parse($e.text)});}
  ;
 
 array
- : OPEN_BRACK expression (COMMA expression)* CLOSE_BRACK
+ : OpenBrack expression (Comma expression)* CloseBrack
  ;
 
 //array_index
@@ -251,139 +251,139 @@ array
  */
 
 number
- : INTEGER {$atom::Type = "INTEGER"; $atom::Value = int.Parse($INTEGER.text);}
- | DECIMAL {$atom::Type = "REAL"; $atom::Value = decimal.Parse($DECIMAL.text);}
+ : Integer {$atom::AtomType = "INTEGER"; $atom::Value = int.Parse($Integer.text);}
+ | Decimal {$atom::AtomType = "REAL"; $atom::Value = decimal.Parse($Decimal.text);}
  ;
  
- identifierWithNew: IDENTIFIER | NEW;
+ identifierWithNew: Identifier | New;
 
  
-STRING
+String
  : '"' .*? '"' 
  ;
-CHAR
+Char
  : '\'' . '\''
  ;
 
 // Value is either 1. or .1 and not just a single '.' to avoid ambiguity with DOT
-DECIMAL
- : '-'? (DIGIT* '.' DIGIT+ | DIGIT+ '.' DIGIT*)
+Decimal
+ : '-'? (Digit* '.' Digit+ | Digit+ '.' Digit*)
  ;
-INTEGER : '-' ? DIGIT+;
+Integer : '-' ? Digit+;
 
-BOOLEAN : 'TRUE' | 'FALSE';
+Boolean : 'TRUE' | 'FALSE';
 
-DATE : DIGIT DIGIT '/' DIGIT DIGIT '/' DIGIT DIGIT DIGIT DIGIT;
+Date : Digit Digit '/' Digit Digit '/' Digit Digit Digit Digit;
  
 
 
 NL: ('\r'? '\n' ' '*); // For tabs just switch out ' '* with '\t'*
-NEWLINE
- : ( '\r'? '\n' | '\r' | '\f' ) SPACES?
+Newline
+ : ( '\r'? '\n' | '\r' | '\f' ) Spaces?
  ;
 
-DECLARE : 'DECLARE';
-CONSTANT : 'CONSTANT';
-IO_KEYWORD : 'OUTPUT' | 'INPUT';
-TYPENAME : 'INTEGER' | 'STRING' | 'REAL' | 'CHAR' | 'BOOLEAN' | 'DATE';
-ARRAY : 'ARRAY';
-CASE : 'CASE';
-OF : 'OF';
-OTHERWISE : 'OTHERWISE';
-ENDCASE : 'ENDCASE';
+Declare : 'DECLARE';
+Constant : 'CONSTANT';
+IoKeyword : 'OUTPUT' | 'INPUT';
+Typename : 'INTEGER' | 'STRING' | 'REAL' | 'CHAR' | 'BOOLEAN' | 'DATE';
+Array : 'ARRAY';
+Case : 'CASE';
+Of : 'OF';
+Otherwise : 'OTHERWISE';
+Endcase : 'ENDCASE';
 
-FOR : 'FOR';
-TO : 'TO';
-STEP : 'STEP';
-NEXT : 'NEXT';
+For : 'FOR';
+To : 'TO';
+Step : 'STEP';
+Next : 'NEXT';
 
-WHILE : 'WHILE';
-DO : 'DO';
-ENDWHILE : 'ENDWHILE';
-REPEAT : 'REPEAT';
-UNTIL : 'UNTIL';
+While : 'WHILE';
+Do : 'DO';
+Endwhile : 'ENDWHILE';
+Repeat : 'REPEAT';
+Until : 'UNTIL';
 
-IF : 'IF';
-THEN : 'THEN';
-ELSE : 'ELSE';
-ENDIF : 'ENDIF';
+If : 'IF';
+Then : 'THEN';
+Else : 'ELSE';
+Endif : 'ENDIF';
 
-PROCEDURE : 'PROCEDURE';
-ENDPROCEDURE : 'ENDPROCEDURE';
+Procedure : 'PROCEDURE';
+Endprocedure : 'ENDPROCEDURE';
 
-CALL : 'CALL';
-FUNCTION : 'FUNCTION';
-ENDFUNCTION : 'ENDFUNCTION';
-BYVAL : 'BYVAL';
-BYREF : 'BYREF';
-RETURNS : 'RETURNS';
-RETURN : 'RETURN';
+Call : 'CALL';
+Function : 'FUNCTION';
+Endfunction : 'ENDFUNCTION';
+Byval : 'BYVAL';
+Byref : 'BYREF';
+Returns : 'RETURNS';
+Return : 'RETURN';
 
-TYPE : 'TYPE';
-ENDTYPE : 'ENDTYPE';
+Type : 'TYPE';
+Endtype : 'ENDTYPE';
 
-OPENFILE : 'OPENFILE';
-READFILE : 'READFILE';
-WRITEFILE : 'WRITEFILE';
-CLOSEFILE : 'CLOSEFILE';
-SEEK : 'SEEK';
-GETRECORD : 'GETRECORD';
-PUTRECORD : 'PUTRECORD';
-READ : 'READ';
-WRITE : 'WRITE';
-APPEND : 'APPEND';
-RANDOM : 'RANDOM';
+Openfile : 'OPENFILE';
+Readfile : 'READFILE';
+Writefile : 'WRITEFILE';
+Closefile : 'CLOSEFILE';
+Seek : 'SEEK';
+Getrecord : 'GETRECORD';
+Putrecord : 'PUTRECORD';
+Read : 'READ';
+Write : 'WRITE';
+Append : 'APPEND';
+Random : 'RANDOM';
 
-CLASS : 'CLASS';
-ENDCLASS : 'ENDCLASS';
-INHERITS : 'INHERITS';
-PRIVATE : 'PRIVATE';
-PUBLIC : 'PUBLIC';
-NEW : 'NEW';
+Class : 'CLASS';
+Endclass : 'ENDCLASS';
+Inherits : 'INHERITS';
+Private : 'PRIVATE';
+Public : 'PUBLIC';
+New : 'NEW';
 
 // Logic
-AND : 'AND';
-OR : 'OR';
-NOT : 'NOT';
+And : 'AND';
+Or : 'OR';
+Not : 'NOT';
 
 
 
 
 
-OPEN_PAREN : '(';
-CLOSE_PAREN : ')';
-OPEN_BRACK : '[';
-CLOSE_BRACK : ']';
-OPEN_BRACE : '{';
-CLOSE_BRACE : '}';
-COLON : ':';
-COMMA : ',';
-DOT : '.';
-ADD : '+';
-SUB : '-';
-MULT : '*';
-INTDIV : 'DIV' | '//';
-DIV : '/';
-MOD : 'MOD' | '%';
-POW : 'POW';
-CARET : '^';
-EQUAL : '=';
-GREATER : '>';
-SMALLER : '<';
-GREATER_EQUAL : '>=';
-SMALLER_EQUAL : '<=';
-UNEQUAL : '<>';
+OpenParen : '(';
+CloseParen : ')';
+OpenBrack : '[';
+CloseBrack : ']';
+OpenBrace : '{';
+CloseBrace : '}';
+Colon : ':';
+Comma : ',';
+Dot : '.';
+Add : '+';
+Subtract : '-';
+Multiply : '*';
+IntDivide : 'DIV';
+Divide : '/';
+Mod : 'MOD';
+Pow : 'POW';
+Caret : '^';
+Equal : '=';
+Greater : '>';
+Smaller : '<';
+GreaterEqual : '>=';
+SmallerEqual : '<=';
+NotEqual : '<>';
 
-ASSIGNMENT_NOTATION : '<-';
+AssignmentNotation : '<-';
 
-IDENTIFIER
- : ID_START ID_CONTINUE*
+Identifier
+ : IdStart IdContinue*
  ;
-SKIP_
- : ( SPACES | COMMENT | LINE_JOINING ) -> skip
+Skip
+ : ( Spaces | Comment | LineJoining ) -> skip
  ;
 
-UNKNOWN_CHAR
+UnknownChar
  : .
  ;
 
@@ -392,33 +392,33 @@ UNKNOWN_CHAR
  * fragments 
  */
 
-fragment NON_ZERO_DIGIT
+fragment NonZeroDigit
  : [1-9]
  ;
 
-fragment DIGIT
+fragment Digit
  : [0-9]
  ;
 
-fragment SPACES
+fragment Spaces
  : [ \t]+
  ;
 
-fragment COMMENT
+fragment Comment
  : '#' ~[\r\n\f]*
  ;
 
-fragment LINE_JOINING
- : '\\' SPACES? ( '\r'? '\n' | '\r' | '\f' )
+fragment LineJoining
+ : '\\' Spaces? ( '\r'? '\n' | '\r' | '\f' )
  ;
 
-fragment ID_START
+fragment IdStart
  : '_'
  | [A-Z]
  | [a-z]
  ;
 
-fragment ID_CONTINUE
- : ID_START
+fragment IdContinue
+ : IdStart
  | [0-9]
  ;

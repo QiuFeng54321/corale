@@ -45,7 +45,7 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
         CurrentScope.Operations.Enqueue(new DeclareOperation
         {
             Scope = CurrentScope,
-            Name = context.IDENTIFIER().GetText(),
+            Name = context.Identifier().GetText(),
             Type = CurrentScope.FindType(context.dataType().TypeName),
             Dimensions = context.dataType().Dimensions
         });
@@ -56,14 +56,14 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
         base.ExitLvalue(context);
         // TODO
         CurrentScope.Operations.Enqueue(new LoadOperation
-            { Scope = CurrentScope, LoadName = context.IDENTIFIER().GetText() });
+            { Scope = CurrentScope, LoadName = context.Identifier().GetText() });
     }
 
     public override void ExitAtom(PseudoCodeParser.AtomContext context)
     {
         base.ExitAtom(context);
         CurrentScope.Operations.Enqueue(new LoadImmediateOperation
-            { Scope = CurrentScope, Intermediate = CurrentScope.FindType(context.Type).Instance(context.Value) });
+            { Scope = CurrentScope, Intermediate = CurrentScope.FindType(context.AtomType).Instance(context.Value) });
     }
 
     public override void ExitAssignmentStatement(PseudoCodeParser.AssignmentStatementContext context)
@@ -76,19 +76,19 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
     public override void ExitArithmeticExpression(PseudoCodeParser.ArithmeticExpressionContext context)
     {
         base.ExitArithmeticExpression(context);
-        switch (context.op?.Text)
-        {
-            case "+":
-                CurrentScope.Operations.Enqueue(new AddOperation { Scope = CurrentScope });
-                break;
-        }
+        if (context.op != null)
+            if (context.IsUnary)
+                // TODO ambiguous operator with Caret
+                CurrentScope.Operations.Enqueue(new UnaryOperation{Scope = CurrentScope, OperatorMethod = context.op.Type});
+            else 
+                CurrentScope.Operations.Enqueue(new BinaryOperation { Scope = CurrentScope, OperatorMethod = context.op.Type});
     }
 
     public override void ExitIoStatement(PseudoCodeParser.IoStatementContext context)
     {
         base.ExitIoStatement(context);
         // Console.WriteLine($"{context.IO_KEYWORD()} {context.expression().GetText()}");
-        if (context.IO_KEYWORD().GetText() == "OUTPUT")
+        if (context.IoKeyword().GetText() == "OUTPUT")
             CurrentScope.Operations.Enqueue(new OutputOperation { Scope = CurrentScope, ArgumentCount = context.tuple().expression().Length});
     }
 

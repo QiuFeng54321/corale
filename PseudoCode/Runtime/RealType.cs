@@ -19,7 +19,7 @@ public class RealType : PrimitiveType<decimal>
 
     public override Instance Negative(Instance i)
     {
-        return ArithmeticOperation(i, null!, (arg1, _) => -arg1);
+        return ArithmeticUnaryOperation(i, arg => -arg);
     }
 
     public override Instance Subtract(Instance i1, Instance i2)
@@ -29,6 +29,30 @@ public class RealType : PrimitiveType<decimal>
         // return Instance(i1.Get<decimal>() - i2.Get<decimal>());
         return ArithmeticOperation(i1, i2, (arg1, arg2) => arg1 - arg2);
         // return Add(i1, Negative(i2));
+    }
+
+    public override Instance Multiply(Instance i1, Instance i2)
+    {
+        return ArithmeticOperation(i1, i2, (arg1, arg2) => arg1 * arg2);
+    }
+
+    public override Instance Divide(Instance i1, Instance i2)
+    {
+        return ArithmeticOperation(i1, i2, (arg1, arg2) => arg1 / arg2);
+    }
+    public override Instance Mod(Instance i1, Instance i2)
+    {
+        return ArithmeticOperation(i1, i2, (arg1, arg2) => arg1 % arg2);
+    }
+    public override Instance Pow(Instance i1, Instance i2)
+    {
+        return ArithmeticOperation(i1, i2, (arg1, arg2) => (decimal)Math.Pow((double)arg1, (double)arg2));
+    }
+
+    public override Instance IntDivide(Instance i1, Instance i2)
+    {
+        return ParentScope.FindType(IntegerId).CastFrom(
+            ArithmeticOperation(i1, i2, (arg1, arg2) => (int)(arg1 / arg2)));
     }
 
     public override Instance CastFrom(Instance i)

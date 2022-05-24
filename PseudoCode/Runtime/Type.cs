@@ -30,6 +30,38 @@ public class Type
         return instance;
     }
 
+    public Type()
+    {
+        BinaryOperators = new()
+        {
+            { PseudoCodeLexer.Add, Add },
+            { PseudoCodeLexer.Multiply, Multiply },
+            { PseudoCodeLexer.Divide, Divide },
+            { PseudoCodeLexer.Subtract, Subtract },
+            { PseudoCodeLexer.Pow, Pow },
+            { PseudoCodeLexer.IntDivide, IntDivide },
+            { PseudoCodeLexer.Mod, Mod },
+            { PseudoCodeLexer.Greater, Greater },
+            { PseudoCodeLexer.GreaterEqual, GreaterEqual },
+            { PseudoCodeLexer.SmallerEqual, SmallerEqual },
+            { PseudoCodeLexer.Smaller, Smaller },
+            { PseudoCodeLexer.Equal, Equal },
+            { PseudoCodeLexer.NotEqual, NotEqual },
+        };
+        UnaryOperators = new()
+        {
+            { PseudoCodeLexer.Subtract, Negative },
+            { PseudoCodeLexer.Not, Not },
+        };
+    }
+
+    public delegate Instance BinaryOperator(Instance i1, Instance i2);
+
+    public delegate Instance UnaryOperator(Instance i);
+
+    public Dictionary<int, BinaryOperator> BinaryOperators = new();
+    public Dictionary<int, UnaryOperator> UnaryOperators = new();
+
     public virtual Instance Add(Instance i1, Instance i2)
     {
         throw new NotSupportedException();
@@ -91,6 +123,11 @@ public class Type
     }
 
     public virtual Instance Equal(Instance i1, Instance i2)
+    {
+        throw new NotSupportedException();
+    }
+
+    public virtual Instance NotEqual(Instance i1, Instance i2)
     {
         throw new NotSupportedException();
     }
