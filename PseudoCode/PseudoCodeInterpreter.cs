@@ -1,0 +1,103 @@
+using PseudoCode.Runtime;
+using PseudoCode.Runtime.Operations;
+
+namespace PseudoCode;
+
+public class PseudoCodeInterpreter : PseudoCodeBaseListener
+{
+    public Scope GlobalScope = new();
+    public Scope CurrentScope;
+
+    public override void EnterFileInput(PseudoCodeParser.FileInputContext context)
+    {
+        base.EnterFileInput(context);
+        CurrentScope = GlobalScope;
+        GlobalScope.AddType("INTEGER", new IntegerType());
+        GlobalScope.AddType("REAL", new RealType());
+        GlobalScope.AddType("ARRAY", new ArrayType());
+    }
+
+    public override void ExitFileInput(PseudoCodeParser.FileInputContext context)
+    {
+        base.ExitFileInput(context);
+        Console.WriteLine(GlobalScope);
+        Console.WriteLine("Operate...");
+        GlobalScope.Operate();
+    }
+
+    public override void EnterBlock(PseudoCodeParser.BlockContext context)
+    {
+        base.EnterBlock(context);
+        CurrentScope = CurrentScope.AddScope();
+    }
+
+    public override void ExitBlock(PseudoCodeParser.BlockContext context)
+    {
+        base.ExitBlock(context);
+        CurrentScope.Parent.Operations.Enqueue(CurrentScope);
+        CurrentScope = CurrentScope.Parent;
+    }
+
+    public override void ExitDeclarationStatement(PseudoCodeParser.DeclarationStatementContext context)
+    {
+        base.ExitDeclarationStatement(context);
+        // Console.WriteLine($"DECLARE {context.IDENTIFIER().GetText()} : {context.dataType().GetText()}");
+        CurrentScope.Operations.Enqueue(new DeclareOperation
+        {
+            Scope = CurrentScope,
+            Name = context.IDENTIFIER().GetText(),
+            Type = CurrentScope.FindType(context.dataType().TypeName),
+            Dimensions = context.dataType().Dimensions
+        });
+    }
+
+    public override void ExitLvalue(PseudoCodeParser.LvalueContext context)
+    {
+        base.ExitLvalue(context);
+        // TODO
+        CurrentScope.Operations.Enqueue(new LoadOperation
+            { Scope = CurrentScope, LoadName = context.IDENTIFIER().GetText() });
+    }
+
+    public override void ExitAtom(PseudoCodeParser.AtomContext context)
+    {
+        base.ExitAtom(context);
+        CurrentScope.Operations.Enqueue(new LoadImmediateOperation
+            { Scope = CurrentScope, Intermediate = CurrentScope.FindType(context.Type).Instance(context.Value) });
+    }
+
+    public override void ExitAssignmentStatement(PseudoCodeParser.AssignmentStatementContext context)
+    {
+        base.ExitAssignmentStatement(context);
+        // Console.WriteLine($"{context.lvalue().GetText()} <- {context.expr().GetText()}");
+        CurrentScope.Operations.Enqueue(new AssignmentOperation { Scope = CurrentScope });
+    }
+
+    public override void ExitArithmeticExpression(PseudoCodeParser.ArithmeticExpressionContext context)
+    {
+        base.ExitArithmeticExpression(context);
+        switch (context.op?.Text)
+        {
+            case "+":
+                CurrentScope.Operations.Enqueue(new AddOperation{Scope = CurrentScope});
+                break;
+            
+        }
+    }
+
+    public override void ExitIoStatement(PseudoCodeParser.IoStatementContext context)
+    {
+        base.ExitIoStatement(context);
+        // Console.WriteLine($"{context.IO_KEYWORD()} {context.expression().GetText()}");
+        if (context.IO_KEYWORD().GetText() == "OUTPUT" || context.IO_KEYWORD().GetText() == "PRINT")
+        {
+            CurrentScope.Operations.Enqueue(new OutputOperation{Scope = CurrentScope});
+        }
+    }
+
+    public override void EnterIfStatement(PseudoCodeParser.IfStatementContext context)
+    {
+        base.EnterIfStatement(context);
+        Console.WriteLine($"if {context.expression().GetText()}");
+    }
+}
