@@ -1,3 +1,4 @@
+using Antlr4.Runtime;
 using PseudoCode.Runtime;
 using PseudoCode.Runtime.Operations;
 
@@ -78,8 +79,17 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
         {
             Name = context.Identifier().GetText(),
             Type = CurrentScope.FindType(context.dataType().TypeName),
-            Dimensions = context.dataType().Dimensions
+            Dimensions = context.dataType().Dimensions,
+            SourceLocation = SourceLocation(context)
         });
+    }
+    private static SourceLocation SourceLocation(IToken token)
+    {
+        return token == null ? null : new SourceLocation(token.Line, token.Column + 1);
+    }
+    private static SourceLocation SourceLocation(ParserRuleContext context)
+    {
+        return SourceLocation(context.Start);
     }
 
     public override void ExitLvalue(PseudoCodeParser.LvalueContext context)
@@ -87,21 +97,30 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
         base.ExitLvalue(context);
         // TODO
         CurrentScope.AddOperation(new LoadOperation (CurrentScope, Program)
-            { LoadName = context.Identifier().GetText() });
+        {
+            LoadName = context.Identifier().GetText(),
+            SourceLocation = SourceLocation(context)
+        });
     }
 
     public override void ExitAtom(PseudoCodeParser.AtomContext context)
     {
         base.ExitAtom(context);
         CurrentScope.AddOperation(new LoadImmediateOperation(CurrentScope, Program)
-            { Intermediate = CurrentScope.FindType(context.AtomType).Instance(context.Value) });
+        {
+            Intermediate = CurrentScope.FindType(context.AtomType).Instance(context.Value),
+            SourceLocation = SourceLocation(context)
+        });
     }
 
     public override void ExitAssignmentStatement(PseudoCodeParser.AssignmentStatementContext context)
     {
         base.ExitAssignmentStatement(context);
         // Console.WriteLine($"{context.lvalue().GetText()} <- {context.expr().GetText()}");
-        CurrentScope.AddOperation(new AssignmentOperation(CurrentScope, Program));
+        CurrentScope.AddOperation(new AssignmentOperation(CurrentScope, Program)
+        {
+            SourceLocation = SourceLocation(context)
+        });
     }
 
     public override void ExitArithmeticExpression(PseudoCodeParser.ArithmeticExpressionContext context)
@@ -111,10 +130,17 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
             if (context.IsUnary)
                 // TODO ambiguous operator with Caret
                 CurrentScope.AddOperation(new UnaryOperation(CurrentScope, Program)
-                    { OperatorMethod = context.op.Type });
+                {
+                    OperatorMethod = context.op.Type,
+                    SourceLocation = SourceLocation(context.op)
+                });
             else
                 CurrentScope.AddOperation(
-                    new BinaryOperation(CurrentScope, Program) { OperatorMethod = context.op.Type });
+                    new BinaryOperation(CurrentScope, Program)
+                    {
+                        OperatorMethod = context.op.Type,
+                        SourceLocation = SourceLocation(context.op)
+                    });
     }
 
     public override void ExitLogicExpression(PseudoCodeParser.LogicExpressionContext context)
@@ -124,9 +150,17 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
         if (op != null)
             if (context.IsUnary)
                 // TODO ambiguous operator with Caret
-                CurrentScope.AddOperation(new UnaryOperation(CurrentScope, Program) { OperatorMethod = op.Type });
+                CurrentScope.AddOperation(new UnaryOperation(CurrentScope, Program)
+                {
+                    OperatorMethod = op.Type,
+                    SourceLocation = SourceLocation(context.op)
+                });
             else
-                CurrentScope.AddOperation(new BinaryOperation(CurrentScope, Program) { OperatorMethod = op.Type });
+                CurrentScope.AddOperation(new BinaryOperation(CurrentScope, Program)
+                {
+                    OperatorMethod = op.Type,
+                    SourceLocation = SourceLocation(context.op)
+                });
     }
 
     public override void ExitIoStatement(PseudoCodeParser.IoStatementContext context)
@@ -135,7 +169,10 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
         // Console.WriteLine($"{context.IO_KEYWORD()} {context.expression().GetText()}");
         if (context.IoKeyword().GetText() == "OUTPUT")
             CurrentScope.AddOperation(new OutputOperation(CurrentScope, Program)
-                { ArgumentCount = context.tuple().expression().Length });
+            {
+                ArgumentCount = context.tuple().expression().Length,
+                SourceLocation = SourceLocation(context)
+            });
     }
 
     public override void ExitIfStatement(PseudoCodeParser.IfStatementContext context)
@@ -145,6 +182,9 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
         var trueBlock = CurrentScope.TakeLast();
         var testScope = (Scope)CurrentScope.TakeLast();
         CurrentScope.AddOperation(new IfOperation(CurrentScope, Program)
-            { FalseBlock = falseBlock, TrueBlock = trueBlock, TestExpressionScope = testScope });
+        {
+            FalseBlock = falseBlock, TrueBlock = trueBlock, TestExpressionScope = testScope,
+            SourceLocation = SourceLocation(context)
+        });
     }
 }

@@ -4,6 +4,7 @@ public class Operation
 {
     public Scope ParentScope;
     public PseudoProgram Program;
+    public SourceLocation SourceLocation;
 
     public Operation(Scope parentScope, PseudoProgram program)
     {
@@ -19,7 +20,7 @@ public class Operation
     public virtual string ToPlainString() => "Operation";
     public virtual string ToString(int depth)
     {
-        return $"{Indent(depth)}{ToPlainString()}";
+        return $"{Indent(depth)}{ToPlainString()} {(SourceLocation != null ? $"# {SourceLocation}" : "")}";
     }
 
     public override string ToString() => ToString(0);
