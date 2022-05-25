@@ -6,14 +6,18 @@ public class BinaryOperation : Operation
     public override void Operate()
     {
         base.Operate();
-        var value = Scope.RuntimeStack.Pop();
-        var to = Scope.RuntimeStack.Pop();
+        var value = ParentScope.RuntimeStack.Pop();
+        var to = ParentScope.RuntimeStack.Pop();
         to = to.Type.BinaryOperators[OperatorMethod](to, value);
-        Scope.RuntimeStack.Push(to);
+        ParentScope.RuntimeStack.Push(to);
     }
 
     public override string ToString()
     {
         return $"Binary {OperatorMethod}";
+    }
+
+    public BinaryOperation(Scope parentScope, PseudoProgram program) : base(parentScope, program)
+    {
     }
 }

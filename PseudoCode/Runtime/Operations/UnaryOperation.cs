@@ -6,13 +6,17 @@ public class UnaryOperation : Operation
     public override void Operate()
     {
         base.Operate();
-        var to = Scope.RuntimeStack.Pop();
+        var to = ParentScope.RuntimeStack.Pop();
         to = to.Type.UnaryOperators[OperatorMethod](to);
-        Scope.RuntimeStack.Push(to);
+        ParentScope.RuntimeStack.Push(to);
     }
 
     public override string ToString()
     {
         return $"Unary {OperatorMethod}";
+    }
+
+    public UnaryOperation(Scope parentScope, PseudoProgram program) : base(parentScope, program)
+    {
     }
 }

@@ -1,3 +1,5 @@
+using PseudoCode.Runtime.Operations;
+
 namespace PseudoCode.Runtime;
 
 public class ArrayInstance : Instance
@@ -5,6 +7,7 @@ public class ArrayInstance : Instance
     public Instance[] Array;
     public List<Range> Dimensions = new();
     public Type ElementType;
+    public uint StartAddress;
 
     public override object Value
     {
@@ -12,15 +15,16 @@ public class ArrayInstance : Instance
         set => Array = (Instance[])value;
     }
 
+    public int TotalElements => Dimensions.Select(d => d.Length).Aggregate((prev, next) => prev * next);
+
     public void Initialise()
     {
-        Array = new Instance[Dimensions[0].Length];
-        for (var i = 0; i < Array.Length; i++)
-            if (Dimensions.Count > 1)
-                Array[i] = ((ArrayType)Type).Instance(Dimensions.TakeLast(Dimensions.Count - 1).ToList(), ElementType);
-            else
-                Array[i] = ElementType.Instance();
+        StartAddress = Program.Allocate(TotalElements, () => ElementType.Instance());
+        Array = new Instance[TotalElements];
+        for (var i = 0u; i < Array.Length; i++)
+            Array[i] = new ReferenceInstance(ParentScope, Program) {ReferenceAddress = StartAddress + i};
     }
+    
 
     public Instance ElementAt(int index)
     {
@@ -29,6 +33,10 @@ public class ArrayInstance : Instance
 
     public override string ToString()
     {
-        return $"{{{ElementType}[{string.Join(',',Dimensions)}]: [{string.Join<Instance>(',', Array)}]}}";
+        return $"{{{ElementType}[{string.Join(',', Dimensions)}]: [{string.Join<Instance>(',', Array)}]}}";
+    }
+
+    public ArrayInstance(Scope parentScope, PseudoProgram program) : base(parentScope, program)
+    {
     }
 }

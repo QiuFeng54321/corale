@@ -165,25 +165,35 @@ public interface IPseudoCodeListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitCompoundStatement([NotNull] PseudoCodeParser.CompoundStatementContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="PseudoCodeParser.block"/>.
+	/// Enter a parse tree produced by <see cref="PseudoCodeParser.scopedExpression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterBlock([NotNull] PseudoCodeParser.BlockContext context);
+	void EnterScopedExpression([NotNull] PseudoCodeParser.ScopedExpressionContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="PseudoCodeParser.block"/>.
+	/// Exit a parse tree produced by <see cref="PseudoCodeParser.scopedExpression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitBlock([NotNull] PseudoCodeParser.BlockContext context);
+	void ExitScopedExpression([NotNull] PseudoCodeParser.ScopedExpressionContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="PseudoCodeParser.aligned_block"/>.
+	/// Enter a parse tree produced by <see cref="PseudoCodeParser.indentedBlock"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterAligned_block([NotNull] PseudoCodeParser.Aligned_blockContext context);
+	void EnterIndentedBlock([NotNull] PseudoCodeParser.IndentedBlockContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="PseudoCodeParser.aligned_block"/>.
+	/// Exit a parse tree produced by <see cref="PseudoCodeParser.indentedBlock"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitAligned_block([NotNull] PseudoCodeParser.Aligned_blockContext context);
+	void ExitIndentedBlock([NotNull] PseudoCodeParser.IndentedBlockContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="PseudoCodeParser.alignedBlock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterAlignedBlock([NotNull] PseudoCodeParser.AlignedBlockContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="PseudoCodeParser.alignedBlock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitAlignedBlock([NotNull] PseudoCodeParser.AlignedBlockContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="PseudoCodeParser.ifStatement"/>.
 	/// </summary>

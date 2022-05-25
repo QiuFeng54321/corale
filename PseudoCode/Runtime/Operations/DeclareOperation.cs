@@ -9,16 +9,16 @@ public class DeclareOperation : Operation
     public override void Operate()
     {
         base.Operate();
-        if (Scope.Instances.ContainsKey(Name))
+        if (ParentScope.InstanceAddresses.ContainsKey(Name))
             throw new InvalidOperationException($"{Name} is already declared under this scope!");
         if (Dimensions.Count == 0)
         {
-            Scope.Instances.Add(Name, Type.Instance());
+            ParentScope.InstanceAddresses.Add(Name, Program.AllocateId(Type.Instance()));
         }
         else
         {
-            var arrayInstance = ((ArrayType)Scope.FindType("ARRAY")).Instance(Dimensions, Type);
-            Scope.Instances.Add(Name, arrayInstance);
+            var arrayInstance = ((ArrayType)ParentScope.FindType("ARRAY")).Instance(Dimensions, Type);
+            ParentScope.InstanceAddresses.Add(Name, Program.AllocateId(arrayInstance));
         }
     }
 
@@ -26,5 +26,9 @@ public class DeclareOperation : Operation
     {
         var typeStr = Dimensions.Count == 0 ? Type.ToString() : $"ARRAY[{string.Join(',', Dimensions)}] OF {Type}";
         return $"DECLARE {Name} : {typeStr}";
+    }
+
+    public DeclareOperation(Scope parentScope, PseudoProgram program) : base(parentScope, program)
+    {
     }
 }

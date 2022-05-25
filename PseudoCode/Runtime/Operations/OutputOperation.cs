@@ -10,12 +10,16 @@ public class OutputOperation : Operation
         base.Operate();
         List<Instance> arguments = new();
         for(var i = 0; i < ArgumentCount; i++)
-            arguments.Insert(0, Scope.RuntimeStack.Pop());
+            arguments.Insert(0, ParentScope.RuntimeStack.Pop());
         Console.WriteLine(string.Join(' ', arguments));
     }
 
     public override string ToString()
     {
         return $"Output {ArgumentCount}";
+    }
+
+    public OutputOperation(Scope parentScope, PseudoProgram program) : base(parentScope, program)
+    {
     }
 }

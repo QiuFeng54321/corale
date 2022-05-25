@@ -15,15 +15,10 @@ public class PrimitiveType<T> : Type
     
     public Instance LogicOperation(Instance i1, Instance i2, Func<T, T, bool> func)
     {
-        return ParentScope.FindType("BOOLEAN").Instance(func(CastFrom(i1).Get<T>(), CastFrom(i2).Get<T>()));
+        return Scope.FindType("BOOLEAN").Instance(func(CastFrom(i1).Get<T>(), CastFrom(i2).Get<T>()));
     }
     public Instance LogicUnaryOperation(Instance i, Func<T, bool> func)
     {
-        return ParentScope.FindType("BOOLEAN").Instance(func(CastFrom(i).Get<T>()));
-    }
-
-    public override Instance Instance(object value = null)
-    {
-        return new Instance { Type = this, Value = value };
+        return Scope.FindType("BOOLEAN").Instance(func(CastFrom(i).Get<T>()));
     }
 }

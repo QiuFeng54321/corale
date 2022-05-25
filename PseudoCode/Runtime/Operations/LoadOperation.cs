@@ -7,11 +7,15 @@ public class LoadOperation : Operation
     public override void Operate()
     {
         base.Operate();
-        Scope.RuntimeStack.Push(new ReferenceInstance { Scope = Scope, ReferenceName = LoadName });
+        ParentScope.RuntimeStack.Push(new ReferenceInstance(ParentScope, Program) { ReferenceAddress = ParentScope.FindInstanceAddress(LoadName)});
     }
 
     public override string ToString()
     {
         return $"Push ref {LoadName}";
+    }
+
+    public LoadOperation(Scope parentScope, PseudoProgram program) : base(parentScope, program)
+    {
     }
 }

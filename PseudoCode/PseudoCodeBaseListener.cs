@@ -196,29 +196,41 @@ public partial class PseudoCodeBaseListener : IPseudoCodeListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitCompoundStatement([NotNull] PseudoCodeParser.CompoundStatementContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="PseudoCodeParser.block"/>.
+	/// Enter a parse tree produced by <see cref="PseudoCodeParser.scopedExpression"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterBlock([NotNull] PseudoCodeParser.BlockContext context) { }
+	public virtual void EnterScopedExpression([NotNull] PseudoCodeParser.ScopedExpressionContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="PseudoCodeParser.block"/>.
+	/// Exit a parse tree produced by <see cref="PseudoCodeParser.scopedExpression"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitBlock([NotNull] PseudoCodeParser.BlockContext context) { }
+	public virtual void ExitScopedExpression([NotNull] PseudoCodeParser.ScopedExpressionContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="PseudoCodeParser.aligned_block"/>.
+	/// Enter a parse tree produced by <see cref="PseudoCodeParser.indentedBlock"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterAligned_block([NotNull] PseudoCodeParser.Aligned_blockContext context) { }
+	public virtual void EnterIndentedBlock([NotNull] PseudoCodeParser.IndentedBlockContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="PseudoCodeParser.aligned_block"/>.
+	/// Exit a parse tree produced by <see cref="PseudoCodeParser.indentedBlock"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitAligned_block([NotNull] PseudoCodeParser.Aligned_blockContext context) { }
+	public virtual void ExitIndentedBlock([NotNull] PseudoCodeParser.IndentedBlockContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="PseudoCodeParser.alignedBlock"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterAlignedBlock([NotNull] PseudoCodeParser.AlignedBlockContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="PseudoCodeParser.alignedBlock"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitAlignedBlock([NotNull] PseudoCodeParser.AlignedBlockContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="PseudoCodeParser.ifStatement"/>.
 	/// <para>The default implementation does nothing.</para>

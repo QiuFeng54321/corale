@@ -115,24 +115,26 @@ compoundStatement
  | pointerDefinition
  | classDefinition
  ;
-block: INDENT statement+ DEDENT;
-aligned_block: statement (INDENT statement+ DEDENT)?;
-ifStatement locals [bool HasElse]: If expression Then block (Else block {$HasElse = true;})? Endif;
-forStatement: For lvalue AssignmentNotation valueRange (Step arithmeticExpression)? block Next Identifier;
-whileStatement: While logicExpression Do block Endwhile;
-repeatStatement: Repeat block Until expression;
+// This expression will be scoped.
+scopedExpression: expression;
+indentedBlock: INDENT statement+ DEDENT;
+alignedBlock: statement (INDENT statement+ DEDENT)?;
+ifStatement locals [bool HasElse]: If scopedExpression Then indentedBlock (Else indentedBlock {$HasElse = true;})? Endif;
+forStatement: For lvalue AssignmentNotation valueRange (Step arithmeticExpression)? indentedBlock Next Identifier;
+whileStatement: While scopedExpression Do indentedBlock Endwhile;
+repeatStatement: Repeat indentedBlock Until scopedExpression;
 
 caseStatement: Case arithmeticExpression Of caseBody Endcase;
 caseBranch
- : (Otherwise | atom | valueRange) Colon aligned_block
+ : (Otherwise | atom | valueRange) Colon alignedBlock
  | NL
  ;
 caseBody: INDENT caseBranch+ DEDENT;
 
 valueRange: expression To expression;
 
-procedureDefinition: Procedure identifierWithNew argumentsDeclaration? block Endprocedure;
-functionDefinition: Function Identifier argumentsDeclaration? Returns dataType block Endfunction;
+procedureDefinition: Procedure identifierWithNew argumentsDeclaration? indentedBlock Endprocedure;
+functionDefinition: Function Identifier argumentsDeclaration? Returns dataType indentedBlock Endfunction;
 argumentsDeclaration: OpenParen (argumentDeclaration (Comma argumentDeclaration)*)? CloseParen;
 argumentDeclaration: passMethod=(Byval | Byref)? Identifier Colon dataType;
 tuple: expression (Comma expression)*;

@@ -51,7 +51,7 @@ public class RealType : PrimitiveType<decimal>
 
     public override Instance IntDivide(Instance i1, Instance i2)
     {
-        return ParentScope.FindType(IntegerId).CastFrom(
+        return Scope.FindType(IntegerId).CastFrom(
             ArithmeticOperation(i1, i2, (arg1, arg2) => (int)(arg1 / arg2)));
     }
     

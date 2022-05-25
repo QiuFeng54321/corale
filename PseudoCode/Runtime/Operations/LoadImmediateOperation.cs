@@ -7,11 +7,15 @@ public class LoadImmediateOperation : Operation
     public override void Operate()
     {
         base.Operate();
-        Scope.RuntimeStack.Push(Intermediate);
+        ParentScope.RuntimeStack.Push(Intermediate);
     }
 
     public override string ToString()
     {
         return $"Push immediate {Intermediate}";
+    }
+
+    public LoadImmediateOperation(Scope parentScope, PseudoProgram program) : base(parentScope, program)
+    {
     }
 }

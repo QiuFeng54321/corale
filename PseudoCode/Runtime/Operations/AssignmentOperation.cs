@@ -4,13 +4,17 @@ public class AssignmentOperation : Operation
 {
     public override void Operate()
     {
-        var value = Scope.RuntimeStack.Pop();
-        var to = Scope.RuntimeStack.Pop();
+        var value = ParentScope.RuntimeStack.Pop();
+        var to = ParentScope.RuntimeStack.Pop();
         to.Type.Assign(to, value);
     }
 
     public override string ToString()
     {
         return "Assign";
+    }
+
+    public AssignmentOperation(Scope parentScope, PseudoProgram program) : base(parentScope, program)
+    {
     }
 }

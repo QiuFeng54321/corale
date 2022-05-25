@@ -11,20 +11,23 @@ public class Type
         BooleanId = 3,
         CharId = 4,
         DateId = 5,
-        ArrayId = 6;
+        NullId = 6,
+        ArrayId = 7;
 
     private static uint _incrementId = ArrayId;
-    public Scope ParentScope;
+    public Scope Scope;
+    public PseudoProgram Program;
     public virtual uint Id { get; set; } = ++_incrementId;
     public virtual string Name { get; set; } = null!;
     public Dictionary<string, Type> Members { get; } = new();
 
     public virtual Instance Instance(object value = null)
     {
-        var instance = new Instance
+        var instance = new Instance(Scope, Program)
         {
             Type = this,
-            Members = new Dictionary<string, Instance>()
+            Members = new Dictionary<string, Instance>(),
+            Value = value
         };
         foreach (var member in Members) instance.Members[member.Key] = member.Value.Instance();
 

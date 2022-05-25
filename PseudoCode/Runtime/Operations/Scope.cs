@@ -2,35 +2,43 @@ namespace PseudoCode.Runtime.Operations;
 
 public class Scope : Operation
 {
-    public Dictionary<string, Instance> Instances = new();
+    public Dictionary<string, uint> InstanceAddresses = new();
     public List<Operation> Operations = new();
-    public Scope Parent;
     public Stack<Instance> RuntimeStack = new();
     public Dictionary<string, Type> Types = new();
 
     public Instance FindInstance(string name)
     {
-        return Instances.ContainsKey(name) ? Instances[name] : Parent?.FindInstance(name);
+        return ParentScope.Program.Memory[FindInstanceAddress(name)];
+    }
+
+    public uint FindInstanceAddress(string name)
+    {
+        return InstanceAddresses.ContainsKey(name)
+            ? InstanceAddresses[name]
+            : ParentScope?.FindInstanceAddress(name) ??
+              throw new InvalidOperationException($"Instance {name} cannot be found.");
     }
 
     public Type FindType(string typeName)
     {
-        return Types.ContainsKey(typeName) ? Types[typeName] : Parent?.FindType(typeName);
+        return Types.ContainsKey(typeName) ? Types[typeName] : ParentScope?.FindType(typeName);
     }
+
     public Type FindType(uint id)
     {
         var t = Types.FirstOrDefault(t => t.Value.Id == id, new KeyValuePair<string, Type>());
-        return t.Value ?? Parent?.FindType(id);
+        return t.Value ?? ParentScope?.FindType(id);
     }
 
     public Scope AddScope()
     {
-        return new() { Parent = this };
+        return new Scope(this, Program);
     }
 
     public void AddType(string name, Type type)
     {
-        type.ParentScope = this;
+        type.Scope = this;
         Types.Add(name, type);
     }
 
@@ -58,5 +66,9 @@ public class Scope : Operation
     public override string ToString()
     {
         return $"Scope\n\t{string.Join("\n\t", Operations)}\nUnscope";
+    }
+
+    public Scope(Scope parentScope, PseudoProgram program) : base(parentScope, program)
+    {
     }
 }

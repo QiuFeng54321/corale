@@ -4,10 +4,9 @@ namespace PseudoCode.Runtime;
 
 public class ReferenceInstance : Instance
 {
-    public string ReferenceName;
-    public Scope Scope;
+    public uint ReferenceAddress { get; set; }
 
-    public Instance ReferencedInstance => Scope.FindInstance(ReferenceName);
+    public Instance ReferencedInstance => Program.Memory[ReferenceAddress];
 
     public override Dictionary<string, Instance> Members => ReferencedInstance.Members;
     public override Type Type => ReferencedInstance.Type;
@@ -22,5 +21,9 @@ public class ReferenceInstance : Instance
     public override string ToString()
     {
         return $"Ref {ReferencedInstance}";
+    }
+
+    public ReferenceInstance(Scope parentScope, PseudoProgram program) : base(parentScope, program)
+    {
     }
 }
