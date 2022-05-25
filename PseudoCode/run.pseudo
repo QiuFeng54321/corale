@@ -8,3 +8,8 @@ a <- 1 + 2.3
 OUTPUT a, a + 2 + a
 a <- -(a + a * -a POW 2 POW 3) DIV 100 MOD 100
 OUTPUT a
+IF a <> 64 THEN
+    OUTPUT b
+ELSE
+    OUTPUT a
+ENDIF

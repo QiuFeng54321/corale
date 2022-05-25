@@ -3,7 +3,7 @@ namespace PseudoCode.Runtime.Operations;
 public class Scope : Operation
 {
     public Dictionary<string, Instance> Instances = new();
-    public Queue<Operation> Operations = new();
+    public List<Operation> Operations = new();
     public Scope Parent;
     public Stack<Instance> RuntimeStack = new();
     public Dictionary<string, Type> Types = new();
@@ -34,6 +34,21 @@ public class Scope : Operation
         Types.Add(name, type);
     }
 
+    public void AddOperation(Operation operation)
+    {
+        Operations.Add(operation);
+    }
+
+    public Operation Take(int i)
+    {
+        var res = Operations[i];
+        Operations.RemoveAt(i);
+        return res;
+    }
+
+    public Operation TakeFirst() => Take(0);
+    public Operation TakeLast() => Take(Operations.Count - 1);
+
     public override void Operate()
     {
         base.Operate();
@@ -42,6 +57,6 @@ public class Scope : Operation
 
     public override string ToString()
     {
-        return $"Scope\n{string.Join('\n', Operations)}\nUnscope";
+        return $"Scope\n\t{string.Join("\n\t", Operations)}\nUnscope";
     }
 }

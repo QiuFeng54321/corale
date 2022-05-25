@@ -117,7 +117,7 @@ compoundStatement
  ;
 block: INDENT statement+ DEDENT;
 aligned_block: statement (INDENT statement+ DEDENT)?;
-ifStatement: If expression Then block (Else block)? Endif;
+ifStatement locals [bool HasElse]: If expression Then block (Else block {$HasElse = true;})? Endif;
 forStatement: For lvalue AssignmentNotation valueRange (Step arithmeticExpression)? block Next Identifier;
 whileStatement: While logicExpression Do block Endwhile;
 repeatStatement: Repeat block Until expression;

@@ -21,6 +21,6 @@ public class ReferenceInstance : Instance
 
     public override string ToString()
     {
-        return $"Ref {base.ToString()}";
+        return $"Ref {ReferencedInstance}";
     }
 }

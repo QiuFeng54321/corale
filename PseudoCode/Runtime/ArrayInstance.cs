@@ -26,4 +26,9 @@ public class ArrayInstance : Instance
     {
         return Array[Dimensions[0].ToRealIndex(index)];
     }
+
+    public override string ToString()
+    {
+        return $"{{{ElementType}[{string.Join(',',Dimensions)}]: [{string.Join<Instance>(',', Array)}]}}";
+    }
 }
