@@ -15,4 +15,8 @@
         <ProjectReference Include="..\antlr-denter\CSharp\AntlrDenter\AntlrDenter.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="ConsoleApplication" />
+    </ItemGroup>
+
 </Project>

@@ -156,13 +156,13 @@ expression
  : logicExpression
  ;
 
-logicExpression
- : logicExpression comparisonOp logicExpression
- | Not logicExpression
- | logicExpression And logicExpression
- | logicExpression Or logicExpression
- | arithmeticExpression
- | '(' logicExpression ')'
+logicExpression locals [bool IsUnary]
+ : logicExpression comp=comparisonOp logicExpression
+ | op=Not logicExpression {$IsUnary = true;}
+ | logicExpression op=And logicExpression
+ | logicExpression op=Or logicExpression
+ | arithmeticExpression {$IsUnary = true;}
+ | '(' logicExpression ')' {$IsUnary = true;}
  ;
 comparisonOp: Smaller | Greater | Equal | GreaterEqual | SmallerEqual | NotEqual;
 
@@ -219,7 +219,7 @@ atom locals [string AtomType, object Value]
  : number
  | String
  | Char
- | Boolean
+ | Boolean {$AtomType = "BOOLEAN"; $Value = bool.Parse($Boolean.text);}
  | Date
  | array
  ;

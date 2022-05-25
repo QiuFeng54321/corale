@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using PseudoCode.Runtime.Operations;
 
 namespace PseudoCode.Runtime;
@@ -47,6 +48,8 @@ public class Type
             { PseudoCodeLexer.Smaller, Smaller },
             { PseudoCodeLexer.Equal, Equal },
             { PseudoCodeLexer.NotEqual, NotEqual },
+            { PseudoCodeLexer.And, And },
+            { PseudoCodeLexer.Or, Or },
         };
         UnaryOperators = new()
         {
@@ -62,94 +65,118 @@ public class Type
     public Dictionary<int, BinaryOperator> BinaryOperators = new();
     public Dictionary<int, UnaryOperator> UnaryOperators = new();
 
+    public virtual void ThrowUnsupported(Instance i1, Instance i2 = null, [CallerMemberName] string caller = "Unknown")
+    {
+        throw new NotSupportedException(
+            $"Cannot perform {caller} operation on {i1.Type} {(i2 != null ? "and " + i2.Type : "")}");
+    }
+
     public virtual Instance Add(Instance i1, Instance i2)
     {
-        throw new NotSupportedException();
+        ThrowUnsupported(i1, i2);
+        return null;
     }
 
     public virtual Instance Subtract(Instance i1, Instance i2)
     {
-        throw new NotSupportedException();
+        ThrowUnsupported(i1, i2);
+        return null;
     }
 
     public virtual Instance Multiply(Instance i1, Instance i2)
     {
-        throw new NotSupportedException();
+        ThrowUnsupported(i1, i2);
+        return null;
     }
 
     public virtual Instance Divide(Instance i1, Instance i2)
     {
-        throw new NotSupportedException();
+        ThrowUnsupported(i1, i2);
+        return null;
     }
 
     public virtual Instance IntDivide(Instance i1, Instance i2)
     {
-        throw new NotSupportedException();
+        ThrowUnsupported(i1, i2);
+        return null;
     }
 
     public virtual Instance Mod(Instance i1, Instance i2)
     {
-        throw new NotSupportedException();
+        ThrowUnsupported(i1, i2);
+        return null;
     }
 
     public virtual Instance Pow(Instance i1, Instance i2)
     {
-        throw new NotSupportedException();
+        ThrowUnsupported(i1, i2);
+        return null;
     }
 
     public virtual Instance Negative(Instance i)
     {
-        throw new NotSupportedException();
+        ThrowUnsupported(i);
+        return null;
     }
 
-    public virtual Instance Index(Instance i)
+    public virtual Instance Index(Instance i1, Instance i2)
     {
-        throw new NotSupportedException();
+        ThrowUnsupported(i1, i2);
+        return null;
     }
 
     public virtual Instance Not(Instance i)
     {
-        throw new NotSupportedException();
+        ThrowUnsupported(i);
+        return null;
     }
 
     public virtual Instance And(Instance i1, Instance i2)
     {
-        throw new NotSupportedException();
+        ThrowUnsupported(i1, i2);
+        return null;
     }
 
     public virtual Instance Or(Instance i1, Instance i2)
     {
-        throw new NotSupportedException();
+        ThrowUnsupported(i1, i2);
+        return null;
     }
 
     public virtual Instance Equal(Instance i1, Instance i2)
     {
-        throw new NotSupportedException();
+        ThrowUnsupported(i1, i2);
+        return null;
     }
 
     public virtual Instance NotEqual(Instance i1, Instance i2)
     {
-        throw new NotSupportedException();
+        ThrowUnsupported(i1, i2);
+        return null;
     }
 
     public virtual Instance Greater(Instance i1, Instance i2)
     {
-        throw new NotSupportedException();
+        ThrowUnsupported(i1, i2);
+        return null;
     }
 
     public virtual Instance Smaller(Instance i1, Instance i2)
     {
-        throw new NotSupportedException();
+        ThrowUnsupported(i1, i2);
+        return null;
     }
 
     public virtual Instance GreaterEqual(Instance i1, Instance i2)
     {
-        throw new NotSupportedException();
+        ThrowUnsupported(i1, i2);
+        return null;
     }
 
     public virtual Instance SmallerEqual(Instance i1, Instance i2)
     {
-        throw new NotSupportedException();
+        ThrowUnsupported(i1, i2);
+        return null;
     }
 
     public virtual Instance CastFrom(Instance i)

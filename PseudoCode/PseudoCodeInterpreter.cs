@@ -12,6 +12,7 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
     {
         base.EnterFileInput(context);
         CurrentScope = GlobalScope;
+        GlobalScope.AddType("BOOLEAN", new BooleanType());
         GlobalScope.AddType("INTEGER", new IntegerType());
         GlobalScope.AddType("REAL", new RealType());
         GlobalScope.AddType("ARRAY", new ArrayType());
@@ -82,6 +83,19 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
                 CurrentScope.Operations.Enqueue(new UnaryOperation{Scope = CurrentScope, OperatorMethod = context.op.Type});
             else 
                 CurrentScope.Operations.Enqueue(new BinaryOperation { Scope = CurrentScope, OperatorMethod = context.op.Type});
+    }
+
+    public override void ExitLogicExpression(PseudoCodeParser.LogicExpressionContext context)
+    {
+        base.ExitLogicExpression(context);
+        var op = context.op ?? context.comp?.Start;
+        if (op != null)
+            if (context.IsUnary)
+                // TODO ambiguous operator with Caret
+                CurrentScope.Operations.Enqueue(new UnaryOperation{Scope = CurrentScope, OperatorMethod = op.Type});
+            else 
+                CurrentScope.Operations.Enqueue(new BinaryOperation { Scope = CurrentScope, OperatorMethod = op.Type});
+
     }
 
     public override void ExitIoStatement(PseudoCodeParser.IoStatementContext context)

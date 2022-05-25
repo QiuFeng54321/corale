@@ -49,6 +49,31 @@ public class IntegerType : PrimitiveType<int>
     {
         return ArithmeticOperation(i1, i2, (arg1, arg2) => arg1 / arg2);
     }
+    
+    public override Instance Greater(Instance i1, Instance i2)
+    {
+        return ParentScope.FindType(RealId).Greater(i1, i2);
+    }
+    public override Instance GreaterEqual(Instance i1, Instance i2)
+    {
+        return ParentScope.FindType(RealId).GreaterEqual(i1, i2);
+    }
+    public override Instance Smaller(Instance i1, Instance i2)
+    {
+        return ParentScope.FindType(RealId).Smaller(i1, i2);
+    }
+    public override Instance SmallerEqual(Instance i1, Instance i2)
+    {
+        return ParentScope.FindType(RealId).SmallerEqual(i1, i2);
+    }
+    public override Instance Equal(Instance i1, Instance i2)
+    {
+        return ParentScope.FindType(RealId).Equal(i1, i2);
+    }
+    public override Instance NotEqual(Instance i1, Instance i2)
+    {
+        return ParentScope.FindType(RealId).NotEqual(i1, i2);
+    }
     public override Instance CastFrom(Instance i)
     {
         return Instance(Convert.ToInt32(i.Value));

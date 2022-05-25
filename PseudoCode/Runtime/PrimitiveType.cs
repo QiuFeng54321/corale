@@ -12,6 +12,15 @@ public class PrimitiveType<T> : Type
     {
         return Instance(func(CastFrom(i).Get<T>()));
     }
+    
+    public Instance LogicOperation(Instance i1, Instance i2, Func<T, T, bool> func)
+    {
+        return ParentScope.FindType("BOOLEAN").Instance(func(CastFrom(i1).Get<T>(), CastFrom(i2).Get<T>()));
+    }
+    public Instance LogicUnaryOperation(Instance i, Func<T, bool> func)
+    {
+        return ParentScope.FindType("BOOLEAN").Instance(func(CastFrom(i).Get<T>()));
+    }
 
     public override Instance Instance(object value = null)
     {
