@@ -63,9 +63,9 @@ public class Scope : Operation
         foreach (var operation in Operations) operation.Operate();
     }
 
-    public override string ToString()
+    public override string ToString(int depth)
     {
-        return $"Scope\n\t{string.Join("\n\t", Operations)}\nUnscope";
+        return $"{Indent(depth)}{{\n{string.Join("\n", Operations.Select(o => o.ToString(depth + 1)))}\n{Indent(depth)}}}";
     }
 
     public Scope(Scope parentScope, PseudoProgram program) : base(parentScope, program)

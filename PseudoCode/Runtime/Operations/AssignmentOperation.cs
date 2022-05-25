@@ -9,7 +9,7 @@ public class AssignmentOperation : Operation
         to.Type.Assign(to, value);
     }
 
-    public override string ToString()
+    public override string ToPlainString()
     {
         return "Assign";
     }

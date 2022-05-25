@@ -12,7 +12,7 @@ public class BinaryOperation : Operation
         ParentScope.RuntimeStack.Push(to);
     }
 
-    public override string ToString()
+    public override string ToPlainString()
     {
         return $"Binary {OperatorMethod}";
     }

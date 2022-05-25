@@ -22,7 +22,7 @@ public class DeclareOperation : Operation
         }
     }
 
-    public override string ToString()
+    public override string ToPlainString()
     {
         var typeStr = Dimensions.Count == 0 ? Type.ToString() : $"ARRAY[{string.Join(',', Dimensions)}] OF {Type}";
         return $"DECLARE {Name} : {typeStr}";

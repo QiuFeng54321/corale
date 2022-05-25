@@ -20,9 +20,9 @@ public class IfOperation : Operation
         }
     }
 
-    public override string ToString()
+    public override string ToString(int depth)
     {
-        return $"Test:\n{TestExpressionScope}\nTrue:\n{TrueBlock}\n{(FalseBlock != null ? $"False:\n{FalseBlock}" : "")}";
+        return $"{Indent(depth)}Branch:\n{TestExpressionScope.ToString(depth)}\n{Indent(depth)}True:\n{TrueBlock.ToString(depth)}\n{(FalseBlock != null ? $"{Indent(depth)}False:\n{FalseBlock.ToString(depth)}" : "")}";
     }
 
     public IfOperation(Scope parentScope, PseudoProgram program) : base(parentScope, program)

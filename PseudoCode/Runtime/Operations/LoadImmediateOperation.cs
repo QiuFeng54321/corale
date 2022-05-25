@@ -10,7 +10,7 @@ public class LoadImmediateOperation : Operation
         ParentScope.RuntimeStack.Push(Intermediate);
     }
 
-    public override string ToString()
+    public override string ToPlainString()
     {
         return $"Push immediate {Intermediate}";
     }

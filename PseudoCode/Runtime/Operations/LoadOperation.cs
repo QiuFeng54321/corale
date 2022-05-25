@@ -10,7 +10,7 @@ public class LoadOperation : Operation
         ParentScope.RuntimeStack.Push(new ReferenceInstance(ParentScope, Program) { ReferenceAddress = ParentScope.FindInstanceAddress(LoadName)});
     }
 
-    public override string ToString()
+    public override string ToPlainString()
     {
         return $"Push ref {LoadName}";
     }

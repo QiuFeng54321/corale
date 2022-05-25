@@ -14,7 +14,7 @@ public class OutputOperation : Operation
         Console.WriteLine(string.Join(' ', arguments));
     }
 
-    public override string ToString()
+    public override string ToPlainString()
     {
         return $"Output {ArgumentCount}";
     }
