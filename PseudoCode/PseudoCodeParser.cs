@@ -45,8 +45,8 @@ public partial class PseudoCodeParser : Parser {
 		Of=15, Otherwise=16, Endcase=17, For=18, To=19, Step=20, Next=21, While=22, 
 		Do=23, Endwhile=24, Repeat=25, Until=26, If=27, Then=28, Else=29, Endif=30, 
 		Procedure=31, Endprocedure=32, Call=33, Function=34, Endfunction=35, Byval=36, 
-		Byref=37, Returns=38, Return=39, Type=40, Endtype=41, Openfile=42, Readfile=43, 
-		Writefile=44, Closefile=45, Seek=46, Getrecord=47, Putrecord=48, Read=49, 
+		Byref=37, Returns=38, Return=39, Type=40, Endtype=41, OpenFile=42, ReadFile=43, 
+		WriteFile=44, CloseFile=45, Seek=46, GetRecord=47, PutRecord=48, Read=49, 
 		Write=50, Append=51, Random=52, Class=53, Endclass=54, Inherits=55, Private=56, 
 		Public=57, New=58, And=59, Or=60, Not=61, OpenParen=62, CloseParen=63, 
 		OpenBrack=64, CloseBrack=65, OpenBrace=66, CloseBrace=67, Colon=68, Comma=69, 
@@ -105,8 +105,8 @@ public partial class PseudoCodeParser : Parser {
 		"Of", "Otherwise", "Endcase", "For", "To", "Step", "Next", "While", "Do", 
 		"Endwhile", "Repeat", "Until", "If", "Then", "Else", "Endif", "Procedure", 
 		"Endprocedure", "Call", "Function", "Endfunction", "Byval", "Byref", "Returns", 
-		"Return", "Type", "Endtype", "Openfile", "Readfile", "Writefile", "Closefile", 
-		"Seek", "Getrecord", "Putrecord", "Read", "Write", "Append", "Random", 
+		"Return", "Type", "Endtype", "OpenFile", "ReadFile", "WriteFile", "CloseFile", 
+		"Seek", "GetRecord", "PutRecord", "Read", "Write", "Append", "Random", 
 		"Class", "Endclass", "Inherits", "Private", "Public", "New", "And", "Or", 
 		"Not", "OpenParen", "CloseParen", "OpenBrack", "CloseBrack", "OpenBrace", 
 		"CloseBrace", "Colon", "Comma", "Dot", "Add", "Subtract", "Multiply", 
@@ -182,7 +182,7 @@ public partial class PseudoCodeParser : Parser {
 			State = 107;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NL) | (1L << Declare) | (1L << Constant) | (1L << IoKeyword) | (1L << Case) | (1L << For) | (1L << While) | (1L << Repeat) | (1L << If) | (1L << Procedure) | (1L << Call) | (1L << Function) | (1L << Return) | (1L << Type) | (1L << Openfile) | (1L << Readfile) | (1L << Writefile) | (1L << Closefile) | (1L << Seek) | (1L << Getrecord) | (1L << Putrecord) | (1L << Class))) != 0) || _la==Identifier) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NL) | (1L << Declare) | (1L << Constant) | (1L << IoKeyword) | (1L << Case) | (1L << For) | (1L << While) | (1L << Repeat) | (1L << If) | (1L << Procedure) | (1L << Call) | (1L << Function) | (1L << Return) | (1L << Type) | (1L << OpenFile) | (1L << ReadFile) | (1L << WriteFile) | (1L << CloseFile) | (1L << Seek) | (1L << GetRecord) | (1L << PutRecord) | (1L << Class))) != 0) || _la==Identifier) {
 				{
 				{
 				State = 104;
@@ -300,13 +300,13 @@ public partial class PseudoCodeParser : Parser {
 			case Function:
 			case Return:
 			case Type:
-			case Openfile:
-			case Readfile:
-			case Writefile:
-			case Closefile:
+			case OpenFile:
+			case ReadFile:
+			case WriteFile:
+			case CloseFile:
 			case Seek:
-			case Getrecord:
-			case Putrecord:
+			case GetRecord:
+			case PutRecord:
 			case Class:
 			case Identifier:
 				EnterOuterAlt(_localctx, 1);
@@ -319,13 +319,13 @@ public partial class PseudoCodeParser : Parser {
 				case IoKeyword:
 				case Call:
 				case Return:
-				case Openfile:
-				case Readfile:
-				case Writefile:
-				case Closefile:
+				case OpenFile:
+				case ReadFile:
+				case WriteFile:
+				case CloseFile:
 				case Seek:
-				case Getrecord:
-				case Putrecord:
+				case GetRecord:
+				case PutRecord:
 				case Identifier:
 					{
 					State = 115;
@@ -491,13 +491,13 @@ public partial class PseudoCodeParser : Parser {
 				ioStatement();
 				}
 				break;
-			case Openfile:
-			case Readfile:
-			case Writefile:
-			case Closefile:
+			case OpenFile:
+			case ReadFile:
+			case WriteFile:
+			case CloseFile:
 			case Seek:
-			case Getrecord:
-			case Putrecord:
+			case GetRecord:
+			case PutRecord:
 				EnterOuterAlt(_localctx, 5);
 				{
 				State = 128;
@@ -841,7 +841,7 @@ public partial class PseudoCodeParser : Parser {
 
 	public partial class FileStatementContext : ParserRuleContext {
 		public IToken fileMode;
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Openfile() { return GetToken(PseudoCodeParser.Openfile, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OpenFile() { return GetToken(PseudoCodeParser.OpenFile, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext[] expression() {
 			return GetRuleContexts<ExpressionContext>();
 		}
@@ -853,16 +853,16 @@ public partial class PseudoCodeParser : Parser {
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Write() { return GetToken(PseudoCodeParser.Write, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Append() { return GetToken(PseudoCodeParser.Append, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Random() { return GetToken(PseudoCodeParser.Random, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Readfile() { return GetToken(PseudoCodeParser.Readfile, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ReadFile() { return GetToken(PseudoCodeParser.ReadFile, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Comma() { return GetToken(PseudoCodeParser.Comma, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public LvalueContext lvalue() {
 			return GetRuleContext<LvalueContext>(0);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Writefile() { return GetToken(PseudoCodeParser.Writefile, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Closefile() { return GetToken(PseudoCodeParser.Closefile, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode WriteFile() { return GetToken(PseudoCodeParser.WriteFile, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CloseFile() { return GetToken(PseudoCodeParser.CloseFile, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Seek() { return GetToken(PseudoCodeParser.Seek, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Getrecord() { return GetToken(PseudoCodeParser.Getrecord, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Putrecord() { return GetToken(PseudoCodeParser.Putrecord, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode GetRecord() { return GetToken(PseudoCodeParser.GetRecord, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode PutRecord() { return GetToken(PseudoCodeParser.PutRecord, 0); }
 		public FileStatementContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -889,11 +889,11 @@ public partial class PseudoCodeParser : Parser {
 			State = 190;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
-			case Openfile:
+			case OpenFile:
 				EnterOuterAlt(_localctx, 1);
 				{
 				State = 158;
-				Match(Openfile);
+				Match(OpenFile);
 				State = 159;
 				expression();
 				State = 160;
@@ -910,11 +910,11 @@ public partial class PseudoCodeParser : Parser {
 				}
 				}
 				break;
-			case Readfile:
+			case ReadFile:
 				EnterOuterAlt(_localctx, 2);
 				{
 				State = 163;
-				Match(Readfile);
+				Match(ReadFile);
 				State = 164;
 				expression();
 				State = 165;
@@ -923,11 +923,11 @@ public partial class PseudoCodeParser : Parser {
 				lvalue(0);
 				}
 				break;
-			case Writefile:
+			case WriteFile:
 				EnterOuterAlt(_localctx, 3);
 				{
 				State = 168;
-				Match(Writefile);
+				Match(WriteFile);
 				State = 169;
 				expression();
 				State = 170;
@@ -936,11 +936,11 @@ public partial class PseudoCodeParser : Parser {
 				expression();
 				}
 				break;
-			case Closefile:
+			case CloseFile:
 				EnterOuterAlt(_localctx, 4);
 				{
 				State = 173;
-				Match(Closefile);
+				Match(CloseFile);
 				State = 174;
 				expression();
 				}
@@ -958,11 +958,11 @@ public partial class PseudoCodeParser : Parser {
 				expression();
 				}
 				break;
-			case Getrecord:
+			case GetRecord:
 				EnterOuterAlt(_localctx, 6);
 				{
 				State = 180;
-				Match(Getrecord);
+				Match(GetRecord);
 				State = 181;
 				expression();
 				State = 182;
@@ -971,11 +971,11 @@ public partial class PseudoCodeParser : Parser {
 				lvalue(0);
 				}
 				break;
-			case Putrecord:
+			case PutRecord:
 				EnterOuterAlt(_localctx, 7);
 				{
 				State = 185;
-				Match(Putrecord);
+				Match(PutRecord);
 				State = 186;
 				expression();
 				State = 187;
@@ -1240,7 +1240,7 @@ public partial class PseudoCodeParser : Parser {
 				State = 211;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NL) | (1L << Declare) | (1L << Constant) | (1L << IoKeyword) | (1L << Case) | (1L << For) | (1L << While) | (1L << Repeat) | (1L << If) | (1L << Procedure) | (1L << Call) | (1L << Function) | (1L << Return) | (1L << Type) | (1L << Openfile) | (1L << Readfile) | (1L << Writefile) | (1L << Closefile) | (1L << Seek) | (1L << Getrecord) | (1L << Putrecord) | (1L << Class))) != 0) || _la==Identifier );
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NL) | (1L << Declare) | (1L << Constant) | (1L << IoKeyword) | (1L << Case) | (1L << For) | (1L << While) | (1L << Repeat) | (1L << If) | (1L << Procedure) | (1L << Call) | (1L << Function) | (1L << Return) | (1L << Type) | (1L << OpenFile) | (1L << ReadFile) | (1L << WriteFile) | (1L << CloseFile) | (1L << Seek) | (1L << GetRecord) | (1L << PutRecord) | (1L << Class))) != 0) || _la==Identifier );
 			State = 213;
 			Match(DEDENT);
 			}
@@ -1312,7 +1312,7 @@ public partial class PseudoCodeParser : Parser {
 					State = 220;
 					ErrorHandler.Sync(this);
 					_la = TokenStream.LA(1);
-				} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NL) | (1L << Declare) | (1L << Constant) | (1L << IoKeyword) | (1L << Case) | (1L << For) | (1L << While) | (1L << Repeat) | (1L << If) | (1L << Procedure) | (1L << Call) | (1L << Function) | (1L << Return) | (1L << Type) | (1L << Openfile) | (1L << Readfile) | (1L << Writefile) | (1L << Closefile) | (1L << Seek) | (1L << Getrecord) | (1L << Putrecord) | (1L << Class))) != 0) || _la==Identifier );
+				} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NL) | (1L << Declare) | (1L << Constant) | (1L << IoKeyword) | (1L << Case) | (1L << For) | (1L << While) | (1L << Repeat) | (1L << If) | (1L << Procedure) | (1L << Call) | (1L << Function) | (1L << Return) | (1L << Type) | (1L << OpenFile) | (1L << ReadFile) | (1L << WriteFile) | (1L << CloseFile) | (1L << Seek) | (1L << GetRecord) | (1L << PutRecord) | (1L << Class))) != 0) || _la==Identifier );
 				State = 222;
 				Match(DEDENT);
 				}

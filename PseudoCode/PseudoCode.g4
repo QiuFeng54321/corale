@@ -93,13 +93,13 @@ ioStatement: IoKeyword tuple;
 returnStatement: Return expression;
 callStatement: Call expression arguments?;
 fileStatement
- : Openfile expression For fileMode=(Read | Write | Append | Random)
- | Readfile expression Comma lvalue
- | Writefile expression Comma expression
- | Closefile expression
+ : OpenFile expression For fileMode=(Read | Write | Append | Random)
+ | ReadFile expression Comma lvalue
+ | WriteFile expression Comma expression
+ | CloseFile expression
  | Seek expression Comma expression
- | Getrecord expression Comma lvalue
- | Putrecord expression Comma expression
+ | GetRecord expression Comma lvalue
+ | PutRecord expression Comma expression
  ;
 
 compoundStatement
@@ -324,13 +324,13 @@ Return : 'RETURN';
 Type : 'TYPE';
 Endtype : 'ENDTYPE';
 
-Openfile : 'OPENFILE';
-Readfile : 'READFILE';
-Writefile : 'WRITEFILE';
-Closefile : 'CLOSEFILE';
+OpenFile : 'OPENFILE';
+ReadFile : 'READFILE';
+WriteFile : 'WRITEFILE';
+CloseFile : 'CLOSEFILE';
 Seek : 'SEEK';
-Getrecord : 'GETRECORD';
-Putrecord : 'PUTRECORD';
+GetRecord : 'GETRECORD';
+PutRecord : 'PUTRECORD';
 Read : 'READ';
 Write : 'WRITE';
 Append : 'APPEND';
