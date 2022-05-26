@@ -46,9 +46,11 @@ public class ArrayInstance : Instance
         return Array[Dimensions[0].ToRealIndex(index)];
     }
 
-    public override string ToString()
+    public override string Represent() => $"[{string.Join<Instance>(',', Array)}]";
+
+    public override string DebugRepresent()
     {
-        return $"{{{ElementType}[{string.Join(',', Dimensions)}]: [{string.Join<Instance>(',', Array)}]}}";
+        return $"{{{ElementType}[{string.Join(',', Dimensions)}]: {Represent()}}}";
     }
 
     public ArrayInstance(Scope parentScope, PseudoProgram program) : base(parentScope, program)

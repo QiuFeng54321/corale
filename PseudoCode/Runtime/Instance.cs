@@ -24,9 +24,10 @@ public class Instance
         return (T)Value;
     }
 
+    public virtual string Represent() => Value?.ToString() ?? "";
+    public virtual string DebugRepresent() => $"{{{Type} {Represent()} {{{(Members != null ? string.Join(',', Members.Select(p => $"{p.Key} = {p.Value}")) : "")}}}}}";
     public override string ToString()
     {
-        return
-            $"{{{Type} {Value ?? ""} {{{(Members != null ? string.Join(',', Members.Select(p => $"{p.Key} = {p.Value}")) : "")}}}}}";
+        return Represent();
     }
 }

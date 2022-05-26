@@ -17,11 +17,10 @@ public class ReferenceInstance : Instance
         set => ReferencedInstance.Value = value;
     }
 
+    public override string Represent() => ReferencedInstance.Represent();
 
-    public override string ToString()
-    {
-        return $"Ref {ReferencedInstance}";
-    }
+    public override string DebugRepresent() => $"Ref {ReferencedInstance.DebugRepresent()}";
+    
 
     public ReferenceInstance(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {
