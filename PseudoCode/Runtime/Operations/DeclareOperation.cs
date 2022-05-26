@@ -18,6 +18,7 @@ public class DeclareOperation : Operation
         else
         {
             var arrayInstance = ((ArrayType)ParentScope.FindType("ARRAY")).Instance(Dimensions, Type);
+            arrayInstance.InitialiseInMemory();
             ParentScope.InstanceAddresses.Add(Name, Program.AllocateId(arrayInstance));
         }
     }

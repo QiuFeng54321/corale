@@ -223,7 +223,7 @@ atom locals [string AtomType, object Value]
  | Char
  | Boolean {$AtomType = "BOOLEAN"; $Value = bool.Parse($Boolean.text);}
  | Date
- | array
+ | array {$AtomType = "ARRAY";}
  ;
 
 dataType locals [string TypeName, bool IsArray, List<Range> Dimensions = new()]

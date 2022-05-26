@@ -17,14 +17,29 @@ public class ArrayInstance : Instance
 
     public int TotalElements => Dimensions.Select(d => d.Length).Aggregate((prev, next) => prev * next);
 
-    public void Initialise()
+    public void InitialiseArray()
+    {
+        Array = new Instance[TotalElements];
+    }
+
+    public void InitialiseInMemory()
     {
         StartAddress = Program.Allocate(TotalElements, () => ElementType.Instance());
-        Array = new Instance[TotalElements];
         for (var i = 0u; i < Array.Length; i++)
-            Array[i] = new ReferenceInstance(ParentScope, Program) {ReferenceAddress = StartAddress + i};
+            Array[i] = new ReferenceInstance(ParentScope, Program) { ReferenceAddress = StartAddress + i };
     }
-    
+
+    public void InitialiseNonReference()
+    {
+        for (var i = 0u; i < Array.Length; i++)
+            Array[i] = ElementType.Instance();
+    }
+
+    public void InitialiseFromList(IEnumerable<Instance> instances)
+    {
+        Array = instances.ToArray();
+    }
+
 
     public Instance ElementAt(int index)
     {

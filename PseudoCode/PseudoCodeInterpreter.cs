@@ -106,9 +106,20 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
     public override void ExitAtom(PseudoCodeParser.AtomContext context)
     {
         base.ExitAtom(context);
+        if (context.AtomType == "ARRAY") return; // Let array handle on its own
         CurrentScope.AddOperation(new LoadImmediateOperation(CurrentScope, Program)
         {
             Intermediate = CurrentScope.FindType(context.AtomType).Instance(context.Value),
+            SourceLocation = SourceLocation(context)
+        });
+    }
+
+    public override void ExitArray(PseudoCodeParser.ArrayContext context)
+    {
+        base.ExitArray(context);
+        CurrentScope.AddOperation(new FormImmediateArrayOperation(CurrentScope, Program)
+        {
+            Length = context.expression().Length,
             SourceLocation = SourceLocation(context)
         });
     }

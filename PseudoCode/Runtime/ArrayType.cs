@@ -20,8 +20,16 @@ public class ArrayType : Type
         var i = (ArrayInstance)Instance();
         i.Dimensions = dimensions;
         i.ElementType = elementType;
-        i.Initialise();
+        i.InitialiseArray();
         return i;
+    }
+
+    public override void Assign(Instance to, Instance value)
+    {
+        for (var i = 0; i < ((Instance[])value.Value).Length; i++)
+        {
+            ((Instance[])to.Value)[i].Type.Assign(((Instance[])to.Value)[i], ((Instance[])value.Value)[i]);
+        }
     }
 
     public override Instance Index(Instance i1, Instance i2)
