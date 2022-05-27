@@ -195,6 +195,7 @@ arithmeticExpression locals [bool IsUnary]
  | operand1=arithmeticExpression op=Mod operand2=arithmeticExpression
  | operand1=arithmeticExpression op=Subtract operand2=arithmeticExpression
  | operand1=arithmeticExpression op=Add operand2=arithmeticExpression
+ | operand1=arithmeticExpression op=BitAnd operand2=arithmeticExpression
  | '(' arithmeticExpression ')' {$IsUnary = true;}
  ;
 
@@ -219,8 +220,12 @@ arguments: OpenParen tuple? CloseParen;
 
 atom locals [string AtomType, object Value]
  : number
- | String
- | Char
+ | String {
+    $AtomType = "STRING";
+    var str = System.Text.RegularExpressions.Regex.Unescape($String.text);
+    $Value = str.Substring(1, str.Length - 2);
+ }
+ | Character
  | Boolean {$AtomType = "BOOLEAN"; $Value = bool.Parse($Boolean.text);}
  | Date
  | array {$AtomType = "ARRAY";}
@@ -260,12 +265,15 @@ number
  identifierWithNew: Identifier | New;
 
  
+Character
+	:	'\'' SingleCharacter '\''
+	|	'\'' EscapeSequence '\''
+	;
+// §3.10.5 String Literals
 String
- : '"' .*? '"' 
- ;
-Char
- : '\'' . '\''
- ;
+	:	'"' StringCharacters? '"'
+	;
+
 
 // Value is either 1. or .1 and not just a single '.' to avoid ambiguity with DOT
 Decimal
@@ -364,6 +372,7 @@ Dot : '.';
 Add : '+';
 Subtract : '-';
 Multiply : '*';
+BitAnd : '&';
 IntDivide : 'DIV';
 Divide : '/';
 Mod : 'MOD';
@@ -424,3 +433,39 @@ fragment IdContinue
  : IdStart
  | [0-9]
  ;
+ 
+fragment SingleCharacter
+    	:	~['\\\r\n]
+    	;
+fragment StringCharacters
+	:	StringCharacter+
+	;
+fragment StringCharacter
+	:	~["\\\r\n]
+	|	EscapeSequence
+	;
+// §3.10.6 Escape Sequences for Character and String Literals
+fragment EscapeSequence
+	:	'\\' [btnfr"'\\]
+	|	OctalEscape
+    |   UnicodeEscape // This is not in the spec but prevents having to preprocess the input
+	;
+
+fragment OctalEscape
+	:	'\\' OctalDigit
+	|	'\\' OctalDigit OctalDigit
+	|	'\\' ZeroToThree OctalDigit OctalDigit
+	;
+// This is not in the spec but prevents having to preprocess the input
+fragment UnicodeEscape
+    :   '\\' 'u'+  HexDigit HexDigit HexDigit HexDigit
+    ;
+fragment OctalDigit
+	:	[0-7]
+	;
+fragment HexDigit
+	:	[0-9a-fA-F]
+	;
+fragment ZeroToThree
+    	:	[0-3]
+    	;

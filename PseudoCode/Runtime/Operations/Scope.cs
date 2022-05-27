@@ -37,9 +37,9 @@ public class Scope : Operation
         return t.Value ?? ParentScope?.FindType(id);
     }
 
-    public Scope AddScope()
+    public Scope AddScope(SourceLocation sourceLocation = default)
     {
-        return new Scope(this, Program);
+        return new Scope(this, Program) {SourceLocation = sourceLocation};
     }
 
     public void AddType(string name, Type type)
@@ -80,7 +80,7 @@ public class Scope : Operation
             }
             catch (Error e)
             {
-                e.Operation = operation;
+                e.Operation ??= operation;
                 e.OperationStackTrace.Add(this);
                 throw;
             }

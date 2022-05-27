@@ -16,22 +16,30 @@ ENDIF
 b <- [[1, 2, 3, 4],[5, 6, 7, 8], [9, 10, 11, 12]]
 b[2,3] <- 3
 OUTPUT b
+DECLARE Name : STRING
+OUTPUT "What is your name?"
+INPUT Name
+OUTPUT "Hi" & Name
 
-
-DECLARE i : INTEGER
-DECLARE Total : INTEGER
-i <- 1
-Total <- 0
-WHILE i <= 100 DO
-    Total <- Total + i
-    i <- i + 1
+DECLARE FibCount : INTEGER
+DECLARE FibSeq : ARRAY[1:100] OF INTEGER
+DECLARE TopCalculated : INTEGER
+DECLARE ContinueFib : BOOLEAN
+FibSeq[1] <- 1
+FibSeq[2] <- 1
+TopCalculated <- 2
+ContinueFib <- TRUE
+WHILE ContinueFib DO
+    REPEAT
+        OUTPUT "Input Fib Count (1 to 100):"
+        INPUT FibCount
+    UNTIL FibCount <= 100 AND FibCount >= 1
+    WHILE TopCalculated < FibCount DO
+        TopCalculated <- TopCalculated + 1
+        FibSeq[TopCalculated] <- FibSeq[TopCalculated - 2] + FibSeq[TopCalculated - 1]
+    ENDWHILE
+    OUTPUT "The", FibCount, "th fibonacci number is:", FibSeq[FibCount]
+    OUTPUT "The whole array is:", FibSeq
+    OUTPUT "Continue?"
+    INPUT ContinueFib
 ENDWHILE
-OUTPUT Total
-
-i <- 1
-Total <- 0
-REPEAT
-    Total <- Total + i
-    i <- i + 1
-UNTIL i > 100
-OUTPUT Total

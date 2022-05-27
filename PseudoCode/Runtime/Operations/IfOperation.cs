@@ -13,12 +13,14 @@ public class IfOperation : Operation
     {
         base.Operate();
         TestExpressionScope.Operate();
-        var test = ParentScope.FindType("BOOLEAN").CastFrom(TestExpressionScope.RuntimeStack.Pop());
+        var test = ParentScope.FindType("BOOLEAN").HandledCastFrom(TestExpressionScope.RuntimeStack.Pop());
         if (test.Get<bool>())
             TrueBlock.Operate();
         else
             FalseBlock?.Operate();
     }
+
+    public override string ToPlainString() => "If";
 
     public override string ToString(int depth)
     {

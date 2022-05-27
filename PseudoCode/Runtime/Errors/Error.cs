@@ -22,7 +22,7 @@ public class Error : Exception
 {GetType().Name}: {Message}
 Occured in operation: {Operation}
 Stack Trace:
-{string.Join('\n', OperationStackTrace.Select(o => o.ToPlainString()))}
+{string.Join('\n', OperationStackTrace.Select(o => $"{o.ToPlainString()} {o.SourceLocation}"))}
 Possible Causes:
 {string.Join('\n', PossibleCauses)}";
     }

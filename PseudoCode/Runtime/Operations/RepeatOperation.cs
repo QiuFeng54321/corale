@@ -17,16 +17,18 @@ public class RepeatOperation : Operation
         if (TestFirst)
         {
             TestExpressionScope.Operate();
-            test = ParentScope.FindType("BOOLEAN").CastFrom(TestExpressionScope.RuntimeStack.Pop()).Get<bool>();
+            test = ParentScope.FindType("BOOLEAN").HandledCastFrom(TestExpressionScope.RuntimeStack.Pop()).Get<bool>();
         }
 
         while (test)
         {
             RepeatBlock.Operate();
             TestExpressionScope.Operate();
-            test = ParentScope.FindType("BOOLEAN").CastFrom(TestExpressionScope.RuntimeStack.Pop()).Get<bool>();
+            test = ParentScope.FindType("BOOLEAN").HandledCastFrom(TestExpressionScope.RuntimeStack.Pop()).Get<bool>();
         }
     }
+
+    public override string ToPlainString() => TestFirst ? "While" : "Repeat-Until";
 
     public override string ToString(int depth)
     {

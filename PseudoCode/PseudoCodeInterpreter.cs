@@ -24,9 +24,9 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
         Program.GlobalScope.Operate();
     }
 
-    public void EnterScope()
+    public void EnterScope(SourceLocation sourceLocation = default)
     {
-        CurrentScope = CurrentScope.AddScope();
+        CurrentScope = CurrentScope.AddScope(sourceLocation);
     }
 
     public void ExitScope()
@@ -144,12 +144,23 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
     {
         base.ExitIoStatement(context);
         // Console.WriteLine($"{context.IO_KEYWORD()} {context.expression().GetText()}");
-        if (context.IoKeyword().GetText() == "OUTPUT")
-            CurrentScope.AddOperation(new OutputOperation(CurrentScope, Program)
-            {
-                ArgumentCount = context.tuple().expression().Length,
-                SourceLocation = SourceLocation(context)
-            });
+        var action = context.IoKeyword().GetText();
+        switch (action)
+        {
+            case "OUTPUT":
+                CurrentScope.AddOperation(new OutputOperation(CurrentScope, Program)
+                {
+                    ArgumentCount = context.tuple().expression().Length,
+                    SourceLocation = SourceLocation(context)
+                });
+                break;
+            case "INPUT":
+                CurrentScope.AddOperation(new InputOperation(CurrentScope, Program)
+                {
+                    SourceLocation = SourceLocation(context)
+                });
+                break;
+        }
     }
 
     public override void ExitIfStatement(PseudoCodeParser.IfStatementContext context)
@@ -202,7 +213,7 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
     public override void EnterIndentedBlock(PseudoCodeParser.IndentedBlockContext context)
     {
         base.EnterIndentedBlock(context);
-        EnterScope();
+        EnterScope(SourceLocation(context));
     }
 
     public override void ExitIndentedBlock(PseudoCodeParser.IndentedBlockContext context)
@@ -214,7 +225,7 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
     public override void EnterAlignedBlock(PseudoCodeParser.AlignedBlockContext context)
     {
         base.EnterAlignedBlock(context);
-        EnterScope();
+        EnterScope(SourceLocation(context));
     }
 
     public override void ExitAlignedBlock(PseudoCodeParser.AlignedBlockContext context)
@@ -226,7 +237,7 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
     public override void EnterScopedExpression(PseudoCodeParser.ScopedExpressionContext context)
     {
         base.EnterScopedExpression(context);
-        EnterScope();
+        EnterScope(SourceLocation(context));
     }
 
     public override void ExitScopedExpression(PseudoCodeParser.ScopedExpressionContext context)

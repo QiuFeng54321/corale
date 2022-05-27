@@ -59,6 +59,7 @@ public class PseudoProgram
         GlobalScope.AddType("INTEGER", new IntegerType { Scope = GlobalScope, Program = this });
         GlobalScope.AddType("REAL", new RealType { Scope = GlobalScope, Program = this });
         GlobalScope.AddType("ARRAY", new ArrayType { Scope = GlobalScope, Program = this });
+        GlobalScope.AddType("STRING", new StringType { Scope = GlobalScope, Program = this });
         GlobalScope.AddType("NULL", new NullType { Scope = GlobalScope, Program = this });
         Instance.Null = GlobalScope.FindType("NULL").Instance();
     }

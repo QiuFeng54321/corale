@@ -44,6 +44,7 @@ public class Type
             { PseudoCodeLexer.Equal, Equal },
             { PseudoCodeLexer.NotEqual, NotEqual },
             { PseudoCodeLexer.And, And },
+            { PseudoCodeLexer.BitAnd, BitAnd },
             { PseudoCodeLexer.Or, Or }
         };
         UnaryOperators = new Dictionary<int, UnaryOperator>
@@ -141,6 +142,11 @@ public class Type
         ThrowUnsupported(i1, i2);
         return null;
     }
+    public virtual Instance BitAnd(Instance i1, Instance i2)
+    {
+        ThrowUnsupported(i1, i2);
+        return null;
+    }
 
     public virtual Instance Or(Instance i1, Instance i2)
     {
@@ -186,14 +192,31 @@ public class Type
 
     public virtual Instance CastFrom(Instance i)
     {
-        throw new UnsupportedCastError($"{i.Type} to {this}", null);
+        throw MakeUnsupportedCastError(i);
+    }
+
+    private UnsupportedCastError MakeUnsupportedCastError(Instance i, string systemMsg = "")
+    {
+        return new UnsupportedCastError($"{i.Type} to {this}{(systemMsg.Length != 0 ? ": " : "")}{systemMsg}", null);
+    }
+
+    public Instance HandledCastFrom(Instance i)
+    {
+        try
+        {
+            return CastFrom(i);
+        }
+        catch (FormatException e)
+        {
+            throw MakeUnsupportedCastError(i, e.Message);
+        }
     }
 
     public virtual void Assign(Instance to, Instance value)
     {
         if (to.Type.Id != value.Type.Id)
         {
-            var casted = to.Type.CastFrom(value);
+            var casted = to.Type.HandledCastFrom(value);
             to.Value = casted.Value;
             to.Type = casted.Type;
         }

@@ -1,5 +1,6 @@
 a <- 1 - 2 - 3 + 3 * 4 POW 5 POW (6 + 7)
 b <- 2 > 6
+arr[0] <- "hi\n\"\u3594"
 CONSTANT const = 2
 OUTPUT "Hi"
 DECLARE arr : ARRAY[1:3, 2:5] OF STRING

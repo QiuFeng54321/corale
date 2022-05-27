@@ -91,6 +91,6 @@ public class IntegerType : PrimitiveType<int>
 
     public Instance CastToReal(Instance i)
     {
-        return Scope.FindType(RealId).CastFrom(i);
+        return Scope.FindType(RealId).HandledCastFrom(i);
     }
 }
