@@ -8,15 +8,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Antlr4.Runtime.Standard" Version="4.10.1" />
+        <PackageReference Include="Antlr4.Runtime.Standard" Version="4.10.1"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\antlr-denter\CSharp\AntlrDenter\AntlrDenter.csproj" />
+        <ProjectReference Include="..\antlr-denter\CSharp\AntlrDenter\AntlrDenter.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="ConsoleApplication" />
+        <None Remove="ConsoleApplication"/>
     </ItemGroup>
 
 </Project>

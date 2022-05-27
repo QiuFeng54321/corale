@@ -6,6 +6,10 @@ namespace PseudoCode.Runtime;
 
 public class Type
 {
+    public delegate Instance BinaryOperator(Instance i1, Instance i2);
+
+    public delegate Instance UnaryOperator(Instance i);
+
     public const uint IntegerId = 0,
         RealId = 1,
         StringId = 2,
@@ -16,8 +20,39 @@ public class Type
         ArrayId = 7;
 
     private static uint _incrementId = ArrayId;
-    public Scope Scope;
+
+    public Dictionary<int, BinaryOperator> BinaryOperators = new();
     public PseudoProgram Program;
+    public Scope Scope;
+    public Dictionary<int, UnaryOperator> UnaryOperators = new();
+
+    public Type()
+    {
+        BinaryOperators = new Dictionary<int, BinaryOperator>
+        {
+            { PseudoCodeLexer.Add, Add },
+            { PseudoCodeLexer.Multiply, Multiply },
+            { PseudoCodeLexer.Divide, Divide },
+            { PseudoCodeLexer.Subtract, Subtract },
+            { PseudoCodeLexer.Pow, Pow },
+            { PseudoCodeLexer.IntDivide, IntDivide },
+            { PseudoCodeLexer.Mod, Mod },
+            { PseudoCodeLexer.Greater, Greater },
+            { PseudoCodeLexer.GreaterEqual, GreaterEqual },
+            { PseudoCodeLexer.SmallerEqual, SmallerEqual },
+            { PseudoCodeLexer.Smaller, Smaller },
+            { PseudoCodeLexer.Equal, Equal },
+            { PseudoCodeLexer.NotEqual, NotEqual },
+            { PseudoCodeLexer.And, And },
+            { PseudoCodeLexer.Or, Or }
+        };
+        UnaryOperators = new Dictionary<int, UnaryOperator>
+        {
+            { PseudoCodeLexer.Subtract, Negative },
+            { PseudoCodeLexer.Not, Not }
+        };
+    }
+
     public virtual uint Id { get; set; } = ++_incrementId;
     public virtual string Name { get; set; } = null!;
     public Dictionary<string, Type> Members { get; } = new();
@@ -34,40 +69,6 @@ public class Type
 
         return instance;
     }
-
-    public Type()
-    {
-        BinaryOperators = new()
-        {
-            { PseudoCodeLexer.Add, Add },
-            { PseudoCodeLexer.Multiply, Multiply },
-            { PseudoCodeLexer.Divide, Divide },
-            { PseudoCodeLexer.Subtract, Subtract },
-            { PseudoCodeLexer.Pow, Pow },
-            { PseudoCodeLexer.IntDivide, IntDivide },
-            { PseudoCodeLexer.Mod, Mod },
-            { PseudoCodeLexer.Greater, Greater },
-            { PseudoCodeLexer.GreaterEqual, GreaterEqual },
-            { PseudoCodeLexer.SmallerEqual, SmallerEqual },
-            { PseudoCodeLexer.Smaller, Smaller },
-            { PseudoCodeLexer.Equal, Equal },
-            { PseudoCodeLexer.NotEqual, NotEqual },
-            { PseudoCodeLexer.And, And },
-            { PseudoCodeLexer.Or, Or },
-        };
-        UnaryOperators = new()
-        {
-            { PseudoCodeLexer.Subtract, Negative },
-            { PseudoCodeLexer.Not, Not },
-        };
-    }
-
-    public delegate Instance BinaryOperator(Instance i1, Instance i2);
-
-    public delegate Instance UnaryOperator(Instance i);
-
-    public Dictionary<int, BinaryOperator> BinaryOperators = new();
-    public Dictionary<int, UnaryOperator> UnaryOperators = new();
 
     public virtual void ThrowUnsupported(Instance i1, Instance i2 = null, [CallerMemberName] string caller = "Unknown")
     {

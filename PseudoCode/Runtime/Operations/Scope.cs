@@ -9,6 +9,10 @@ public class Scope : Operation
     public Stack<Instance> RuntimeStack = new();
     public Dictionary<string, Type> Types = new();
 
+    public Scope(Scope parentScope, PseudoProgram program) : base(parentScope, program)
+    {
+    }
+
     public Instance FindInstance(string name)
     {
         return ParentScope.Program.Memory[FindInstanceAddress(name)];
@@ -56,14 +60,20 @@ public class Scope : Operation
         return res;
     }
 
-    public Operation TakeFirst() => Take(0);
-    public Operation TakeLast() => Take(Operations.Count - 1);
+    public Operation TakeFirst()
+    {
+        return Take(0);
+    }
+
+    public Operation TakeLast()
+    {
+        return Take(Operations.Count - 1);
+    }
 
     public override void Operate()
     {
         base.Operate();
         foreach (var operation in Operations)
-        {
             try
             {
                 operation.Operate();
@@ -74,17 +84,16 @@ public class Scope : Operation
                 e.OperationStackTrace.Add(this);
                 throw;
             }
-        }
     }
 
-    public override string ToPlainString() => ParentScope == null ? "Global scope" : "Anonymous scope";
+    public override string ToPlainString()
+    {
+        return ParentScope == null ? "Global scope" : "Anonymous scope";
+    }
 
     public override string ToString(int depth)
     {
-        return $"{Indent(depth)}{{\n{string.Join("\n", Operations.Select(o => o.ToString(depth + 1)))}\n{Indent(depth)}}}";
-    }
-
-    public Scope(Scope parentScope, PseudoProgram program) : base(parentScope, program)
-    {
+        return
+            $"{Indent(depth)}{{\n{string.Join("\n", Operations.Select(o => o.ToString(depth + 1)))}\n{Indent(depth)}}}";
     }
 }

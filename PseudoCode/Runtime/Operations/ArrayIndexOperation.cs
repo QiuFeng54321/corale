@@ -14,5 +14,8 @@ public class ArrayIndexOperation : Operation
         ParentScope.RuntimeStack.Push(instance.Type.Index(instance, index));
     }
 
-    public override string ToPlainString() => "Array index access";
+    public override string ToPlainString()
+    {
+        return "Array index access";
+    }
 }

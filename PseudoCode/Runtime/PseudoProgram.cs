@@ -1,13 +1,11 @@
-using System.Buffers;
-using System.Collections;
 using PseudoCode.Runtime.Operations;
 
 namespace PseudoCode.Runtime;
 
 public class PseudoProgram
 {
-    public Scope GlobalScope;
     public uint CurrentInstanceAddress;
+    public Scope GlobalScope;
     public Dictionary<uint, Instance> Memory = new();
 
     public PseudoProgram()
@@ -24,15 +22,15 @@ public class PseudoProgram
         return i.InstanceAddress;
     }
 
-    public uint AllocateId(Func<Instance> generator) => AllocateId(generator());
+    public uint AllocateId(Func<Instance> generator)
+    {
+        return AllocateId(generator());
+    }
 
     public uint Allocate(int length, Func<Instance> generator)
     {
         var startAddress = CurrentInstanceAddress;
-        for (var i = 0; i < length; i++)
-        {
-            AllocateId(generator);
-        }
+        for (var i = 0; i < length; i++) AllocateId(generator);
 
         return startAddress;
     }
@@ -51,9 +49,8 @@ public class PseudoProgram
     public void ReleaseMemory(Range segment)
     {
         for (var i = (uint)segment.Start; i < segment.End; i++)
-        {
-            if (Memory.ContainsKey(i)) Memory.Remove(i);
-        }
+            if (Memory.ContainsKey(i))
+                Memory.Remove(i);
     }
 
     public void AddPrimitiveTypes()

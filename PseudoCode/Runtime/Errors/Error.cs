@@ -4,9 +4,9 @@ namespace PseudoCode.Runtime.Errors;
 
 public class Error : Exception
 {
+    public Operation Operation;
     public List<Operation> OperationStackTrace;
     public IEnumerable<string> PossibleCauses;
-    public Operation Operation;
 
     public Error(string message, Operation operation, IEnumerable<string> possibleCauses = default,
         List<Operation> stackTrace = default) : base(message)

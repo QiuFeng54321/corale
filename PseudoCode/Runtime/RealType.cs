@@ -40,10 +40,12 @@ public class RealType : PrimitiveType<decimal>
     {
         return ArithmeticOperation(i1, i2, (arg1, arg2) => arg1 / arg2);
     }
+
     public override Instance Mod(Instance i1, Instance i2)
     {
         return ArithmeticOperation(i1, i2, (arg1, arg2) => arg1 % arg2);
     }
+
     public override Instance Pow(Instance i1, Instance i2)
     {
         return ArithmeticOperation(i1, i2, (arg1, arg2) => (decimal)Math.Pow((double)arg1, (double)arg2));
@@ -54,27 +56,32 @@ public class RealType : PrimitiveType<decimal>
         return Scope.FindType(IntegerId).CastFrom(
             ArithmeticOperation(i1, i2, (arg1, arg2) => (int)(arg1 / arg2)));
     }
-    
+
     public override Instance Greater(Instance i1, Instance i2)
     {
         return LogicOperation(i1, i2, (arg1, arg2) => arg1 > arg2);
     }
+
     public override Instance GreaterEqual(Instance i1, Instance i2)
     {
         return LogicOperation(i1, i2, (arg1, arg2) => arg1 >= arg2);
     }
+
     public override Instance Smaller(Instance i1, Instance i2)
     {
         return LogicOperation(i1, i2, (arg1, arg2) => arg1 < arg2);
     }
+
     public override Instance SmallerEqual(Instance i1, Instance i2)
     {
         return LogicOperation(i1, i2, (arg1, arg2) => arg1 <= arg2);
     }
+
     public override Instance Equal(Instance i1, Instance i2)
     {
         return LogicOperation(i1, i2, (arg1, arg2) => arg1 == arg2);
     }
+
     public override Instance NotEqual(Instance i1, Instance i2)
     {
         return LogicOperation(i1, i2, (arg1, arg2) => arg1 != arg2);

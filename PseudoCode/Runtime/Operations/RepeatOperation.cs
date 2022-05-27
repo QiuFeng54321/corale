@@ -2,14 +2,18 @@ namespace PseudoCode.Runtime.Operations;
 
 public class RepeatOperation : Operation
 {
-    public Scope TestExpressionScope;
     public Operation RepeatBlock;
+    public Scope TestExpressionScope;
     public bool TestFirst = true;
+
+    public RepeatOperation(Scope parentScope, PseudoProgram program) : base(parentScope, program)
+    {
+    }
 
     public override void Operate()
     {
         base.Operate();
-        bool test = true;
+        var test = true;
         if (TestFirst)
         {
             TestExpressionScope.Operate();
@@ -30,9 +34,5 @@ public class RepeatOperation : Operation
             TestFirst
                 ? $"{Indent(depth)}While:\n{TestExpressionScope.ToString(depth)}\n{Indent(depth)}Do:\n{RepeatBlock.ToString(depth)}"
                 : $"{Indent(depth)}Do:\n{RepeatBlock.ToString(depth)}\n{Indent(depth)}While:\n{TestExpressionScope.ToString(depth)}";
-    }
-
-    public RepeatOperation(Scope parentScope, PseudoProgram program) : base(parentScope, program)
-    {
     }
 }

@@ -2,6 +2,10 @@ namespace PseudoCode.Runtime.Operations;
 
 public class AssignmentOperation : Operation
 {
+    public AssignmentOperation(Scope parentScope, PseudoProgram program) : base(parentScope, program)
+    {
+    }
+
     public override void Operate()
     {
         var value = ParentScope.RuntimeStack.Pop();
@@ -12,9 +16,5 @@ public class AssignmentOperation : Operation
     public override string ToPlainString()
     {
         return "Assign";
-    }
-
-    public AssignmentOperation(Scope parentScope, PseudoProgram program) : base(parentScope, program)
-    {
     }
 }

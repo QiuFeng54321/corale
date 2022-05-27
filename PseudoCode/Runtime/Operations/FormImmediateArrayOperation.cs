@@ -16,13 +16,9 @@ public class FormImmediateArrayOperation : Operation
         {
             var instance = ParentScope.RuntimeStack.Pop();
             if (instance is ArrayInstance arrayInstance)
-            {
                 elements.InsertRange(0, arrayInstance.Array);
-            }
             else
-            {
                 elements.Insert(0, instance);
-            }
         }
 
         var formedInstance = ((ArrayType)ParentScope.FindType("ARRAY")).Instance(

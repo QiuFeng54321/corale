@@ -10,6 +10,10 @@ public class ArrayInstance : Instance
     public Type ElementType;
     public uint StartAddress;
 
+    public ArrayInstance(Scope parentScope, PseudoProgram program) : base(parentScope, program)
+    {
+    }
+
     public override object Value
     {
         get => Array;
@@ -66,7 +70,6 @@ public class ArrayInstance : Instance
         }
 
         if (enumerable.Length == Dimensions.Count)
-        {
             // var index = 0;
             // var factor = 1;
             // // TODO: return an array when length of indices and dimensions doesn't match
@@ -76,7 +79,6 @@ public class ArrayInstance : Instance
             //     factor *= Dimensions[Dimensions.Count - 1 - i].Length;
             // }
             return ElementAt(index);
-        }
 
 
         var arrayInstance = ((ArrayType)Type).Instance(Dimensions.Skip(enumerable.Length).ToList(), ElementType);
@@ -85,14 +87,13 @@ public class ArrayInstance : Instance
         return arrayInstance;
     }
 
-    public override string Represent() => $"[{string.Join<Instance>(',', Array)}]";
+    public override string Represent()
+    {
+        return $"[{string.Join<Instance>(',', Array)}]";
+    }
 
     public override string DebugRepresent()
     {
         return $"{{{ElementType}[{string.Join(',', Dimensions)}]: {Represent()}}}";
-    }
-
-    public ArrayInstance(Scope parentScope, PseudoProgram program) : base(parentScope, program)
-    {
     }
 }

@@ -8,6 +8,10 @@ public class DeclareOperation : Operation
     public string Name;
     public Type Type;
 
+    public DeclareOperation(Scope parentScope, PseudoProgram program) : base(parentScope, program)
+    {
+    }
+
     public override void Operate()
     {
         base.Operate();
@@ -29,9 +33,5 @@ public class DeclareOperation : Operation
     {
         var typeStr = Dimensions.Count == 0 ? Type.ToString() : $"ARRAY[{string.Join(',', Dimensions)}] OF {Type}";
         return $"DECLARE {Name} : {typeStr}";
-    }
-
-    public DeclareOperation(Scope parentScope, PseudoProgram program) : base(parentScope, program)
-    {
     }
 }

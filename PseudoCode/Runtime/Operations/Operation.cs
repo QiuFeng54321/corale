@@ -16,12 +16,23 @@ public class Operation
     {
     }
 
-    public string Indent(int depth) => new(' ', depth * 4);
-    public virtual string ToPlainString() => "Operation";
+    public string Indent(int depth)
+    {
+        return new(' ', depth * 4);
+    }
+
+    public virtual string ToPlainString()
+    {
+        return "Operation";
+    }
+
     public virtual string ToString(int depth)
     {
         return $"{Indent(depth)}{ToPlainString()} {(SourceLocation != null ? $"# {SourceLocation}" : "")}";
     }
 
-    public override string ToString() => ToString(0);
+    public override string ToString()
+    {
+        return ToString(0);
+    }
 }

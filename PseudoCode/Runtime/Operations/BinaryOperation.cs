@@ -3,6 +3,11 @@ namespace PseudoCode.Runtime.Operations;
 public class BinaryOperation : Operation
 {
     public int OperatorMethod;
+
+    public BinaryOperation(Scope parentScope, PseudoProgram program) : base(parentScope, program)
+    {
+    }
+
     public override void Operate()
     {
         base.Operate();
@@ -15,9 +20,5 @@ public class BinaryOperation : Operation
     public override string ToPlainString()
     {
         return $"Binary {OperatorMethod}";
-    }
-
-    public BinaryOperation(Scope parentScope, PseudoProgram program) : base(parentScope, program)
-    {
     }
 }

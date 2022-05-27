@@ -6,8 +6,9 @@ namespace PseudoCode;
 
 public class PseudoCodeInterpreter : PseudoCodeBaseListener
 {
-    public PseudoProgram Program;
     public Scope CurrentScope;
+    public PseudoProgram Program;
+
     public override void EnterFileInput(PseudoCodeParser.FileInputContext context)
     {
         base.EnterFileInput(context);
@@ -23,7 +24,10 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
         Program.GlobalScope.Operate();
     }
 
-    public void EnterScope() => CurrentScope = CurrentScope.AddScope();
+    public void EnterScope()
+    {
+        CurrentScope = CurrentScope.AddScope();
+    }
 
     public void ExitScope()
     {
@@ -31,51 +35,11 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
         CurrentScope = CurrentScope.ParentScope;
     }
 
-    #region ScopedExpressions
-
-    public override void EnterIndentedBlock(PseudoCodeParser.IndentedBlockContext context)
-    {
-        base.EnterIndentedBlock(context);
-        EnterScope();
-    }
-
-    public override void ExitIndentedBlock(PseudoCodeParser.IndentedBlockContext context)
-    {
-        base.ExitIndentedBlock(context);
-        ExitScope();
-    }
-
-    public override void EnterAlignedBlock(PseudoCodeParser.AlignedBlockContext context)
-    {
-        base.EnterAlignedBlock(context);
-        EnterScope();
-    }
-
-    public override void ExitAlignedBlock(PseudoCodeParser.AlignedBlockContext context)
-    {
-        base.ExitAlignedBlock(context);
-        ExitScope();
-    }
-
-    public override void EnterScopedExpression(PseudoCodeParser.ScopedExpressionContext context)
-    {
-        base.EnterScopedExpression(context);
-        EnterScope();
-    }
-
-    public override void ExitScopedExpression(PseudoCodeParser.ScopedExpressionContext context)
-    {
-        base.ExitScopedExpression(context);
-        ExitScope();
-    }
-
-    #endregion
-
     public override void ExitDeclarationStatement(PseudoCodeParser.DeclarationStatementContext context)
     {
         base.ExitDeclarationStatement(context);
         // Console.WriteLine($"DECLARE {context.IDENTIFIER().GetText()} : {context.dataType().GetText()}");
-        CurrentScope.AddOperation(new DeclareOperation (CurrentScope, Program)
+        CurrentScope.AddOperation(new DeclareOperation(CurrentScope, Program)
         {
             Name = context.Identifier().GetText(),
             Type = CurrentScope.FindType(context.dataType().TypeName),
@@ -83,10 +47,12 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
             SourceLocation = SourceLocation(context)
         });
     }
+
     private static SourceLocation SourceLocation(IToken token)
     {
         return token == null ? null : new SourceLocation(token.Line, token.Column + 1);
     }
+
     private static SourceLocation SourceLocation(ParserRuleContext context)
     {
         return SourceLocation(context.Start);
@@ -126,22 +92,18 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
     public override void ExitArithmeticExpression(PseudoCodeParser.ArithmeticExpressionContext context)
     {
         base.ExitArithmeticExpression(context);
-        
+
         if (context.array() != null)
-        {
             CurrentScope.AddOperation(new ArrayIndexOperation(CurrentScope, Program)
             {
                 SourceLocation = SourceLocation(context.array())
             });
-        }
-        else if (context.Identifier() != null && context.IsUnary){
-            // TODO
+        else if (context.Identifier() != null && context.IsUnary) // TODO
             CurrentScope.AddOperation(new LoadOperation(CurrentScope, Program)
             {
                 LoadName = context.Identifier().GetText(),
                 SourceLocation = SourceLocation(context)
             });
-        }
         if (context.op != null)
             if (context.IsUnary)
                 // TODO ambiguous operator with Caret
@@ -235,4 +197,44 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
             SourceLocation = SourceLocation(context)
         });
     }
+
+    #region ScopedExpressions
+
+    public override void EnterIndentedBlock(PseudoCodeParser.IndentedBlockContext context)
+    {
+        base.EnterIndentedBlock(context);
+        EnterScope();
+    }
+
+    public override void ExitIndentedBlock(PseudoCodeParser.IndentedBlockContext context)
+    {
+        base.ExitIndentedBlock(context);
+        ExitScope();
+    }
+
+    public override void EnterAlignedBlock(PseudoCodeParser.AlignedBlockContext context)
+    {
+        base.EnterAlignedBlock(context);
+        EnterScope();
+    }
+
+    public override void ExitAlignedBlock(PseudoCodeParser.AlignedBlockContext context)
+    {
+        base.ExitAlignedBlock(context);
+        ExitScope();
+    }
+
+    public override void EnterScopedExpression(PseudoCodeParser.ScopedExpressionContext context)
+    {
+        base.EnterScopedExpression(context);
+        EnterScope();
+    }
+
+    public override void ExitScopedExpression(PseudoCodeParser.ScopedExpressionContext context)
+    {
+        base.ExitScopedExpression(context);
+        ExitScope();
+    }
+
+    #endregion
 }
