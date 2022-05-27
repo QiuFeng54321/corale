@@ -25,6 +25,11 @@ public class ArrayInstance : Instance
     public void InitialiseInMemory()
     {
         StartAddress = Program.Allocate(TotalElements, () => ElementType.Instance());
+        InitialiseAsReferenceElements();
+    }
+
+    public void InitialiseAsReferenceElements()
+    {
         for (var i = 0u; i < Array.Length; i++)
             Array[i] = new ReferenceInstance(ParentScope, Program) { ReferenceAddress = StartAddress + i };
     }
@@ -49,14 +54,34 @@ public class ArrayInstance : Instance
     public Instance ElementAt(IEnumerable<int> indices)
     {
         var enumerable = indices as int[] ?? indices.ToArray();
+        if (enumerable.Length > Dimensions.Count)
+            throw new InvalidOperationException("Array access indices more than dimensions of array");
         var index = 0;
-        var factor = 1;
+        var factor = TotalElements;
         for (var i = 0; i < enumerable.Length; i++)
         {
-            index += enumerable[enumerable.Length - 1 - i] * factor;
-            factor *= Dimensions[Dimensions.Count - 1 - i].Length;
+            factor /= Dimensions[i].Length;
+            index += enumerable[i] * factor;
         }
-        return ElementAt(index);
+
+        if (enumerable.Length == Dimensions.Count)
+        {
+            // var index = 0;
+            // var factor = 1;
+            // // TODO: return an array when length of indices and dimensions doesn't match
+            // for (var i = 0; i < enumerable.Length; i++)
+            // {
+            //     index += enumerable[enumerable.Length - 1 - i] * factor;
+            //     factor *= Dimensions[Dimensions.Count - 1 - i].Length;
+            // }
+            return ElementAt(index);
+        }
+
+
+        var arrayInstance = ((ArrayType)Type).Instance(Dimensions.Skip(enumerable.Length).ToList(), ElementType);
+        arrayInstance.StartAddress = (uint)index + StartAddress;
+        arrayInstance.InitialiseAsReferenceElements();
+        return arrayInstance;
     }
 
     public override string Represent() => $"[{string.Join<Instance>(',', Array)}]";
