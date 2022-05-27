@@ -63,6 +63,7 @@ public override IToken NextToken()
 @parser::header {
 using PseudoCode.Runtime;
 using Range = PseudoCode.Runtime.Range;
+using System.Globalization;
 }
 
 
@@ -231,7 +232,7 @@ atom locals [string AtomType, object Value]
     $Value = str[1];
  }
  | Boolean {$AtomType = "BOOLEAN"; $Value = bool.Parse($Boolean.text);}
- | Date
+ | Date {$AtomType = "DATE"; $Value = DateOnly.ParseExact($Date.text, "dd/MM/yyyy");}
  | array {$AtomType = "ARRAY";}
  ;
 
@@ -279,6 +280,7 @@ String
 	;
 
 
+Date : Digit Digit '/' Digit Digit '/' Digit Digit Digit Digit;
 // Value is either 1. or .1 and not just a single '.' to avoid ambiguity with DOT
 Decimal
  : '-'? (Digit* '.' Digit+ | Digit+ '.' Digit*)
@@ -287,7 +289,6 @@ Integer : '-' ? Digit+;
 
 Boolean : 'TRUE' | 'FALSE';
 
-Date : Digit Digit '/' Digit Digit '/' Digit Digit Digit Digit;
  
 
 
