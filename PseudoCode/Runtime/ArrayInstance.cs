@@ -70,14 +70,6 @@ public class ArrayInstance : Instance
         }
 
         if (enumerable.Length == Dimensions.Count)
-            // var index = 0;
-            // var factor = 1;
-            // // TODO: return an array when length of indices and dimensions doesn't match
-            // for (var i = 0; i < enumerable.Length; i++)
-            // {
-            //     index += enumerable[enumerable.Length - 1 - i] * factor;
-            //     factor *= Dimensions[Dimensions.Count - 1 - i].Length;
-            // }
             return ElementAt(index);
 
 

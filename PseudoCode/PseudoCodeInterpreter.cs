@@ -98,7 +98,7 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
             {
                 SourceLocation = SourceLocation(context.array())
             });
-        else if (context.Identifier() != null && context.IsUnary) // TODO
+        else if (context.Identifier() != null && context.IsUnary)
             CurrentScope.AddOperation(new LoadOperation(CurrentScope, Program)
             {
                 LoadName = context.Identifier().GetText(),
@@ -127,7 +127,6 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
         var op = context.op ?? context.comp?.Start;
         if (op != null)
             if (context.IsUnary)
-                // TODO ambiguous operator with Caret
                 CurrentScope.AddOperation(new UnaryOperation(CurrentScope, Program)
                 {
                     OperatorMethod = op.Type,
