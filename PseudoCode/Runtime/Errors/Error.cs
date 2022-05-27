@@ -20,7 +20,7 @@ public class Error : Exception
     {
         return $@"
 {GetType().Name}: {Message}
-Occured in operation: {Operation}.
+Occured in operation: {Operation}
 Stack Trace:
 {string.Join('\n', OperationStackTrace.Select(o => o.ToPlainString()))}
 Possible Causes:
