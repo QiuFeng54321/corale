@@ -225,7 +225,11 @@ atom locals [string AtomType, object Value]
     var str = System.Text.RegularExpressions.Regex.Unescape($String.text);
     $Value = str.Substring(1, str.Length - 2);
  }
- | Character
+ | Character {
+    $AtomType = "CHAR";
+    var str = System.Text.RegularExpressions.Regex.Unescape($Character.text);
+    $Value = str[1];
+ }
  | Boolean {$AtomType = "BOOLEAN"; $Value = bool.Parse($Boolean.text);}
  | Date
  | array {$AtomType = "ARRAY";}

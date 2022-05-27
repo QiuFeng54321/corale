@@ -1,13 +1,11 @@
 DECLARE a : REAL
 DECLARE b : ARRAY[1:3, 1:4] OF INTEGER
 DECLARE c : BOOLEAN
-a <- 64
-c <- a < 63 OR (a > 65 OR a > 63) AND NOT a < 65 AND TRUE
-OUTPUT c
-a <- 1 + 2.3
-OUTPUT a, a + 2 + a
+DECLARE Char : CHAR
 a <- -(a + a * -a POW 2 POW 3) DIV 100 MOD 100
-OUTPUT a
+c <- a < 63 - 2.3 OR (a > 65 OR a > 63) AND NOT a < 65 AND TRUE
+Char <- '\n'
+OUTPUT a, a + 2 + a, c, Char
 IF a <> 64 THEN
     OUTPUT b
 ELSE
@@ -19,7 +17,7 @@ OUTPUT b
 DECLARE Name : STRING
 OUTPUT "What is your name?"
 INPUT Name
-OUTPUT "Hi" & Name
+OUTPUT "Hi, " & Name
 
 DECLARE FibCount : INTEGER
 DECLARE FibSeq : ARRAY[1:100] OF INTEGER
