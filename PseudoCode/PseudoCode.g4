@@ -86,7 +86,7 @@ smallStatement
  | returnStatement
  | callStatement
  ;
-assignmentStatement: lvalue AssignmentNotation expression;
+assignmentStatement: expression AssignmentNotation expression;
 declarationStatement: Declare Identifier Colon dataType;
 constantStatement: Constant Identifier Equal expression;
 ioStatement: IoKeyword tuple;
@@ -94,11 +94,11 @@ returnStatement: Return expression;
 callStatement: Call expression arguments?;
 fileStatement
  : OpenFile expression For fileMode=(Read | Write | Append | Random)
- | ReadFile expression Comma lvalue
+ | ReadFile expression Comma expression
  | WriteFile expression Comma expression
  | CloseFile expression
  | Seek expression Comma expression
- | GetRecord expression Comma lvalue
+ | GetRecord expression Comma expression
  | PutRecord expression Comma expression
  ;
 
@@ -120,7 +120,7 @@ scopedExpression: expression;
 indentedBlock: INDENT statement+ DEDENT;
 alignedBlock: statement (INDENT statement+ DEDENT)?;
 ifStatement locals [bool HasElse]: If scopedExpression Then indentedBlock (Else indentedBlock {$HasElse = true;})? Endif;
-forStatement: For lvalue AssignmentNotation valueRange (Step arithmeticExpression)? indentedBlock Next Identifier;
+forStatement: For expression AssignmentNotation valueRange (Step arithmeticExpression)? indentedBlock Next Identifier;
 whileStatement: While scopedExpression Do indentedBlock Endwhile;
 repeatStatement: Repeat indentedBlock Until scopedExpression;
 
@@ -180,7 +180,7 @@ comparisonOp: Smaller | Greater | Equal | GreaterEqual | SmallerEqual | NotEqual
 // ;
 arithmeticExpression locals [bool IsUnary]
  : New Identifier arguments
- | lvalue {$IsUnary = true;}
+ | Identifier {$IsUnary = true;}
  | atom {$IsUnary = true;}
  | arithmeticExpression Dot Identifier
  | arithmeticExpression array
@@ -199,12 +199,12 @@ arithmeticExpression locals [bool IsUnary]
  ;
 
  
-// Values that can be altered
-lvalue
- : Identifier
- | lvalue array
- | lvalue Dot Identifier
- ;
+//// Values that can be altered
+//lvalue
+// : Identifier
+// | lvalue array
+// | lvalue Dot Identifier
+// ;
 
 // an rvalue cannot be assigned a value
 //rvalue

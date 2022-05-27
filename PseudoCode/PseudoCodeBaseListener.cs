@@ -556,18 +556,6 @@ public partial class PseudoCodeBaseListener : IPseudoCodeListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitArithmeticExpression([NotNull] PseudoCodeParser.ArithmeticExpressionContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="PseudoCodeParser.lvalue"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterLvalue([NotNull] PseudoCodeParser.LvalueContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="PseudoCodeParser.lvalue"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitLvalue([NotNull] PseudoCodeParser.LvalueContext context) { }
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="PseudoCodeParser.arguments"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

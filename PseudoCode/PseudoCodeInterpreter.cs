@@ -92,27 +92,6 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
         return SourceLocation(context.Start);
     }
 
-    public override void ExitLvalue(PseudoCodeParser.LvalueContext context)
-    {
-        base.ExitLvalue(context);
-        if (context.array() != null)
-        {
-            CurrentScope.AddOperation(new ArrayIndexOperation(CurrentScope, Program)
-            {
-                SourceLocation = SourceLocation(context.array())
-            });
-        }
-        else
-        {
-            // TODO
-            CurrentScope.AddOperation(new LoadOperation(CurrentScope, Program)
-            {
-                LoadName = context.Identifier().GetText(),
-                SourceLocation = SourceLocation(context)
-            });
-        }
-    }
-
     public override void ExitAtom(PseudoCodeParser.AtomContext context)
     {
         base.ExitAtom(context);
@@ -147,6 +126,22 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
     public override void ExitArithmeticExpression(PseudoCodeParser.ArithmeticExpressionContext context)
     {
         base.ExitArithmeticExpression(context);
+        
+        if (context.array() != null)
+        {
+            CurrentScope.AddOperation(new ArrayIndexOperation(CurrentScope, Program)
+            {
+                SourceLocation = SourceLocation(context.array())
+            });
+        }
+        else if (context.Identifier() != null && context.IsUnary){
+            // TODO
+            CurrentScope.AddOperation(new LoadOperation(CurrentScope, Program)
+            {
+                LoadName = context.Identifier().GetText(),
+                SourceLocation = SourceLocation(context)
+            });
+        }
         if (context.op != null)
             if (context.IsUnary)
                 // TODO ambiguous operator with Caret

@@ -465,16 +465,6 @@ public interface IPseudoCodeListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitArithmeticExpression([NotNull] PseudoCodeParser.ArithmeticExpressionContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="PseudoCodeParser.lvalue"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterLvalue([NotNull] PseudoCodeParser.LvalueContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="PseudoCodeParser.lvalue"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitLvalue([NotNull] PseudoCodeParser.LvalueContext context);
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="PseudoCodeParser.arguments"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
