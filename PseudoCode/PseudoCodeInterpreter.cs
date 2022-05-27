@@ -203,4 +203,36 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
             SourceLocation = SourceLocation(context)
         });
     }
+
+    public override void ExitWhileStatement(PseudoCodeParser.WhileStatementContext context)
+    {
+        base.ExitWhileStatement(context);
+        var repeatBlock = CurrentScope.TakeLast();
+        var testScope = (Scope)CurrentScope.TakeLast();
+        CurrentScope.AddOperation(new RepeatOperation(CurrentScope, Program)
+        {
+            RepeatBlock = repeatBlock, TestExpressionScope = testScope,
+            TestFirst = true,
+            SourceLocation = SourceLocation(context)
+        });
+    }
+
+    public override void ExitRepeatStatement(PseudoCodeParser.RepeatStatementContext context)
+    {
+        base.ExitRepeatStatement(context);
+        var testScope = (Scope)CurrentScope.TakeLast();
+        // We negate the result of test since the test is in UNTIL, not WHILE
+        testScope.AddOperation(new UnaryOperation(testScope, Program)
+        {
+            OperatorMethod = PseudoCodeParser.Not,
+            SourceLocation = SourceLocation(context.scopedExpression().Stop)
+        });
+        var repeatBlock = CurrentScope.TakeLast();
+        CurrentScope.AddOperation(new RepeatOperation(CurrentScope, Program)
+        {
+            RepeatBlock = repeatBlock, TestExpressionScope = testScope,
+            TestFirst = false,
+            SourceLocation = SourceLocation(context)
+        });
+    }
 }
