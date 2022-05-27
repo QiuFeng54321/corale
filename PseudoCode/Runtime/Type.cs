@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using PseudoCode.Runtime.Errors;
 using PseudoCode.Runtime.Operations;
 
 namespace PseudoCode.Runtime;
@@ -70,8 +71,8 @@ public class Type
 
     public virtual void ThrowUnsupported(Instance i1, Instance i2 = null, [CallerMemberName] string caller = "Unknown")
     {
-        throw new NotSupportedException(
-            $"Cannot perform {caller} operation on {i1.Type} {(i2 != null ? "and " + i2.Type : "")}");
+        throw new UnsupportedCastError(
+            $"Cannot perform {caller} operation on {i1.Type} {(i2 != null ? "and " + i2.Type : "")}", null);
     }
 
     public virtual Instance Add(Instance i1, Instance i2)
@@ -184,7 +185,7 @@ public class Type
 
     public virtual Instance CastFrom(Instance i)
     {
-        throw new InvalidCastException($"{i.Type} to {this}");
+        throw new UnsupportedCastError($"{i.Type} to {this}", null);
     }
 
     public virtual void Assign(Instance to, Instance value)
@@ -206,6 +207,6 @@ public class Type
 
     public override string ToString()
     {
-        return $"[{Name} ${Id}]";
+        return Name;
     }
 }

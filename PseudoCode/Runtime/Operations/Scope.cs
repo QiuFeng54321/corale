@@ -1,3 +1,5 @@
+using PseudoCode.Runtime.Errors;
+
 namespace PseudoCode.Runtime.Operations;
 
 public class Scope : Operation
@@ -17,7 +19,7 @@ public class Scope : Operation
         return InstanceAddresses.ContainsKey(name)
             ? InstanceAddresses[name]
             : ParentScope?.FindInstanceAddress(name) ??
-              throw new InvalidOperationException($"Instance {name} cannot be found.");
+              throw new InvalidAccessError($"Instance {name} cannot be found.", null);
     }
 
     public Type FindType(string typeName)
@@ -60,8 +62,22 @@ public class Scope : Operation
     public override void Operate()
     {
         base.Operate();
-        foreach (var operation in Operations) operation.Operate();
+        foreach (var operation in Operations)
+        {
+            try
+            {
+                operation.Operate();
+            }
+            catch (Error e)
+            {
+                e.Operation = operation;
+                e.OperationStackTrace.Add(this);
+                throw;
+            }
+        }
     }
+
+    public override string ToPlainString() => ParentScope == null ? "Global scope" : "Anonymous scope";
 
     public override string ToString(int depth)
     {

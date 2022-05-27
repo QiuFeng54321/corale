@@ -1,3 +1,4 @@
+using PseudoCode.Runtime.Errors;
 using PseudoCode.Runtime.Operations;
 
 namespace PseudoCode.Runtime;
@@ -55,7 +56,7 @@ public class ArrayInstance : Instance
     {
         var enumerable = indices as int[] ?? indices.ToArray();
         if (enumerable.Length > Dimensions.Count)
-            throw new InvalidOperationException("Array access indices more than dimensions of array");
+            throw new InvalidAccessError("Array access indices more than dimensions of array", null);
         var index = 0;
         var factor = TotalElements;
         for (var i = 0; i < enumerable.Length; i++)

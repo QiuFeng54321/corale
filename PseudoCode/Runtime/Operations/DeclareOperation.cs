@@ -1,3 +1,5 @@
+using PseudoCode.Runtime.Errors;
+
 namespace PseudoCode.Runtime.Operations;
 
 public class DeclareOperation : Operation
@@ -10,7 +12,7 @@ public class DeclareOperation : Operation
     {
         base.Operate();
         if (ParentScope.InstanceAddresses.ContainsKey(Name))
-            throw new InvalidOperationException($"{Name} is already declared under this scope!");
+            throw new InvalidAccessError($"{Name} is already declared under this scope!", null);
         if (Dimensions.Count == 0)
         {
             ParentScope.InstanceAddresses.Add(Name, Program.AllocateId(Type.Instance()));
