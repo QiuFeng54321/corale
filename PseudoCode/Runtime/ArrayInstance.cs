@@ -43,7 +43,20 @@ public class ArrayInstance : Instance
 
     public Instance ElementAt(int index)
     {
-        return Array[Dimensions[0].ToRealIndex(index)];
+        return Array[index];
+    }
+
+    public Instance ElementAt(IEnumerable<int> indices)
+    {
+        var enumerable = indices as int[] ?? indices.ToArray();
+        var index = 0;
+        var factor = 1;
+        for (var i = 0; i < enumerable.Length; i++)
+        {
+            index += enumerable[enumerable.Length - 1 - i] * factor;
+            factor *= Dimensions[Dimensions.Count - 1 - i].Length;
+        }
+        return ElementAt(index);
     }
 
     public override string Represent() => $"[{string.Join<Instance>(',', Array)}]";

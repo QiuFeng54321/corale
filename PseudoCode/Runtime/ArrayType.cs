@@ -34,6 +34,10 @@ public class ArrayType : Type
 
     public override Instance Index(Instance i1, Instance i2)
     {
-        return base.Index(i1, i2);
+        if (i2.RealInstance is not ArrayInstance indexInstance) throw new InvalidOperationException("Index access is not an array!");
+        var arrayInstance = (ArrayInstance)i1.RealInstance;
+        var indexList = indexInstance.Array.Select((index, i) =>
+            arrayInstance.Dimensions[i].ToRealIndex(Scope.FindType("INTEGER").CastFrom(index).Get<int>())).ToList();
+        return arrayInstance.ElementAt(indexList);
     }
 }

@@ -6,20 +6,21 @@ public class ReferenceInstance : Instance
 {
     public uint ReferenceAddress { get; set; }
 
-    public Instance ReferencedInstance => Program.Memory[ReferenceAddress];
+    public override Instance RealInstance => Program.Memory[ReferenceAddress];
+    
 
-    public override Dictionary<string, Instance> Members => ReferencedInstance.Members;
-    public override Type Type => ReferencedInstance.Type;
+    public override Dictionary<string, Instance> Members => RealInstance.Members;
+    public override Type Type => RealInstance.Type;
 
     public override object Value
     {
-        get => ReferencedInstance.Value;
-        set => ReferencedInstance.Value = value;
+        get => RealInstance.Value;
+        set => RealInstance.Value = value;
     }
 
-    public override string Represent() => ReferencedInstance.Represent();
+    public override string Represent() => RealInstance.Represent();
 
-    public override string DebugRepresent() => $"Ref {ReferencedInstance.DebugRepresent()}";
+    public override string DebugRepresent() => $"Ref {RealInstance.DebugRepresent()}";
     
 
     public ReferenceInstance(Scope parentScope, PseudoProgram program) : base(parentScope, program)

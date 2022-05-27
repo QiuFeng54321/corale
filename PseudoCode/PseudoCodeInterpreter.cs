@@ -95,12 +95,22 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
     public override void ExitLvalue(PseudoCodeParser.LvalueContext context)
     {
         base.ExitLvalue(context);
-        // TODO
-        CurrentScope.AddOperation(new LoadOperation (CurrentScope, Program)
+        if (context.array() != null)
         {
-            LoadName = context.Identifier().GetText(),
-            SourceLocation = SourceLocation(context)
-        });
+            CurrentScope.AddOperation(new ArrayIndexOperation(CurrentScope, Program)
+            {
+                SourceLocation = SourceLocation(context.array())
+            });
+        }
+        else
+        {
+            // TODO
+            CurrentScope.AddOperation(new LoadOperation(CurrentScope, Program)
+            {
+                LoadName = context.Identifier().GetText(),
+                SourceLocation = SourceLocation(context)
+            });
+        }
     }
 
     public override void ExitAtom(PseudoCodeParser.AtomContext context)

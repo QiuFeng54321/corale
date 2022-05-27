@@ -24,6 +24,8 @@ public class Instance
         return (T)Value;
     }
 
+    public virtual Instance RealInstance => this;
+
     public virtual string Represent() => Value?.ToString() ?? "";
     public virtual string DebugRepresent() => $"{{{Type} {Represent()} {{{(Members != null ? string.Join(',', Members.Select(p => $"{p.Key} = {p.Value}")) : "")}}}}}";
     public override string ToString()
