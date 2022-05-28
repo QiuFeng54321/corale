@@ -5,6 +5,8 @@ namespace PseudoCode.Runtime.Operations;
 public class Scope : Operation
 {
 
+    public bool IsRoot => ParentScope == null;
+
     public Scope(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {
         ScopeStates = new ScopeStates();
@@ -72,7 +74,19 @@ public class Scope : Operation
     public override void Operate()
     {
         base.Operate();
+        if (IsRoot) // Do not remove temp contents. There are predefined types
+        {
+            RunOperations();
+            return;
+        }
         var copy = (ScopeStates)ScopeStates.Clone();
+        ScopeStates.ResetTemporaryContent();
+        RunOperations();
+        ScopeStates = copy; // Reset
+    }
+
+    private void RunOperations()
+    {
         foreach (var operation in ScopeStates.Operations)
             try
             {
@@ -84,8 +98,6 @@ public class Scope : Operation
                 e.OperationStackTrace.Add(this);
                 throw;
             }
-
-        ScopeStates = copy;
     }
 
     public override string ToPlainString()
