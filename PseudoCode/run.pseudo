@@ -7,7 +7,7 @@ a <- -(a + a * -a POW 2 POW 3) DIV 100 MOD 100
 c <- a < 63 - 2.3 OR (a > 65 OR a > 63) AND NOT a < 65 AND TRUE
 Char <- '\n'
 Date <- 28/02/2008 + 10/03/0010
-OUTPUT a, a + 2 + a, c, Char, Date
+OUTPUT a + 2 + a, c, Char, Date
 IF a <> 64 THEN
     OUTPUT b
 ELSE
@@ -16,10 +16,6 @@ ENDIF
 b <- [[1, 2, 3, 4],[5, 6, 7, 8], [9, 10, 11, 12]]
 b[2,3] <- 3
 OUTPUT b
-DECLARE Name : STRING
-OUTPUT "What is your name?"
-INPUT Name
-OUTPUT "Hi, " & Name
 
 DECLARE FibCount : INTEGER
 DECLARE FibSeq : ARRAY[1:100] OF INTEGER

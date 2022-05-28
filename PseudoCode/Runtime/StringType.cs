@@ -18,7 +18,7 @@ public class StringType : PrimitiveType<string>
 
     public override Instance BitAnd(Instance i1, Instance i2)
     {
-        return ArithmeticOperation(i1, i2, (arg1, arg2) => arg1 + arg2);
+        return Instance(i1.ToString() + i2);
     }
 
     public override Instance CastFrom(Instance i)

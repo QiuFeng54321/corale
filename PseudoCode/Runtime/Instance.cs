@@ -28,7 +28,14 @@ public class Instance
 
     public virtual string Represent()
     {
-        return Value?.ToString() ?? "";
+        return Type.Id switch
+        {
+            Type.DateId => Get<DateOnly>().ToString("dd/MM/yyyy"),
+            Type.BooleanId => Value?.ToString()?.ToUpper(),
+            Type.NullId => "NULL",
+            // Type.StringId or Type.CharId or Type.IntegerId or Type.RealId => Value?.ToString(),
+            _ => Value?.ToString()
+        } ?? "NULL";
     }
 
     public virtual string DebugRepresent()
