@@ -8,6 +8,7 @@ public class PseudoProgram
     public Scope GlobalScope;
     public Dictionary<uint, Instance> Memory = new();
     public Stack<Instance> RuntimeStack = new();
+    public bool AllowUndeclaredVariables { get; set; }
 
     public PseudoProgram()
     {

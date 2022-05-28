@@ -7,20 +7,25 @@ namespace PseudoCode;
 public class PseudoCodeInterpreter : PseudoCodeBaseListener
 {
     public Scope CurrentScope;
-    public PseudoProgram Program;
+    public PseudoProgram Program = new();
+    public bool DisplayOperations { get; set; }
+    
 
     public override void EnterFileInput(PseudoCodeParser.FileInputContext context)
     {
         base.EnterFileInput(context);
-        Program = new PseudoProgram();
         CurrentScope = Program.GlobalScope;
     }
 
     public override void ExitFileInput(PseudoCodeParser.FileInputContext context)
     {
         base.ExitFileInput(context);
-        Console.WriteLine(Program.GlobalScope);
-        Console.WriteLine("Operate...");
+        if (DisplayOperations)
+        {
+            Console.WriteLine(Program.GlobalScope);
+            Console.WriteLine("Operations starts now...");
+        }
+
         Program.GlobalScope.Operate();
     }
 

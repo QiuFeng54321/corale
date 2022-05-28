@@ -20,7 +20,8 @@ public class LoadOperation : Operation
         }
         catch (InvalidAccessError)
         {
-            Console.WriteLine($"Warning: {LoadName} is not found in current scope. Creating one...");
+            if (!Program.AllowUndeclaredVariables) throw;
+            // Console.WriteLine($"Warning: {LoadName} is not found in current scope. Creating one...");
             Program.RuntimeStack.Push(ParentScope.FindType(Type.PlaceholderId).Instance(LoadName, ParentScope));
         }
     }
