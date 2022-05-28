@@ -59,7 +59,7 @@ public class DateType : PrimitiveType<DateOnly>
         return i.Type.Id switch
         {
             DateId => i,
-            StringId => Instance(DateOnly.ParseExact(i.Get<string>(), "dd/MM/yyyy")),
+            StringId => Instance(DateOnly.ParseExact(i.Get<string>(), "dd/MM/yyyy"), ParentScope),
             _ => base.CastFrom(i)
         };
     }

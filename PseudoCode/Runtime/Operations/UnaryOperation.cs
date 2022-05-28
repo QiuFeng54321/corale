@@ -11,9 +11,9 @@ public class UnaryOperation : Operation
     public override void Operate()
     {
         base.Operate();
-        var to = ParentScope.RuntimeStack.Pop();
+        var to = Program.RuntimeStack.Pop();
         to = to.Type.UnaryOperators[OperatorMethod](to);
-        ParentScope.RuntimeStack.Push(to);
+        Program.RuntimeStack.Push(to);
     }
 
     public override string ToPlainString()

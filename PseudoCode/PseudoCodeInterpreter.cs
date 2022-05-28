@@ -64,7 +64,7 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
         if (context.AtomType == "ARRAY") return; // Let array handle on its own
         CurrentScope.AddOperation(new LoadImmediateOperation(CurrentScope, Program)
         {
-            Intermediate = CurrentScope.FindType(context.AtomType).Instance(context.Value),
+            Intermediate = CurrentScope.FindType(context.AtomType).Instance(context.Value, CurrentScope),
             SourceLocation = SourceLocation(context)
         });
     }

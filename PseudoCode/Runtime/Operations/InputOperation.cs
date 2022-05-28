@@ -9,9 +9,9 @@ public class InputOperation : Operation
     public override void Operate()
     {
         base.Operate();
-        var instance = ParentScope.RuntimeStack.Pop();
+        var instance = Program.RuntimeStack.Pop();
         var input = Console.ReadLine();
-        instance.Type.Assign(instance, ParentScope.FindType(Type.StringId).Instance(input));
+        instance.Type.Assign(instance, ParentScope.FindType(Type.StringId).Instance(input, ParentScope));
     }
 
     public override string ToPlainString()

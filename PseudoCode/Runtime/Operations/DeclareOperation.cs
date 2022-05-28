@@ -15,17 +15,17 @@ public class DeclareOperation : Operation
     public override void Operate()
     {
         base.Operate();
-        if (ParentScope.InstanceAddresses.ContainsKey(Name))
+        if (ParentScope.ScopeStates.InstanceAddresses.ContainsKey(Name))
             throw new InvalidAccessError($"{Name} is already declared under this scope!", null);
         if (Dimensions.Count == 0)
         {
-            ParentScope.InstanceAddresses.Add(Name, Program.AllocateId(Type.Instance()));
+            ParentScope.ScopeStates.InstanceAddresses.Add(Name, Program.AllocateId(Type.Instance(scope: ParentScope)));
         }
         else
         {
             var arrayInstance = ((ArrayType)ParentScope.FindType(Type.ArrayId)).Instance(Dimensions, Type);
             arrayInstance.InitialiseInMemory();
-            ParentScope.InstanceAddresses.Add(Name, Program.AllocateId(arrayInstance));
+            ParentScope.ScopeStates.InstanceAddresses.Add(Name, Program.AllocateId(arrayInstance));
         }
     }
 

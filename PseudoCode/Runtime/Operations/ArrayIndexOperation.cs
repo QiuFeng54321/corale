@@ -9,9 +9,9 @@ public class ArrayIndexOperation : Operation
     public override void Operate()
     {
         base.Operate();
-        var index = (ArrayInstance)ParentScope.RuntimeStack.Pop();
-        var instance = ParentScope.RuntimeStack.Pop();
-        ParentScope.RuntimeStack.Push(instance.Type.Index(instance, index));
+        var index = (ArrayInstance)Program.RuntimeStack.Pop();
+        var instance = Program.RuntimeStack.Pop();
+        Program.RuntimeStack.Push(instance.Type.Index(instance, index));
     }
 
     public override string ToPlainString()

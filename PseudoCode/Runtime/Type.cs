@@ -24,7 +24,7 @@ public class Type
 
     public Dictionary<int, BinaryOperator> BinaryOperators = new();
     public PseudoProgram Program;
-    public Scope Scope;
+    public Scope ParentScope;
     public Dictionary<int, UnaryOperator> UnaryOperators = new();
 
     public Type()
@@ -59,15 +59,15 @@ public class Type
     public virtual string Name { get; set; } = null!;
     public Dictionary<string, Type> Members { get; } = new();
 
-    public virtual Instance Instance(object value = null)
+    public virtual Instance Instance(object value = null, Scope scope = null)
     {
-        var instance = new Instance(Scope, Program)
+        var instance = new Instance(scope ?? ParentScope, Program)
         {
             Type = this,
             Members = new Dictionary<string, Instance>(),
             Value = value
         };
-        foreach (var member in Members) instance.Members[member.Key] = member.Value.Instance();
+        foreach (var member in Members) instance.Members[member.Key] = member.Value.Instance(scope: ParentScope);
 
         return instance;
     }

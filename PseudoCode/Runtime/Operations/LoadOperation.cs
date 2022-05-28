@@ -15,13 +15,13 @@ public class LoadOperation : Operation
         base.Operate();
         try
         {
-            ParentScope.RuntimeStack.Push(new ReferenceInstance(ParentScope, Program)
+            Program.RuntimeStack.Push(new ReferenceInstance(ParentScope, Program)
                 { ReferenceAddress = ParentScope.FindInstanceAddress(LoadName) });
         }
         catch (InvalidAccessError)
         {
             Console.WriteLine($"Warning: {LoadName} is not found in current scope. Creating one...");
-            ParentScope.RuntimeStack.Push(ParentScope.FindType(Type.PlaceholderId).Instance(LoadName));
+            Program.RuntimeStack.Push(ParentScope.FindType(Type.PlaceholderId).Instance(LoadName, ParentScope));
         }
     }
 

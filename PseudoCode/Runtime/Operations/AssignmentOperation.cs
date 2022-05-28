@@ -8,8 +8,8 @@ public class AssignmentOperation : Operation
 
     public override void Operate()
     {
-        var value = ParentScope.RuntimeStack.Pop();
-        var to = ParentScope.RuntimeStack.Pop();
+        var value = Program.RuntimeStack.Pop();
+        var to = Program.RuntimeStack.Pop();
         to.Type.Assign(to, value);
     }
 

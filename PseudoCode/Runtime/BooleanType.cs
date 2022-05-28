@@ -33,6 +33,6 @@ public class BooleanType : PrimitiveType<bool>
 
     public override Instance CastFrom(Instance i)
     {
-        return Instance(Convert.ToBoolean(i.Value));
+        return Instance(Convert.ToBoolean(i.Value), ParentScope);
     }
 }

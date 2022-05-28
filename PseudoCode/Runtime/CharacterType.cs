@@ -39,6 +39,6 @@ public class CharacterType : PrimitiveType<char>
 
     public override Instance CastFrom(Instance i)
     {
-        return Instance(Convert.ToChar(i.Value));
+        return Instance(Convert.ToChar(i.Value), ParentScope);
     }
 }

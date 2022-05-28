@@ -14,7 +14,7 @@ public class FormImmediateArrayOperation : Operation
         List<Instance> elements = new();
         for (var i = 0; i < Length; i++)
         {
-            var instance = ParentScope.RuntimeStack.Pop();
+            var instance = Program.RuntimeStack.Pop();
             if (instance is ArrayInstance arrayInstance)
                 elements.InsertRange(0, arrayInstance.Array);
             else
@@ -24,7 +24,7 @@ public class FormImmediateArrayOperation : Operation
         var formedInstance = ((ArrayType)ParentScope.FindType(Type.ArrayId)).Instance(
             new List<Range> { new() { Start = 0, End = elements.Count - 1 } }, elements.First().Type);
         formedInstance.InitialiseFromList(elements);
-        ParentScope.RuntimeStack.Push(formedInstance);
+        Program.RuntimeStack.Push(formedInstance);
     }
 
     public override string ToPlainString()

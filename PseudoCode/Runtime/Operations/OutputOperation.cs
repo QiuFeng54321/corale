@@ -13,7 +13,7 @@ public class OutputOperation : Operation
         base.Operate();
         List<Instance> arguments = new();
         for (var i = 0; i < ArgumentCount; i++)
-            arguments.Insert(0, ParentScope.RuntimeStack.Pop());
+            arguments.Insert(0, Program.RuntimeStack.Pop());
         Console.WriteLine(string.Join(' ', arguments));
     }
 

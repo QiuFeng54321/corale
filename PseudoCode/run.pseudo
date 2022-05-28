@@ -27,6 +27,7 @@ FibSeq[2] <- 1
 TopCalculated <- 2
 ContinueFib <- TRUE
 WHILE ContinueFib DO
+    k <- 1
     REPEAT
         OUTPUT "Input Fib Count (1 to 100):"
         INPUT FibCount

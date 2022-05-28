@@ -18,12 +18,12 @@ public class StringType : PrimitiveType<string>
 
     public override Instance BitAnd(Instance i1, Instance i2)
     {
-        return Instance(i1.ToString() + i2);
+        return Instance(i1.ToString() + i2, ParentScope);
     }
 
     public override Instance CastFrom(Instance i)
     {
-        return Instance(Convert.ToString(i.Value));
+        return Instance(Convert.ToString(i.Value), ParentScope);
     }
 
 }

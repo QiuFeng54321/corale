@@ -29,7 +29,7 @@ public class ArrayInstance : Instance
 
     public void InitialiseInMemory()
     {
-        StartAddress = Program.Allocate(TotalElements, () => ElementType.Instance());
+        StartAddress = Program.Allocate(TotalElements, () => ElementType.Instance(scope: ParentScope));
         InitialiseAsReferenceElements();
     }
 
@@ -42,7 +42,7 @@ public class ArrayInstance : Instance
     public void InitialiseNonReference()
     {
         for (var i = 0u; i < Array.Length; i++)
-            Array[i] = ElementType.Instance();
+            Array[i] = ElementType.Instance(scope: ParentScope);
     }
 
     public void InitialiseFromList(IEnumerable<Instance> instances)

@@ -4,14 +4,13 @@ namespace PseudoCode.Runtime.Operations;
 
 public class Scope : Operation
 {
-    public Dictionary<string, uint> InstanceAddresses = new();
-    public List<Operation> Operations = new();
-    public Stack<Instance> RuntimeStack = new();
-    public Dictionary<string, Type> Types = new();
 
     public Scope(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {
+        ScopeStates = new ScopeStates();
     }
+
+    public ScopeStates ScopeStates { get; set; }
 
     public Instance FindInstance(string name)
     {
@@ -20,20 +19,20 @@ public class Scope : Operation
 
     public uint FindInstanceAddress(string name)
     {
-        return InstanceAddresses.ContainsKey(name)
-            ? InstanceAddresses[name]
+        return ScopeStates.InstanceAddresses.ContainsKey(name)
+            ? ScopeStates.InstanceAddresses[name]
             : ParentScope?.FindInstanceAddress(name) ??
               throw new InvalidAccessError($"Instance {name} cannot be found.", null);
     }
 
     public Type FindType(string typeName)
     {
-        return Types.ContainsKey(typeName) ? Types[typeName] : ParentScope?.FindType(typeName);
+        return ScopeStates.Types.ContainsKey(typeName) ? ScopeStates.Types[typeName] : ParentScope?.FindType(typeName);
     }
 
     public Type FindType(uint id)
     {
-        var t = Types.FirstOrDefault(t => t.Value.Id == id, new KeyValuePair<string, Type>());
+        var t = ScopeStates.Types.FirstOrDefault(t => t.Value.Id == id, new KeyValuePair<string, Type>());
         return t.Value ?? ParentScope?.FindType(id);
     }
 
@@ -44,19 +43,19 @@ public class Scope : Operation
 
     public void AddType(string name, Type type)
     {
-        type.Scope = this;
-        Types.Add(name, type);
+        type.ParentScope = this;
+        ScopeStates.Types.Add(name, type);
     }
 
     public void AddOperation(Operation operation)
     {
-        Operations.Add(operation);
+        ScopeStates.Operations.Add(operation);
     }
 
     public Operation Take(int i)
     {
-        var res = Operations[i];
-        Operations.RemoveAt(i);
+        var res = ScopeStates.Operations[i];
+        ScopeStates.Operations.RemoveAt(i);
         return res;
     }
 
@@ -67,13 +66,14 @@ public class Scope : Operation
 
     public Operation TakeLast()
     {
-        return Take(Operations.Count - 1);
+        return Take(ScopeStates.Operations.Count - 1);
     }
 
     public override void Operate()
     {
         base.Operate();
-        foreach (var operation in Operations)
+        var copy = (ScopeStates)ScopeStates.Clone();
+        foreach (var operation in ScopeStates.Operations)
             try
             {
                 operation.Operate();
@@ -84,6 +84,8 @@ public class Scope : Operation
                 e.OperationStackTrace.Add(this);
                 throw;
             }
+
+        ScopeStates = copy;
     }
 
     public override string ToPlainString()
@@ -94,6 +96,6 @@ public class Scope : Operation
     public override string ToString(int depth)
     {
         return
-            $"{Indent(depth)}{{\n{string.Join("\n", Operations.Select(o => o.ToString(depth + 1)))}\n{Indent(depth)}}}";
+            $"{Indent(depth)}{{\n{string.Join("\n", ScopeStates.Operations.Select(o => o.ToString(depth + 1)))}\n{Indent(depth)}}}";
     }
 }

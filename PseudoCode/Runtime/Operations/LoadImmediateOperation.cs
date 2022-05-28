@@ -11,7 +11,7 @@ public class LoadImmediateOperation : Operation
     public override void Operate()
     {
         base.Operate();
-        ParentScope.RuntimeStack.Push(Intermediate);
+        Program.RuntimeStack.Push(Intermediate);
     }
 
     public override string ToPlainString()

@@ -1,4 +1,5 @@
 using PseudoCode.Runtime.Errors;
+using PseudoCode.Runtime.Operations;
 
 namespace PseudoCode.Runtime;
 
@@ -7,9 +8,9 @@ public class ArrayType : Type
     public override string Name => "ARRAY";
     public override uint Id => ArrayId;
 
-    public override Instance Instance(object value = null)
+    public override Instance Instance(object value = null, Scope scope = null)
     {
-        return new ArrayInstance(Scope, Program)
+        return new ArrayInstance(scope ?? ParentScope, Program)
         {
             Type = this,
             Members = new Dictionary<string, Instance>(),
@@ -50,7 +51,7 @@ public class ArrayType : Type
                 $"Array access indices more than dimensions of array: {indexInstance.TotalElements} > {arrayInstance.Dimensions.Count}",
                 null);
         var indexList = indexInstance.Array.Select((index, i) =>
-            arrayInstance.Dimensions[i].ToRealIndex(Scope.FindType(IntegerId).HandledCastFrom(index).Get<int>())).ToList();
+            arrayInstance.Dimensions[i].ToRealIndex(ParentScope.FindType(IntegerId).HandledCastFrom(index).Get<int>())).ToList();
         return arrayInstance.ElementAt(indexList);
     }
 }
