@@ -21,7 +21,7 @@ public class FormImmediateArrayOperation : Operation
                 elements.Insert(0, instance);
         }
 
-        var formedInstance = ((ArrayType)ParentScope.FindType("ARRAY")).Instance(
+        var formedInstance = ((ArrayType)ParentScope.FindType(Type.ArrayId)).Instance(
             new List<Range> { new() { Start = 0, End = elements.Count - 1 } }, elements.First().Type);
         formedInstance.InitialiseFromList(elements);
         ParentScope.RuntimeStack.Push(formedInstance);

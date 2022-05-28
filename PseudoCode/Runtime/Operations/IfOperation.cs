@@ -13,7 +13,7 @@ public class IfOperation : Operation
     {
         base.Operate();
         TestExpressionScope.Operate();
-        var test = ParentScope.FindType("BOOLEAN").HandledCastFrom(TestExpressionScope.RuntimeStack.Pop());
+        var test = ParentScope.FindType(Type.BooleanId).HandledCastFrom(TestExpressionScope.RuntimeStack.Pop());
         if (test.Get<bool>())
             TrueBlock.Operate();
         else

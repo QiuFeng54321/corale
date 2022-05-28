@@ -50,7 +50,7 @@ public class ArrayType : Type
                 $"Array access indices more than dimensions of array: {indexInstance.TotalElements} > {arrayInstance.Dimensions.Count}",
                 null);
         var indexList = indexInstance.Array.Select((index, i) =>
-            arrayInstance.Dimensions[i].ToRealIndex(Scope.FindType("INTEGER").HandledCastFrom(index).Get<int>())).ToList();
+            arrayInstance.Dimensions[i].ToRealIndex(Scope.FindType(IntegerId).HandledCastFrom(index).Get<int>())).ToList();
         return arrayInstance.ElementAt(indexList);
     }
 }

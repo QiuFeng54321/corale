@@ -2,7 +2,6 @@ namespace PseudoCode.Runtime.Operations;
 
 public class InputOperation : Operation
 {
-
     public InputOperation(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {
     }
@@ -12,7 +11,7 @@ public class InputOperation : Operation
         base.Operate();
         var instance = ParentScope.RuntimeStack.Pop();
         var input = Console.ReadLine();
-        instance.Type.Assign(instance, ParentScope.FindType("STRING").Instance(input));
+        instance.Type.Assign(instance, ParentScope.FindType(Type.StringId).Instance(input));
     }
 
     public override string ToPlainString()

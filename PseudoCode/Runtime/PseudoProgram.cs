@@ -64,6 +64,6 @@ public class PseudoProgram
         GlobalScope.AddType("DATE", new DateType { Scope = GlobalScope, Program = this });
         GlobalScope.AddType("NULL", new NullType { Scope = GlobalScope, Program = this });
         GlobalScope.AddType("PLACEHOLDER", new PlaceholderType { Scope = GlobalScope, Program = this });
-        Instance.Null = GlobalScope.FindType("NULL").Instance();
+        Instance.Null = GlobalScope.FindType(Type.NullId).Instance();
     }
 }
