@@ -14,11 +14,13 @@ public class Operation
 
     public virtual void Operate()
     {
+        if (Program.DisplayOperations)
+            Console.WriteLine(strings.Operation_Operate, ToPlainString(), SourceLocation);
     }
 
-    public string Indent(int depth)
+    public static string Indent(int depth)
     {
-        return new(' ', depth * 4);
+        return new string(' ', depth * 4);
     }
 
     public virtual string ToPlainString()

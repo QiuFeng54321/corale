@@ -236,5 +236,11 @@ namespace PseudoCode {
                 return ResourceManager.GetString("UnaryOperation_ToPlainString", resourceCulture);
             }
         }
+        
+        internal static string Operation_Operate {
+            get {
+                return ResourceManager.GetString("Operation_Operate", resourceCulture);
+            }
+        }
     }
 }

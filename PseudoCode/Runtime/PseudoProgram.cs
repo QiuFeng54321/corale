@@ -6,6 +6,7 @@ public class PseudoProgram
 {
     public uint CurrentInstanceAddress;
     public bool DebugRepresentation;
+    public bool DisplayOperations { get; set; }
     public Scope GlobalScope;
     public Dictionary<uint, Instance> Memory = new();
     public Stack<Instance> RuntimeStack = new();

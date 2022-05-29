@@ -131,4 +131,7 @@ Possible Causes:
     <data name="UnaryOperation_ToPlainString" xml:space="preserve">
         <value>Unary {0}</value>
     </data>
+    <data name="Operation_Operate" xml:space="preserve">
+        <value>{0} {1}</value>
+    </data>
 </root>

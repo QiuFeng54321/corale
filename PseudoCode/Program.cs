@@ -21,9 +21,9 @@ void RunProgram(CommandLines.Options opts)
     IParseTree tree = parser.fileInput();
     var interpreter = new PseudoCodeInterpreter
     {
-        DisplayOperations = opts.Verbose,
         Program =
         {
+            DisplayOperations = opts.Verbose,
             AllowUndeclaredVariables = !opts.StrictVariables,
             DebugRepresentation = opts.DebugRepresentation
         }

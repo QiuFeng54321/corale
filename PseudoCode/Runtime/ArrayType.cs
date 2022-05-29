@@ -31,14 +31,14 @@ public class ArrayType : Type
     {
         if (value.Type.Id != ArrayId)
             throw new InvalidTypeError(
-                string.Format(strings.ArrayType_Assign_InvalidValueType, Name, ((ArrayInstance)to).ElementType, value.Type), null);
-        var valueLength = ((Instance[])value.Value).Length;
-        var toLength = ((Instance[])to.Value).Length;
+                string.Format(strings.ArrayType_Assign_InvalidValueType, Name, ((ArrayInstance)to.RealInstance).ElementType, value.Type), null);
+        var valueLength = value.Get<Instance[]>().Length;
+        var toLength = to.Get<Instance[]>().Length;
         if (valueLength != toLength)
             throw new InvalidAccessError(string.Format(strings.ArrayType_Assign_InvalidArrayLength, valueLength, toLength),
                 null);
         for (var i = 0; i < valueLength; i++)
-            ((Instance[])to.Value)[i].Type.Assign(((Instance[])to.Value)[i], ((Instance[])value.Value)[i]);
+            to.Get<Instance[]>()[i].Type.Assign(to.Get<Instance[]>()[i], value.Get<Instance[]>()[i]);
     }
 
     public override Instance Index(Instance i1, Instance i2)

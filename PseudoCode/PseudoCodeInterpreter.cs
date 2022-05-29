@@ -8,7 +8,6 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
 {
     public Scope CurrentScope;
     public PseudoProgram Program = new();
-    public bool DisplayOperations { get; set; }
     
 
     public override void EnterFileInput(PseudoCodeParser.FileInputContext context)
@@ -20,7 +19,7 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
     public override void ExitFileInput(PseudoCodeParser.FileInputContext context)
     {
         base.ExitFileInput(context);
-        if (DisplayOperations)
+        if (Program.DisplayOperations)
         {
             Console.WriteLine(Program.GlobalScope);
             Console.WriteLine(strings.PseudoCodeInterpreter_ExitFileInput_OperationsStart);

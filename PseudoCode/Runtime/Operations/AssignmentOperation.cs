@@ -8,6 +8,7 @@ public class AssignmentOperation : Operation
 
     public override void Operate()
     {
+        base.Operate();
         var value = Program.RuntimeStack.Pop();
         var to = Program.RuntimeStack.Pop();
         to.Type.Assign(to, value);
