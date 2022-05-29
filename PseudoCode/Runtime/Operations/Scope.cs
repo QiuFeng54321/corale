@@ -96,7 +96,9 @@ public class Scope : Operation
             {
                 e.Operation ??= operation;
                 e.OperationStackTrace.Add(this);
-                throw;
+                if (!IsRoot) throw;
+                Console.Error.WriteLine(e);
+                return;
             }
     }
 

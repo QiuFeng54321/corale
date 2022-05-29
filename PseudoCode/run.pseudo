@@ -16,7 +16,7 @@ ENDIF
 b <- [[1, 2, 3, 4],[5, 6, 7, 8], [9, 10, 11, 12]]
 b[2,3] <- 3
 OUTPUT b
-eaf <- afiphf + 2
+eaf <- 1.2 + 2
 eaf <- eaf + 1
 OUTPUT "eaf:", eaf
 
