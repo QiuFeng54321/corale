@@ -24,7 +24,8 @@ void RunProgram(CommandLines.Options opts)
         DisplayOperations = opts.Verbose,
         Program =
         {
-            AllowUndeclaredVariables = !opts.StrictVariables
+            AllowUndeclaredVariables = !opts.StrictVariables,
+            DebugRepresentation = opts.DebugRepresentation
         }
     };
     ParseTreeWalker.Default.Walk(interpreter, tree);

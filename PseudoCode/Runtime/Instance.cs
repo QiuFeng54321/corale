@@ -46,6 +46,6 @@ public class Instance
 
     public override string ToString()
     {
-        return Represent();
+        return Program?.DebugRepresentation ?? false ? DebugRepresent() :  Represent();
     }
 }

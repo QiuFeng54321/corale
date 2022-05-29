@@ -83,11 +83,11 @@ public class ArrayInstance : Instance
 
     public override string Represent()
     {
-        return $"[{string.Join<Instance>(',', Array)}]";
+        return $"[{string.Join<Instance>(", ", Array)}]";
     }
 
     public override string DebugRepresent()
     {
-        return $"{{{ElementType}[{string.Join(',', Dimensions)}]: {Represent()}}}";
+        return $"{{{ElementType}[{string.Join(", ", Dimensions)}]: {Represent()}}}";
     }
 }

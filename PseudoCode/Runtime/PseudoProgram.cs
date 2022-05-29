@@ -5,6 +5,7 @@ namespace PseudoCode.Runtime;
 public class PseudoProgram
 {
     public uint CurrentInstanceAddress;
+    public bool DebugRepresentation;
     public Scope GlobalScope;
     public Dictionary<uint, Instance> Memory = new();
     public Stack<Instance> RuntimeStack = new();
