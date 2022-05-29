@@ -60,7 +60,9 @@ public class ArrayInstance : Instance
     {
         var enumerable = indices as int[] ?? indices.ToArray();
         if (enumerable.Length > Dimensions.Count)
-            throw new InvalidAccessError("Array access indices more than dimensions of array", null);
+            throw new InvalidAccessError(
+                string.Format(strings.ArrayType_Index_InvalidArrayAccessDimension, TotalElements, enumerable.Length),
+                null);
         var index = 0;
         var factor = TotalElements;
         for (var i = 0; i < enumerable.Length; i++)

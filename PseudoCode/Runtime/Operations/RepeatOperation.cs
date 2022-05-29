@@ -34,7 +34,7 @@ public class RepeatOperation : Operation
     {
         return
             TestFirst
-                ? $"{Indent(depth)}While:\n{TestExpressionScope.ToString(depth)}\n{Indent(depth)}Do:\n{RepeatBlock.ToString(depth)}"
-                : $"{Indent(depth)}Do:\n{RepeatBlock.ToString(depth)}\n{Indent(depth)}While:\n{TestExpressionScope.ToString(depth)}";
+                ? string.Format(strings.RepeatOperation_ToString_While, Indent(depth), TestExpressionScope.ToString(depth), Indent(depth), RepeatBlock.ToString(depth))
+                : string.Format(strings.RepeatOperation_ToString_Repeat, Indent(depth), RepeatBlock.ToString(depth), Indent(depth), TestExpressionScope.ToString(depth));
     }
 }

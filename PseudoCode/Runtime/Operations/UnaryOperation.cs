@@ -18,6 +18,6 @@ public class UnaryOperation : Operation
 
     public override string ToPlainString()
     {
-        return $"Unary {OperatorMethod}";
+        return string.Format(strings.UnaryOperation_ToPlainString, OperatorMethod);
     }
 }

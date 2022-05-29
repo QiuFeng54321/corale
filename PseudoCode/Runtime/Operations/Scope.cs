@@ -24,7 +24,7 @@ public class Scope : Operation
         return ScopeStates.InstanceAddresses.ContainsKey(name)
             ? ScopeStates.InstanceAddresses[name]
             : ParentScope?.FindInstanceAddress(name) ??
-              throw new InvalidAccessError($"Instance {name} cannot be found.", null);
+              throw new InvalidAccessError(string.Format(strings.Scope_FindInstanceAddress_NotFound, name), null);
     }
 
     public Type FindType(string typeName)
@@ -102,7 +102,7 @@ public class Scope : Operation
 
     public override string ToPlainString()
     {
-        return ParentScope == null ? "Global scope" : "Anonymous scope";
+        return ParentScope == null ? strings.Scope_ToPlainString_GlobalScope : strings.Scope_ToPlainString_AnonymousScope;
     }
 
     public override string ToString(int depth)

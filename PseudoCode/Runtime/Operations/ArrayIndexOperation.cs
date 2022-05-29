@@ -16,6 +16,6 @@ public class ArrayIndexOperation : Operation
 
     public override string ToPlainString()
     {
-        return "Array index access";
+        return strings.ArrayIndexOperation_ToPlainString;
     }
 }

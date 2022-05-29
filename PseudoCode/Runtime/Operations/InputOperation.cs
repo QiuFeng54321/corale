@@ -16,6 +16,6 @@ public class InputOperation : Operation
 
     public override string ToPlainString()
     {
-        return $"Input";
+        return strings.InputOperation_ToPlainString;
     }
 }

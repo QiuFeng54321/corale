@@ -16,7 +16,7 @@ public class DeclareOperation : Operation
     {
         base.Operate();
         if (ParentScope.ScopeStates.InstanceAddresses.ContainsKey(Name))
-            throw new InvalidAccessError($"{Name} is already declared under this scope!", null);
+            throw new InvalidAccessError(string.Format(strings.DeclareOperation_Operate_AlreadyDeclared, Name), null);
         if (Dimensions.Count == 0)
         {
             ParentScope.ScopeStates.InstanceAddresses.Add(Name, Program.AllocateId(Type.Instance(scope: ParentScope)));
@@ -32,6 +32,6 @@ public class DeclareOperation : Operation
     public override string ToPlainString()
     {
         var typeStr = Dimensions.Count == 0 ? Type.ToString() : $"ARRAY[{string.Join(',', Dimensions)}] OF {Type}";
-        return $"DECLARE {Name} : {typeStr}";
+        return string.Format(strings.DeclareOperation_ToPlainString, Name, typeStr);
     }
 }

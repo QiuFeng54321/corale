@@ -22,10 +22,10 @@ public class Type
 
     private static uint _incrementId = ArrayId;
 
-    public Dictionary<int, BinaryOperator> BinaryOperators = new();
+    public Dictionary<int, BinaryOperator> BinaryOperators;
     public PseudoProgram Program;
     public Scope ParentScope;
-    public Dictionary<int, UnaryOperator> UnaryOperators = new();
+    public Dictionary<int, UnaryOperator> UnaryOperators;
 
     public Type()
     {
@@ -75,7 +75,7 @@ public class Type
     public virtual void ThrowUnsupported(Instance i1, Instance i2 = null, [CallerMemberName] string caller = "Unknown")
     {
         throw new UnsupportedCastError(
-            $"Cannot perform {caller} operation on {i1.Type} {(i2 != null ? "and " + i2.Type : "")}", null);
+            string.Format(strings.Type_ThrowUnsupported, caller, i1.Type, (i2 != null ? strings.and + i2.Type : "")), null);
     }
 
     public virtual Instance Add(Instance i1, Instance i2)
@@ -198,7 +198,7 @@ public class Type
 
     private UnsupportedCastError MakeUnsupportedCastError(Instance i, string systemMsg = "")
     {
-        return new UnsupportedCastError($"{i.Type} to {this}{(systemMsg.Length != 0 ? ": " : "")}{systemMsg}", null);
+        return new UnsupportedCastError(string.Format(strings.Type_MakeUnsupportedCastError, i.Type, this, systemMsg.Length != 0 ? ": " : "", systemMsg), null);
     }
 
     public Instance HandledCastFrom(Instance i)

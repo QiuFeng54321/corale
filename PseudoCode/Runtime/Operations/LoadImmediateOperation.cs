@@ -16,6 +16,6 @@ public class LoadImmediateOperation : Operation
 
     public override string ToPlainString()
     {
-        return $"Push immediate {Intermediate}";
+        return string.Format(strings.LoadImmediateOperation_ToPlainString, Intermediate);
     }
 }

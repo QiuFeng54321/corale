@@ -29,6 +29,6 @@ public class FormImmediateArrayOperation : Operation
 
     public override string ToPlainString()
     {
-        return $"Immediate array {Length}";
+        return string.Format(strings.FormImmediateArrayOperation_ToPlainString, Length);
     }
 }

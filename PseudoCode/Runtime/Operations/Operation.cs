@@ -23,7 +23,7 @@ public class Operation
 
     public virtual string ToPlainString()
     {
-        return "Operation";
+        return strings.Operation_ToPlainString;
     }
 
     public virtual string ToString(int depth)

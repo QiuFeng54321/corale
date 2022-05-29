@@ -4,6 +4,7 @@ namespace PseudoCode.Runtime.Errors;
 
 public class Error : Exception
 {
+    public virtual string Name => strings.Error_Name;
     public Operation Operation;
     public List<Operation> OperationStackTrace;
     public IEnumerable<string> PossibleCauses;
@@ -18,12 +19,8 @@ public class Error : Exception
 
     public override string ToString()
     {
-        return $@"
-{GetType().Name}: {Message}
-Occured in operation: {Operation}
-Stack Trace:
-{string.Join('\n', OperationStackTrace.Select(o => $"{o.ToPlainString()} {o.SourceLocation}"))}
-Possible Causes:
-{string.Join('\n', PossibleCauses)}";
+        return string.Format(strings.Error_ToString, Name, Message, Operation,
+            string.Join('\n', OperationStackTrace.Select(o => $"{o.ToPlainString()} {o.SourceLocation}")),
+            string.Join('\n', PossibleCauses));
     }
 }

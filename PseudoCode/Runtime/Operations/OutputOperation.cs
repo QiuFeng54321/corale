@@ -19,6 +19,6 @@ public class OutputOperation : Operation
 
     public override string ToPlainString()
     {
-        return $"Output {ArgumentCount}";
+        return string.Format(strings.OutputOperation_ToPlainString, ArgumentCount);
     }
 }

@@ -23,7 +23,7 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
         if (DisplayOperations)
         {
             Console.WriteLine(Program.GlobalScope);
-            Console.WriteLine("Operations starts now...");
+            Console.WriteLine(strings.PseudoCodeInterpreter_ExitFileInput_OperationsStart);
         }
 
         Program.GlobalScope.Operate();

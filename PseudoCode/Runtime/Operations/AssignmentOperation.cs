@@ -15,6 +15,6 @@ public class AssignmentOperation : Operation
 
     public override string ToPlainString()
     {
-        return "Assign";
+        return strings.AssignmentOperation_ToPlainString;
     }
 }

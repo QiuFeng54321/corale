@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="PseudoCodeInterpreter_ExitFileInput_OperationsStart" xml:space="preserve">
+        <value>Operations starts now...</value>
+    </data>
+    <data name="AssignmentOperation_ToPlainString" xml:space="preserve">
+        <value>Assign</value>
+    </data>
+    <data name="Error_ToString" xml:space="preserve">
+        <value>
+{0}: {1}
+Occured in operation: {2}
+Stack Trace:
+{3}
+Possible Causes:
+{4}</value>
+    </data>
+    <data name="Type_ThrowUnsupported" xml:space="preserve">
+        <value>Cannot perform {0} operation on {1} {2}</value>
+    </data>
+    <data name="and" xml:space="preserve">
+        <value>and </value>
+    </data>
+    <data name="Type_MakeUnsupportedCastError" xml:space="preserve">
+        <value>{0} to {1}{2}{3}</value>
+    </data>
+    <data name="ArrayType_Assign_InvalidValueType" xml:space="preserve">
+        <value>Assigned value should be {0} OF {1}, not {2}</value>
+    </data>
+    <data name="ArrayType_Assign_InvalidArrayLength" xml:space="preserve">
+        <value>Assigning array of length {0} to array of length {1}</value>
+    </data>
+    <data name="ArrayType_Index_IndexNotArray" xml:space="preserve">
+        <value>Index access is not an array!</value>
+    </data>
+    <data name="ArrayType_Index_InvalidArrayAccessDimension" xml:space="preserve">
+        <value>Array access indices more than dimensions of array: {0} &gt; {1}</value>
+    </data>
+    <data name="DeclareOperation_Operate_AlreadyDeclared" xml:space="preserve">
+        <value>{0} is already declared under this scope!</value>
+    </data>
+    <data name="Scope_ToPlainString_GlobalScope" xml:space="preserve">
+        <value>Global scope</value>
+    </data>
+    <data name="Scope_ToPlainString_AnonymousScope" xml:space="preserve">
+        <value>Anonymous scope</value>
+    </data>
+    <data name="Error_Name" xml:space="preserve">
+        <value>Error</value>
+    </data>
+    <data name="InvalidAccessError_Name" xml:space="preserve">
+        <value>InvalidAccessError</value>
+    </data>
+    <data name="InvalidTypeError_Name" xml:space="preserve">
+        <value>InvalidTypeError</value>
+    </data>
+    <data name="UnsupportedCastError_Name" xml:space="preserve">
+        <value>UnsupportedCastError</value>
+    </data>
+    <data name="Scope_FindInstanceAddress_NotFound" xml:space="preserve">
+        <value>Instance {0} cannot be found.</value>
+    </data>
+    <data name="ArrayIndexOperation_ToPlainString" xml:space="preserve">
+        <value>Array index access</value>
+    </data>
+    <data name="BinaryOperation_ToPlainString" xml:space="preserve">
+        <value>Binary {0}</value>
+    </data>
+    <data name="DeclareOperation_ToPlainString" xml:space="preserve">
+        <value>DECLARE {0} : {1}</value>
+    </data>
+    <data name="FormImmediateArrayOperation_ToPlainString" xml:space="preserve">
+        <value>Immediate array {0}</value>
+    </data>
+    <data name="IfOperation_ToString" xml:space="preserve">
+        <value>{0}Branch:
+{1}
+{2}True:
+{3}
+{4}</value>
+    </data>
+    <data name="IfOperation_ToString_Else" xml:space="preserve">
+        <value>{0}False:
+{1}</value>
+    </data>
+    <data name="InputOperation_ToPlainString" xml:space="preserve">
+        <value>Input</value>
+    </data>
+    <data name="LoadImmediateOperation_ToPlainString" xml:space="preserve">
+        <value>Push immediate {0}</value>
+    </data>
+    <data name="LoadOperation_ToPlainString" xml:space="preserve">
+        <value>Push ref {0}</value>
+    </data>
+    <data name="Operation_ToPlainString" xml:space="preserve">
+        <value>Operation</value>
+    </data>
+    <data name="OutputOperation_ToPlainString" xml:space="preserve">
+        <value>Output {0}</value>
+    </data>
+    <data name="RepeatOperation_ToString_While" xml:space="preserve">
+        <value>{0}While:
+{1}
+{2}Do:
+{3}</value>
+    </data>
+    <data name="RepeatOperation_ToString_Repeat" xml:space="preserve">
+        <value>{0}Do:
+{1}
+{2}While:
+{3}</value>
+    </data>
+    <data name="UnaryOperation_ToPlainString" xml:space="preserve">
+        <value>Unary {0}</value>
+    </data>
+</root>

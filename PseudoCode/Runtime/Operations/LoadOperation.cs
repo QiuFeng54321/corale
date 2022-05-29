@@ -28,6 +28,6 @@ public class LoadOperation : Operation
 
     public override string ToPlainString()
     {
-        return $"Push ref {LoadName}";
+        return string.Format(strings.LoadOperation_ToPlainString, LoadName);
     }
 }

@@ -1,0 +1,108 @@
+<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="and" xml:space="preserve">
+        <value>和</value>
+    </data>
+    <data name="ArrayType_Assign_InvalidArrayLength" xml:space="preserve">
+        <value>尝试将长度为 {0} 的数组赋值到长度为 {1} 的数组</value>
+    </data>
+    <data name="ArrayType_Assign_InvalidValueType" xml:space="preserve">
+        <value>赋值的数组类别应为 {0} OF {1}, 而不是 {2}</value>
+    </data>
+    <data name="ArrayType_Index_IndexNotArray" xml:space="preserve">
+        <value>数组索引不是数组！</value>
+    </data>
+    <data name="ArrayType_Index_InvalidArrayAccessDimension" xml:space="preserve">
+        <value>数组索引维度大于数组维度：{0} &gt; {1}</value>
+    </data>
+    <data name="AssignmentOperation_ToPlainString" xml:space="preserve">
+        <value>赋值</value>
+    </data>
+    <data name="DeclareOperation_Operate_AlreadyDeclared" xml:space="preserve">
+        <value>{0} 在当前范围已声明！</value>
+    </data>
+    <data name="Error_ToString" xml:space="preserve">
+        <value>
+{0}: {1}
+事发操作：{2}
+栈轨迹：
+{3}
+可能原因：
+{4}</value>
+    </data>
+    <data name="PseudoCodeInterpreter_ExitFileInput_OperationsStart" xml:space="preserve">
+        <value>程序开始。。。</value>
+    </data>
+    <data name="Type_MakeUnsupportedCastError" xml:space="preserve">
+        <value>{0} 到 {1}{2}{3}</value>
+    </data>
+    <data name="Type_ThrowUnsupported" xml:space="preserve">
+        <value>不能对 {1} {2} 进行 {0} 操作</value>
+    </data>
+    <data name="Scope_ToPlainString_AnonymousScope" xml:space="preserve">
+        <value>匿名范围</value>
+    </data>
+    <data name="Scope_ToPlainString_GlobalScope" xml:space="preserve">
+        <value>全局范围</value>
+    </data>
+    <data name="Error_Name" xml:space="preserve">
+        <value>错误</value>
+    </data>
+    <data name="InvalidAccessError_Name" xml:space="preserve">
+        <value>访问异常</value>
+    </data>
+    <data name="InvalidTypeError_Name" xml:space="preserve">
+        <value>类型异常</value>
+    </data>
+    <data name="UnsupportedCastError_Name" xml:space="preserve">
+        <value>无效类型转换</value>
+    </data>
+    <data name="Scope_FindInstanceAddress_NotFound" xml:space="preserve">
+        <value>找不到实例 {0}。</value>
+    </data>
+    <data name="ArrayIndexOperation_ToPlainString" xml:space="preserve">
+        <value>数组索引访问</value>
+    </data>
+    <data name="BinaryOperation_ToPlainString" xml:space="preserve">
+        <value>二元 {0}</value>
+    </data>
+    <data name="DeclareOperation_ToPlainString" xml:space="preserve">
+        <value>声明 {0} : {1}</value>
+    </data>
+    <data name="FormImmediateArrayOperation_ToPlainString" xml:space="preserve">
+        <value>及时数组 {0}</value>
+    </data>
+    <data name="IfOperation_ToString_Else" xml:space="preserve">
+        <value>{0}否：
+{1}</value>
+    </data>
+    <data name="InputOperation_ToPlainString" xml:space="preserve">
+        <value>输入</value>
+    </data>
+    <data name="LoadImmediateOperation_ToPlainString" xml:space="preserve">
+        <value>推入及时值 {0}</value>
+    </data>
+    <data name="LoadOperation_ToPlainString" xml:space="preserve">
+        <value>推入引用 {0}</value>
+    </data>
+    <data name="Operation_ToPlainString" xml:space="preserve">
+        <value>操作</value>
+    </data>
+    <data name="OutputOperation_ToPlainString" xml:space="preserve">
+        <value>输出 {0}</value>
+    </data>
+    <data name="UnaryOperation_ToPlainString" xml:space="preserve">
+        <value>一元 {0}</value>
+    </data>
+</root>

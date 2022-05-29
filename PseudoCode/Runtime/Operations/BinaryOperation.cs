@@ -19,6 +19,6 @@ public class BinaryOperation : Operation
 
     public override string ToPlainString()
     {
-        return $"Binary {OperatorMethod}";
+        return string.Format(strings.BinaryOperation_ToPlainString, OperatorMethod);
     }
 }

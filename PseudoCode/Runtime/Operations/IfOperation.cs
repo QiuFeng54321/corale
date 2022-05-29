@@ -25,6 +25,6 @@ public class IfOperation : Operation
     public override string ToString(int depth)
     {
         return
-            $"{Indent(depth)}Branch:\n{TestExpressionScope.ToString(depth)}\n{Indent(depth)}True:\n{TrueBlock.ToString(depth)}\n{(FalseBlock != null ? $"{Indent(depth)}False:\n{FalseBlock.ToString(depth)}" : "")}";
+            string.Format(strings.IfOperation_ToString, Indent(depth), TestExpressionScope.ToString(depth), Indent(depth), TrueBlock.ToString(depth), (FalseBlock != null ? string.Format(strings.IfOperation_ToString_Else, Indent(depth), FalseBlock.ToString(depth)) : ""));
     }
 }

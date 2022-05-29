@@ -31,11 +31,11 @@ public class ArrayType : Type
     {
         if (value.Type.Id != ArrayId)
             throw new InvalidTypeError(
-                $"Assigned value should be {Name} OF {((ArrayInstance)to).ElementType}, not {value.Type}", null);
+                string.Format(strings.ArrayType_Assign_InvalidValueType, Name, ((ArrayInstance)to).ElementType, value.Type), null);
         var valueLength = ((Instance[])value.Value).Length;
         var toLength = ((Instance[])to.Value).Length;
         if (valueLength != toLength)
-            throw new InvalidAccessError($"Assigning array of length {valueLength} to array of length {toLength}",
+            throw new InvalidAccessError(string.Format(strings.ArrayType_Assign_InvalidArrayLength, valueLength, toLength),
                 null);
         for (var i = 0; i < valueLength; i++)
             ((Instance[])to.Value)[i].Type.Assign(((Instance[])to.Value)[i], ((Instance[])value.Value)[i]);
@@ -44,11 +44,11 @@ public class ArrayType : Type
     public override Instance Index(Instance i1, Instance i2)
     {
         if (i2.RealInstance is not ArrayInstance indexInstance)
-            throw new InvalidAccessError("Index access is not an array!", null);
+            throw new InvalidAccessError(strings.ArrayType_Index_IndexNotArray, null);
         var arrayInstance = (ArrayInstance)i1.RealInstance;
         if (indexInstance.TotalElements > arrayInstance.Dimensions.Count)
             throw new InvalidAccessError(
-                $"Array access indices more than dimensions of array: {indexInstance.TotalElements} > {arrayInstance.Dimensions.Count}",
+                string.Format(strings.ArrayType_Index_InvalidArrayAccessDimension, indexInstance.TotalElements, arrayInstance.Dimensions.Count),
                 null);
         var indexList = indexInstance.Array.Select((index, i) =>
             arrayInstance.Dimensions[i].ToRealIndex(ParentScope.FindType(IntegerId).HandledCastFrom(index).Get<int>())).ToList();
