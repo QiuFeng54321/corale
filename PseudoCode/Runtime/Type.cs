@@ -211,6 +211,10 @@ public class Type
         {
             throw MakeUnsupportedCastError(i, e.Message);
         }
+        catch (InvalidCastException e)
+        {
+            throw MakeUnsupportedCastError(i, e.Message);
+        }
     }
 
     public virtual void Assign(Instance to, Instance value)

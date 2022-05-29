@@ -90,7 +90,7 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
         // Console.WriteLine($"{context.lvalue().GetText()} <- {context.expr().GetText()}");
         CurrentScope.AddOperation(new AssignmentOperation(CurrentScope, Program)
         {
-            SourceLocation = SourceLocation(context)
+            SourceLocation = SourceLocation(context.AssignmentNotation().Symbol)
         });
     }
 
