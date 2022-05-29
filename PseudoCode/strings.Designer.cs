@@ -81,12 +81,6 @@ namespace PseudoCode {
             }
         }
         
-        internal static string ArrayType_Assign_InvalidValueType {
-            get {
-                return ResourceManager.GetString("ArrayType_Assign_InvalidValueType", resourceCulture);
-            }
-        }
-        
         internal static string ArrayType_Assign_InvalidArrayLength {
             get {
                 return ResourceManager.GetString("ArrayType_Assign_InvalidArrayLength", resourceCulture);
@@ -240,6 +234,18 @@ namespace PseudoCode {
         internal static string Operation_Operate {
             get {
                 return ResourceManager.GetString("Operation_Operate", resourceCulture);
+            }
+        }
+        
+        internal static string PlaceholderType_ThrowUnsupported_PossibleCauses_AssignBeforeUse {
+            get {
+                return ResourceManager.GetString("PlaceholderType_ThrowUnsupported_PossibleCauses_AssignBeforeUse", resourceCulture);
+            }
+        }
+        
+        internal static string ArrayType_Assign_InvalidValueType {
+            get {
+                return ResourceManager.GetString("ArrayType_Assign_InvalidValueType", resourceCulture);
             }
         }
     }

@@ -105,4 +105,7 @@
     <data name="UnaryOperation_ToPlainString" xml:space="preserve">
         <value>一元 {0}</value>
     </data>
+    <data name="PlaceholderType_ThrowUnsupported_PossibleCauses_AssignBeforeUse" xml:space="preserve">
+        <value>实例使用前没有赋值</value>
+    </data>
 </root>

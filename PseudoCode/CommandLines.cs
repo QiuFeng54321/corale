@@ -8,7 +8,7 @@ public class CommandLines
     {
         [Option('v', "verbose", Required = false, HelpText = "Prints extra info")]
         public bool Verbose { get; set; }
-        [Option('S', "strict-variables", Required = false, HelpText = "Requires every variables to be declared before use / assignment.")]
+        [Option('S', "strict-variables", Required = false, HelpText = "Requires every variable to be declared before use / assignment.")]
         public bool StrictVariables { get; set; }
         [Option('D', "debug-representation", Required = false, HelpText = "Outputs debug representation for values")]
         public bool DebugRepresentation { get; set; }

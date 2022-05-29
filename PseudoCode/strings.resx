@@ -42,9 +42,6 @@ Possible Causes:
     <data name="Type_MakeUnsupportedCastError" xml:space="preserve">
         <value>{0} to {1}{2}{3}</value>
     </data>
-    <data name="ArrayType_Assign_InvalidValueType" xml:space="preserve">
-        <value>Assigned value should be {0} OF {1}, not {2}</value>
-    </data>
     <data name="ArrayType_Assign_InvalidArrayLength" xml:space="preserve">
         <value>Assigning array of length {0} to array of length {1}</value>
     </data>
@@ -133,5 +130,11 @@ Possible Causes:
     </data>
     <data name="Operation_Operate" xml:space="preserve">
         <value>{0} {1}</value>
+    </data>
+    <data name="PlaceholderType_ThrowUnsupported_PossibleCauses_AssignBeforeUse" xml:space="preserve">
+        <value>The instance is not assigned a value before used</value>
+    </data>
+    <data name="ArrayType_Assign_InvalidValueType" xml:space="preserve">
+        <value>Assigned array should be {0} OF {1}, not {2}</value>
     </data>
 </root>
