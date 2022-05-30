@@ -43,10 +43,10 @@ public class Scope : Operation
         return new Scope(this, Program) {SourceLocation = sourceLocation};
     }
 
-    public void AddType(string name, Type type)
+    public void AddType(Type type)
     {
         type.ParentScope = this;
-        ScopeStates.Types.Add(name, type);
+        ScopeStates.Types.Add(type.Name, type);
     }
 
     public void AddOperation(Operation operation)

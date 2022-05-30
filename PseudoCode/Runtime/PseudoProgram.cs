@@ -43,7 +43,6 @@ public class PseudoProgram
     {
         for (var i = (uint)segment.Start; i < segment.End; i++)
         {
-            if (Memory.ContainsKey(i)) Memory.Remove(i);
             Memory[i] = value();
             Memory[i].InstanceAddress = i;
             Memory[i].Program = this;
@@ -59,15 +58,15 @@ public class PseudoProgram
 
     public void AddPrimitiveTypes()
     {
-        GlobalScope.AddType("BOOLEAN", new BooleanType { ParentScope = GlobalScope, Program = this });
-        GlobalScope.AddType("INTEGER", new IntegerType { ParentScope = GlobalScope, Program = this });
-        GlobalScope.AddType("REAL", new RealType { ParentScope = GlobalScope, Program = this });
-        GlobalScope.AddType("ARRAY", new ArrayType { ParentScope = GlobalScope, Program = this });
-        GlobalScope.AddType("STRING", new StringType { ParentScope = GlobalScope, Program = this });
-        GlobalScope.AddType("CHAR", new CharacterType { ParentScope = GlobalScope, Program = this });
-        GlobalScope.AddType("DATE", new DateType { ParentScope = GlobalScope, Program = this });
-        GlobalScope.AddType("NULL", new NullType { ParentScope = GlobalScope, Program = this });
-        GlobalScope.AddType("PLACEHOLDER", new PlaceholderType { ParentScope = GlobalScope, Program = this });
+        GlobalScope.AddType(new BooleanType { ParentScope = GlobalScope, Program = this });
+        GlobalScope.AddType(new IntegerType { ParentScope = GlobalScope, Program = this });
+        GlobalScope.AddType(new RealType { ParentScope = GlobalScope, Program = this });
+        GlobalScope.AddType(new ArrayType { ParentScope = GlobalScope, Program = this });
+        GlobalScope.AddType(new StringType { ParentScope = GlobalScope, Program = this });
+        GlobalScope.AddType(new CharacterType { ParentScope = GlobalScope, Program = this });
+        GlobalScope.AddType(new DateType { ParentScope = GlobalScope, Program = this });
+        GlobalScope.AddType(new NullType { ParentScope = GlobalScope, Program = this });
+        GlobalScope.AddType(new PlaceholderType { ParentScope = GlobalScope, Program = this });
         Instance.Null = GlobalScope.FindType(Type.NullId).Instance(scope: GlobalScope);
     }
 }
