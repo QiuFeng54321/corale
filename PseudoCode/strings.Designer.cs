@@ -260,5 +260,17 @@ namespace PseudoCode {
                 return ResourceManager.GetString("AssignmentOperation_ToPlainString_Keep", resourceCulture);
             }
         }
+        
+        internal static string OutOfBoundsError_Name {
+            get {
+                return ResourceManager.GetString("OutOfBoundsError_Name", resourceCulture);
+            }
+        }
+        
+        internal static string ArrayInstance_ElementAt_OutOfBounds {
+            get {
+                return ResourceManager.GetString("ArrayInstance_ElementAt_OutOfBounds", resourceCulture);
+            }
+        }
     }
 }

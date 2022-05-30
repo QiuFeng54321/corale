@@ -111,4 +111,10 @@
     <data name="AssignmentOperation_ToPlainString_Keep" xml:space="preserve">
         <value>留栈</value>
     </data>
+    <data name="OutOfBoundsError_Name" xml:space="preserve">
+        <value>出界</value>
+    </data>
+    <data name="ArrayInstance_ElementAt_OutOfBounds" xml:space="preserve">
+        <value>访问索引 {0}，总长 {1}</value>
+    </data>
 </root>

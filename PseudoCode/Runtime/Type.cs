@@ -207,7 +207,7 @@ public class Type
     {
         if (to.Type.Id != value.Type.Id)
         {
-            var casted = to.Type.HandledCastFrom(value);
+            var casted = HandledCastFrom(value);
             to.Value = casted.Value;
             to.Type = casted.Type;
         }

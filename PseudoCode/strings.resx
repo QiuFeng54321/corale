@@ -148,4 +148,10 @@ Possible Causes:
     <data name="AssignmentOperation_ToPlainString_Keep" xml:space="preserve">
         <value>Keep</value>
     </data>
+    <data name="OutOfBoundsError_Name" xml:space="preserve">
+        <value>OutOfBoundsError</value>
+    </data>
+    <data name="ArrayInstance_ElementAt_OutOfBounds" xml:space="preserve">
+        <value>Accessed index {0}, total length {1}</value>
+    </data>
 </root>

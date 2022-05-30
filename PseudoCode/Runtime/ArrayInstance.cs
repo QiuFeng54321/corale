@@ -53,6 +53,8 @@ public class ArrayInstance : Instance
 
     public Instance ElementAt(int index)
     {
+        if (Array.Length <= index || index < 0)
+            throw new OutOfBoundsError(string.Format(strings.ArrayInstance_ElementAt_OutOfBounds, index, TotalElements), null);
         return Array[index];
     }
 

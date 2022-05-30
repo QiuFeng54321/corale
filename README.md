@@ -47,6 +47,21 @@ PseudoCode -Sv run.pseudo
 
 ## Differences to / Behaviors not specified in the standard
 
+### Arrays
+
+#### Multidimensional arrays are always flattened
+
+This allows you to assign `[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]` to an`ARRAY[1:3, 1:4] OF INTEGER`, for example.
+
+#### Immediate arrays accept elements with different types but converts all to the type of the first element
+
+This is an example:
+
+```pseudocode
+arbitraryArray <- [1, "123", TRUE] // ARRAY[1:3] OF INTEGER
+arbitraryArray2 <- [1, "aspfijafpj", TRUE] // throws an error because the string cannot be converted to INTEGER.
+```
+
 #### Arrays can be assigned without declaration if not run with `-S` option.
 
 I don't think this code will be allowed in standard but it's ok here:
@@ -56,9 +71,22 @@ I don't think this code will be allowed in standard but it's ok here:
 b <- [[1, 2, 3, 4],[5, 6, 7, 8], [9, 10, 11, 12]]
 ```
 
-#### Multidimensional arrays are always flattened
+**However**, note that b is of type `ARRAY[1:12] OF INTEGER`, not `ARRAY[1:3, 1:4] OF INTEGER` because of array flattening.
 
-This allows you to assign `[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]` to an`ARRAY[1:3, 1:4] OF INTEGER`, for example.
+**Another effect** of not declaring before assigning an array is the different behavior from the previous subsection:
+
+```pseudocode
+// We add a declaration statement, specifying the element type STRING
+DECLARE arbitraryArray : ARRAY[1:3] OF STRING
+// Every element is converted into INTEGER, then STRING
+// since an immediate array converts all elements into the type of the first element
+arbitraryArray <- [1, "2", FALSE] // arbitraryArray = ["1", "2", "0"]
+OUTPUT arbitraryArray[3] & " Yes" // 0 Yes
+```
+
+
+
+### Others
 
 #### Values assigned to a variable is always casted, and values used as right operand is casted to the type of left operand except `INTEGER`
 
