@@ -421,7 +421,7 @@ fragment Spaces
  ;
 
 fragment Comment
- : '#' ~[\r\n\f]*
+ : '//' ~[\r\n\f]*
  ;
 
 fragment LineJoining
