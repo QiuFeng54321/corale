@@ -4,7 +4,6 @@ namespace PseudoCode.Runtime.Operations;
 
 public class Scope : Operation
 {
-
     public bool IsRoot => ParentScope == null;
 
     public Scope(Scope parentScope, PseudoProgram program) : base(parentScope, program)
@@ -40,7 +39,7 @@ public class Scope : Operation
 
     public Scope AddScope(SourceLocation sourceLocation = default)
     {
-        return new Scope(this, Program) {SourceLocation = sourceLocation};
+        return new Scope(this, Program) { SourceLocation = sourceLocation };
     }
 
     public void AddType(Type type)
@@ -79,6 +78,7 @@ public class Scope : Operation
             RunOperations();
             return;
         }
+
         var copy = (ScopeStates)ScopeStates.Clone();
         ScopeStates.ResetTemporaryContent();
         RunOperations();
@@ -90,11 +90,11 @@ public class Scope : Operation
         foreach (var operation in ScopeStates.Operations)
             try
             {
-                operation.Operate();
+                operation.HandledOperate();
             }
             catch (Error e)
             {
-                e.Operation ??= operation;
+                // e.Operation ??= operation;
                 e.OperationStackTrace.Add(this);
                 if (!IsRoot) throw;
                 Console.Error.WriteLine(e);
@@ -104,7 +104,9 @@ public class Scope : Operation
 
     public override string ToPlainString()
     {
-        return ParentScope == null ? strings.Scope_ToPlainString_GlobalScope : strings.Scope_ToPlainString_AnonymousScope;
+        return ParentScope == null
+            ? strings.Scope_ToPlainString_GlobalScope
+            : strings.Scope_ToPlainString_AnonymousScope;
     }
 
     public override string ToString(int depth)

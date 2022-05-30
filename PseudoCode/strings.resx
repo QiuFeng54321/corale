@@ -22,7 +22,7 @@
         <value>Operations starts now...</value>
     </data>
     <data name="AssignmentOperation_ToPlainString" xml:space="preserve">
-        <value>Assign</value>
+        <value>Assign {0}</value>
     </data>
     <data name="Error_ToString" xml:space="preserve">
         <value>
@@ -136,5 +136,16 @@ Possible Causes:
     </data>
     <data name="ArrayType_Assign_InvalidValueType" xml:space="preserve">
         <value>Assigned array should be {0} OF {1}, not {2}</value>
+    </data>
+    <data name="ForOperation_ToString" xml:space="preserve">
+        <value>{0}Step:
+{1}
+{2}Target:
+{3}
+{4}Do:
+{5}</value>
+    </data>
+    <data name="AssignmentOperation_ToPlainString_Keep" xml:space="preserve">
+        <value>Keep</value>
     </data>
 </root>

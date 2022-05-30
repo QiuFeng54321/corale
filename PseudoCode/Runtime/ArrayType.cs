@@ -27,7 +27,15 @@ public class ArrayType : Type
         return i;
     }
 
-    public override void Assign(Instance to, Instance value)
+    public override Instance Clone(Instance instance)
+    {
+        var arrayInstance = (ArrayInstance)instance;
+        var cloned = Instance(arrayInstance.Dimensions, arrayInstance.ElementType);
+        cloned.Array = arrayInstance.Array;
+        return cloned;
+    }
+
+    public override Instance Assign(Instance to, Instance value)
     {
         if (value.Type.Id != ArrayId)
             throw new InvalidTypeError(
@@ -39,6 +47,7 @@ public class ArrayType : Type
                 null);
         for (var i = 0; i < valueLength; i++)
             to.Get<Instance[]>()[i].Type.Assign(to.Get<Instance[]>()[i], value.Get<Instance[]>()[i]);
+        return to;
     }
 
     public override Instance Index(Instance i1, Instance i2)

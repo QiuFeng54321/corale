@@ -6,8 +6,10 @@ public class CommandLines
 {
     public class Options
     {
-        [Option('v', "verbose", Required = false, HelpText = "Prints extra info")]
-        public bool Verbose { get; set; }
+        [Option('c', "print-operations", Required = false, HelpText = "Prints compiled operations")]
+        public bool PrintOperations { get; set; }
+        [Option('C', "print-executing-operations", Required = false, HelpText = "Prints operation being executed currently")]
+        public bool PrintExecutingOperation { get; set; }
         [Option('S', "strict-variables", Required = false, HelpText = "Requires every variable to be declared before use / assignment.")]
         public bool StrictVariables { get; set; }
         [Option('D', "debug-representation", Required = false, HelpText = "Outputs debug representation for values")]

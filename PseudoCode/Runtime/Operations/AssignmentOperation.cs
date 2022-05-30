@@ -2,6 +2,7 @@ namespace PseudoCode.Runtime.Operations;
 
 public class AssignmentOperation : Operation
 {
+    public bool KeepVariableInStack;
     public AssignmentOperation(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {
     }
@@ -11,11 +12,12 @@ public class AssignmentOperation : Operation
         base.Operate();
         var value = Program.RuntimeStack.Pop();
         var to = Program.RuntimeStack.Pop();
-        to.Type.Assign(to, value);
+        var res = to.Type.Assign(to, value);
+        if (KeepVariableInStack) Program.RuntimeStack.Push(res);
     }
 
     public override string ToPlainString()
     {
-        return strings.AssignmentOperation_ToPlainString;
+        return string.Format(strings.AssignmentOperation_ToPlainString, KeepVariableInStack ? strings.AssignmentOperation_ToPlainString_Keep : "");
     }
 }

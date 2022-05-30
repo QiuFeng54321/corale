@@ -23,7 +23,8 @@ void RunProgram(CommandLines.Options opts)
     {
         Program =
         {
-            DisplayOperations = opts.Verbose,
+            DisplayOperationsAfterCompiled = opts.PrintOperations,
+            DisplayOperationsAtRuntime = opts.PrintExecutingOperation,
             AllowUndeclaredVariables = !opts.StrictVariables,
             DebugRepresentation = opts.DebugRepresentation
         }

@@ -121,7 +121,7 @@ scopedExpression: expression;
 indentedBlock: INDENT statement+ DEDENT;
 alignedBlock: statement (INDENT statement+ DEDENT)?;
 ifStatement locals [bool HasElse]: If scopedExpression Then indentedBlock (Else indentedBlock {$HasElse = true;})? Endif;
-forStatement: For expression AssignmentNotation valueRange (Step arithmeticExpression)? indentedBlock Next Identifier;
+forStatement locals [bool HasStep]: For expression AssignmentNotation expression To scopedExpression (Step scopedExpression {$HasStep = true;})? indentedBlock Next scopedExpression;
 whileStatement: While scopedExpression Do indentedBlock Endwhile;
 repeatStatement: Repeat indentedBlock Until scopedExpression;
 

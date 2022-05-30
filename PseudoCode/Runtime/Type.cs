@@ -72,123 +72,109 @@ public class Type
         return instance;
     }
 
-    public virtual void ThrowUnsupported(Instance i1, Instance i2 = null, [CallerMemberName] string caller = "Unknown")
+    
+    public virtual Instance Clone(Instance instance)
     {
-        throw new UnsupportedCastError(
+        return Instance(instance.Value, ParentScope);
+    }
+    public virtual Error MakeUnsupported(Instance i1, Instance i2 = null, [CallerMemberName] string caller = "Unknown")
+    {
+        return new UnsupportedCastError(
             string.Format(strings.Type_ThrowUnsupported, caller, i1.Type, (i2 != null ? strings.and + i2.Type : "")), null);
     }
 
     public virtual Instance Add(Instance i1, Instance i2)
     {
-        ThrowUnsupported(i1, i2);
-        return null;
+        throw MakeUnsupported(i1, i2);
     }
 
     public virtual Instance Subtract(Instance i1, Instance i2)
     {
-        ThrowUnsupported(i1, i2);
-        return null;
+        throw MakeUnsupported(i1, i2);
     }
 
     public virtual Instance Multiply(Instance i1, Instance i2)
     {
-        ThrowUnsupported(i1, i2);
-        return null;
+        throw MakeUnsupported(i1, i2);
     }
 
     public virtual Instance Divide(Instance i1, Instance i2)
     {
-        ThrowUnsupported(i1, i2);
-        return null;
+        throw MakeUnsupported(i1, i2);
     }
 
     public virtual Instance IntDivide(Instance i1, Instance i2)
     {
-        ThrowUnsupported(i1, i2);
-        return null;
+        throw MakeUnsupported(i1, i2);
     }
 
     public virtual Instance Mod(Instance i1, Instance i2)
     {
-        ThrowUnsupported(i1, i2);
-        return null;
+        throw MakeUnsupported(i1, i2);
     }
 
     public virtual Instance Pow(Instance i1, Instance i2)
     {
-        ThrowUnsupported(i1, i2);
-        return null;
+        throw MakeUnsupported(i1, i2);
     }
 
     public virtual Instance Negative(Instance i)
     {
-        ThrowUnsupported(i);
-        return null;
+        throw MakeUnsupported(i);
     }
 
     public virtual Instance Index(Instance i1, Instance i2)
     {
-        ThrowUnsupported(i1, i2);
-        return null;
+        throw MakeUnsupported(i1, i2);
     }
 
     public virtual Instance Not(Instance i)
     {
-        ThrowUnsupported(i);
-        return null;
+        throw MakeUnsupported(i);
     }
 
     public virtual Instance And(Instance i1, Instance i2)
     {
-        ThrowUnsupported(i1, i2);
-        return null;
+        throw MakeUnsupported(i1, i2);
     }
     public virtual Instance BitAnd(Instance i1, Instance i2)
     {
-        ThrowUnsupported(i1, i2);
-        return null;
+        throw MakeUnsupported(i1, i2);
     }
 
     public virtual Instance Or(Instance i1, Instance i2)
     {
-        ThrowUnsupported(i1, i2);
-        return null;
+        throw MakeUnsupported(i1, i2);
     }
 
     public virtual Instance Equal(Instance i1, Instance i2)
     {
-        ThrowUnsupported(i1, i2);
-        return null;
+        throw MakeUnsupported(i1, i2);
     }
 
     public virtual Instance NotEqual(Instance i1, Instance i2)
     {
-        ThrowUnsupported(i1, i2);
-        return null;
+        throw MakeUnsupported(i1, i2);
     }
 
     public virtual Instance Greater(Instance i1, Instance i2)
     {
-        ThrowUnsupported(i1, i2);
-        return null;
+        throw MakeUnsupported(i1, i2);
     }
 
     public virtual Instance Smaller(Instance i1, Instance i2)
     {
-        ThrowUnsupported(i1, i2);
-        return null;
+        throw MakeUnsupported(i1, i2);
     }
 
     public virtual Instance GreaterEqual(Instance i1, Instance i2)
     {
-        ThrowUnsupported(i1, i2);
-        return null;
+        throw MakeUnsupported(i1, i2);
     }
 
     public virtual Instance SmallerEqual(Instance i1, Instance i2)
     {
-        ThrowUnsupported(i1, i2);
-        return null;
+        throw MakeUnsupported(i1, i2);
     }
 
     public virtual Instance CastFrom(Instance i)
@@ -217,7 +203,7 @@ public class Type
         }
     }
 
-    public virtual void Assign(Instance to, Instance value)
+    public virtual Instance Assign(Instance to, Instance value)
     {
         if (to.Type.Id != value.Type.Id)
         {
@@ -232,6 +218,7 @@ public class Type
 
         to.Members.Clear();
         foreach (var p in value.Members) to.Members.Add(p.Key, p.Value);
+        return to;
     }
 
     public override string ToString()

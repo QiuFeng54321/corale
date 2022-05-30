@@ -1,3 +1,5 @@
+using Error = PseudoCode.Runtime.Errors.Error;
+
 namespace PseudoCode.Runtime.Operations;
 
 public class Operation
@@ -14,8 +16,22 @@ public class Operation
 
     public virtual void Operate()
     {
-        if (Program.DisplayOperations)
+        if (Program.DisplayOperationsAtRuntime)
             Console.WriteLine(strings.Operation_Operate, ToPlainString(), SourceLocation);
+    }
+
+    public void HandledOperate()
+    {
+        try
+        {
+            Operate();
+        }
+        catch (Error e)
+        {
+            e.Operation ??= this;
+            // e.OperationStackTrace.Add(this);
+            throw;
+        }
     }
 
     public static string Indent(int depth)

@@ -16,14 +16,14 @@ public class RepeatOperation : Operation
         var test = true;
         if (TestFirst)
         {
-            TestExpressionScope.Operate();
+            TestExpressionScope.HandledOperate();
             test = ParentScope.FindType(Type.BooleanId).HandledCastFrom(Program.RuntimeStack.Pop()).Get<bool>();
         }
 
         while (test)
         {
-            RepeatBlock.Operate();
-            TestExpressionScope.Operate();
+            RepeatBlock.HandledOperate();
+            TestExpressionScope.HandledOperate();
             test = ParentScope.FindType(Type.BooleanId).HandledCastFrom(Program.RuntimeStack.Pop()).Get<bool>();
         }
     }

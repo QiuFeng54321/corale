@@ -22,6 +22,18 @@ eaf <- 1.2 + 2
 eaf <- eaf + 1
 OUTPUT "eaf:", eaf
 
+// Uses for-loop to make a wing
+Wing <- ""
+MaxLength <- 50
+FOR i <- 1 TO MaxLength STEP i
+    OUTPUT "i =", i
+    FOR j <- i TO MaxLength
+        Wing <- Wing & "*"
+    NEXT j
+    Wing <- Wing & '\n'
+NEXT i
+OUTPUT Wing
+
 // Fibonacci sequence
 DECLARE FibCount : INTEGER
 DECLARE FibSeq : ARRAY[1:100] OF INTEGER

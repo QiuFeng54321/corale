@@ -1,6 +1,7 @@
 using Antlr4.Runtime;
 using PseudoCode.Runtime;
 using PseudoCode.Runtime.Operations;
+using Type = PseudoCode.Runtime.Type;
 
 namespace PseudoCode;
 
@@ -8,7 +9,7 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
 {
     public Scope CurrentScope;
     public PseudoProgram Program = new();
-    
+
 
     public override void EnterFileInput(PseudoCodeParser.FileInputContext context)
     {
@@ -19,13 +20,13 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
     public override void ExitFileInput(PseudoCodeParser.FileInputContext context)
     {
         base.ExitFileInput(context);
-        if (Program.DisplayOperations)
+        if (Program.DisplayOperationsAfterCompiled)
         {
             Console.WriteLine(Program.GlobalScope);
             Console.WriteLine(strings.PseudoCodeInterpreter_ExitFileInput_OperationsStart);
         }
 
-        Program.GlobalScope.Operate();
+        Program.GlobalScope.HandledOperate();
     }
 
     public void EnterScope(SourceLocation sourceLocation = default)
@@ -208,6 +209,34 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
         {
             RepeatBlock = repeatBlock, TestExpressionScope = testScope,
             TestFirst = false,
+            SourceLocation = SourceLocation(context)
+        });
+    }
+
+    public override void ExitForStatement(PseudoCodeParser.ForStatementContext context)
+    {
+        base.ExitForStatement(context);
+        var next = CurrentScope.TakeLast();
+        var body = CurrentScope.TakeLast();
+        var step = context.HasStep
+            ? CurrentScope.TakeLast()
+            : new LoadImmediateOperation(CurrentScope, Program)
+            {
+                Intermediate = CurrentScope.FindType(Type.IntegerId).Instance(1, CurrentScope),
+                SourceLocation = SourceLocation(context.Next().Symbol)
+            };
+        var target = CurrentScope.TakeLast();
+        CurrentScope.AddOperation(new AssignmentOperation(CurrentScope, Program)
+        {
+            KeepVariableInStack = true,
+            SourceLocation = SourceLocation(context.AssignmentNotation().Symbol)
+        });
+        CurrentScope.AddOperation(new ForOperation(CurrentScope, Program)
+        {
+            ForBody = body,
+            Next = next,
+            Step = step,
+            TargetValue = target,
             SourceLocation = SourceLocation(context)
         });
     }

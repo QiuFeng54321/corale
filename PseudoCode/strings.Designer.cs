@@ -248,5 +248,17 @@ namespace PseudoCode {
                 return ResourceManager.GetString("ArrayType_Assign_InvalidValueType", resourceCulture);
             }
         }
+        
+        internal static string ForOperation_ToString {
+            get {
+                return ResourceManager.GetString("ForOperation_ToString", resourceCulture);
+            }
+        }
+        
+        internal static string AssignmentOperation_ToPlainString_Keep {
+            get {
+                return ResourceManager.GetString("AssignmentOperation_ToPlainString_Keep", resourceCulture);
+            }
+        }
     }
 }

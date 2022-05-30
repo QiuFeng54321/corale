@@ -38,7 +38,7 @@ PseudoCode -Sv run.pseudo
 - [x] Variable autodeclare
 - [x] If-else
 - [x] While / Repeat
-- [ ] For
+- [x] For
 - [ ] Function / Procedure
 - [ ] Case
 - [ ] Type (Struct / Enum / Pointer)
@@ -70,7 +70,24 @@ a <- TRUE + 1 // UnsupportedCastError
 a <- 1 + 1.2 // Allowed, 1 casted into REAL, Value 2.2 is casted into 2 and assigned to a
 ```
 
+#### For loops accept expressions for variable increase
 
+The following code is accepted
+
+```pseudocode
+DECLARE ForArray : ARRAY[1:10] OF INTEGER
+FOR i <- 1 TO 10
+    DECLARE Num : INTEGER
+    OUTPUT i, ":"
+    INPUT Num
+    FOR ForArray[i] <- 1 TO Num
+        OUTPUT ForArray[i]
+    NEXT ForArray[i]
+NEXT i
+OUTPUT ForArray
+```
+
+In this example, `i` and `ForArray[i]` are used as variables for comparation. After the for-loop, their values will be the first value that is `Greater` than the target after incrementing by step, which defaults to 1(In this example the targets are `10` and `Num`).
 
 
 

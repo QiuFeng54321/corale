@@ -12,12 +12,12 @@ public class IfOperation : Operation
     public override void Operate()
     {
         base.Operate();
-        TestExpressionScope.Operate();
+        TestExpressionScope.HandledOperate();
         var test = ParentScope.FindType(Type.BooleanId).HandledCastFrom(Program.RuntimeStack.Pop());
         if (test.Get<bool>())
-            TrueBlock.Operate();
+            TrueBlock.HandledOperate();
         else
-            FalseBlock?.Operate();
+            FalseBlock?.HandledOperate();
     }
 
     public override string ToPlainString() => "If";
