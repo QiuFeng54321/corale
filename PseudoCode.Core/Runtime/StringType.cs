@@ -13,7 +13,7 @@ public class StringType : PrimitiveType<string>
         {
             case PseudoCodeLexer.Equal:
             case PseudoCodeLexer.NotEqual:
-                return ParentScope.FindType(BooleanId);
+                return ParentScope.FindTypeDefinition(BooleanId).Type;
             case PseudoCodeLexer.BitAnd:
                 return this;
             default:

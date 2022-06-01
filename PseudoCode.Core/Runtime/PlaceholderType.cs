@@ -12,7 +12,7 @@ public class PlaceholderType : Type
 
     public Type MetaAssign(Type type)
     {
-        ParentScope.InstanceTypes[InstanceName] = type;
+        ParentScope.InstanceDefinitions[InstanceName].Type = type;
         return type;
     }
 

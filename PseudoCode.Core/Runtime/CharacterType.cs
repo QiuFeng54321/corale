@@ -20,7 +20,7 @@ public class CharacterType : PrimitiveType<char>
             case PseudoCodeLexer.GreaterEqual:
             case PseudoCodeLexer.Smaller:
             case PseudoCodeLexer.SmallerEqual:
-                return ParentScope.FindType(BooleanId);
+                return ParentScope.FindTypeDefinition(BooleanId).Type;
             default:
                 return null;
         }

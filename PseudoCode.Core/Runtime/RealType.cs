@@ -28,9 +28,9 @@ public class RealType : PrimitiveType<decimal>
             case PseudoCodeLexer.GreaterEqual:
             case PseudoCodeLexer.Smaller:
             case PseudoCodeLexer.SmallerEqual:
-                return ParentScope.FindType(BooleanId);
+                return ParentScope.FindTypeDefinition(BooleanId).Type;
             case PseudoCodeLexer.IntDivide:
-                return ParentScope.FindType(IntegerId);
+                return ParentScope.FindTypeDefinition(IntegerId).Type;
             case PseudoCodeLexer.And:
             case PseudoCodeLexer.BitAnd:
             case PseudoCodeLexer.Or:
@@ -42,7 +42,7 @@ public class RealType : PrimitiveType<decimal>
 
     public override Type UnaryResultType(int type)
     {
-        return type == PseudoCodeLexer.Not ? ParentScope.FindType(BooleanId) : this;
+        return type == PseudoCodeLexer.Not ? ParentScope.FindTypeDefinition(BooleanId).Type : this;
     }
 
     public override Instance Add(Instance i1, Instance i2)
@@ -86,7 +86,7 @@ public class RealType : PrimitiveType<decimal>
 
     public override Instance IntDivide(Instance i1, Instance i2)
     {
-        return ParentScope.FindType(IntegerId).HandledCastFrom(
+        return ParentScope.FindTypeDefinition(IntegerId).Type.HandledCastFrom(
             ArithmeticOperation(i1, i2, (arg1, arg2) => (int)(arg1 / arg2)));
     }
 

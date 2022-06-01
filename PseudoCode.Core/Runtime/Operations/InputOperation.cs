@@ -11,14 +11,14 @@ public class InputOperation : Operation
         base.Operate();
         var instance = Program.RuntimeStack.Pop();
         var input = Console.ReadLine();
-        instance.Type.Assign(instance, ParentScope.FindType(Type.StringId).Instance(input, ParentScope));
+        instance.Type.Assign(instance, ParentScope.FindTypeDefinition(Type.StringId).Type.Instance(input, ParentScope));
     }
 
     public override void MetaOperate()
     {
         base.MetaOperate();
         var type = Program.TypeCheckStack.Pop();
-        if (type is PlaceholderType placeholderType) placeholderType.MetaAssign(ParentScope.FindType(Type.StringId));
+        if (type is PlaceholderType placeholderType) placeholderType.MetaAssign(ParentScope.FindTypeDefinition(Type.StringId).Type);
     }
 
     public override string ToPlainString()

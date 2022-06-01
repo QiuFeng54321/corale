@@ -12,32 +12,42 @@ public class Scope : Operation
     }
 
     public ScopeStates ScopeStates { get; set; }
-    
+
     /// <summary>
     /// Instances are created from the type
     /// </summary>
-    public Dictionary<string, Type> InstanceTypes = new();
-    public Dictionary<string, Type> Types = new();
-    public Type FindInstanceType(string name)
+    public Dictionary<string, Definition> InstanceDefinitions = new();
+
+    public Dictionary<string, Definition> TypeDefinitions = new();
+
+    public Definition FindInstanceDefinition(string name)
     {
-        return InstanceTypes.ContainsKey(name) ? InstanceTypes[name] : ParentScope?.FindInstanceType(name);
+        return InstanceDefinitions.ContainsKey(name)
+            ? InstanceDefinitions[name]
+            : ParentScope?.FindInstanceDefinition(name);
     }
 
-    public Type FindType(string typeName)
+    public Definition FindTypeDefinition(string typeName)
     {
-        return Types.ContainsKey(typeName) ? Types[typeName] : ParentScope?.FindType(typeName);
+        return TypeDefinitions.ContainsKey(typeName)
+            ? TypeDefinitions[typeName]
+            : ParentScope?.FindTypeDefinition(typeName);
     }
 
-    public Type FindType(uint id)
+    public Definition FindTypeDefinition(uint id)
     {
-        var t = Types.FirstOrDefault(t => t.Value.Id == id, new KeyValuePair<string, Type>());
-        return t.Value ?? ParentScope?.FindType(id);
+        var t = TypeDefinitions.FirstOrDefault(t => t.Value.Type.Id == id, new KeyValuePair<string, Definition>());
+        return t.Value ?? ParentScope?.FindTypeDefinition(id);
     }
 
     public void RegisterInstanceType(string name, Type type)
     {
-        InstanceTypes.Add(name, type);
+        InstanceDefinitions.Add(name, new Definition
+        {
+            Name = name, Type = type
+        });
     }
+
     public Instance FindInstance(string name)
     {
         return ParentScope.Program.Memory[FindInstanceAddress(name)];
@@ -73,7 +83,12 @@ public class Scope : Operation
     public void AddType(Type type)
     {
         type.ParentScope = this;
-        Types.Add(type.Name, type);
+        TypeDefinitions.Add(type.Name, new Definition
+        {
+            Name = type.Name,
+            Type = type,
+            SourceLocation = new SourceLocation(-1, -1)
+        });
     }
 
     public void AddOperation(Operation operation)
@@ -135,6 +150,26 @@ public class Scope : Operation
                 Console.Error.WriteLine(e);
                 return;
             }
+    }
+
+    public IEnumerable<Definition> GetVariableCompletionBefore(SourceLocation location)
+    {
+        var res = InstanceDefinitions.Where(x => x.Value.SourceLocation <= location)
+            .Select(x => x.Value);
+
+        return ScopeStates.Operations.OfType<Scope>().Aggregate(res,
+            (current, childScope) =>
+                current.Concat(childScope.GetVariableCompletionBefore(location) ?? Array.Empty<Definition>()));
+    }
+
+    public IEnumerable<Definition> GetTypeCompletionBefore(SourceLocation location)
+    {
+        var res = TypeDefinitions.Where(x => x.Value.SourceLocation <= location)
+            .Select(x => x.Value);
+
+        return ScopeStates.Operations.OfType<Scope>().Aggregate(res,
+            (current, childScope) =>
+                current.Concat(childScope.GetTypeCompletionBefore(location) ?? Array.Empty<Definition>()));
     }
 
     public override string ToPlainString()

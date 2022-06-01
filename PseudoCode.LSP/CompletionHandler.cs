@@ -66,8 +66,8 @@ public class CompletionHandler : CompletionHandlerBase
                 Value = "BOOLEAN"
             },
         });
-        var variableInfos = analysis.Program.GlobalScope.TypeTable.GetVariableCompletionBefore(cursor);
-        var typeInfos = analysis.Program.GlobalScope.TypeTable.GetTypeCompletionBefore(cursor);
+        var variableInfos = analysis.Program.GlobalScope.GetVariableCompletionBefore(cursor);
+        var typeInfos = analysis.Program.GlobalScope.GetTypeCompletionBefore(cursor);
         foreach (var typeInfo in typeInfos)
         {
             completions.Add(new CompletionItem
@@ -78,7 +78,7 @@ public class CompletionHandler : CompletionHandlerBase
                 Documentation = new MarkupContent
                 {
                     Kind = MarkupKind.Markdown,
-                    Value = typeInfo.Name
+                    Value = typeInfo.Type.ToString()
                 },
             });
         }
@@ -92,7 +92,7 @@ public class CompletionHandler : CompletionHandlerBase
                 Documentation = new MarkupContent
                 {
                     Kind = MarkupKind.Markdown,
-                    Value = variableInfo.Type.Name
+                    Value = variableInfo.Type.ToString()
                 },
             });
         }

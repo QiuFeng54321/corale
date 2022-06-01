@@ -56,7 +56,7 @@ public class ArrayType : Type
                 string.Format(strings.ArrayType_Index_InvalidArrayAccessDimension, indexInstance.ArrayType.TotalElements, Dimensions.Count),
                 null);
         var indexList = indexInstance.Array.Select((index, i) =>
-            Dimensions[i].ToRealIndex(ParentScope.FindType(IntegerId).HandledCastFrom(index).Get<int>())).ToList();
+            Dimensions[i].ToRealIndex(ParentScope.FindTypeDefinition(IntegerId).Type.HandledCastFrom(index).Get<int>())).ToList();
         return arrayInstance.ElementAt(indexList);
     }
 

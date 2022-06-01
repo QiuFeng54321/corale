@@ -13,8 +13,8 @@ public class DeclareOperation : Operation
     public override void Operate()
     {
         base.Operate();
-        var type = ParentScope.FindInstanceType(Name);
-        var instance = type.Instance();
+        var type = ParentScope.FindInstanceDefinition(Name);
+        var instance = type.Type.Instance();
         if (instance is ArrayInstance arrayInstance)
         {
             arrayInstance.InitialiseInMemory();
@@ -22,9 +22,15 @@ public class DeclareOperation : Operation
         ParentScope.ScopeStates.InstanceAddresses.Add(Name, Program.AllocateId(instance));
     }
 
+    public override void MetaOperate()
+    {
+        base.MetaOperate();
+        
+    }
+
     public override string ToPlainString()
     {
-        var typeStr = ParentScope.FindInstanceType(Name).ToString();
+        var typeStr = ParentScope.FindInstanceDefinition(Name).ToString();
         return string.Format(strings.DeclareOperation_ToPlainString, Name, typeStr);
     }
 }

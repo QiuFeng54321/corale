@@ -22,22 +22,28 @@ public class LoadOperation : Operation
         {
             if (!Program.AllowUndeclaredVariables) throw;
             // Console.WriteLine($"Warning: {LoadName} is not found in current scope. Creating one...");
-            Program.RuntimeStack.Push(ParentScope.FindType(Type.PlaceholderId).Instance(LoadName, ParentScope));
+            Program.RuntimeStack.Push(ParentScope.FindTypeDefinition(Type.PlaceholderId).Type.Instance(LoadName, ParentScope));
         }
     }
 
     public override void MetaOperate()
     {
         base.MetaOperate();
-        var type = ParentScope.FindInstanceType(LoadName);
+        var type = ParentScope.FindInstanceDefinition(LoadName);
         if (type == null)
         {
-            ParentScope.InstanceTypes.Add(LoadName, new PlaceholderType(ParentScope, Program)
+            ParentScope.InstanceDefinitions.Add(LoadName, new Definition
             {
-                InstanceName = LoadName
+                Name = LoadName,
+                Type = new PlaceholderType(ParentScope, Program)
+                {
+                    InstanceName = LoadName
+                },
+                SourceLocation = PoiLocation
             });
         }
-        Program.TypeCheckStack.Push(ParentScope.FindInstanceType(LoadName));
+
+        Program.TypeCheckStack.Push(ParentScope.FindInstanceDefinition(LoadName).Type);
     }
 
     public override string ToPlainString()
