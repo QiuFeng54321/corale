@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PseudoCode.LSP", "PseudoCod
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PseudoCode.Cli", "PseudoCode.Cli\PseudoCode.Cli.csproj", "{E70BF5D0-3F34-4D59-9E45-B6F9586B585D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PseudoCode.DAP", "PseudoCode.DAP\PseudoCode.DAP.csproj", "{297A859F-9ED3-458A-8126-30B869A5C96D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{E70BF5D0-3F34-4D59-9E45-B6F9586B585D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E70BF5D0-3F34-4D59-9E45-B6F9586B585D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E70BF5D0-3F34-4D59-9E45-B6F9586B585D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{297A859F-9ED3-458A-8126-30B869A5C96D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{297A859F-9ED3-458A-8126-30B869A5C96D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{297A859F-9ED3-458A-8126-30B869A5C96D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{297A859F-9ED3-458A-8126-30B869A5C96D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

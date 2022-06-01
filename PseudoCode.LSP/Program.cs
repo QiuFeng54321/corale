@@ -35,7 +35,7 @@ namespace PseudoCode.LSP
             Log.Logger.Information("This only goes file...");
 
             IObserver<WorkDoneProgressReport> workDone = null!;
-
+            
             var server = await LanguageServer.From(
                 options =>
                     options

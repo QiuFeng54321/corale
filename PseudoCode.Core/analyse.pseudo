@@ -1,10 +1,11 @@
 // Fibonacci sequence
 DECLARE FibCount : INTEGER
 DECLARE FibSeq : ARRAY[1:100] OF INTEGER
-FibSeq[1] <- 1
-FibSeq[2] <- 1
+// FibSeq[1] <- 1
+// FibSeq[2] <- 1
 TopCalculated <- 2
 ContinueFib <- TRUE
+FibSeq[TopCalculated] <- FibSeq[TopCalculated - 2] + FibSeq[TopCalculated - 1]
 WHILE ContinueFib DO
     k <- 1
     REPEAT

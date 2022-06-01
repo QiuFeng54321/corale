@@ -8,11 +8,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\PseudoCode.Core\PseudoCode.Core.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
+      <PackageReference Include="OmniSharp.Extensions.DebugAdapter.Server" Version="0.19.5" />
+      <PackageReference Include="Serilog" Version="2.11.1-dev-01397" />
       <PackageReference Include="Serilog.Extensions.Logging" Version="3.1.1-dev-10301" />
+      <PackageReference Include="Serilog.Sinks.File" Version="5.0.1-dev-00947" />
     </ItemGroup>
 
 </Project>

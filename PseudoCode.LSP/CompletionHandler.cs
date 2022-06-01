@@ -12,18 +12,20 @@ public class CompletionHandler : CompletionHandlerBase
     private readonly ILogger<CompletionHandler> _logger;
     private readonly ILanguageServerConfiguration _configuration;
     private readonly AnalysisService _analysisService;
-    
+
     private readonly BufferService documentService;
 
     private readonly DocumentSelector _documentSelector = DocumentSelector.ForLanguage("pseudocode");
 
-    public CompletionHandler(ILogger<CompletionHandler> logger, ILanguageServerConfiguration configuration, AnalysisService analysisService)
+    public CompletionHandler(ILogger<CompletionHandler> logger, ILanguageServerConfiguration configuration,
+        AnalysisService analysisService)
     {
         _logger = logger;
         _configuration = configuration;
         _analysisService = analysisService;
         _logger.LogInformation("Completion yay");
     }
+
     protected override CompletionRegistrationOptions CreateRegistrationOptions(CompletionCapability capability,
         ClientCapabilities clientCapabilities)
     {
@@ -34,6 +36,7 @@ public class CompletionHandler : CompletionHandlerBase
     }
     
 
+
     public override async Task<CompletionList> Handle(CompletionParams request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Completion");
@@ -41,11 +44,44 @@ public class CompletionHandler : CompletionHandlerBase
         var analysis = _analysisService.GetAnalysis(request.TextDocument.Uri);
         var cursor = new SourceLocation(request.Position.Line, request.Position.Character);
         _logger.LogInformation(cursor.ToString());
-        var variableInfos = analysis
-            .Program
-            .GlobalScope
-            .TypeTable
-            .GetVariableCompletionBefore(cursor);
+        completions.Add(new CompletionItem
+        {
+            Kind = CompletionItemKind.Value,
+            Label = "TRUE",
+            InsertText = "TRUE",
+            Documentation = new MarkupContent
+            {
+                Kind = MarkupKind.Markdown,
+                Value = "BOOLEAN"
+            },
+        });
+        completions.Add(new CompletionItem
+        {
+            Kind = CompletionItemKind.Value,
+            Label = "FALSE",
+            InsertText = "FALSE",
+            Documentation = new MarkupContent
+            {
+                Kind = MarkupKind.Markdown,
+                Value = "BOOLEAN"
+            },
+        });
+        var variableInfos = analysis.Program.GlobalScope.TypeTable.GetVariableCompletionBefore(cursor);
+        var typeInfos = analysis.Program.GlobalScope.TypeTable.GetTypeCompletionBefore(cursor);
+        foreach (var typeInfo in typeInfos)
+        {
+            completions.Add(new CompletionItem
+            {
+                Kind = CompletionItemKind.Class,
+                Label = typeInfo.Name,
+                InsertText = typeInfo.Name,
+                Documentation = new MarkupContent
+                {
+                    Kind = MarkupKind.Markdown,
+                    Value = typeInfo.Name
+                },
+            });
+        }
         foreach (var variableInfo in variableInfos)
         {
             completions.Add(new CompletionItem
@@ -55,11 +91,13 @@ public class CompletionHandler : CompletionHandlerBase
                 InsertText = variableInfo.Name,
                 Documentation = new MarkupContent
                 {
-                    Kind = MarkupKind.Markdown, 
-                    Value = $"```pseudocode\n{variableInfo.Type}```"
+                    Kind = MarkupKind.Markdown,
+                    Value = variableInfo.Type.Name
                 },
             });
         }
+        
+
         var t = $"{request.PartialResultToken}-{request.WorkDoneToken}-{request.Position}";
         var ins = "hiiiiiii";
         _logger.LogInformation($"T: {t}");
