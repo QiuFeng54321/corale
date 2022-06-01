@@ -6,7 +6,8 @@ public class Operation
 {
     public Scope ParentScope;
     public PseudoProgram Program;
-    public SourceLocation SourceLocation;
+    public SourceRange SourceRange;
+    public SourceLocation PoiLocation; // Point of interest, position of operator, etc.
 
     public Operation(Scope parentScope, PseudoProgram program)
     {
@@ -17,7 +18,7 @@ public class Operation
     public virtual void Operate()
     {
         if (Program.DisplayOperationsAtRuntime)
-            Console.WriteLine(strings.Operation_Operate, ToPlainString(), SourceLocation);
+            Console.WriteLine(strings.Operation_Operate, ToPlainString(), PoiLocation);
     }
 
     public void HandledOperate()
@@ -46,7 +47,7 @@ public class Operation
 
     public virtual string ToString(int depth)
     {
-        return $"{Indent(depth)}{ToPlainString()} {(SourceLocation != null ? $"# {SourceLocation}" : "")}";
+        return $"{Indent(depth)}{ToPlainString()} {(PoiLocation != null ? $"# {PoiLocation}" : "")}";
     }
 
     public override string ToString()

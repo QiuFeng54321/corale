@@ -6,12 +6,12 @@ using Type = PseudoCode.Core.Runtime.Type;
 
 namespace PseudoCode.Core.Parsing;
 
-public class PseudoCodeInterpreter : PseudoCodeBaseListener
+public class PseudoCodeCompiler : PseudoCodeBaseListener
 {
     public Scope CurrentScope;
     public PseudoProgram Program = new();
 
-    public PseudoProgram Walk(IParseTree tree)
+    public PseudoProgram Compile(IParseTree tree)
     {
         ParseTreeWalker.Default.Walk(this, tree);
         return Program;
@@ -38,9 +38,10 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
         CurrentScope = CurrentScope.AddScope(sourceLocation);
     }
 
-    public void ExitScope()
+    public void ExitScope(SourceLocation sourceLocation = default)
     {
         CurrentScope.ParentScope.AddOperation(CurrentScope);
+        CurrentScope.SourceRange.End = sourceLocation;
         CurrentScope = CurrentScope.ParentScope;
     }
 
@@ -48,13 +49,33 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
     {
         base.ExitDeclarationStatement(context);
         // Console.WriteLine($"DECLARE {context.IDENTIFIER().GetText()} : {context.dataType().GetText()}");
+        var name = context.Identifier().GetText();
+        var type = context.dataType().TypeName;
+        var dimensions = context.dataType().Dimensions;
+        var sourceLocation = SourceLocation(context);
         CurrentScope.AddOperation(new DeclareOperation(CurrentScope, Program)
         {
-            Name = context.Identifier().GetText(),
-            Type = CurrentScope.FindType(context.dataType().TypeName),
-            Dimensions = context.dataType().Dimensions,
-            SourceLocation = SourceLocation(context)
+            Name = name,
+            TypeName = type,
+            Dimensions = dimensions,
+            PoiLocation = sourceLocation
         });
+        var staticType = CurrentScope.TypeTable.FindType(type);
+        CurrentScope.TypeTable.VariableInfos.Add(name,
+            new TypeTable.VariableInfo
+            {
+                Type = dimensions.Count == 0
+                    ? staticType
+                    : new TypeTable.ArrayTypeInfo
+                    {
+                        DeclarationLocation = sourceLocation,
+                        Dimensions = (uint)dimensions.Count,
+                        ElementTypeInfo = staticType
+                    },
+                DeclarationLocation = sourceLocation,
+                Name = name
+            }
+        );
     }
 
     private static SourceLocation SourceLocation(IToken token)
@@ -67,6 +88,11 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
         return SourceLocation(context.Start);
     }
 
+    private static SourceRange SourceRange(ParserRuleContext context)
+    {
+        return new SourceRange(SourceLocation(context.Start), SourceLocation(context.Stop));
+    }
+
     public override void ExitAtom(PseudoCodeParser.AtomContext context)
     {
         base.ExitAtom(context);
@@ -74,28 +100,40 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
         CurrentScope.AddOperation(new LoadImmediateOperation(CurrentScope, Program)
         {
             Intermediate = CurrentScope.FindType(context.AtomType).Instance(context.Value, CurrentScope),
-            SourceLocation = SourceLocation(context)
+            PoiLocation = SourceLocation(context),
+            SourceRange = SourceRange(context)
+        });
+        CurrentScope.TypeTable.AddToStack(new TypeTable.TypeInfo
+        {
+            DeclarationLocation = SourceLocation(context),
+            Name = context.AtomType
         });
     }
 
     public override void ExitArray(PseudoCodeParser.ArrayContext context)
     {
         base.ExitArray(context);
+        var length = context.expression().Length;
         CurrentScope.AddOperation(new FormImmediateArrayOperation(CurrentScope, Program)
         {
-            Length = context.expression().Length,
-            SourceLocation = SourceLocation(context)
+            Length = length,
+            PoiLocation = SourceLocation(context),
+            SourceRange = SourceRange(context)
         });
+        CurrentScope.TypeTable.FormArray(length, SourceLocation(context));
     }
 
     public override void ExitAssignmentStatement(PseudoCodeParser.AssignmentStatementContext context)
     {
         base.ExitAssignmentStatement(context);
         // Console.WriteLine($"{context.lvalue().GetText()} <- {context.expr().GetText()}");
+        var sourceLocation = SourceLocation(context.AssignmentNotation()?.Symbol);
         CurrentScope.AddOperation(new AssignmentOperation(CurrentScope, Program)
         {
-            SourceLocation = SourceLocation(context.AssignmentNotation()?.Symbol)
+            PoiLocation = sourceLocation,
+            SourceRange = SourceRange(context)
         });
+        CurrentScope.TypeTable.Assign(sourceLocation);
     }
 
     public override void ExitArithmeticExpression(PseudoCodeParser.ArithmeticExpressionContext context)
@@ -103,31 +141,54 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
         base.ExitArithmeticExpression(context);
 
         if (context.array() != null)
+        {
+            var sourceLocation = SourceLocation(context.array());
             CurrentScope.AddOperation(new ArrayIndexOperation(CurrentScope, Program)
             {
-                SourceLocation = SourceLocation(context.array())
+                PoiLocation = sourceLocation,
+                SourceRange = SourceRange(context)
             });
+            CurrentScope.TypeTable.ArrayAccess(sourceLocation);
+        }
         else if (context.Identifier() != null && context.IsUnary)
+        {
+            var variableName = context.Identifier().GetText();
+            var sourceLocation = SourceLocation(context);
             CurrentScope.AddOperation(new LoadOperation(CurrentScope, Program)
             {
-                LoadName = context.Identifier().GetText(),
-                SourceLocation = SourceLocation(context)
+                LoadName = variableName,
+                PoiLocation = sourceLocation,
+                SourceRange = SourceRange(context)
             });
+            CurrentScope.TypeTable.AddToStack(CurrentScope.TypeTable.FindVariable(variableName, sourceLocation));
+        }
+
         if (context.op != null)
+        {
+            var sourceLocation = SourceLocation(context.op);
             if (context.IsUnary)
+            {
                 // TODO ambiguous operator with Caret
                 CurrentScope.AddOperation(new UnaryOperation(CurrentScope, Program)
                 {
                     OperatorMethod = context.op.Type,
-                    SourceLocation = SourceLocation(context.op)
+                    PoiLocation = sourceLocation,
+                    SourceRange = SourceRange(context)
                 });
+                CurrentScope.TypeTable.MakeBinary(sourceLocation);
+            }
             else
+            {
                 CurrentScope.AddOperation(
                     new BinaryOperation(CurrentScope, Program)
                     {
                         OperatorMethod = context.op.Type,
-                        SourceLocation = SourceLocation(context.op)
+                        PoiLocation = sourceLocation,
+                        SourceRange = SourceRange(context)
                     });
+                CurrentScope.TypeTable.MakeUnary(sourceLocation);
+            }
+        }
     }
 
     public override void ExitLogicExpression(PseudoCodeParser.LogicExpressionContext context)
@@ -139,13 +200,15 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
                 CurrentScope.AddOperation(new UnaryOperation(CurrentScope, Program)
                 {
                     OperatorMethod = op.Type,
-                    SourceLocation = SourceLocation(context.op)
+                    PoiLocation = SourceLocation(context.op),
+                    SourceRange = SourceRange(context)
                 });
             else
                 CurrentScope.AddOperation(new BinaryOperation(CurrentScope, Program)
                 {
                     OperatorMethod = op.Type,
-                    SourceLocation = SourceLocation(context.op)
+                    PoiLocation = SourceLocation(context.op),
+                    SourceRange = SourceRange(context)
                 });
     }
 
@@ -160,13 +223,15 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
                 CurrentScope.AddOperation(new OutputOperation(CurrentScope, Program)
                 {
                     ArgumentCount = context.tuple().expression().Length,
-                    SourceLocation = SourceLocation(context)
+                    PoiLocation = SourceLocation(context),
+                    SourceRange = SourceRange(context)
                 });
                 break;
             case "INPUT":
                 CurrentScope.AddOperation(new InputOperation(CurrentScope, Program)
                 {
-                    SourceLocation = SourceLocation(context)
+                    PoiLocation = SourceLocation(context),
+                    SourceRange = SourceRange(context)
                 });
                 break;
         }
@@ -181,7 +246,8 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
         CurrentScope.AddOperation(new IfOperation(CurrentScope, Program)
         {
             FalseBlock = falseBlock, TrueBlock = trueBlock, TestExpressionScope = testScope,
-            SourceLocation = SourceLocation(context)
+            PoiLocation = SourceLocation(context),
+            SourceRange = SourceRange(context)
         });
     }
 
@@ -194,7 +260,8 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
         {
             RepeatBlock = repeatBlock, TestExpressionScope = testScope,
             TestFirst = true,
-            SourceLocation = SourceLocation(context)
+            PoiLocation = SourceLocation(context),
+            SourceRange = SourceRange(context)
         });
     }
 
@@ -206,14 +273,16 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
         testScope.AddOperation(new UnaryOperation(testScope, Program)
         {
             OperatorMethod = PseudoCodeParser.Not,
-            SourceLocation = SourceLocation(context.scopedExpression().Stop)
+            PoiLocation = SourceLocation(context.scopedExpression().Stop),
+            SourceRange = SourceRange(context)
         });
         var repeatBlock = CurrentScope.TakeLast();
         CurrentScope.AddOperation(new RepeatOperation(CurrentScope, Program)
         {
             RepeatBlock = repeatBlock, TestExpressionScope = testScope,
             TestFirst = false,
-            SourceLocation = SourceLocation(context)
+            PoiLocation = SourceLocation(context),
+            SourceRange = SourceRange(context)
         });
     }
 
@@ -227,13 +296,14 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
             : new LoadImmediateOperation(CurrentScope, Program)
             {
                 Intermediate = CurrentScope.FindType(Type.IntegerId).Instance(1, CurrentScope),
-                SourceLocation = SourceLocation(context.Next().Symbol)
+                PoiLocation = SourceLocation(context.Next().Symbol),
+                SourceRange = SourceRange(context)
             };
         var target = CurrentScope.TakeLast();
         CurrentScope.AddOperation(new AssignmentOperation(CurrentScope, Program)
         {
             KeepVariableInStack = true,
-            SourceLocation = SourceLocation(context.AssignmentNotation().Symbol)
+            PoiLocation = SourceLocation(context.AssignmentNotation().Symbol)
         });
         CurrentScope.AddOperation(new ForOperation(CurrentScope, Program)
         {
@@ -241,7 +311,8 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
             Next = next,
             Step = step,
             TargetValue = target,
-            SourceLocation = SourceLocation(context)
+            PoiLocation = SourceLocation(context),
+            SourceRange = SourceRange(context)
         });
     }
 
@@ -256,7 +327,7 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
     public override void ExitIndentedBlock(PseudoCodeParser.IndentedBlockContext context)
     {
         base.ExitIndentedBlock(context);
-        ExitScope();
+        ExitScope(SourceLocation(context.Stop));
     }
 
     public override void EnterAlignedBlock(PseudoCodeParser.AlignedBlockContext context)
@@ -268,7 +339,7 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
     public override void ExitAlignedBlock(PseudoCodeParser.AlignedBlockContext context)
     {
         base.ExitAlignedBlock(context);
-        ExitScope();
+        ExitScope(SourceLocation(context.Stop));
     }
 
     public override void EnterScopedExpression(PseudoCodeParser.ScopedExpressionContext context)
@@ -280,7 +351,7 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
     public override void ExitScopedExpression(PseudoCodeParser.ScopedExpressionContext context)
     {
         base.ExitScopedExpression(context);
-        ExitScope();
+        ExitScope(SourceLocation(context.Stop));
     }
 
     #endregion

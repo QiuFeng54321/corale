@@ -6,7 +6,7 @@ public class DeclareOperation : Operation
 {
     public List<Range> Dimensions = new();
     public string Name;
-    public Type Type;
+    public string TypeName;
 
     public DeclareOperation(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {
@@ -19,11 +19,11 @@ public class DeclareOperation : Operation
             throw new InvalidAccessError(string.Format(strings.DeclareOperation_Operate_AlreadyDeclared, Name), null);
         if (Dimensions.Count == 0)
         {
-            ParentScope.ScopeStates.InstanceAddresses.Add(Name, Program.AllocateId(Type.Instance(scope: ParentScope)));
+            ParentScope.ScopeStates.InstanceAddresses.Add(Name, Program.AllocateId(ParentScope.FindType(TypeName).Instance(scope: ParentScope)));
         }
         else
         {
-            var arrayInstance = ((ArrayType)ParentScope.FindType(Type.ArrayId)).Instance(Dimensions, Type);
+            var arrayInstance = ((ArrayType)ParentScope.FindType(Type.ArrayId)).Instance(Dimensions, ParentScope.FindType(TypeName));
             arrayInstance.InitialiseInMemory();
             ParentScope.ScopeStates.InstanceAddresses.Add(Name, Program.AllocateId(arrayInstance));
         }
@@ -31,7 +31,7 @@ public class DeclareOperation : Operation
 
     public override string ToPlainString()
     {
-        var typeStr = Dimensions.Count == 0 ? Type.ToString() : $"ARRAY[{string.Join(',', Dimensions)}] OF {Type}";
+        var typeStr = Dimensions.Count == 0 ? TypeName.ToString() : $"ARRAY[{string.Join(',', Dimensions)}] OF {TypeName}";
         return string.Format(strings.DeclareOperation_ToPlainString, Name, typeStr);
     }
 }

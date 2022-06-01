@@ -12,6 +12,7 @@ public class Scope : Operation
     }
 
     public ScopeStates ScopeStates { get; set; }
+    public TypeTable TypeTable { get; set; }
 
     public Instance FindInstance(string name)
     {
@@ -37,15 +38,35 @@ public class Scope : Operation
         return t.Value ?? ParentScope?.FindType(id);
     }
 
+    public Scope FindScope(SourceLocation location)
+    {
+        if (!SourceRange.Contains(location)) return null;
+
+        return ScopeStates.Operations
+            .Where(o => o is Scope)
+            .Select(o => ((Scope)o).FindScope(location))
+            .FirstOrDefault(s => s != null, this);
+    }
+
     public Scope AddScope(SourceLocation sourceLocation = default)
     {
-        return new Scope(this, Program) { SourceLocation = sourceLocation };
+        return new Scope(this, Program)
+        {
+            PoiLocation = sourceLocation,
+            SourceRange = new SourceRange(PoiLocation, null),
+            TypeTable = new TypeTable (TypeTable, Program)
+        };
     }
 
     public void AddType(Type type)
     {
         type.ParentScope = this;
         ScopeStates.Types.Add(type.Name, type);
+        TypeTable.TypeInfos.Add(type.Name, new TypeTable.TypeInfo
+        {
+            Name = type.Name,
+            DeclarationLocation = new SourceLocation(-1, -1)
+        });
     }
 
     public void AddOperation(Operation operation)

@@ -17,7 +17,7 @@ void RunProgram(CommandLines.Options opts)
     Thread.CurrentThread.CurrentUICulture = new CultureInfo(opts.Locale, false);
     var stream = CharStreams.fromPath(opts.FilePath);
     var tree = PseudoCodeDocument.GetParseTreeFromDocument(stream);
-    var interpreter = new PseudoCodeInterpreter
+    var interpreter = new PseudoCodeCompiler
     {
         Program =
         {
@@ -27,7 +27,7 @@ void RunProgram(CommandLines.Options opts)
             DebugRepresentation = opts.DebugRepresentation
         }
     };
-    var program = interpreter.Walk(tree);
+    var program = interpreter.Compile(tree);
     program.GlobalScope.HandledOperate();
 }
 

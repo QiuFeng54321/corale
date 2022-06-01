@@ -1,3 +1,4 @@
+using PseudoCode.Core.Analyzing;
 using PseudoCode.Core.Runtime.Operations;
 
 namespace PseudoCode.Core.Runtime;
@@ -11,11 +12,15 @@ public class PseudoProgram
     public Scope GlobalScope;
     public Dictionary<uint, Instance> Memory = new();
     public Stack<Instance> RuntimeStack = new();
+    public List<Feedback> AnalyserFeedbacks = new();
     public bool AllowUndeclaredVariables { get; set; }
 
     public PseudoProgram()
     {
-        GlobalScope = new Scope(null, this);
+        GlobalScope = new Scope(null, this)
+        {
+            TypeTable = new TypeTable(null, this)
+        };
         AddPrimitiveTypes();
     }
 

@@ -1,0 +1,182 @@
+using PseudoCode.Core.Analyzing;
+
+namespace PseudoCode.Core.Runtime.Operations;
+
+public class TypeTable
+{
+    public TypeTable ParentTable;
+    public Dictionary<string, VariableInfo> VariableInfos = new();
+    public Dictionary<string, TypeInfo> TypeInfos = new();
+    public TypeInfo NullType = new TypeInfo { Name = "NULL" }; 
+    public VariableInfo NullVar = new VariableInfo {Name = "Null", Type = new TypeInfo(){Name = "NULL"}}; 
+    public PseudoProgram Program;
+    public Stack<Info> TypeChecker { get; set; } = new();
+
+
+    public TypeTable(TypeTable parentTable, PseudoProgram program)
+    {
+        ParentTable = parentTable;
+        Program = program;
+    }
+
+    public TypeInfo FindType(string name)
+    {
+        return TypeInfos.ContainsKey(name) ? TypeInfos[name] : ParentTable?.FindType(name) ?? NullType;
+    }
+
+    public VariableInfo FindVariable(string name, SourceLocation sourceLocation = null)
+    {
+        var res = FindVariableInner(name, sourceLocation);
+        if (res != null) return res;
+        var placeholder = new VariableInfo
+            {
+                Type = FindType("PLACEHOLDER"),
+                Name = name,
+                DeclarationLocation = sourceLocation
+            };
+        VariableInfos.Add(name, placeholder);
+        return placeholder;
+    }
+    public VariableInfo FindVariableInner(string name, SourceLocation sourceLocation = null)
+    {
+        return VariableInfos.ContainsKey(name) ? VariableInfos[name] : ParentTable?.FindVariableInner(name, sourceLocation);
+    }
+    public void AddToStack(Info info)
+    {
+        TypeChecker.Push(info);
+    }
+
+    public void FormArray(int length, SourceLocation location)
+    {
+        List<TypeInfo> elements = new();
+        for (var i = 0; i < length; i++)
+        {
+            var info = PopStack();
+            if (info is ArrayTypeInfo arrayTypeInfo)
+                elements.Insert(0, arrayTypeInfo.ElementTypeInfo);
+            else
+                elements.Insert(0, info.Type);
+        }
+        AddToStack(new ArrayTypeInfo
+        {
+            DeclarationLocation = location,
+            Dimensions = 1,
+            ElementTypeInfo = elements.First().Type
+        });
+    }
+
+    public void ArrayAccess(SourceLocation location)
+    {
+        var access = (ArrayTypeInfo)PopStack();
+        var accessed = PopStack();
+        if (accessed.Type is not ArrayTypeInfo arrayTypeInfo)
+        {
+            Program.AnalyserFeedbacks.Add(new Feedback
+            {
+                Message = $"Invalid type of array access",
+                SourceRange = new SourceRange(location, location)
+            });
+            AddToStack(new TypeInfo()
+            {
+                DeclarationLocation = location,
+                Name = "Null"
+            });
+        }
+        else
+        {
+            if (access.Dimensions < arrayTypeInfo.Dimensions)
+                AddToStack(new ArrayTypeInfo()
+                {
+                    DeclarationLocation = location,
+                    Dimensions = arrayTypeInfo.Dimensions - access.Dimensions,
+                    ElementTypeInfo = arrayTypeInfo.ElementTypeInfo,
+                });
+            else
+            {
+                AddToStack(arrayTypeInfo.ElementTypeInfo);
+            }
+        }
+    }
+
+    public void MakeBinary(SourceLocation location)
+    {
+        var right = PopStack();
+        var left = PopStack();
+        TypeChecker.Push(left.Type);
+    }
+
+    private Info PopStack()
+    {
+        try
+        {
+            return TypeChecker.Pop();
+        }
+        catch (InvalidOperationException e)
+        {
+            return NullVar;
+        }
+    }
+
+    public void Assign(SourceLocation location)
+    {
+        var right = PopStack();
+        var left = PopStack();
+        if (left.Type.Name == "PLACEHOLDER") VariableInfos[left.Name].Type = right.Type;
+    }
+    public void MakeUnary(SourceLocation location)
+    {
+        
+    }
+
+    public class Info
+    {
+        public SourceLocation DeclarationLocation;
+        public virtual string Name { get; set; }
+
+        public virtual TypeInfo Type { get; set; }
+
+        public override string ToString()
+        {
+            return $"{DeclarationLocation} {Name} : {(Type == this ? "" : Type)}";
+        }
+    }
+
+    public class VariableInfo : Info
+    {
+    }
+
+    public class TypeInfo : Info
+    {
+        public override TypeInfo Type => this;
+        public Dictionary<string, TypeInfo> Members;
+        public override string ToString()
+        {
+            return Name;
+        }
+    }
+
+    public class ArrayTypeInfo : TypeInfo
+    {
+        public uint Dimensions;
+        public TypeInfo ElementTypeInfo;
+        public override string Name => "ARRAY";
+        public override string ToString()
+        {
+            return $"{Name} OF {ElementTypeInfo}";
+        }
+    }
+
+    public IEnumerable<VariableInfo> GetVariableCompletionBefore(SourceLocation location)
+    {
+        return VariableInfos.Where(x => x.Value.DeclarationLocation <= location)
+            .Select(x => x.Value)
+            .Concat(ParentTable?.GetVariableCompletionBefore(location) ?? Array.Empty<VariableInfo>());
+    }
+
+    public IEnumerable<TypeInfo> GetTypeCompletionBefore(SourceLocation location)
+    {
+        return TypeInfos.Where(x => x.Value.DeclarationLocation <= location)
+            .Select(x => x.Value)
+            .Concat(ParentTable?.GetTypeCompletionBefore(location) ?? Array.Empty<TypeInfo>());
+    }
+}

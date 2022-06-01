@@ -20,7 +20,7 @@ public class Error : Exception
     public override string ToString()
     {
         return string.Format(strings.Error_ToString, Name, Message, Operation,
-            string.Join('\n', OperationStackTrace.Select(o => $"{o.ToPlainString()} {o.SourceLocation}")),
+            string.Join('\n', OperationStackTrace.Select(o => $"{o.ToPlainString()} {o.PoiLocation}")),
             string.Join('\n', PossibleCauses));
     }
 }

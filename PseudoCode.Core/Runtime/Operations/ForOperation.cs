@@ -29,12 +29,12 @@ public class ForOperation : Operation
             new BinaryOperation(ParentScope, Program)
             {
                 OperatorMethod = PseudoCodeLexer.Add,
-                SourceLocation = Step.SourceLocation
+                PoiLocation = Step.PoiLocation
             }.HandledOperate(); // [ref instance next, instance next+step]
 
             new AssignmentOperation(ParentScope, Program)
             {
-                SourceLocation = TargetValue.SourceLocation
+                PoiLocation = TargetValue.PoiLocation
             }.HandledOperate(); // Stack empty
         }
     }

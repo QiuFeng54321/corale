@@ -12,11 +12,7 @@ class HoverHandler : HoverHandlerBase
     private readonly ILogger<HoverHandler> _logger;
     private readonly ILanguageServerConfiguration _configuration;
 
-    private readonly DocumentSelector _documentSelector = new DocumentSelector(
-        new DocumentFilter {
-            Pattern = "**/*.pseudo"
-        }
-    );
+    private readonly DocumentSelector _documentSelector = DocumentSelector.ForLanguage("pseudocode");
 
     public HoverHandler(ILogger<HoverHandler> logger, Foo foo, ILanguageServerConfiguration configuration)
     {
