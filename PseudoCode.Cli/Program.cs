@@ -26,7 +26,8 @@ void RunProgram(CommandLines.Options opts)
             DebugRepresentation = opts.DebugRepresentation
         }
     };
-    ParseTreeWalker.Default.Walk(interpreter, tree);
+    var program = interpreter.Walk(tree);
+    program.GlobalScope.HandledOperate();
 }
 
 void HandleParseError(IEnumerable<Error> errs)

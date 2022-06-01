@@ -9,7 +9,6 @@ c <- a < 63 - 2.3 OR (a > 65 OR a > 63) AND NOT a < 65 AND TRUE
 Char <- '\n'
 Date <- 28/02/2008 + 10/03/0010
 OUTPUT a + 2 + a, c, Char, Date
-a
 IF a <> 64 THEN
     OUTPUT b
 ELSE

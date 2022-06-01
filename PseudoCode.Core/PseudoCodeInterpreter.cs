@@ -1,4 +1,5 @@
 using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
 using PseudoCode.Core.Runtime;
 using PseudoCode.Core.Runtime.Operations;
 using Type = PseudoCode.Core.Runtime.Type;
@@ -10,6 +11,11 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
     public Scope CurrentScope;
     public PseudoProgram Program = new();
 
+    public PseudoProgram Walk(IParseTree tree)
+    {
+        ParseTreeWalker.Default.Walk(this, tree);
+        return Program;
+    }
 
     public override void EnterFileInput(PseudoCodeParser.FileInputContext context)
     {
@@ -25,8 +31,6 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
             Console.WriteLine(Program.GlobalScope);
             Console.WriteLine(strings.PseudoCodeInterpreter_ExitFileInput_OperationsStart);
         }
-
-        Program.GlobalScope.HandledOperate();
     }
 
     public void EnterScope(SourceLocation sourceLocation = default)
