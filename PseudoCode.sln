@@ -1,8 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PseudoCode", "PseudoCode\PseudoCode.csproj", "{F15B9160-4B27-4DAD-BDBB-188A5B7985A5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PseudoCode.Core", "PseudoCode.Core\PseudoCode.Core.csproj", "{F15B9160-4B27-4DAD-BDBB-188A5B7985A5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntlrDenter", "antlr-denter\CSharp\AntlrDenter\AntlrDenter.csproj", "{42ED0C43-A4E6-4AF3-B36E-314C9C6B9F03}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PseudoCode.LSP", "PseudoCode.LSP\PseudoCode.LSP.csproj", "{89DD681B-E01A-4803-B1E9-C64D1009A11F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PseudoCode.Cli", "PseudoCode.Cli\PseudoCode.Cli.csproj", "{E70BF5D0-3F34-4D59-9E45-B6F9586B585D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,5 +22,13 @@ Global
 		{42ED0C43-A4E6-4AF3-B36E-314C9C6B9F03}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{42ED0C43-A4E6-4AF3-B36E-314C9C6B9F03}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{42ED0C43-A4E6-4AF3-B36E-314C9C6B9F03}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89DD681B-E01A-4803-B1E9-C64D1009A11F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89DD681B-E01A-4803-B1E9-C64D1009A11F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89DD681B-E01A-4803-B1E9-C64D1009A11F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89DD681B-E01A-4803-B1E9-C64D1009A11F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E70BF5D0-3F34-4D59-9E45-B6F9586B585D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E70BF5D0-3F34-4D59-9E45-B6F9586B585D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E70BF5D0-3F34-4D59-9E45-B6F9586B585D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E70BF5D0-3F34-4D59-9E45-B6F9586B585D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
