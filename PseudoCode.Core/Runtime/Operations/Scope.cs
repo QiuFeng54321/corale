@@ -87,7 +87,7 @@ public class Scope : Operation
         {
             Name = type.Name,
             Type = type,
-            SourceLocation = new SourceLocation(-1, -1)
+            SourceRange = new SourceRange(new SourceLocation(-1, -1), new SourceLocation(-1, -1))
         });
     }
 
@@ -154,7 +154,7 @@ public class Scope : Operation
 
     public IEnumerable<Definition> GetVariableCompletionBefore(SourceLocation location)
     {
-        var res = InstanceDefinitions.Where(x => x.Value.SourceLocation <= location)
+        var res = InstanceDefinitions.Where(x => x.Value.SourceRange.End <= location)
             .Select(x => x.Value);
 
         return ScopeStates.Operations.OfType<Scope>().Aggregate(res,
@@ -164,7 +164,7 @@ public class Scope : Operation
 
     public IEnumerable<Definition> GetTypeCompletionBefore(SourceLocation location)
     {
-        var res = TypeDefinitions.Where(x => x.Value.SourceLocation <= location)
+        var res = TypeDefinitions.Where(x => x.Value.SourceRange.End <= location)
             .Select(x => x.Value);
 
         return ScopeStates.Operations.OfType<Scope>().Aggregate(res,

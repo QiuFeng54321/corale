@@ -32,6 +32,7 @@ public class RepeatOperation : Operation
     {
         base.MetaOperate();
         TestExpressionScope.MetaOperate();
+        Program.TypeCheckStack.Pop();
         RepeatBlock.MetaOperate();
     }
 

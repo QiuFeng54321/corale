@@ -29,8 +29,9 @@ public class LoadOperation : Operation
     public override void MetaOperate()
     {
         base.MetaOperate();
-        var type = ParentScope.FindInstanceDefinition(LoadName);
-        if (type == null)
+        var definition = ParentScope.FindInstanceDefinition(LoadName);
+        definition?.References?.Add(SourceRange);
+        if (definition == null)
         {
             ParentScope.InstanceDefinitions.Add(LoadName, new Definition
             {
@@ -39,7 +40,8 @@ public class LoadOperation : Operation
                 {
                     InstanceName = LoadName
                 },
-                SourceLocation = PoiLocation
+                SourceRange = SourceRange,
+                References = new List<SourceRange> {SourceRange}
             });
         }
 

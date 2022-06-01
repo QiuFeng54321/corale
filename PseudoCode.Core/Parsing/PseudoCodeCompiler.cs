@@ -73,7 +73,7 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         {
             Type = resType,
             Name = name,
-            SourceLocation = sourceLocation
+            SourceRange = SourceRange(context)
         });
     }
 
@@ -90,6 +90,11 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
     private static SourceRange SourceRange(ParserRuleContext context)
     {
         return new SourceRange(SourceLocation(context.Start), SourceLocation(context.Stop));
+    }
+    private static SourceRange SourceRange(IToken token)
+    {
+        // FIXME: Temp solution of token range
+        return new SourceRange(SourceLocation(token), new SourceLocation(token.Line, token.Column + token.Text.Length));
     }
 
     public override void ExitAtom(PseudoCodeParser.AtomContext context)

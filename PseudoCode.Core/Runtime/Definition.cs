@@ -4,5 +4,6 @@ public class Definition
 {
     public Type Type;
     public string Name;
-    public SourceLocation SourceLocation;
+    public SourceRange SourceRange;
+    public List<SourceRange> References = new();
 }
