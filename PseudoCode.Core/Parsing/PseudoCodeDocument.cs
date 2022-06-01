@@ -1,7 +1,7 @@
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 
-namespace PseudoCode.Core;
+namespace PseudoCode.Core.Parsing;
 
 public static class PseudoCodeDocument
 {

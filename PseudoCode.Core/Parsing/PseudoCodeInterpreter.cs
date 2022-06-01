@@ -4,7 +4,7 @@ using PseudoCode.Core.Runtime;
 using PseudoCode.Core.Runtime.Operations;
 using Type = PseudoCode.Core.Runtime.Type;
 
-namespace PseudoCode.Core;
+namespace PseudoCode.Core.Parsing;
 
 public class PseudoCodeInterpreter : PseudoCodeBaseListener
 {
@@ -59,7 +59,7 @@ public class PseudoCodeInterpreter : PseudoCodeBaseListener
 
     private static SourceLocation SourceLocation(IToken token)
     {
-        return token == null ? null : new SourceLocation(token.Line, token.Column + 1);
+        return token == null ? null : new SourceLocation(token.Line, token.Column);
     }
 
     private static SourceLocation SourceLocation(ParserRuleContext context)

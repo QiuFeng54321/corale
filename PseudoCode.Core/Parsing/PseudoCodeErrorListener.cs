@@ -1,6 +1,6 @@
 using Antlr4.Runtime;
 
-namespace PseudoCode.Core;
+namespace PseudoCode.Core.Parsing;
 
 public class PseudoCodeErrorListener : BaseErrorListener
 {

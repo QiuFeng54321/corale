@@ -6,6 +6,7 @@ using Antlr4.Runtime.Tree;
 using CommandLine;
 using PseudoCode.Cli;
 using PseudoCode.Core;
+using PseudoCode.Core.Parsing;
 
 // var input = "your text to parse here";
 
