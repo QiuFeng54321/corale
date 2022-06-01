@@ -12,6 +12,11 @@ public class SourceRange
     public SourceLocation Start { get; set; }
     public SourceLocation End { get; set; }
 
+    public override string ToString()
+    {
+        return $"{Start} to {End}";
+    }
+
     public void Deconstruct(out SourceLocation Start, out SourceLocation End)
     {
         Start = this.Start;

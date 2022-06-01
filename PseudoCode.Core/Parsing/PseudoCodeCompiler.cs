@@ -154,7 +154,7 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
             {
                 LoadName = variableName,
                 PoiLocation = sourceLocation,
-                SourceRange = SourceRange(context)
+                SourceRange = SourceRange(context.Identifier().Symbol)
             });
         }
 
