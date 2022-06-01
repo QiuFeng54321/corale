@@ -20,6 +20,15 @@ public class IfOperation : Operation
             FalseBlock?.HandledOperate();
     }
 
+    public override void MetaOperate()
+    {
+        base.MetaOperate();
+        TestExpressionScope.MetaOperate();
+        Program.TypeCheckStack.Pop();
+        TrueBlock.MetaOperate();
+        FalseBlock?.MetaOperate();
+    }
+
     public override string ToPlainString() => "If";
 
     public override string ToString(int depth)

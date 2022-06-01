@@ -26,6 +26,20 @@ public class LoadOperation : Operation
         }
     }
 
+    public override void MetaOperate()
+    {
+        base.MetaOperate();
+        var type = ParentScope.FindInstanceType(LoadName);
+        if (type == null)
+        {
+            ParentScope.InstanceTypes.Add(LoadName, new PlaceholderType(ParentScope, Program)
+            {
+                InstanceName = LoadName
+            });
+        }
+        Program.TypeCheckStack.Push(ParentScope.FindInstanceType(LoadName));
+    }
+
     public override string ToPlainString()
     {
         return string.Format(strings.LoadOperation_ToPlainString, LoadName);

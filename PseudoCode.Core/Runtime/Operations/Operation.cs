@@ -21,13 +21,18 @@ public class Operation
             Console.WriteLine(strings.Operation_Operate, ToPlainString(), PoiLocation);
     }
 
+    public virtual void MetaOperate()
+    {
+        
+    }
+
     public void HandledOperate()
     {
         try
         {
             Operate();
         }
-        catch (Errors.Error e)
+        catch (Error e)
         {
             e.Operation ??= this;
             // e.OperationStackTrace.Add(this);

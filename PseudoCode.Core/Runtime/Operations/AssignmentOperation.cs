@@ -16,6 +16,16 @@ public class AssignmentOperation : Operation
         if (KeepVariableInStack) Program.RuntimeStack.Push(res);
     }
 
+    public override void MetaOperate()
+    {
+        base.MetaOperate();
+        var value = Program.TypeCheckStack.Pop();
+        var to = Program.TypeCheckStack.Pop();
+        if (to is PlaceholderType placeholderType) to = placeholderType.MetaAssign(value);
+        // TODO: Type check
+        if (KeepVariableInStack) Program.TypeCheckStack.Push(to);
+    }
+
     public override string ToPlainString()
     {
         return string.Format(strings.AssignmentOperation_ToPlainString, KeepVariableInStack ? strings.AssignmentOperation_ToPlainString_Keep : "");

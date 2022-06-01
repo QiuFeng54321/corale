@@ -7,6 +7,11 @@ public class ArrayType : Type
 {
     public override string Name => "ARRAY";
     public override uint Id => ArrayId;
+    public List<Range> Dimensions = new();
+    public Type ElementType;
+
+    public int TotalElements => Dimensions.Select(d => d.Length).Aggregate((prev, next) => prev * next);
+
 
     public override Instance Instance(object value = null, Scope scope = null)
     {
@@ -18,19 +23,10 @@ public class ArrayType : Type
         };
     }
 
-    public ArrayInstance Instance(List<Range> dimensions, Type elementType)
-    {
-        var i = (ArrayInstance)Instance();
-        i.Dimensions = dimensions;
-        i.ElementType = elementType;
-        i.InitialiseArray();
-        return i;
-    }
-
     public override Instance Clone(Instance instance)
     {
         var arrayInstance = (ArrayInstance)instance;
-        var cloned = Instance(arrayInstance.Dimensions, arrayInstance.ElementType);
+        var cloned = (ArrayInstance)Instance();
         cloned.Array = arrayInstance.Array;
         return cloned;
     }
@@ -39,7 +35,7 @@ public class ArrayType : Type
     {
         if (value.Type.Id != ArrayId)
             throw new InvalidTypeError(
-                string.Format(strings.ArrayType_Assign_InvalidValueType, Name, ((ArrayInstance)to.RealInstance).ElementType, value.Type), null);
+                string.Format(strings.ArrayType_Assign_InvalidValueType, Name, ElementType, value.Type), null);
         var valueLength = value.Get<Instance[]>().Length;
         var toLength = to.Get<Instance[]>().Length;
         if (valueLength != toLength)
@@ -55,12 +51,21 @@ public class ArrayType : Type
         if (i2.RealInstance is not ArrayInstance indexInstance)
             throw new InvalidAccessError(strings.ArrayType_Index_IndexNotArray, null);
         var arrayInstance = (ArrayInstance)i1.RealInstance;
-        if (indexInstance.TotalElements > arrayInstance.Dimensions.Count)
+        if (indexInstance.ArrayType.TotalElements > Dimensions.Count)
             throw new InvalidAccessError(
-                string.Format(strings.ArrayType_Index_InvalidArrayAccessDimension, indexInstance.TotalElements, arrayInstance.Dimensions.Count),
+                string.Format(strings.ArrayType_Index_InvalidArrayAccessDimension, indexInstance.ArrayType.TotalElements, Dimensions.Count),
                 null);
         var indexList = indexInstance.Array.Select((index, i) =>
-            arrayInstance.Dimensions[i].ToRealIndex(ParentScope.FindType(IntegerId).HandledCastFrom(index).Get<int>())).ToList();
+            Dimensions[i].ToRealIndex(ParentScope.FindType(IntegerId).HandledCastFrom(index).Get<int>())).ToList();
         return arrayInstance.ElementAt(indexList);
+    }
+
+    public override string ToString()
+    {
+        return $"ARRAY[{string.Join(", ", Dimensions)}] OF {ElementType}";
+    }
+
+    public ArrayType(Scope parentScope, PseudoProgram program) : base(parentScope, program)
+    {
     }
 }

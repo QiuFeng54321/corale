@@ -12,8 +12,32 @@ public class Scope : Operation
     }
 
     public ScopeStates ScopeStates { get; set; }
-    public TypeTable TypeTable { get; set; }
+    
+    /// <summary>
+    /// Instances are created from the type
+    /// </summary>
+    public Dictionary<string, Type> InstanceTypes = new();
+    public Dictionary<string, Type> Types = new();
+    public Type FindInstanceType(string name)
+    {
+        return InstanceTypes.ContainsKey(name) ? InstanceTypes[name] : ParentScope?.FindInstanceType(name);
+    }
 
+    public Type FindType(string typeName)
+    {
+        return Types.ContainsKey(typeName) ? Types[typeName] : ParentScope?.FindType(typeName);
+    }
+
+    public Type FindType(uint id)
+    {
+        var t = Types.FirstOrDefault(t => t.Value.Id == id, new KeyValuePair<string, Type>());
+        return t.Value ?? ParentScope?.FindType(id);
+    }
+
+    public void RegisterInstanceType(string name, Type type)
+    {
+        InstanceTypes.Add(name, type);
+    }
     public Instance FindInstance(string name)
     {
         return ParentScope.Program.Memory[FindInstanceAddress(name)];
@@ -25,17 +49,6 @@ public class Scope : Operation
             ? ScopeStates.InstanceAddresses[name]
             : ParentScope?.FindInstanceAddress(name) ??
               throw new InvalidAccessError(string.Format(strings.Scope_FindInstanceAddress_NotFound, name), null);
-    }
-
-    public Type FindType(string typeName)
-    {
-        return ScopeStates.Types.ContainsKey(typeName) ? ScopeStates.Types[typeName] : ParentScope?.FindType(typeName);
-    }
-
-    public Type FindType(uint id)
-    {
-        var t = ScopeStates.Types.FirstOrDefault(t => t.Value.Id == id, new KeyValuePair<string, Type>());
-        return t.Value ?? ParentScope?.FindType(id);
     }
 
     public Scope FindScope(SourceLocation location)
@@ -53,20 +66,14 @@ public class Scope : Operation
         return new Scope(this, Program)
         {
             PoiLocation = sourceLocation,
-            SourceRange = new SourceRange(PoiLocation, null),
-            TypeTable = new TypeTable (TypeTable, Program)
+            SourceRange = new SourceRange(PoiLocation, null)
         };
     }
 
     public void AddType(Type type)
     {
         type.ParentScope = this;
-        ScopeStates.Types.Add(type.Name, type);
-        TypeTable.TypeInfos.Add(type.Name, new TypeTable.TypeInfo
-        {
-            Name = type.Name,
-            DeclarationLocation = new SourceLocation(-1, -1)
-        });
+        Types.Add(type.Name, type);
     }
 
     public void AddOperation(Operation operation)
@@ -104,6 +111,13 @@ public class Scope : Operation
         ScopeStates.ResetTemporaryContent();
         RunOperations();
         ScopeStates = copy; // Reset
+    }
+
+    public override void MetaOperate()
+    {
+        base.MetaOperate();
+        foreach (var operation in ScopeStates.Operations)
+            operation.MetaOperate();
     }
 
     private void RunOperations()

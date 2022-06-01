@@ -28,6 +28,13 @@ public class RepeatOperation : Operation
         }
     }
 
+    public override void MetaOperate()
+    {
+        base.MetaOperate();
+        TestExpressionScope.MetaOperate();
+        RepeatBlock.MetaOperate();
+    }
+
     public override string ToPlainString() => TestFirst ? "While" : "Repeat-Until";
 
     public override string ToString(int depth)

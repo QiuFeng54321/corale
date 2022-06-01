@@ -12,15 +12,13 @@ public class PseudoProgram
     public Scope GlobalScope;
     public Dictionary<uint, Instance> Memory = new();
     public Stack<Instance> RuntimeStack = new();
+    public Stack<Type> TypeCheckStack = new();
     public List<Feedback> AnalyserFeedbacks = new();
     public bool AllowUndeclaredVariables { get; set; }
 
     public PseudoProgram()
     {
-        GlobalScope = new Scope(null, this)
-        {
-            TypeTable = new TypeTable(null, this)
-        };
+        GlobalScope = new Scope(null, this);
         AddPrimitiveTypes();
     }
 
@@ -64,15 +62,14 @@ public class PseudoProgram
 
     public void AddPrimitiveTypes()
     {
-        GlobalScope.AddType(new BooleanType { ParentScope = GlobalScope, Program = this });
-        GlobalScope.AddType(new IntegerType { ParentScope = GlobalScope, Program = this });
-        GlobalScope.AddType(new RealType { ParentScope = GlobalScope, Program = this });
-        GlobalScope.AddType(new ArrayType { ParentScope = GlobalScope, Program = this });
-        GlobalScope.AddType(new StringType { ParentScope = GlobalScope, Program = this });
-        GlobalScope.AddType(new CharacterType { ParentScope = GlobalScope, Program = this });
-        GlobalScope.AddType(new DateType { ParentScope = GlobalScope, Program = this });
-        GlobalScope.AddType(new NullType { ParentScope = GlobalScope, Program = this });
-        GlobalScope.AddType(new PlaceholderType { ParentScope = GlobalScope, Program = this });
+        GlobalScope.AddType(new BooleanType (GlobalScope, this));
+        GlobalScope.AddType(new IntegerType (GlobalScope, this));
+        GlobalScope.AddType(new RealType (GlobalScope, this));
+        GlobalScope.AddType(new StringType (GlobalScope, this));
+        GlobalScope.AddType(new CharacterType (GlobalScope, this));
+        GlobalScope.AddType(new DateType (GlobalScope, this));
+        GlobalScope.AddType(new NullType (GlobalScope, this));
+        GlobalScope.AddType(new PlaceholderType (GlobalScope, this));
         Instance.Null = GlobalScope.FindType(Type.NullId).Instance(scope: GlobalScope);
     }
 }

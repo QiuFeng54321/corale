@@ -17,6 +17,15 @@ public class BinaryOperation : Operation
         Program.RuntimeStack.Push(to);
     }
 
+    public override void MetaOperate()
+    {
+        base.MetaOperate();
+        var value = Program.TypeCheckStack.Pop();
+        var to = Program.TypeCheckStack.Pop();
+        to = to.BinaryResultType(OperatorMethod, value);
+        Program.TypeCheckStack.Push(to);
+    }
+
     public override string ToPlainString()
     {
         return string.Format(strings.BinaryOperation_ToPlainString, OperatorMethod);

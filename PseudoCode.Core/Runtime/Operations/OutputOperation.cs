@@ -17,6 +17,13 @@ public class OutputOperation : Operation
         Console.WriteLine(string.Join(' ', arguments));
     }
 
+    public override void MetaOperate()
+    {
+        base.MetaOperate();
+        for (var i = 0; i < ArgumentCount; i++)
+            Program.TypeCheckStack.Pop();
+    }
+
     public override string ToPlainString()
     {
         return string.Format(strings.OutputOperation_ToPlainString, ArgumentCount);

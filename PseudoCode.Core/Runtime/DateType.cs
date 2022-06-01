@@ -1,4 +1,5 @@
 using System.Globalization;
+using PseudoCode.Core.Runtime.Operations;
 
 namespace PseudoCode.Core.Runtime;
 
@@ -13,7 +14,27 @@ public class DateType : PrimitiveType<DateOnly>
     //         throw new InvalidOperationException($"Invalid right operand type {i2.Type}");
     //     return Instance(func(i1.Get<decimal>(), i2.Get<decimal>()));
     // }
-
+    public override Type BinaryResultType(int type, Type right)
+    {
+        if (right is not (DateType))
+        {
+            return null;
+        }
+        switch (type)
+        {
+            case PseudoCodeLexer.Equal:
+            case PseudoCodeLexer.NotEqual:
+            case PseudoCodeLexer.Greater:
+            case PseudoCodeLexer.GreaterEqual:
+            case PseudoCodeLexer.Smaller:
+            case PseudoCodeLexer.SmallerEqual:
+                return ParentScope.FindType(BooleanId);
+            case PseudoCodeLexer.Add:
+                return this;
+            default:
+                return null;
+        }
+    }
     public override Instance Add(Instance i1, Instance i2)
     {
         return ArithmeticOperation(i1, i2, AddDate);
@@ -62,5 +83,10 @@ public class DateType : PrimitiveType<DateOnly>
             StringId => Instance(DateOnly.ParseExact(i.Get<string>(), "dd/MM/yyyy"), ParentScope),
             _ => base.CastFrom(i)
         };
+    }
+
+
+    public DateType(Scope parentScope, PseudoProgram program) : base(parentScope, program)
+    {
     }
 }

@@ -14,6 +14,7 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
     public PseudoProgram Compile(IParseTree tree)
     {
         ParseTreeWalker.Default.Walk(this, tree);
+        Program.GlobalScope.MetaOperate();
         return Program;
     }
 
@@ -56,26 +57,19 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         CurrentScope.AddOperation(new DeclareOperation(CurrentScope, Program)
         {
             Name = name,
-            TypeName = type,
-            Dimensions = dimensions,
-            PoiLocation = sourceLocation
+            PoiLocation = sourceLocation,
+            SourceRange = SourceRange(context)
         });
-        var staticType = CurrentScope.TypeTable.FindType(type);
-        CurrentScope.TypeTable.VariableInfos.Add(name,
-            new TypeTable.VariableInfo
+        var resType = CurrentScope.FindType(type);
+        if (dimensions.Count != 0)
+        {
+            resType = new ArrayType(CurrentScope, Program)
             {
-                Type = dimensions.Count == 0
-                    ? staticType
-                    : new TypeTable.ArrayTypeInfo
-                    {
-                        DeclarationLocation = sourceLocation,
-                        Dimensions = (uint)dimensions.Count,
-                        ElementTypeInfo = staticType
-                    },
-                DeclarationLocation = sourceLocation,
-                Name = name
-            }
-        );
+                Dimensions = dimensions,
+                ElementType = resType
+            };
+        }
+        CurrentScope.InstanceTypes.Add(name, resType);
     }
 
     private static SourceLocation SourceLocation(IToken token)
@@ -103,11 +97,6 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
             PoiLocation = SourceLocation(context),
             SourceRange = SourceRange(context)
         });
-        CurrentScope.TypeTable.AddToStack(new TypeTable.TypeInfo
-        {
-            DeclarationLocation = SourceLocation(context),
-            Name = context.AtomType
-        });
     }
 
     public override void ExitArray(PseudoCodeParser.ArrayContext context)
@@ -120,7 +109,6 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
             PoiLocation = SourceLocation(context),
             SourceRange = SourceRange(context)
         });
-        CurrentScope.TypeTable.FormArray(length, SourceLocation(context));
     }
 
     public override void ExitAssignmentStatement(PseudoCodeParser.AssignmentStatementContext context)
@@ -133,7 +121,6 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
             PoiLocation = sourceLocation,
             SourceRange = SourceRange(context)
         });
-        CurrentScope.TypeTable.Assign(sourceLocation);
     }
 
     public override void ExitArithmeticExpression(PseudoCodeParser.ArithmeticExpressionContext context)
@@ -148,7 +135,6 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
                 PoiLocation = sourceLocation,
                 SourceRange = SourceRange(context)
             });
-            CurrentScope.TypeTable.ArrayAccess(sourceLocation);
         }
         else if (context.Identifier() != null && context.IsUnary)
         {
@@ -160,33 +146,31 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
                 PoiLocation = sourceLocation,
                 SourceRange = SourceRange(context)
             });
-            CurrentScope.TypeTable.AddToStack(CurrentScope.TypeTable.FindVariable(variableName, sourceLocation));
         }
 
         if (context.op != null)
         {
             var sourceLocation = SourceLocation(context.op);
+            var operatorMethod = context.op.Type;
             if (context.IsUnary)
             {
                 // TODO ambiguous operator with Caret
                 CurrentScope.AddOperation(new UnaryOperation(CurrentScope, Program)
                 {
-                    OperatorMethod = context.op.Type,
+                    OperatorMethod = operatorMethod,
                     PoiLocation = sourceLocation,
                     SourceRange = SourceRange(context)
                 });
-                CurrentScope.TypeTable.MakeBinary(sourceLocation);
             }
             else
             {
                 CurrentScope.AddOperation(
                     new BinaryOperation(CurrentScope, Program)
                     {
-                        OperatorMethod = context.op.Type,
+                        OperatorMethod = operatorMethod,
                         PoiLocation = sourceLocation,
                         SourceRange = SourceRange(context)
                     });
-                CurrentScope.TypeTable.MakeUnary(sourceLocation);
             }
         }
     }

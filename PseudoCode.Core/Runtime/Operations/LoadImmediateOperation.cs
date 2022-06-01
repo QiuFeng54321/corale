@@ -14,6 +14,12 @@ public class LoadImmediateOperation : Operation
         Program.RuntimeStack.Push(Intermediate);
     }
 
+    public override void MetaOperate()
+    {
+        base.MetaOperate();
+        Program.TypeCheckStack.Push(Intermediate.Type);
+    }
+
     public override string ToPlainString()
     {
         return string.Format(strings.LoadImmediateOperation_ToPlainString, Intermediate);

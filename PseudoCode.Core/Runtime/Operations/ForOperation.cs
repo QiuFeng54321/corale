@@ -29,14 +29,40 @@ public class ForOperation : Operation
             new BinaryOperation(ParentScope, Program)
             {
                 OperatorMethod = PseudoCodeLexer.Add,
-                PoiLocation = Step.PoiLocation
+                PoiLocation = Step.PoiLocation,
+                SourceRange = Step.SourceRange
             }.HandledOperate(); // [ref instance next, instance next+step]
 
             new AssignmentOperation(ParentScope, Program)
             {
-                PoiLocation = TargetValue.PoiLocation
+                PoiLocation = TargetValue.PoiLocation,
+                SourceRange = TargetValue.SourceRange
             }.HandledOperate(); // Stack empty
         }
+    }
+
+    public override void MetaOperate()
+    {
+        base.MetaOperate();
+        TargetValue.MetaOperate();
+        var targetValueType = Program.TypeCheckStack.Pop();
+        var incrementValueType = Program.TypeCheckStack.Pop();
+        ForBody.MetaOperate();
+        Next.MetaOperate();
+        Next.MetaOperate();
+        Step.MetaOperate();
+        new BinaryOperation(ParentScope, Program)
+        {
+            OperatorMethod = PseudoCodeLexer.Add,
+            PoiLocation = Step.PoiLocation,
+            SourceRange = Step.SourceRange
+        }.MetaOperate(); // [ref instance next, instance next+step]
+
+        new AssignmentOperation(ParentScope, Program)
+        {
+            PoiLocation = TargetValue.PoiLocation,
+            SourceRange = TargetValue.SourceRange
+        }.MetaOperate();
     }
 
     public override string ToPlainString() => "For";

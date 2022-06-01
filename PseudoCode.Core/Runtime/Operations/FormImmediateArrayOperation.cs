@@ -3,6 +3,7 @@ namespace PseudoCode.Core.Runtime.Operations;
 public class FormImmediateArrayOperation : Operation
 {
     public int Length;
+    public ArrayType ArrayType;
 
     public FormImmediateArrayOperation(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {
@@ -21,10 +22,28 @@ public class FormImmediateArrayOperation : Operation
                 elements.Insert(0, instance);
         }
 
-        var formedInstance = ((ArrayType)ParentScope.FindType(Type.ArrayId)).Instance(
-            new List<Range> { new() { Start = 1, End = elements.Count } }, elements.First().Type);
-        formedInstance.InitialiseFromList(elements.Select(e => formedInstance.ElementType.HandledCastFrom(e)));
+        var formedInstance = (ArrayInstance)ArrayType.Instance();
+        formedInstance.InitialiseFromList(elements.Select(e => ArrayType.ElementType.HandledCastFrom(e)));
         Program.RuntimeStack.Push(formedInstance);
+    }
+
+    public override void MetaOperate()
+    {
+        base.MetaOperate();
+        Type arrayElementType = null;
+        for (var i = 0; i < Length; i++)
+        {
+            var type = Program.TypeCheckStack.Pop();
+            if (type is ArrayType subArrayType)
+                arrayElementType = subArrayType.ElementType;
+            else
+                arrayElementType = type;
+        }
+        Program.TypeCheckStack.Push(ArrayType = new ArrayType(ParentScope, Program)
+        {
+            Dimensions = new List<Range> { new() { Start = 1, End = Length } },
+            ElementType = arrayElementType
+        });
     }
 
     public override string ToPlainString()

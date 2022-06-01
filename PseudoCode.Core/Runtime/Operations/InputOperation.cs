@@ -14,6 +14,13 @@ public class InputOperation : Operation
         instance.Type.Assign(instance, ParentScope.FindType(Type.StringId).Instance(input, ParentScope));
     }
 
+    public override void MetaOperate()
+    {
+        base.MetaOperate();
+        var type = Program.TypeCheckStack.Pop();
+        if (type is PlaceholderType placeholderType) placeholderType.MetaAssign(ParentScope.FindType(Type.StringId));
+    }
+
     public override string ToPlainString()
     {
         return strings.InputOperation_ToPlainString;

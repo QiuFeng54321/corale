@@ -7,8 +7,8 @@ public class TypeTable
     public TypeTable ParentTable;
     public Dictionary<string, VariableInfo> VariableInfos = new();
     public Dictionary<string, TypeInfo> TypeInfos = new();
-    public TypeInfo NullType = new TypeInfo { Name = "NULL" }; 
-    public VariableInfo NullVar = new VariableInfo {Name = "Null", Type = new TypeInfo(){Name = "NULL"}}; 
+    public TypeInfo NullType = new TypeInfo { Name = "NULL" };
+    public VariableInfo NullVar = new VariableInfo { Name = "Null", Type = new TypeInfo() { Name = "NULL" } };
     public PseudoProgram Program;
     public Stack<Info> TypeChecker { get; set; } = new();
 
@@ -29,18 +29,22 @@ public class TypeTable
         var res = FindVariableInner(name, sourceLocation);
         if (res != null) return res;
         var placeholder = new VariableInfo
-            {
-                Type = FindType("PLACEHOLDER"),
-                Name = name,
-                DeclarationLocation = sourceLocation
-            };
+        {
+            Type = FindType("PLACEHOLDER"),
+            Name = name,
+            DeclarationLocation = sourceLocation
+        };
         VariableInfos.Add(name, placeholder);
         return placeholder;
     }
+
     public VariableInfo FindVariableInner(string name, SourceLocation sourceLocation = null)
     {
-        return VariableInfos.ContainsKey(name) ? VariableInfos[name] : ParentTable?.FindVariableInner(name, sourceLocation);
+        return VariableInfos.ContainsKey(name)
+            ? VariableInfos[name]
+            : ParentTable?.FindVariableInner(name, sourceLocation);
     }
+
     public void AddToStack(Info info)
     {
         TypeChecker.Push(info);
@@ -57,6 +61,7 @@ public class TypeTable
             else
                 elements.Insert(0, info.Type);
         }
+
         AddToStack(new ArrayTypeInfo
         {
             DeclarationLocation = location,
@@ -98,10 +103,25 @@ public class TypeTable
         }
     }
 
-    public void MakeBinary(SourceLocation location)
+    public void MakeBinary(int op, SourceLocation location)
     {
         var right = PopStack();
         var left = PopStack();
+        // switch (op)
+        // {
+        //     case PseudoCodeLexer.Divide:
+        //         if (left.Type.Name == "INTEGER")
+        //         {
+        //             TypeChecker.Push(FindType("REAL"));
+        //             break;
+        //         }
+        //         TypeChecker.Push(left.Type);
+        //     case PseudoCodeLexer.Add:
+        //     case PseudoCodeLexer.Subtract:
+        //     case PseudoCodeLexer.Multiply:
+        //         
+        // }
+
         TypeChecker.Push(left.Type);
     }
 
@@ -123,9 +143,9 @@ public class TypeTable
         var left = PopStack();
         if (left.Type.Name == "PLACEHOLDER") VariableInfos[left.Name].Type = right.Type;
     }
-    public void MakeUnary(SourceLocation location)
+
+    public void MakeUnary(int op, SourceLocation location)
     {
-        
     }
 
     public class Info
@@ -149,6 +169,7 @@ public class TypeTable
     {
         public override TypeInfo Type => this;
         public Dictionary<string, TypeInfo> Members;
+
         public override string ToString()
         {
             return Name;
@@ -160,6 +181,7 @@ public class TypeTable
         public uint Dimensions;
         public TypeInfo ElementTypeInfo;
         public override string Name => "ARRAY";
+
         public override string ToString()
         {
             return $"{Name} OF {ElementTypeInfo}";

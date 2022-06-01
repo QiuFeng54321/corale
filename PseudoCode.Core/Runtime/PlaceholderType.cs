@@ -8,6 +8,13 @@ public class PlaceholderType : Type
 {
     public override uint Id => PlaceholderId;
     public override string Name => "PLACEHOLDER";
+    public string InstanceName;
+
+    public Type MetaAssign(Type type)
+    {
+        ParentScope.InstanceTypes[InstanceName] = type;
+        return type;
+    }
 
     public override Instance Assign(Instance to, Instance value)
     {
@@ -48,5 +55,9 @@ public class PlaceholderType : Type
                 strings.PlaceholderType_ThrowUnsupported_PossibleCauses_AssignBeforeUse
             }
         };
+    }
+
+    public PlaceholderType(Scope parentScope, PseudoProgram program) : base(parentScope, program)
+    {
     }
 }

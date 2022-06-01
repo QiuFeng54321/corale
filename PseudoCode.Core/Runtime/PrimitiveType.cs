@@ -1,4 +1,5 @@
 using PseudoCode.Core.Runtime.Errors;
+using PseudoCode.Core.Runtime.Operations;
 
 namespace PseudoCode.Core.Runtime;
 
@@ -24,5 +25,9 @@ public class PrimitiveType<T> : Type
     public Instance LogicUnaryOperation(Instance i, Func<T, bool> func)
     {
         return ParentScope.FindType(BooleanId).Instance(func(HandledCastFrom(i).Get<T>()), ParentScope);
+    }
+
+    public PrimitiveType(Scope parentScope, PseudoProgram program) : base(parentScope, program)
+    {
     }
 }

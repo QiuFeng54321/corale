@@ -23,12 +23,15 @@ public class Type
     private static uint _incrementId = ArrayId;
 
     public Dictionary<int, BinaryOperator> BinaryOperators;
+    public Dictionary<int, UnaryOperator> UnaryOperators;
     public PseudoProgram Program;
     public Scope ParentScope;
-    public Dictionary<int, UnaryOperator> UnaryOperators;
 
-    public Type()
+
+    public Type(Scope parentScope, PseudoProgram program)
     {
+        Program = program;
+        ParentScope = parentScope;
         BinaryOperators = new Dictionary<int, BinaryOperator>
         {
             { PseudoCodeLexer.Add, Add },
@@ -79,8 +82,22 @@ public class Type
     }
     public virtual Error MakeUnsupported(Instance i1, Instance i2 = null, [CallerMemberName] string caller = "Unknown")
     {
+        return MakeUnsupported(i1.Type, i2?.Type, caller);
+    }
+    public virtual Error MakeUnsupported(Type i1, Type i2 = null, [CallerMemberName] string caller = "Unknown")
+    {
         return new UnsupportedCastError(
-            string.Format(strings.Type_ThrowUnsupported, caller, i1.Type, (i2 != null ? strings.and + i2.Type : "")), null);
+            string.Format(strings.Type_ThrowUnsupported, caller, i1, (i2 != null ? strings.and + i2 : "")), null);
+    }
+
+    public virtual Type BinaryResultType(int type, Type right)
+    {
+        return null;
+    }
+
+    public virtual Type UnaryResultType(int type)
+    {
+        return null;
     }
 
     public virtual Instance Add(Instance i1, Instance i2)

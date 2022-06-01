@@ -16,6 +16,14 @@ public class UnaryOperation : Operation
         Program.RuntimeStack.Push(to);
     }
 
+    public override void MetaOperate()
+    {
+        base.MetaOperate();
+        var to = Program.TypeCheckStack.Pop();
+        to = to.UnaryResultType(OperatorMethod);
+        Program.TypeCheckStack.Push(to);
+    }
+
     public override string ToPlainString()
     {
         return string.Format(strings.UnaryOperation_ToPlainString, OperatorMethod);

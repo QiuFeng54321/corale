@@ -6,9 +6,8 @@ namespace PseudoCode.Core.Runtime;
 public class ArrayInstance : Instance
 {
     public Instance[] Array;
-    public List<Range> Dimensions = new();
-    public Type ElementType;
     public uint StartAddress;
+    public ArrayType ArrayType => (ArrayType)Type;
 
     public ArrayInstance(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {
@@ -19,17 +18,15 @@ public class ArrayInstance : Instance
         get => Array;
         set => Array = (Instance[])value;
     }
-
-    public int TotalElements => Dimensions.Select(d => d.Length).Aggregate((prev, next) => prev * next);
-
     public void InitialiseArray()
     {
-        Array = new Instance[TotalElements];
+        Array = new Instance[ArrayType.TotalElements];
     }
 
     public void InitialiseInMemory()
     {
-        StartAddress = Program.Allocate(TotalElements, () => ElementType.Instance(scope: ParentScope));
+        InitialiseArray();
+        StartAddress = Program.Allocate(ArrayType.TotalElements, () => ((ArrayType)Type).ElementType.Instance(scope: ParentScope));
         InitialiseAsReferenceElements();
     }
 
@@ -42,7 +39,7 @@ public class ArrayInstance : Instance
     public void InitialiseNonReference()
     {
         for (var i = 0u; i < Array.Length; i++)
-            Array[i] = ElementType.Instance(scope: ParentScope);
+            Array[i] = ((ArrayType)Type).ElementType.Instance(scope: ParentScope);
     }
 
     public void InitialiseFromList(IEnumerable<Instance> instances)
@@ -54,30 +51,34 @@ public class ArrayInstance : Instance
     public Instance ElementAt(int index)
     {
         if (Array.Length <= index || index < 0)
-            throw new OutOfBoundsError(string.Format(strings.ArrayInstance_ElementAt_OutOfBounds, index, TotalElements), null);
+            throw new OutOfBoundsError(string.Format(strings.ArrayInstance_ElementAt_OutOfBounds, index, ArrayType.TotalElements), null);
         return Array[index];
     }
 
     public Instance ElementAt(IEnumerable<int> indices)
     {
         var enumerable = indices as int[] ?? indices.ToArray();
-        if (enumerable.Length > Dimensions.Count)
+        if (enumerable.Length > ((ArrayType)Type).Dimensions.Count)
             throw new InvalidAccessError(
-                string.Format(strings.ArrayType_Index_InvalidArrayAccessDimension, TotalElements, enumerable.Length),
+                string.Format(strings.ArrayType_Index_InvalidArrayAccessDimension, ArrayType.TotalElements, enumerable.Length),
                 null);
         var index = 0;
-        var factor = TotalElements;
+        var factor = ArrayType.TotalElements;
         for (var i = 0; i < enumerable.Length; i++)
         {
-            factor /= Dimensions[i].Length;
+            factor /= ((ArrayType)Type).Dimensions[i].Length;
             index += enumerable[i] * factor;
         }
 
-        if (enumerable.Length == Dimensions.Count)
+        if (enumerable.Length == ((ArrayType)Type).Dimensions.Count)
             return ElementAt(index);
 
-
-        var arrayInstance = ((ArrayType)Type).Instance(Dimensions.Skip(enumerable.Length).ToList(), ElementType);
+        var newArrayType = new ArrayType (ParentScope, Program)
+        {
+            Dimensions = ArrayType.Dimensions.Skip(enumerable.Length).ToList(),
+            ElementType = ArrayType.ElementType
+        };
+        var arrayInstance = (ArrayInstance)newArrayType.Instance();
         arrayInstance.StartAddress = (uint)index + StartAddress;
         arrayInstance.InitialiseAsReferenceElements();
         return arrayInstance;
@@ -90,6 +91,6 @@ public class ArrayInstance : Instance
 
     public override string DebugRepresent()
     {
-        return $"{{{ElementType}[{string.Join(", ", Dimensions)}]: {Represent()}}}";
+        return $"{{{((ArrayType)Type).ElementType}[{string.Join(", ", ((ArrayType)Type).Dimensions)}]: {Represent()}}}";
     }
 }

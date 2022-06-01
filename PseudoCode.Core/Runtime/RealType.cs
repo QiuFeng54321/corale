@@ -1,3 +1,5 @@
+using PseudoCode.Core.Runtime.Operations;
+
 namespace PseudoCode.Core.Runtime;
 
 public class RealType : PrimitiveType<decimal>
@@ -11,6 +13,37 @@ public class RealType : PrimitiveType<decimal>
     //         throw new InvalidOperationException($"Invalid right operand type {i2.Type}");
     //     return Instance(func(i1.Get<decimal>(), i2.Get<decimal>()));
     // }
+
+    public override Type BinaryResultType(int type, Type right)
+    {
+        if (right is not (IntegerType or RealType))
+        {
+            return null;
+        }
+        switch (type)
+        {
+            case PseudoCodeLexer.Equal:
+            case PseudoCodeLexer.NotEqual:
+            case PseudoCodeLexer.Greater:
+            case PseudoCodeLexer.GreaterEqual:
+            case PseudoCodeLexer.Smaller:
+            case PseudoCodeLexer.SmallerEqual:
+                return ParentScope.FindType(BooleanId);
+            case PseudoCodeLexer.IntDivide:
+                return ParentScope.FindType(IntegerId);
+            case PseudoCodeLexer.And:
+            case PseudoCodeLexer.BitAnd:
+            case PseudoCodeLexer.Or:
+                return null;
+            default:
+                return this;
+        }
+    }
+
+    public override Type UnaryResultType(int type)
+    {
+        return type == PseudoCodeLexer.Not ? ParentScope.FindType(BooleanId) : this;
+    }
 
     public override Instance Add(Instance i1, Instance i2)
     {
@@ -90,5 +123,9 @@ public class RealType : PrimitiveType<decimal>
     public override Instance CastFrom(Instance i)
     {
         return Instance(Convert.ToDecimal(i.Value), ParentScope);
+    }
+
+    public RealType(Scope parentScope, PseudoProgram program) : base(parentScope, program)
+    {
     }
 }
