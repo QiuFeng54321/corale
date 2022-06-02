@@ -92,12 +92,12 @@ public class Type
 
     public virtual Type BinaryResultType(int type, Type right)
     {
-        return null;
+        return new NullType(ParentScope, Program);
     }
 
     public virtual Type UnaryResultType(int type)
     {
-        return null;
+        return new NullType(ParentScope, Program);
     }
 
     public virtual Instance Add(Instance i1, Instance i2)

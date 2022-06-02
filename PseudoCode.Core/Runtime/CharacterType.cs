@@ -10,7 +10,7 @@ public class CharacterType : PrimitiveType<char>
     {
         if (right is not (IntegerType or RealType or CharacterType))
         {
-            return null;
+            return new NullType(ParentScope, Program);
         }
         switch (type)
         {
@@ -22,7 +22,7 @@ public class CharacterType : PrimitiveType<char>
             case PseudoCodeLexer.SmallerEqual:
                 return ParentScope.FindTypeDefinition(BooleanId).Type;
             default:
-                return null;
+                return new NullType(ParentScope, Program);
         }
     }
 

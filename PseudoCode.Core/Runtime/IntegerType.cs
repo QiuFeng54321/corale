@@ -10,7 +10,7 @@ public class IntegerType : PrimitiveType<int>
     {
         if (right is not (IntegerType or RealType))
         {
-            return null;
+            return new NullType(ParentScope, Program);
         }
         switch (type)
         {
@@ -26,7 +26,7 @@ public class IntegerType : PrimitiveType<int>
             case PseudoCodeLexer.And:
             case PseudoCodeLexer.BitAnd:
             case PseudoCodeLexer.Or:
-                return null;
+                return new NullType(ParentScope, Program);
             default:
                 return right;
         }

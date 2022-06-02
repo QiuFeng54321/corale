@@ -10,7 +10,7 @@ public class BooleanType : PrimitiveType<bool>
     {
         if (right is not BooleanType)
         {
-            return null;
+            return new NullType(ParentScope, Program);
         }
         switch (type)
         {
@@ -20,7 +20,7 @@ public class BooleanType : PrimitiveType<bool>
             case PseudoCodeLexer.NotEqual:
                 return this;
             default:
-                return null;
+                return new NullType(ParentScope, Program);
         }
     }
 

@@ -1,3 +1,5 @@
+using PseudoCode.Core.Analyzing;
+
 namespace PseudoCode.Core.Runtime.Operations;
 
 public class UnaryOperation : Operation
@@ -20,8 +22,17 @@ public class UnaryOperation : Operation
     {
         base.MetaOperate();
         var to = Program.TypeCheckStack.Pop();
-        to = to.UnaryResultType(OperatorMethod);
-        Program.TypeCheckStack.Push(to);
+        var resType = to.UnaryResultType(OperatorMethod);
+        if (resType.Id == Type.NullId)
+        {
+            Program.AnalyserFeedbacks.Add(new Feedback
+            {
+                Message = $"This operation on {to} is either not supported or will be casted to another type at runtime",
+                Severity = Feedback.SeverityType.Warning,
+                SourceRange = SourceRange
+            });
+        }
+        Program.TypeCheckStack.Push(resType);
     }
 
     public override string ToPlainString()

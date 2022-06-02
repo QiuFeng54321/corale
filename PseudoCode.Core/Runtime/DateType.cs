@@ -18,7 +18,7 @@ public class DateType : PrimitiveType<DateOnly>
     {
         if (right is not (DateType))
         {
-            return null;
+            return new NullType(ParentScope, Program);
         }
         switch (type)
         {
@@ -32,7 +32,7 @@ public class DateType : PrimitiveType<DateOnly>
             case PseudoCodeLexer.Add:
                 return this;
             default:
-                return null;
+                return new NullType(ParentScope, Program);
         }
     }
     public override Instance Add(Instance i1, Instance i2)
