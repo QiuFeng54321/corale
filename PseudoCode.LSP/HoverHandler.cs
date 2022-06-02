@@ -24,6 +24,7 @@ class HoverHandler : HoverHandlerBase
         foo.SayFoo();
         logger.LogWarning("hi");
     }
+
     protected override HoverRegistrationOptions CreateRegistrationOptions(HoverCapability capability,
         ClientCapabilities clientCapabilities) => new HoverRegistrationOptions
     {
@@ -32,7 +33,6 @@ class HoverHandler : HoverHandlerBase
 
     public override async Task<Hover?> Handle(HoverParams request, CancellationToken cancellationToken)
     {
-        
         _logger.LogWarning("hover");
         var (hoveredVar, range) = _analysisService.GetAnalysis(request.TextDocument.Uri).Program.GlobalScope
             .GetHoveredVariable(request.Position.ToLocation());
@@ -40,8 +40,7 @@ class HoverHandler : HoverHandlerBase
         return new Hover
         {
             Range = range.ToRange(),
-            Contents = new MarkedStringsOrMarkupContent(new MarkupContent
-                { Kind = MarkupKind.Markdown, Value = $"{hoveredVar.Type}" })
+            Contents = new MarkedStringsOrMarkupContent(new MarkedString("pseudocode", $"{hoveredVar.Type}"))
         };
     }
 }

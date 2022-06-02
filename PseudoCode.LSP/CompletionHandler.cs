@@ -13,8 +13,6 @@ public class CompletionHandler : CompletionHandlerBase
     private readonly ILanguageServerConfiguration _configuration;
     private readonly AnalysisService _analysisService;
 
-    private readonly BufferService documentService;
-
     private readonly DocumentSelector _documentSelector = DocumentSelector.ForLanguage("pseudocode");
 
     public CompletionHandler(ILogger<CompletionHandler> logger, ILanguageServerConfiguration configuration,
@@ -40,77 +38,17 @@ public class CompletionHandler : CompletionHandlerBase
     public override async Task<CompletionList> Handle(CompletionParams request, CancellationToken cancellationToken)
     {
         _logger.LogInformation($"Completion at {request.Position}");
-        var completions = new List<CompletionItem>();
+        var completionBuilder = new CompletionItemsBuilder();
+        completionBuilder.AddBasicCompletionItems();
         var analysis = _analysisService.GetAnalysis(request.TextDocument.Uri);
         // ANTLR4 location line starts with 1
         var cursor = request.Position.ToLocation();
         _logger.LogInformation(cursor.ToString());
-        completions.Add(new CompletionItem
-        {
-            Kind = CompletionItemKind.Value,
-            Label = "TRUE",
-            InsertText = "TRUE",
-            Documentation = new MarkupContent
-            {
-                Kind = MarkupKind.Markdown,
-                Value = "BOOLEAN"
-            },
-        });
-        completions.Add(new CompletionItem
-        {
-            Kind = CompletionItemKind.Value,
-            Label = "FALSE",
-            InsertText = "FALSE",
-            Documentation = new MarkupContent
-            {
-                Kind = MarkupKind.Markdown,
-                Value = "BOOLEAN"
-            },
-        });
-        var variableInfos = analysis.Program.GlobalScope.GetVariableCompletionBefore(cursor);
-        var typeInfos = analysis.Program.GlobalScope.GetTypeCompletionBefore(cursor);
-        foreach (var typeInfo in typeInfos)
-        {
-            completions.Add(new CompletionItem
-            {
-                Kind = CompletionItemKind.Class,
-                Label = typeInfo.Name,
-                InsertText = typeInfo.Name,
-                Documentation = new MarkupContent
-                {
-                    Kind = MarkupKind.Markdown,
-                    Value = typeInfo.Type.ToString()
-                },
-            });
-        }
-        foreach (var variableInfo in variableInfos)
-        {
-            completions.Add(new CompletionItem
-            {
-                Kind = CompletionItemKind.Variable,
-                Label = variableInfo.Name,
-                InsertText = variableInfo.Name,
-                Documentation = new MarkupContent
-                {
-                    Kind = MarkupKind.Markdown,
-                    Value = variableInfo.Type.ToString()
-                },
-            });
-        }
         
-
-        var t = $"{request.PartialResultToken}-{request.WorkDoneToken}-{request.Position}";
-        var ins = "hiiiiiii";
-        _logger.LogInformation($"T: {t}");
-        completions.Add(new CompletionItem
-        {
-            Kind = CompletionItemKind.Class,
-            Label = "hi",
-            InsertText = ins,
-            Documentation = new MarkupContent { Kind = MarkupKind.Markdown, Value = t },
-        });
+        completionBuilder.AddTypes(analysis, cursor);
+        completionBuilder.AddVariables(analysis, cursor);
         _logger.LogWarning("Complete complete");
-        return new CompletionList(completions);
+        return new CompletionList(completionBuilder.Items);
     }
 
     public override Task<CompletionItem> Handle(CompletionItem request, CancellationToken cancellationToken)
