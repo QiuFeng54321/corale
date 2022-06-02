@@ -35,7 +35,10 @@ public class StringType : PrimitiveType<string>
     {
         return Instance(i1.ToString() + i2, ParentScope);
     }
-
+    public override bool IsConvertableFrom(Type type)
+    {
+        return true;
+    }
     public override Instance CastFrom(Instance i)
     {
         return Instance(Convert.ToString(i.Value), ParentScope);

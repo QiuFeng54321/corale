@@ -74,7 +74,10 @@ public class DateType : PrimitiveType<DateOnly>
     {
         return new DateOnly(d1.Year, d1.Month, d1.Day).AddDays(d2.Day).AddMonths(d2.Month).AddYears(d2.Year);
     }
-
+    public override bool IsConvertableFrom(Type type)
+    {
+        return type.Id == DateId;
+    }
     public override Instance CastFrom(Instance i)
     {
         return i.Type.Id switch

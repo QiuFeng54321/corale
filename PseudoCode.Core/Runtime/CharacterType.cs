@@ -56,7 +56,20 @@ public class CharacterType : PrimitiveType<char>
         return LogicOperation(i1, i2, (arg1, arg2) => arg1 != arg2);
     }
 
-
+    public override bool IsConvertableFrom(Type type)
+    {
+        switch (type.Id)
+        {
+            case IntegerId:
+            case BooleanId:
+            case StringId:
+            case RealId:
+            case CharId:
+                return true;
+            default:
+                return false;
+        }
+    }
     public override Instance CastFrom(Instance i)
     {
         return Instance(Convert.ToChar(i.Value), ParentScope);

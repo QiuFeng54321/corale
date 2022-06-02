@@ -1,3 +1,5 @@
+using PseudoCode.Core.Analyzing;
+
 namespace PseudoCode.Core.Runtime.Operations;
 
 public class AssignmentOperation : Operation
@@ -23,6 +25,15 @@ public class AssignmentOperation : Operation
         var to = Program.TypeCheckStack.Pop();
         if (to is PlaceholderType placeholderType) to = placeholderType.MetaAssign(value);
         // TODO: Type check
+        if (!to.IsConvertableFrom(value))
+        {
+            Program.AnalyserFeedbacks.Add(new Feedback
+            {
+                Message = $"Cannot assign {value} to {to}",
+                Severity = Feedback.SeverityType.Error,
+                SourceRange = SourceRange
+            });
+        }
         if (KeepVariableInStack) Program.TypeCheckStack.Push(to);
     }
 

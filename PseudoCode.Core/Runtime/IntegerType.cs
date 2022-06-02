@@ -124,7 +124,20 @@ public class IntegerType : PrimitiveType<int>
     {
         return ParentScope.FindTypeDefinition(RealId).Type.HandledCastFrom(i);
     }
-
+    public override bool IsConvertableFrom(Type type)
+    {
+        switch (type.Id)
+        {
+            case IntegerId:
+            case BooleanId:
+            case StringId:
+            case CharId:
+            case RealId:
+                return true;
+            default:
+                return false;
+        }
+    }
     public IntegerType(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {
     }

@@ -20,6 +20,7 @@ public class RealType : PrimitiveType<decimal>
         {
             return null;
         }
+
         switch (type)
         {
             case PseudoCodeLexer.Equal:
@@ -123,6 +124,21 @@ public class RealType : PrimitiveType<decimal>
     public override Instance CastFrom(Instance i)
     {
         return Instance(Convert.ToDecimal(i.Value), ParentScope);
+    }
+
+    public override bool IsConvertableFrom(Type type)
+    {
+        switch (type.Id)
+        {
+            case IntegerId:
+            case BooleanId:
+            case StringId:
+            case RealId:
+            case CharId:
+                return true;
+            default:
+                return false;
+        }
     }
 
     public RealType(Scope parentScope, PseudoProgram program) : base(parentScope, program)

@@ -24,6 +24,20 @@ public class BooleanType : PrimitiveType<bool>
         }
     }
 
+    public override bool IsConvertableFrom(Type type)
+    {
+        switch (type.Id)
+        {
+            case IntegerId:
+            case BooleanId:
+            case StringId:
+            case RealId:
+            case CharId:
+                return true;
+            default:
+                return false;
+        }
+    }
     public override Type UnaryResultType(int type)
     {
         return type == PseudoCodeLexer.Not ? this : null;
