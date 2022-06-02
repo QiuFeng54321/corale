@@ -8,7 +8,7 @@ public class SourceRange
         this.End = End;
     }
 
-    public bool Contains(SourceLocation location) => Start < location && End > location;
+    public bool Contains(SourceLocation location) => Start <= location && End >= location;
     public SourceLocation Start { get; set; }
     public SourceLocation End { get; set; }
 
