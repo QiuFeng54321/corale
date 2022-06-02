@@ -97,7 +97,7 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         {
             Type = resType,
             Name = name,
-            SourceRange = SourceRange(context)
+            SourceRange = SourceRange(context.Identifier().Symbol)
         });
     }
 

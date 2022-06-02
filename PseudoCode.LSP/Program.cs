@@ -56,6 +56,7 @@ namespace PseudoCode.LSP
                        .WithHandler<CompletionHandler>()
                        .WithHandler<HoverHandler>()
                        .WithHandler<TextDocumentSyncHandler>()
+                       .WithHandler<DefinitionHandler>()
                        .WithServices(x => x.AddLogging(b => b.SetMinimumLevel(LogLevel.Trace)))
                        .WithServices(
                             services =>
