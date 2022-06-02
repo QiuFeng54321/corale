@@ -39,10 +39,11 @@ public class CompletionHandler : CompletionHandlerBase
 
     public override async Task<CompletionList> Handle(CompletionParams request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Completion");
+        _logger.LogInformation($"Completion at {request.Position}");
         var completions = new List<CompletionItem>();
         var analysis = _analysisService.GetAnalysis(request.TextDocument.Uri);
-        var cursor = new SourceLocation(request.Position.Line, request.Position.Character);
+        // ANTLR4 location line starts with 1
+        var cursor = request.Position.ToLocation();
         _logger.LogInformation(cursor.ToString());
         completions.Add(new CompletionItem
         {

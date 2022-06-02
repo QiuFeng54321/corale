@@ -17,11 +17,36 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         Program.GlobalScope.MetaOperate();
         return Program;
     }
+    
+    public PseudoProgram TolerantAnalyse(IParseTree tree)
+    {
+        try
+        {
+            ParseTreeWalker.Default.Walk(this, tree);
+        }
+        catch (Exception e)
+        {
+            Console.Error.WriteLine(e);
+        }
+
+        try
+        {
+            Program.GlobalScope.MetaOperate();
+        } 
+        catch (Exception e)
+        {
+            Console.Error.WriteLine(e);
+        }
+
+        return Program;
+    }
 
     public override void EnterFileInput(PseudoCodeParser.FileInputContext context)
     {
         base.EnterFileInput(context);
         CurrentScope = Program.GlobalScope;
+        CurrentScope.PoiLocation = SourceLocation(context);
+        CurrentScope.SourceRange = SourceRange(context);
     }
 
     public override void ExitFileInput(PseudoCodeParser.FileInputContext context)
@@ -34,15 +59,14 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         }
     }
 
-    public void EnterScope(SourceLocation sourceLocation = default)
+    public void EnterScope(ParserRuleContext context)
     {
-        CurrentScope = CurrentScope.AddScope(sourceLocation);
+        CurrentScope = CurrentScope.AddScope(SourceLocation(context), SourceRange(context));
     }
 
-    public void ExitScope(SourceLocation sourceLocation = default)
+    public void ExitScope(ParserRuleContext context)
     {
         CurrentScope.ParentScope.AddOperation(CurrentScope);
-        CurrentScope.SourceRange.End = sourceLocation;
         CurrentScope = CurrentScope.ParentScope;
     }
 
@@ -81,6 +105,10 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
     {
         return token == null ? null : new SourceLocation(token.Line, token.Column);
     }
+    private static SourceLocation SourceLocationEnd(IToken token)
+    {
+        return token == null ? null : new SourceLocation(token.Line, token.Column + token.Text.Length);
+    }
 
     private static SourceLocation SourceLocation(ParserRuleContext context)
     {
@@ -89,7 +117,7 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
 
     private static SourceRange SourceRange(ParserRuleContext context)
     {
-        return new SourceRange(SourceLocation(context.Start), SourceLocation(context.Stop));
+        return new SourceRange(SourceLocation(context.Start), SourceLocationEnd(context.Stop));
     }
     private static SourceRange SourceRange(IToken token)
     {
@@ -315,37 +343,37 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
     public override void EnterIndentedBlock(PseudoCodeParser.IndentedBlockContext context)
     {
         base.EnterIndentedBlock(context);
-        EnterScope(SourceLocation(context));
+        EnterScope(context);
     }
 
     public override void ExitIndentedBlock(PseudoCodeParser.IndentedBlockContext context)
     {
         base.ExitIndentedBlock(context);
-        ExitScope(SourceLocation(context.Stop));
+        ExitScope(context);
     }
 
     public override void EnterAlignedBlock(PseudoCodeParser.AlignedBlockContext context)
     {
         base.EnterAlignedBlock(context);
-        EnterScope(SourceLocation(context));
+        EnterScope(context);
     }
 
     public override void ExitAlignedBlock(PseudoCodeParser.AlignedBlockContext context)
     {
         base.ExitAlignedBlock(context);
-        ExitScope(SourceLocation(context.Stop));
+        ExitScope(context);
     }
 
     public override void EnterScopedExpression(PseudoCodeParser.ScopedExpressionContext context)
     {
         base.EnterScopedExpression(context);
-        EnterScope(SourceLocation(context));
+        EnterScope(context);
     }
 
     public override void ExitScopedExpression(PseudoCodeParser.ScopedExpressionContext context)
     {
         base.ExitScopedExpression(context);
-        ExitScope(SourceLocation(context.Stop));
+        ExitScope(context);
     }
 
     #endregion

@@ -1,3 +1,4 @@
+using System.Collections;
 using PseudoCode.Core.Runtime.Errors;
 
 namespace PseudoCode.Core.Runtime.Operations;
@@ -12,6 +13,7 @@ public class Scope : Operation
     }
 
     public ScopeStates ScopeStates { get; set; }
+    public List<Scope> ChildScopes { get; set; } = new();
 
     /// <summary>
     /// Instances are created from the type
@@ -71,13 +73,15 @@ public class Scope : Operation
             .FirstOrDefault(s => s != null, this);
     }
 
-    public Scope AddScope(SourceLocation sourceLocation = default)
+    public Scope AddScope(SourceLocation sourceLocation = default, SourceRange sourceRange = default)
     {
-        return new Scope(this, Program)
+        var scope = new Scope(this, Program)
         {
             PoiLocation = sourceLocation,
-            SourceRange = new SourceRange(PoiLocation, null)
+            SourceRange = sourceRange
         };
+        ChildScopes.Add(scope);
+        return scope;
     }
 
     public void AddType(Type type)
@@ -152,12 +156,35 @@ public class Scope : Operation
             }
     }
 
+    public IEnumerable<Definition> GetAllDefinedVariables()
+    {
+        var res = InstanceDefinitions
+            .Select(x => x.Value);
+        res = ChildScopes.Aggregate(res, (current, childScope) => current.Concat(childScope.GetAllDefinedVariables()));
+        return res;
+    }
+
+    public Definition GetHoveredVariableDefinition(SourceLocation location)
+    {
+        return GetAllDefinedVariables()
+            .FirstOrDefault(d => d.SourceRange.Contains(location) || d.References.Any(r => r.Contains(location)), null);
+    }
+
+    public (Definition, SourceRange) GetHoveredVariable(SourceLocation location)
+    {
+        var hovered = GetHoveredVariableDefinition(location);
+        if (hovered == null) return (null, null);
+        return hovered.SourceRange.Contains(location)
+            ? (hovered, hovered.SourceRange)
+            : (hovered, hovered.References.FirstOrDefault(r => r.Contains(location)));
+    }
+
     public IEnumerable<Definition> GetVariableCompletionBefore(SourceLocation location)
     {
         var res = InstanceDefinitions.Where(x => x.Value.SourceRange.End <= location)
             .Select(x => x.Value);
 
-        return ScopeStates.Operations.OfType<Scope>().Aggregate(res,
+        return ChildScopes.Where(s => s.SourceRange.Contains(location)).Aggregate(res,
             (current, childScope) =>
                 current.Concat(childScope.GetVariableCompletionBefore(location) ?? Array.Empty<Definition>()));
     }
@@ -167,7 +194,7 @@ public class Scope : Operation
         var res = TypeDefinitions.Where(x => x.Value.SourceRange.End <= location)
             .Select(x => x.Value);
 
-        return ScopeStates.Operations.OfType<Scope>().Aggregate(res,
+        return ChildScopes.Where(s => s.SourceRange.Contains(location)).Aggregate(res,
             (current, childScope) =>
                 current.Concat(childScope.GetTypeCompletionBefore(location) ?? Array.Empty<Definition>()));
     }

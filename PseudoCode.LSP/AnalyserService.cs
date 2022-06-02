@@ -70,7 +70,7 @@ public class AnalysisService
     private void AnalyseSyntax(Analysis analysis, DocumentUri uri,
         string source, CancellationToken ct)
     {
-        logger.LogInformation($"Analysing: {source}");
+        logger.LogInformation($"Analysing: {uri}");
         // tokenize the whole document. unlike parsing, this is not line-by-line, so a single
         // ! will result in untypedTokens.Location extending to the end of the document
         // assume the bad "token" is \W and, if possible, parse everything up to it

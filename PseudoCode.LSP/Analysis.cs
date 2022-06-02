@@ -14,6 +14,6 @@ public class Analysis
         var stream = CharStreams.fromString(source);
         var tree = PseudoCodeDocument.GetParseTreeFromDocument(stream);
         var interpreter = new PseudoCodeCompiler();
-        Program = interpreter.Compile(tree);
+        Program = interpreter.TolerantAnalyse(tree);
     }
 }

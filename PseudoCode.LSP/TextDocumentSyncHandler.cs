@@ -63,7 +63,7 @@ class TextDocumentSyncHandler : TextDocumentSyncHandlerBase
         logger.LogInformation($"{request.TextDocument.Uri} Change");
         foreach (var change in request.ContentChanges)
         {
-            logger.LogInformation(change.Text);
+            // logger.LogInformation(change.Text);
             if (change.Range != null)
             {
                 documentService.ApplyIncrementalChange(request.TextDocument.Uri, change.Range, change.Text);
