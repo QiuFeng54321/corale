@@ -22,7 +22,23 @@ public class AssignmentOperation : Operation
     {
         base.MetaOperate();
         var value = Program.TypeCheckStack.Pop();
-        var to = Program.TypeCheckStack.Pop();
+        Type to;
+        try
+        {
+            to = Program.TypeCheckStack.Pop();
+        }
+        catch (InvalidOperationException e)
+        {
+            // incomplete expressions recognised as assignment
+            Program.AnalyserFeedbacks.Add(new Feedback
+            {
+                Message = "Statement incomplete",
+                Severity = Feedback.SeverityType.Error,
+                SourceRange = SourceRange
+            });
+            return;
+        }
+
         if (to is PlaceholderType placeholderType) to = placeholderType.MetaAssign(value);
         // TODO: Type check
         if (!to.IsConvertableFrom(value))
