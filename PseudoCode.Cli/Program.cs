@@ -16,7 +16,7 @@ void RunProgram(CommandLines.Options opts)
     Thread.CurrentThread.CurrentCulture = new CultureInfo(opts.Locale, false);
     Thread.CurrentThread.CurrentUICulture = new CultureInfo(opts.Locale, false);
     var stream = CharStreams.fromPath(opts.FilePath);
-    var tree = PseudoCodeDocument.GetParseTreeFromDocument(stream);
+    var parser = PseudoCodeDocument.GetParser(stream);
     var interpreter = new PseudoCodeCompiler
     {
         Program =
@@ -27,7 +27,9 @@ void RunProgram(CommandLines.Options opts)
             DebugRepresentation = opts.DebugRepresentation
         }
     };
-    var program = interpreter.Compile(tree);
+    PseudoCodeDocument.AddErrorListener(parser, interpreter);
+    IParseTree parseTree = parser.fileInput();
+    var program = interpreter.Compile(parseTree);
     program.GlobalScope.HandledOperate();
 }
 

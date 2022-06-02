@@ -5,7 +5,7 @@ namespace PseudoCode.Core.Parsing;
 
 public static class PseudoCodeDocument
 {
-    public static IParseTree GetParseTreeFromDocument(ICharStream charStream)
+    public static PseudoCodeParser GetParser(ICharStream charStream)
     {
         ITokenSource lexer = new PseudoCodeLexer(charStream);
         ITokenStream tokens = new CommonTokenStream(lexer);
@@ -13,9 +13,12 @@ public static class PseudoCodeDocument
         {
             BuildParseTree = true,
         };
+        return parser;
+    }
+
+    public static void AddErrorListener(PseudoCodeParser parser, PseudoCodeCompiler compiler)
+    {
         parser.RemoveErrorListeners();
-        parser.AddErrorListener(new PseudoCodeErrorListener());
-        IParseTree parseTree = parser.fileInput();
-        return parseTree;
+        parser.AddErrorListener(new PseudoCodeErrorListener(compiler));
     }
 }

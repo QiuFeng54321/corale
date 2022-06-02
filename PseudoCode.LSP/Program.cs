@@ -74,6 +74,7 @@ namespace PseudoCode.LSP
                                 );
                                 services.AddSingleton<BufferService>();
                                 services.AddSingleton<AnalysisService>();
+                                services.AddSingleton<DiagnosticService>();
                                 services.AddSingleton(
                                     new ConfigurationItem
                                     {

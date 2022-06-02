@@ -6,40 +6,42 @@ namespace PseudoCode.LSP;
 
 public class AnalysisService
 {
-    private readonly Dictionary<DocumentUri, Analysis> analyses = new();
-    private readonly ILogger<AnalysisService> logger;
-    private readonly BufferService documentService;
+    private readonly Dictionary<DocumentUri, Analysis> _analyses = new();
+    private readonly ILogger<AnalysisService> _logger;
+    private readonly BufferService _documentService;
+    private readonly DiagnosticService _diagnosticService;
 
-    public AnalysisService(ILogger<AnalysisService> logger, BufferService documentService)
+    public AnalysisService(ILogger<AnalysisService> logger, BufferService documentService, DiagnosticService diagnosticService)
     {
-        this.logger = logger;
-        this.documentService = documentService;
+        _logger = logger;
+        _documentService = documentService;
+        _diagnosticService = diagnosticService;
     }
 
     public void Reparse(DocumentUri key)
     {
         var cts = new CancellationTokenSource();
-        lock (analyses)
+        lock (_analyses)
         {
-            if (!analyses.ContainsKey(key))
+            if (!_analyses.ContainsKey(key))
             {
-                logger.LogError($"{key} not found");
+                _logger.LogError($"{key} not found");
             }
 
-            analyses[key] = Analyse(key, cts.Token);
+            _analyses[key] = Analyse(key, cts.Token);
         }
     }
 
     public Analysis GetAnalysis(DocumentUri key)
     {
-        return analyses[key];
+        return _analyses[key];
     }
 
     public Analysis Analyse(DocumentUri key, CancellationToken ct)
     {
         var stopwatch = Stopwatch.StartNew();
 
-        var source = documentService.GetText(key); // XXX is this a race condition?
+        var source = _documentService.GetText(key); // XXX is this a race condition?
         var doc = new Analysis();
 
         try
@@ -48,12 +50,13 @@ public class AnalysisService
         }
         catch (Exception e)
         {
-            logger.LogError(e, e.Message);
+            _logger.LogError(e, e.Message);
         }
 
         stopwatch.Stop();
-        logger.LogInformation("Analysed {Uri} in {ElapsedMilliseconds}ms", key, stopwatch.ElapsedMilliseconds);
-
+        _logger.LogInformation("Analysed {Uri} in {ElapsedMilliseconds}ms", key, stopwatch.ElapsedMilliseconds);
+        
+        _diagnosticService.Update(key, doc);
 
         try
         {
@@ -61,7 +64,7 @@ public class AnalysisService
         }
         catch (Exception e)
         {
-            logger.LogError(e, e.Message);
+            _logger.LogError(e, e.Message);
         }
 
         return doc;
@@ -70,7 +73,7 @@ public class AnalysisService
     private void AnalyseSyntax(Analysis analysis, DocumentUri uri,
         string source, CancellationToken ct)
     {
-        logger.LogInformation($"Analysing: {uri}");
+        _logger.LogInformation($"Analysing: {uri}");
         // tokenize the whole document. unlike parsing, this is not line-by-line, so a single
         // ! will result in untypedTokens.Location extending to the end of the document
         // assume the bad "token" is \W and, if possible, parse everything up to it
@@ -82,7 +85,7 @@ public class AnalysisService
         }
         catch (Exception e)
         {
-            logger.LogError(e.ToString());
+            _logger.LogError(e.ToString());
         }
     }
 

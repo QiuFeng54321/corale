@@ -41,10 +41,9 @@ class DefinitionHandler : DefinitionHandlerBase
         if (definition == null) return null;
         var link = new LocationLink
         {
-            OriginSelectionRange = new Range(range.Start.ToPosition(), range.End.ToPosition()),
-            TargetRange = new Range(definition.SourceRange.Start.ToPosition(), definition.SourceRange.End.ToPosition()),
-            TargetSelectionRange = new Range(definition.SourceRange.Start.ToPosition(),
-                definition.SourceRange.End.ToPosition()),
+            OriginSelectionRange = range.ToRange(),
+            TargetRange = definition.SourceRange.ToRange(),
+            TargetSelectionRange = definition.SourceRange.ToRange(),
             TargetUri = request.TextDocument.Uri
         };
         return new LocationOrLocationLinks(link);

@@ -45,8 +45,8 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
     {
         base.EnterFileInput(context);
         CurrentScope = Program.GlobalScope;
-        CurrentScope.PoiLocation = SourceLocation(context);
-        CurrentScope.SourceRange = SourceRange(context);
+        CurrentScope.PoiLocation = SourceLocationHelper.SourceLocation(context);
+        CurrentScope.SourceRange = SourceLocationHelper.SourceRange(context);
     }
 
     public override void ExitFileInput(PseudoCodeParser.FileInputContext context)
@@ -61,7 +61,7 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
 
     public void EnterScope(ParserRuleContext context)
     {
-        CurrentScope = CurrentScope.AddScope(SourceLocation(context), SourceRange(context));
+        CurrentScope = CurrentScope.AddScope(SourceLocationHelper.SourceLocation(context), SourceLocationHelper.SourceRange(context));
     }
 
     public void ExitScope(ParserRuleContext context)
@@ -77,12 +77,12 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         var name = context.Identifier().GetText();
         var type = context.dataType().TypeName;
         var dimensions = context.dataType().Dimensions;
-        var sourceLocation = SourceLocation(context);
+        var sourceLocation = SourceLocationHelper.SourceLocation(context);
         CurrentScope.AddOperation(new DeclareOperation(CurrentScope, Program)
         {
             Name = name,
             PoiLocation = sourceLocation,
-            SourceRange = SourceRange(context)
+            SourceRange = SourceLocationHelper.SourceRange(context)
         });
         var resType = CurrentScope.FindTypeDefinition(type).Type;
         if (dimensions.Count != 0)
@@ -97,32 +97,8 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         {
             Type = resType,
             Name = name,
-            SourceRange = SourceRange(context.Identifier().Symbol)
+            SourceRange = SourceLocationHelper.SourceRange(context.Identifier().Symbol)
         });
-    }
-
-    private static SourceLocation SourceLocation(IToken token)
-    {
-        return token == null ? null : new SourceLocation(token.Line, token.Column);
-    }
-    private static SourceLocation SourceLocationEnd(IToken token)
-    {
-        return token == null ? null : new SourceLocation(token.Line, token.Column + token.Text.Length);
-    }
-
-    private static SourceLocation SourceLocation(ParserRuleContext context)
-    {
-        return SourceLocation(context.Start);
-    }
-
-    private static SourceRange SourceRange(ParserRuleContext context)
-    {
-        return new SourceRange(SourceLocation(context.Start), SourceLocationEnd(context.Stop));
-    }
-    private static SourceRange SourceRange(IToken token)
-    {
-        // FIXME: Temp solution of token range
-        return new SourceRange(SourceLocation(token), new SourceLocation(token.Line, token.Column + token.Text.Length));
     }
 
     public override void ExitAtom(PseudoCodeParser.AtomContext context)
@@ -132,8 +108,8 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         CurrentScope.AddOperation(new LoadImmediateOperation(CurrentScope, Program)
         {
             Intermediate = CurrentScope.FindTypeDefinition(context.AtomType).Type.Instance(context.Value, CurrentScope),
-            PoiLocation = SourceLocation(context),
-            SourceRange = SourceRange(context)
+            PoiLocation = SourceLocationHelper.SourceLocation(context),
+            SourceRange = SourceLocationHelper.SourceRange(context)
         });
     }
 
@@ -144,8 +120,8 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         CurrentScope.AddOperation(new FormImmediateArrayOperation(CurrentScope, Program)
         {
             Length = length,
-            PoiLocation = SourceLocation(context),
-            SourceRange = SourceRange(context)
+            PoiLocation = SourceLocationHelper.SourceLocation(context),
+            SourceRange = SourceLocationHelper.SourceRange(context)
         });
     }
 
@@ -153,11 +129,11 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
     {
         base.ExitAssignmentStatement(context);
         // Console.WriteLine($"{context.lvalue().GetText()} <- {context.expr().GetText()}");
-        var sourceLocation = SourceLocation(context.AssignmentNotation()?.Symbol);
+        var sourceLocation = SourceLocationHelper.SourceLocation(context.AssignmentNotation()?.Symbol);
         CurrentScope.AddOperation(new AssignmentOperation(CurrentScope, Program)
         {
             PoiLocation = sourceLocation,
-            SourceRange = SourceRange(context)
+            SourceRange = SourceLocationHelper.SourceRange(context)
         });
     }
 
@@ -167,28 +143,28 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
 
         if (context.array() != null)
         {
-            var sourceLocation = SourceLocation(context.array());
+            var sourceLocation = SourceLocationHelper.SourceLocation(context.array());
             CurrentScope.AddOperation(new ArrayIndexOperation(CurrentScope, Program)
             {
                 PoiLocation = sourceLocation,
-                SourceRange = SourceRange(context)
+                SourceRange = SourceLocationHelper.SourceRange(context)
             });
         }
         else if (context.Identifier() != null && context.IsUnary)
         {
             var variableName = context.Identifier().GetText();
-            var sourceLocation = SourceLocation(context);
+            var sourceLocation = SourceLocationHelper.SourceLocation(context);
             CurrentScope.AddOperation(new LoadOperation(CurrentScope, Program)
             {
                 LoadName = variableName,
                 PoiLocation = sourceLocation,
-                SourceRange = SourceRange(context.Identifier().Symbol)
+                SourceRange = SourceLocationHelper.SourceRange(context.Identifier().Symbol)
             });
         }
 
         if (context.op != null)
         {
-            var sourceLocation = SourceLocation(context.op);
+            var sourceLocation = SourceLocationHelper.SourceLocation(context.op);
             var operatorMethod = context.op.Type;
             if (context.IsUnary)
             {
@@ -197,7 +173,7 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
                 {
                     OperatorMethod = operatorMethod,
                     PoiLocation = sourceLocation,
-                    SourceRange = SourceRange(context)
+                    SourceRange = SourceLocationHelper.SourceRange(context)
                 });
             }
             else
@@ -207,7 +183,7 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
                     {
                         OperatorMethod = operatorMethod,
                         PoiLocation = sourceLocation,
-                        SourceRange = SourceRange(context)
+                        SourceRange = SourceLocationHelper.SourceRange(context)
                     });
             }
         }
@@ -222,15 +198,15 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
                 CurrentScope.AddOperation(new UnaryOperation(CurrentScope, Program)
                 {
                     OperatorMethod = op.Type,
-                    PoiLocation = SourceLocation(context.op),
-                    SourceRange = SourceRange(context)
+                    PoiLocation = SourceLocationHelper.SourceLocation(context.op),
+                    SourceRange = SourceLocationHelper.SourceRange(context)
                 });
             else
                 CurrentScope.AddOperation(new BinaryOperation(CurrentScope, Program)
                 {
                     OperatorMethod = op.Type,
-                    PoiLocation = SourceLocation(context.op),
-                    SourceRange = SourceRange(context)
+                    PoiLocation = SourceLocationHelper.SourceLocation(context.op),
+                    SourceRange = SourceLocationHelper.SourceRange(context)
                 });
     }
 
@@ -245,15 +221,15 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
                 CurrentScope.AddOperation(new OutputOperation(CurrentScope, Program)
                 {
                     ArgumentCount = context.tuple().expression().Length,
-                    PoiLocation = SourceLocation(context),
-                    SourceRange = SourceRange(context)
+                    PoiLocation = SourceLocationHelper.SourceLocation(context),
+                    SourceRange = SourceLocationHelper.SourceRange(context)
                 });
                 break;
             case "INPUT":
                 CurrentScope.AddOperation(new InputOperation(CurrentScope, Program)
                 {
-                    PoiLocation = SourceLocation(context),
-                    SourceRange = SourceRange(context)
+                    PoiLocation = SourceLocationHelper.SourceLocation(context),
+                    SourceRange = SourceLocationHelper.SourceRange(context)
                 });
                 break;
         }
@@ -268,8 +244,8 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         CurrentScope.AddOperation(new IfOperation(CurrentScope, Program)
         {
             FalseBlock = falseBlock, TrueBlock = trueBlock, TestExpressionScope = testScope,
-            PoiLocation = SourceLocation(context),
-            SourceRange = SourceRange(context)
+            PoiLocation = SourceLocationHelper.SourceLocation(context),
+            SourceRange = SourceLocationHelper.SourceRange(context)
         });
     }
 
@@ -282,8 +258,8 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         {
             RepeatBlock = repeatBlock, TestExpressionScope = testScope,
             TestFirst = true,
-            PoiLocation = SourceLocation(context),
-            SourceRange = SourceRange(context)
+            PoiLocation = SourceLocationHelper.SourceLocation(context),
+            SourceRange = SourceLocationHelper.SourceRange(context)
         });
     }
 
@@ -295,16 +271,16 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         testScope.AddOperation(new UnaryOperation(testScope, Program)
         {
             OperatorMethod = PseudoCodeParser.Not,
-            PoiLocation = SourceLocation(context.scopedExpression().Stop),
-            SourceRange = SourceRange(context)
+            PoiLocation = SourceLocationHelper.SourceLocation(context.scopedExpression().Stop),
+            SourceRange = SourceLocationHelper.SourceRange(context)
         });
         var repeatBlock = CurrentScope.TakeLast();
         CurrentScope.AddOperation(new RepeatOperation(CurrentScope, Program)
         {
             RepeatBlock = repeatBlock, TestExpressionScope = testScope,
             TestFirst = false,
-            PoiLocation = SourceLocation(context),
-            SourceRange = SourceRange(context)
+            PoiLocation = SourceLocationHelper.SourceLocation(context),
+            SourceRange = SourceLocationHelper.SourceRange(context)
         });
     }
 
@@ -318,14 +294,14 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
             : new LoadImmediateOperation(CurrentScope, Program)
             {
                 Intermediate = CurrentScope.FindTypeDefinition(Type.IntegerId).Type.Instance(1, CurrentScope),
-                PoiLocation = SourceLocation(context.Next().Symbol),
-                SourceRange = SourceRange(context)
+                PoiLocation = SourceLocationHelper.SourceLocation(context.Next().Symbol),
+                SourceRange = SourceLocationHelper.SourceRange(context)
             };
         var target = CurrentScope.TakeLast();
         CurrentScope.AddOperation(new AssignmentOperation(CurrentScope, Program)
         {
             KeepVariableInStack = true,
-            PoiLocation = SourceLocation(context.AssignmentNotation().Symbol)
+            PoiLocation = SourceLocationHelper.SourceLocation(context.AssignmentNotation().Symbol)
         });
         CurrentScope.AddOperation(new ForOperation(CurrentScope, Program)
         {
@@ -333,8 +309,8 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
             Next = next,
             Step = step,
             TargetValue = target,
-            PoiLocation = SourceLocation(context),
-            SourceRange = SourceRange(context)
+            PoiLocation = SourceLocationHelper.SourceLocation(context),
+            SourceRange = SourceLocationHelper.SourceRange(context)
         });
     }
 

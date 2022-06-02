@@ -194,6 +194,11 @@ public class Type
         throw MakeUnsupported(i1, i2);
     }
 
+    public virtual bool IsConvertableFrom(Type type)
+    {
+        return false;
+    }
+
     public virtual Instance CastFrom(Instance i)
     {
         throw MakeUnsupportedCastError(i);

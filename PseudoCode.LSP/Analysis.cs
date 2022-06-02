@@ -12,8 +12,9 @@ public class Analysis
     public void Analyse(string source)
     {
         var stream = CharStreams.fromString(source);
-        var tree = PseudoCodeDocument.GetParseTreeFromDocument(stream);
+        var parser = PseudoCodeDocument.GetParser(stream);
         var interpreter = new PseudoCodeCompiler();
-        Program = interpreter.TolerantAnalyse(tree);
+        PseudoCodeDocument.AddErrorListener(parser, interpreter);
+        Program = interpreter.TolerantAnalyse(parser.fileInput());
     }
 }

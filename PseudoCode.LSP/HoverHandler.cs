@@ -39,7 +39,7 @@ class HoverHandler : HoverHandlerBase
         if (hoveredVar == null) return null;
         return new Hover
         {
-            Range = new Range(range.Start.ToPosition(), range.End.ToPosition()),
+            Range = range.ToRange(),
             Contents = new MarkedStringsOrMarkupContent(new MarkupContent
                 { Kind = MarkupKind.Markdown, Value = $"{hoveredVar.Type}" })
         };
