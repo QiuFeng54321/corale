@@ -1,4 +1,5 @@
 using System.Collections;
+using PseudoCode.Core.Analyzing;
 using PseudoCode.Core.Runtime.Errors;
 
 namespace PseudoCode.Core.Runtime.Operations;
@@ -93,6 +94,23 @@ public class Scope : Operation
             Type = type,
             SourceRange = new SourceRange(new SourceLocation(-1, -1), new SourceLocation(-1, -1))
         });
+    }
+
+    public void AddVariableDefinition(string name, Definition definition, SourceRange sourceRange = null)
+    {
+        if (InstanceDefinitions.ContainsKey(name))
+        {
+            Program.AnalyserFeedbacks.Add(new Feedback
+            {
+                Message = $"Variable {name} is already declared",
+                Severity = Feedback.SeverityType.Error,
+                SourceRange = sourceRange
+            });
+        }
+        else
+        {
+            InstanceDefinitions.Add(name, definition);
+        }
     }
 
     public void AddOperation(Operation operation)

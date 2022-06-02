@@ -5,6 +5,7 @@ namespace PseudoCode.Core.Runtime.Operations;
 public class DeclareOperation : Operation
 {
     public string Name;
+    public Definition Definition;
 
     public DeclareOperation(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {
@@ -13,8 +14,7 @@ public class DeclareOperation : Operation
     public override void Operate()
     {
         base.Operate();
-        var type = ParentScope.FindInstanceDefinition(Name);
-        var instance = type.Type.Instance();
+        var instance = Definition.Type.Instance();
         if (instance is ArrayInstance arrayInstance)
         {
             arrayInstance.InitialiseInMemory();
@@ -26,11 +26,12 @@ public class DeclareOperation : Operation
     {
         base.MetaOperate();
         
+        ParentScope.AddVariableDefinition(Name, Definition, SourceRange);
     }
 
     public override string ToPlainString()
     {
-        var typeStr = ParentScope.FindInstanceDefinition(Name).ToString();
+        var typeStr = Definition.Type.ToString();
         return string.Format(strings.DeclareOperation_ToPlainString, Name, typeStr);
     }
 }

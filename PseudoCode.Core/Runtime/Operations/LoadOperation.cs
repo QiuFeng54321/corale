@@ -33,7 +33,7 @@ public class LoadOperation : Operation
         definition?.References?.Add(SourceRange);
         if (definition == null)
         {
-            ParentScope.InstanceDefinitions.Add(LoadName, new Definition
+            ParentScope.AddVariableDefinition(LoadName, new Definition
             {
                 Name = LoadName,
                 Type = new PlaceholderType(ParentScope, Program)
@@ -42,7 +42,7 @@ public class LoadOperation : Operation
                 },
                 SourceRange = SourceRange,
                 References = new List<SourceRange> {SourceRange}
-            });
+            }, SourceRange);
         }
 
         Program.TypeCheckStack.Push(ParentScope.FindInstanceDefinition(LoadName).Type);

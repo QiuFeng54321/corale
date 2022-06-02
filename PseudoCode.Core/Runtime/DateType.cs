@@ -76,7 +76,7 @@ public class DateType : PrimitiveType<DateOnly>
     }
     public override bool IsConvertableFrom(Type type)
     {
-        return type.Id == DateId;
+        return type.Id is DateId or StringId;
     }
     public override Instance CastFrom(Instance i)
     {

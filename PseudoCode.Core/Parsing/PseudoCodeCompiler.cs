@@ -1,5 +1,6 @@
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
+using PseudoCode.Core.Analyzing;
 using PseudoCode.Core.Runtime;
 using PseudoCode.Core.Runtime.Operations;
 using Type = PseudoCode.Core.Runtime.Type;
@@ -17,7 +18,7 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         Program.GlobalScope.MetaOperate();
         return Program;
     }
-    
+
     public PseudoProgram TolerantAnalyse(IParseTree tree)
     {
         try
@@ -32,7 +33,7 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         try
         {
             Program.GlobalScope.MetaOperate();
-        } 
+        }
         catch (Exception e)
         {
             Console.Error.WriteLine(e);
@@ -61,7 +62,8 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
 
     public void EnterScope(ParserRuleContext context)
     {
-        CurrentScope = CurrentScope.AddScope(SourceLocationHelper.SourceLocation(context), SourceLocationHelper.SourceRange(context));
+        CurrentScope = CurrentScope.AddScope(SourceLocationHelper.SourceLocation(context),
+            SourceLocationHelper.SourceRange(context));
     }
 
     public void ExitScope(ParserRuleContext context)
@@ -78,12 +80,6 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         var type = context.dataType().TypeName;
         var dimensions = context.dataType().Dimensions;
         var sourceLocation = SourceLocationHelper.SourceLocation(context);
-        CurrentScope.AddOperation(new DeclareOperation(CurrentScope, Program)
-        {
-            Name = name,
-            PoiLocation = sourceLocation,
-            SourceRange = SourceLocationHelper.SourceRange(context)
-        });
         var resType = CurrentScope.FindTypeDefinition(type).Type;
         if (dimensions.Count != 0)
         {
@@ -93,11 +89,19 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
                 ElementType = resType
             };
         }
-        CurrentScope.InstanceDefinitions.Add(name, new Definition
+
+        var sourceRange = SourceLocationHelper.SourceRange(context.Identifier().Symbol);
+        CurrentScope.AddOperation(new DeclareOperation(CurrentScope, Program)
         {
-            Type = resType,
             Name = name,
-            SourceRange = SourceLocationHelper.SourceRange(context.Identifier().Symbol)
+            PoiLocation = sourceLocation,
+            SourceRange = SourceLocationHelper.SourceRange(context),
+            Definition = new Definition
+            {
+                Type = resType,
+                Name = name,
+                SourceRange = sourceRange
+            }
         });
     }
 

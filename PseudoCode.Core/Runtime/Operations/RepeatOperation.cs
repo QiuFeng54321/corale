@@ -1,3 +1,5 @@
+using PseudoCode.Core.Analyzing;
+
 namespace PseudoCode.Core.Runtime.Operations;
 
 public class RepeatOperation : Operation
@@ -32,7 +34,16 @@ public class RepeatOperation : Operation
     {
         base.MetaOperate();
         TestExpressionScope.MetaOperate();
-        Program.TypeCheckStack.Pop();
+        var testType = Program.TypeCheckStack.Pop();
+        if (!ParentScope.FindTypeDefinition(Type.BooleanId).Type.IsConvertableFrom(testType))
+        {
+            Program.AnalyserFeedbacks.Add(new Feedback
+            {
+                Message = $"Test expression is of type {testType} and cannot be converted into BOOLEAN",
+                Severity = Feedback.SeverityType.Error,
+                SourceRange = TestExpressionScope.SourceRange
+            });
+        }
         RepeatBlock.MetaOperate();
     }
 
