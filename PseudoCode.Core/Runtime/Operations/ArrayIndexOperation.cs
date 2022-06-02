@@ -26,17 +26,17 @@ public class ArrayIndexOperation : Operation
         {
             Program.AnalyserFeedbacks.Add(new Feedback
             {
-                Message = $"Invalid type of array access",
+                Message = $"Invalid type of array access: {accessed}",
                 SourceRange = SourceRange
             });
             Program.TypeCheckStack.Push(new NullType(ParentScope, Program));
         }
         else
         {
-            if (access.Dimensions.Count < arrayTypeInfo.Dimensions.Count)
+            if (access.TotalElements < arrayTypeInfo.Dimensions.Count)
                 Program.TypeCheckStack.Push(new ArrayType(ParentScope, Program)
                 {
-                    Dimensions = arrayTypeInfo.Dimensions.Skip(access.Dimensions.Count).ToList(),
+                    Dimensions = arrayTypeInfo.Dimensions.Skip(access.TotalElements).ToList(),
                     ElementType = arrayTypeInfo.ElementType
                 });
             else

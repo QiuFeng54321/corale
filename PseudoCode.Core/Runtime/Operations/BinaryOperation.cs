@@ -23,6 +23,7 @@ public class BinaryOperation : Operation
         var value = Program.TypeCheckStack.Pop();
         var to = Program.TypeCheckStack.Pop();
         to = to.BinaryResultType(OperatorMethod, value);
+        
         Program.TypeCheckStack.Push(to);
     }
 

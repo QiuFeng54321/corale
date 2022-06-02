@@ -60,6 +60,12 @@ public class ArrayType : Type
         return arrayInstance.ElementAt(indexList);
     }
 
+    public override bool IsConvertableFrom(Type type)
+    {
+        if (type is not ArrayType arrayType) return false;
+        return arrayType.TotalElements == TotalElements;
+    }
+
     public override string ToString()
     {
         return $"ARRAY[{string.Join(", ", Dimensions)}] OF {ElementType}";
