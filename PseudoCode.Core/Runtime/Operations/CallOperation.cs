@@ -49,6 +49,16 @@ public class CallOperation : Operation
             functionType = null;
         }
 
+        if (arguments.Count != functionType.ParameterInfos.Length)
+        {
+            Program.AnalyserFeedbacks.Add(new Feedback
+            {
+                Message = $"Calling {functionType} with arguments: ({string.Join(", ", arguments)})",
+                Severity = Feedback.SeverityType.Error,
+                SourceRange = SourceRange
+            });
+        }
+
         foreach (var ((parameterInfo, passedInstance), i) in functionType.ParameterInfos.Zip(arguments)
                      .Select((v, i) => (v, i)))
         {
