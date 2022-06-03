@@ -7,10 +7,9 @@ public class ArrayType : Type
 {
     public override string Name => "ARRAY";
     public override uint Id => ArrayId;
-    public List<Range> Dimensions = new();
+    public int DimensionCount = 1;
     public Type ElementType;
 
-    public int TotalElements => Dimensions.Select(d => d.Length).Aggregate((prev, next) => prev * next);
 
 
     public override Instance Instance(object value = null, Scope scope = null)
@@ -51,24 +50,24 @@ public class ArrayType : Type
         if (i2.RealInstance is not ArrayInstance indexInstance)
             throw new InvalidAccessError(strings.ArrayType_Index_IndexNotArray, null);
         var arrayInstance = (ArrayInstance)i1.RealInstance;
-        if (indexInstance.ArrayType.TotalElements > Dimensions.Count)
+        if (indexInstance.TotalElements > DimensionCount)
             throw new InvalidAccessError(
-                string.Format(strings.ArrayType_Index_InvalidArrayAccessDimension, indexInstance.ArrayType.TotalElements, Dimensions.Count),
+                string.Format(strings.ArrayType_Index_InvalidArrayAccessDimension, indexInstance.TotalElements, DimensionCount),
                 null);
         var indexList = indexInstance.Array.Select((index, i) =>
-            Dimensions[i].ToRealIndex(ParentScope.FindTypeDefinition(IntegerId).Type.HandledCastFrom(index).Get<int>())).ToList();
+            arrayInstance.Dimensions[i].ToRealIndex(ParentScope.FindTypeDefinition(IntegerId).Type.HandledCastFrom(index).Get<int>())).ToList();
         return arrayInstance.ElementAt(indexList);
     }
 
     public override bool IsConvertableFrom(Type type)
     {
         if (type is not ArrayType arrayType) return false;
-        return arrayType.TotalElements == TotalElements;
+        return arrayType.DimensionCount == DimensionCount;
     }
 
     public override string ToString()
     {
-        return $"ARRAY[{string.Join(", ", Dimensions)}] OF {ElementType}";
+        return $"ARRAY[{DimensionCount}] OF {ElementType}";
     }
 
     public ArrayType(Scope parentScope, PseudoProgram program) : base(parentScope, program)

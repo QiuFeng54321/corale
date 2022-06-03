@@ -78,14 +78,14 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         // Console.WriteLine($"DECLARE {context.IDENTIFIER().GetText()} : {context.dataType().GetText()}");
         var name = context.Identifier().GetText();
         var type = context.dataType().TypeName;
-        var dimensions = context.dataType().Dimensions;
+        var dimensions = context.dataType().arrayRange().Length;
         var sourceLocation = SourceLocationHelper.SourceLocation(context);
         var resType = CurrentScope.FindTypeDefinition(type).Type;
-        if (dimensions.Count != 0)
+        if (dimensions != 0)
         {
             resType = new ArrayType(CurrentScope, Program)
             {
-                Dimensions = dimensions,
+                DimensionCount = dimensions,
                 ElementType = resType
             };
         }
@@ -94,6 +94,7 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         CurrentScope.AddOperation(new DeclareOperation(CurrentScope, Program)
         {
             Name = name,
+            DimensionCount = dimensions,
             PoiLocation = sourceLocation,
             SourceRange = SourceLocationHelper.SourceRange(context),
             Definition = new Definition

@@ -1,3 +1,4 @@
+using PseudoCode.Core.Analyzing;
 using PseudoCode.Core.Runtime.Errors;
 
 namespace PseudoCode.Core.Runtime.Operations;
@@ -5,6 +6,7 @@ namespace PseudoCode.Core.Runtime.Operations;
 public class DeclareOperation : Operation
 {
     public string Name;
+    public int DimensionCount;
     public Definition Definition;
 
     public DeclareOperation(Scope parentScope, PseudoProgram program) : base(parentScope, program)
@@ -17,6 +19,14 @@ public class DeclareOperation : Operation
         var instance = Definition.Type.Instance();
         if (instance is ArrayInstance arrayInstance)
         {
+            for (var i = 0; i < DimensionCount; i++)
+            {
+                var intType = ParentScope.FindTypeDefinition(Type.IntegerId).Type;
+                var end = intType.CastFrom(Program.RuntimeStack.Pop());
+                var start = intType.CastFrom(Program.RuntimeStack.Pop());
+                var range = new Range { Start = start.Get<int>(), End = end.Get<int>() };
+                arrayInstance.Dimensions.Insert(0, range);
+            }
             arrayInstance.InitialiseInMemory();
         } 
         ParentScope.ScopeStates.InstanceAddresses.Add(Name, Program.AllocateId(instance));
@@ -25,7 +35,24 @@ public class DeclareOperation : Operation
     public override void MetaOperate()
     {
         base.MetaOperate();
-        
+        var invalidType = false;
+        for (var i = 0; i < DimensionCount; i++)
+        {
+            var intType = ParentScope.FindTypeDefinition(Type.IntegerId).Type;
+            var end = intType.IsConvertableFrom(Program.TypeCheckStack.Pop());
+            var start = intType.IsConvertableFrom(Program.TypeCheckStack.Pop());
+            invalidType |= start || end;
+        }
+
+        if (invalidType)
+        {
+            Program.AnalyserFeedbacks.Add(new Feedback
+            {
+                Message = $"Range value has expressions that does not evaluate or can not be casted to INTEGER",
+                Severity = Feedback.SeverityType.Error,
+                SourceRange = SourceRange
+            });
+        }
         ParentScope.AddVariableDefinition(Name, Definition, SourceRange);
     }
 

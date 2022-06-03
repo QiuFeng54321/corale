@@ -23,6 +23,7 @@ public class FormImmediateArrayOperation : Operation
         }
 
         var formedInstance = (ArrayInstance)ArrayType.Instance();
+        formedInstance.Dimensions = new List<Range> { new Range { Start = 1, End = elements.Count } };
         formedInstance.InitialiseFromList(elements.Select(e => ArrayType.ElementType.HandledCastFrom(e)));
         Program.RuntimeStack.Push(formedInstance);
     }
@@ -31,25 +32,22 @@ public class FormImmediateArrayOperation : Operation
     {
         base.MetaOperate();
         Type arrayElementType = null;
-        var overallLength = 0;
         for (var i = 0; i < Length; i++)
         {
             var type = Program.TypeCheckStack.Pop();
             if (type is ArrayType subArrayType)
             {
                 arrayElementType = subArrayType.ElementType;
-                overallLength += subArrayType.TotalElements;
             }
             else
             {
                 arrayElementType = type;
-                overallLength++;
             }
         }
 
         Program.TypeCheckStack.Push(ArrayType = new ArrayType(ParentScope, Program)
         {
-            Dimensions = new List<Range> { new() { Start = 1, End = overallLength } },
+            DimensionCount = 1,
             ElementType = arrayElementType
         });
     }

@@ -22,7 +22,7 @@ public class ArrayIndexOperation : Operation
         base.MetaOperate();
         var access = (ArrayType)Program.TypeCheckStack.Pop();
         var accessed = Program.TypeCheckStack.Pop();
-        if (accessed is not ArrayType arrayTypeInfo)
+        if (accessed is not ArrayType accessedArray)
         {
             Program.AnalyserFeedbacks.Add(new Feedback
             {
@@ -33,15 +33,15 @@ public class ArrayIndexOperation : Operation
         }
         else
         {
-            if (access.TotalElements < arrayTypeInfo.Dimensions.Count)
+            if (access.DimensionCount < accessedArray.DimensionCount)
                 Program.TypeCheckStack.Push(new ArrayType(ParentScope, Program)
                 {
-                    Dimensions = arrayTypeInfo.Dimensions.Skip(access.TotalElements).ToList(),
-                    ElementType = arrayTypeInfo.ElementType
+                    DimensionCount = accessedArray.DimensionCount - access.DimensionCount,
+                    ElementType = accessedArray.ElementType
                 });
             else
             {
-                Program.TypeCheckStack.Push(arrayTypeInfo.ElementType);
+                Program.TypeCheckStack.Push(accessedArray.ElementType);
             }
         }
     }

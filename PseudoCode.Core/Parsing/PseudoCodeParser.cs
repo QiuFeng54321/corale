@@ -3852,12 +3852,14 @@ public partial class PseudoCodeParser : Parser {
 	}
 
 	public partial class ArrayRangeContext : ParserRuleContext {
-		public IToken s;
-		public IToken e;
+		public ExpressionContext s;
+		public ExpressionContext e;
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Colon() { return GetToken(PseudoCodeParser.Colon, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] Integer() { return GetTokens(PseudoCodeParser.Integer); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Integer(int i) {
-			return GetToken(PseudoCodeParser.Integer, i);
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext[] expression() {
+			return GetRuleContexts<ExpressionContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression(int i) {
+			return GetRuleContext<ExpressionContext>(i);
 		}
 		public ArrayRangeContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -3884,12 +3886,11 @@ public partial class PseudoCodeParser : Parser {
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 549;
-			_localctx.s = Match(Integer);
+			_localctx.s = expression();
 			State = 550;
 			Match(Colon);
 			State = 551;
-			_localctx.e = Match(Integer);
-			(((DataTypeContext)GetInvokingContext(45)).Dimensions).Add(new Range{Start = int.Parse((_localctx.s!=null?_localctx.s.Text:null)), End = int.Parse((_localctx.e!=null?_localctx.e.Text:null))});
+			_localctx.e = expression();
 			}
 		}
 		catch (RecognitionException re) {
@@ -3941,27 +3942,27 @@ public partial class PseudoCodeParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 554;
+			State = 553;
 			Match(OpenBrack);
-			State = 555;
+			State = 554;
 			expression();
-			State = 560;
+			State = 559;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			while (_la==Comma) {
 				{
 				{
-				State = 556;
+				State = 555;
 				Match(Comma);
-				State = 557;
+				State = 556;
 				expression();
 				}
 				}
-				State = 562;
+				State = 561;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			}
-			State = 563;
+			State = 562;
 			Match(CloseBrack);
 			}
 		}
@@ -4003,13 +4004,13 @@ public partial class PseudoCodeParser : Parser {
 		NumberContext _localctx = new NumberContext(Context, State);
 		EnterRule(_localctx, 98, RULE_number);
 		try {
-			State = 569;
+			State = 568;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
 			case Integer:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 565;
+				State = 564;
 				_localctx._Integer = Match(Integer);
 				((AtomContext)GetInvokingContext(44)).AtomType =  "INTEGER"; ((AtomContext)GetInvokingContext(44)).Value =  int.Parse((_localctx._Integer!=null?_localctx._Integer.Text:null));
 				}
@@ -4017,7 +4018,7 @@ public partial class PseudoCodeParser : Parser {
 			case Decimal:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 567;
+				State = 566;
 				_localctx._Decimal = Match(Decimal);
 				((AtomContext)GetInvokingContext(44)).AtomType =  "REAL"; ((AtomContext)GetInvokingContext(44)).Value =  decimal.Parse((_localctx._Decimal!=null?_localctx._Decimal.Text:null));
 				}
@@ -4065,7 +4066,7 @@ public partial class PseudoCodeParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 571;
+			State = 570;
 			_la = TokenStream.LA(1);
 			if ( !(_la==New || _la==Identifier) ) {
 			ErrorHandler.RecoverInline(this);
@@ -4121,7 +4122,7 @@ public partial class PseudoCodeParser : Parser {
 	}
 
 	private static int[] _serializedATN = {
-		4,1,91,574,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,7,
+		4,1,91,573,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,7,
 		7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,2,13,7,13,2,14,7,14,
 		2,15,7,15,2,16,7,16,2,17,7,17,2,18,7,18,2,19,7,19,2,20,7,20,2,21,7,21,
 		2,22,7,22,2,23,7,23,2,24,7,24,2,25,7,25,2,26,7,26,2,27,7,27,2,28,7,28,
@@ -4162,13 +4163,13 @@ public partial class PseudoCodeParser : Parser {
 		1,43,3,43,510,8,43,1,43,1,43,1,44,1,44,1,44,1,44,1,44,1,44,1,44,1,44,1,
 		44,1,44,1,44,1,44,3,44,526,8,44,1,45,1,45,1,45,1,45,1,45,5,45,533,8,45,
 		10,45,12,45,536,9,45,1,45,1,45,1,45,1,45,1,45,1,45,1,45,1,45,3,45,546,
-		8,45,1,46,1,46,1,47,1,47,1,47,1,47,1,47,1,48,1,48,1,48,1,48,5,48,559,8,
-		48,10,48,12,48,562,9,48,1,48,1,48,1,49,1,49,1,49,1,49,3,49,570,8,49,1,
-		50,1,50,1,50,0,2,80,84,51,0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,
-		34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,78,80,
-		82,84,86,88,90,92,94,96,98,100,0,6,1,0,49,52,1,0,36,37,1,0,56,57,1,0,80,
-		85,2,0,12,12,87,87,2,0,58,58,87,87,606,0,105,1,0,0,0,2,110,1,0,0,0,4,118,
-		1,0,0,0,6,120,1,0,0,0,8,129,1,0,0,0,10,131,1,0,0,0,12,135,1,0,0,0,14,140,
+		8,45,1,46,1,46,1,47,1,47,1,47,1,47,1,48,1,48,1,48,1,48,5,48,558,8,48,10,
+		48,12,48,561,9,48,1,48,1,48,1,49,1,49,1,49,1,49,3,49,569,8,49,1,50,1,50,
+		1,50,0,2,80,84,51,0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,
+		38,40,42,44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,78,80,82,84,
+		86,88,90,92,94,96,98,100,0,6,1,0,49,52,1,0,36,37,1,0,56,57,1,0,80,85,2,
+		0,12,12,87,87,2,0,58,58,87,87,605,0,105,1,0,0,0,2,110,1,0,0,0,4,118,1,
+		0,0,0,6,120,1,0,0,0,8,129,1,0,0,0,10,131,1,0,0,0,12,135,1,0,0,0,14,140,
 		1,0,0,0,16,145,1,0,0,0,18,148,1,0,0,0,20,151,1,0,0,0,22,188,1,0,0,0,24,
 		201,1,0,0,0,26,203,1,0,0,0,28,205,1,0,0,0,30,213,1,0,0,0,32,224,1,0,0,
 		0,34,236,1,0,0,0,36,252,1,0,0,0,38,258,1,0,0,0,40,263,1,0,0,0,42,277,1,
@@ -4177,8 +4178,8 @@ public partial class PseudoCodeParser : Parser {
 		357,1,0,0,0,64,362,1,0,0,0,66,372,1,0,0,0,68,374,1,0,0,0,70,383,1,0,0,
 		0,72,395,1,0,0,0,74,402,1,0,0,0,76,408,1,0,0,0,78,410,1,0,0,0,80,425,1,
 		0,0,0,82,442,1,0,0,0,84,466,1,0,0,0,86,507,1,0,0,0,88,525,1,0,0,0,90,545,
-		1,0,0,0,92,547,1,0,0,0,94,549,1,0,0,0,96,554,1,0,0,0,98,569,1,0,0,0,100,
-		571,1,0,0,0,102,104,3,4,2,0,103,102,1,0,0,0,104,107,1,0,0,0,105,103,1,
+		1,0,0,0,92,547,1,0,0,0,94,549,1,0,0,0,96,553,1,0,0,0,98,568,1,0,0,0,100,
+		570,1,0,0,0,102,104,3,4,2,0,103,102,1,0,0,0,104,107,1,0,0,0,105,103,1,
 		0,0,0,105,106,1,0,0,0,106,108,1,0,0,0,107,105,1,0,0,0,108,109,5,0,0,1,
 		109,1,1,0,0,0,110,111,3,4,2,0,111,112,5,7,0,0,112,3,1,0,0,0,113,116,3,
 		6,3,0,114,116,3,24,12,0,115,113,1,0,0,0,115,114,1,0,0,0,116,119,1,0,0,
@@ -4302,15 +4303,15 @@ public partial class PseudoCodeParser : Parser {
 		0,536,534,1,0,0,0,537,538,5,65,0,0,538,539,5,15,0,0,539,540,3,92,46,0,
 		540,541,6,45,-1,0,541,546,1,0,0,0,542,543,3,92,46,0,543,544,6,45,-1,0,
 		544,546,1,0,0,0,545,527,1,0,0,0,545,542,1,0,0,0,546,91,1,0,0,0,547,548,
-		7,4,0,0,548,93,1,0,0,0,549,550,5,5,0,0,550,551,5,68,0,0,551,552,5,5,0,
-		0,552,553,6,47,-1,0,553,95,1,0,0,0,554,555,5,64,0,0,555,560,3,78,39,0,
-		556,557,5,69,0,0,557,559,3,78,39,0,558,556,1,0,0,0,559,562,1,0,0,0,560,
-		558,1,0,0,0,560,561,1,0,0,0,561,563,1,0,0,0,562,560,1,0,0,0,563,564,5,
-		65,0,0,564,97,1,0,0,0,565,566,5,5,0,0,566,570,6,49,-1,0,567,568,5,4,0,
-		0,568,570,6,49,-1,0,569,565,1,0,0,0,569,567,1,0,0,0,570,99,1,0,0,0,571,
-		572,7,5,0,0,572,101,1,0,0,0,42,105,115,118,129,154,188,201,209,218,222,
-		232,246,272,277,283,294,302,315,318,323,334,346,366,372,378,388,390,395,
-		402,406,425,437,439,466,502,504,509,525,534,545,560,569
+		7,4,0,0,548,93,1,0,0,0,549,550,3,78,39,0,550,551,5,68,0,0,551,552,3,78,
+		39,0,552,95,1,0,0,0,553,554,5,64,0,0,554,559,3,78,39,0,555,556,5,69,0,
+		0,556,558,3,78,39,0,557,555,1,0,0,0,558,561,1,0,0,0,559,557,1,0,0,0,559,
+		560,1,0,0,0,560,562,1,0,0,0,561,559,1,0,0,0,562,563,5,65,0,0,563,97,1,
+		0,0,0,564,565,5,5,0,0,565,569,6,49,-1,0,566,567,5,4,0,0,567,569,6,49,-1,
+		0,568,564,1,0,0,0,568,566,1,0,0,0,569,99,1,0,0,0,570,571,7,5,0,0,571,101,
+		1,0,0,0,42,105,115,118,129,154,188,201,209,218,222,232,246,272,277,283,
+		294,302,315,318,323,334,346,366,372,378,388,390,395,402,406,425,437,439,
+		466,502,504,509,525,534,545,559,568
 	};
 
 	public static readonly ATN _ATN =

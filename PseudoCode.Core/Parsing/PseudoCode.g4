@@ -246,7 +246,7 @@ dataType locals [string TypeName, bool IsArray, List<Range> Dimensions = new()]
 basicDataType : Typename | Identifier;
  
 arrayRange
- : s=Integer Colon e=Integer {($dataType::Dimensions).Add(new Range{Start = int.Parse($s.text), End = int.Parse($e.text)});}
+ : s=expression Colon e=expression
  ;
 
 array
