@@ -28,6 +28,11 @@ public class MakeFunctionOperation : Operation
     {
         base.MetaOperate();
         ParentScope.AddVariableDefinition(Name, Definition);
+        foreach (var parameterInfo in ((FunctionType)Definition.Type).ParameterInfos)
+        {
+            FunctionBody.AddVariableDefinition(parameterInfo.Name, parameterInfo.Definition);
+        }
+        FunctionBody.MetaOperate();
     }
 
     public override string ToPlainString() => $"Make function {Name}: {Definition.Type}";

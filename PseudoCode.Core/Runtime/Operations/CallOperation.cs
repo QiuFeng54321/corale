@@ -42,7 +42,9 @@ public class CallOperation : Operation
         {
             Program.AnalyserFeedbacks.Add(new Feedback
             {
-                Message = $"The instance called is not a function but {called}"
+                Message = $"The instance called is not a function but {called}",
+                Severity = Feedback.SeverityType.Error,
+                SourceRange = SourceRange
             });
             functionType = null;
         }
@@ -50,11 +52,11 @@ public class CallOperation : Operation
         foreach (var ((parameterInfo, passedInstance), i) in functionType.ParameterInfos.Zip(arguments)
                      .Select((v, i) => (v, i)))
         {
-            if (!parameterInfo.Type.IsConvertableFrom(passedInstance))
+            if (!parameterInfo.Definition.Type.IsConvertableFrom(passedInstance))
             {
                 Program.AnalyserFeedbacks.Add(new Feedback
                 {
-                    Message = $"{i}th argument cannot be casted from {passedInstance} to {parameterInfo.Type}",
+                    Message = $"Argument {i + 1} cannot be casted from {passedInstance} to {parameterInfo.Definition.Type}",
                     Severity = Feedback.SeverityType.Error,
                     SourceRange = SourceRange
                 });

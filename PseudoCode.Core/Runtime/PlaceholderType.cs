@@ -16,6 +16,11 @@ public class PlaceholderType : Type
         return type;
     }
 
+    public override bool IsConvertableFrom(Type type)
+    {
+        return type.Id == StringId;
+    }
+
     public override Instance Assign(Instance to, Instance value)
     {
         var placeholderInstance = (PlaceholderInstance)to;

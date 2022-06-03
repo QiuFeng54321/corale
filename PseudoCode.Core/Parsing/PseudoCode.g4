@@ -232,7 +232,7 @@ atom locals [string AtomType, object Value]
     $Value = str[1];
  }
  | Boolean {$AtomType = "BOOLEAN"; $Value = bool.Parse($Boolean.text);}
- | Date {$AtomType = "DATE"; $Value = DateOnly.ParseExact($Date.text, "dd/MM/yyyy");}
+ | Date {$AtomType = "DATE";}
  | array {$AtomType = "ARRAY";}
  ;
 

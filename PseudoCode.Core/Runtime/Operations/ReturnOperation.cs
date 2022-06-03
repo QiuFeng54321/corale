@@ -14,5 +14,11 @@ public class ReturnOperation : Operation
         throw new ReturnBreak($"Return statement not reaching a function", this);
     }
 
+    public override void MetaOperate()
+    {
+        base.MetaOperate();
+        Program.TypeCheckStack.Pop();
+    }
+
     public override string ToPlainString() => "Return";
 }

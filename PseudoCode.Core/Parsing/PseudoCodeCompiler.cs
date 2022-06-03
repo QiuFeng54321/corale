@@ -119,7 +119,12 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         {
             Name = declarationContext.Identifier().GetText(),
             IsReference = declarationContext.Byref() != null,
-            Type = GetType(declarationContext.dataType())
+            Definition = new Definition
+            {
+                Type = GetType(declarationContext.dataType()),
+                Name = declarationContext.Identifier().GetText(),
+                SourceRange = SourceLocationHelper.SourceRange(declarationContext.Identifier().Symbol)
+            }
         }).ToArray();
     }
 
@@ -138,7 +143,7 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
             Definition = new Definition
             {
                 Name = name,
-                SourceRange = sourceRange,
+                SourceRange = SourceLocationHelper.SourceRange(context.Identifier().Symbol),
                 Type = new FunctionType(CurrentScope, Program)
                 {
                     ReturnType = returnType,
@@ -154,9 +159,28 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
     {
         base.ExitAtom(context);
         if (context.AtomType == "ARRAY") return; // Let array handle on its own
+        var val = context.Value;
+        if (context.AtomType == "DATE")
+        {
+            if (DateOnly.TryParseExact(context.Date().GetText(), "dd/MM/yyyy", out var date))
+            {
+                val = date;
+            }
+            else
+            {
+                Program.AnalyserFeedbacks.Add(new Feedback
+                {
+                    Message = $"{context.Date().GetText()} cannot be converted into a date",
+                    Severity = Feedback.SeverityType.Error,
+                    SourceRange = SourceLocationHelper.SourceRange(context)
+                });
+                val = DateOnly.MinValue;
+            }
+        }
+
         CurrentScope.AddOperation(new LoadImmediateOperation(CurrentScope, Program)
         {
-            Intermediate = CurrentScope.FindTypeDefinition(context.AtomType).Type.Instance(context.Value, CurrentScope),
+            Intermediate = CurrentScope.FindTypeDefinition(context.AtomType).Type.Instance(val, CurrentScope),
             PoiLocation = SourceLocationHelper.SourceLocation(context),
             SourceRange = SourceLocationHelper.SourceRange(context)
         });

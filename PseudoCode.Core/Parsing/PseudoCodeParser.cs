@@ -3583,7 +3583,6 @@ public partial class PseudoCodeParser : Parser {
 		public IToken _String;
 		public IToken _Character;
 		public IToken _Boolean;
-		public IToken _Date;
 		[System.Diagnostics.DebuggerNonUserCode] public NumberContext number() {
 			return GetRuleContext<NumberContext>(0);
 		}
@@ -3663,8 +3662,8 @@ public partial class PseudoCodeParser : Parser {
 				EnterOuterAlt(_localctx, 5);
 				{
 				State = 520;
-				_localctx._Date = Match(Date);
-				_localctx.AtomType =  "DATE"; _localctx.Value =  DateOnly.ParseExact((_localctx._Date!=null?_localctx._Date.Text:null), "dd/MM/yyyy");
+				Match(Date);
+				_localctx.AtomType =  "DATE";
 				}
 				break;
 			case OpenBrack:

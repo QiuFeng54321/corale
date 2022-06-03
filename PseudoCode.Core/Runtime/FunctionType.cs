@@ -11,7 +11,7 @@ public class FunctionType : Type
     public class ParameterInfo
     {
         public string Name;
-        public Type Type;
+        public Definition Definition;
         public bool IsReference;
     }
 
@@ -35,7 +35,7 @@ public class FunctionType : Type
     public override Instance Call(FunctionInstance functionInstance, Instance[] args)
     {
         if (args.Length != ParameterInfos.Length ||
-            args.Zip(ParameterInfos).Any(zip => !zip.Second.Type.IsConvertableFrom(zip.First.Type)))
+            args.Zip(ParameterInfos).Any(zip => !zip.Second.Definition.Type.IsConvertableFrom(zip.First.Type)))
             throw new InvalidArgumentsError(
                 $"Calling {this} with arguments ({string.Join(", ", args.Select(arg => arg.Type))})", null);
         try
@@ -53,10 +53,10 @@ public class FunctionType : Type
                                 $"Passed argument {i} of type {passedInstance.Type} is not reference", null);
                         }
 
-                        if (passedInstance.RealInstance.Type != parameterInfo.Type)
+                        if (passedInstance.RealInstance.Type != parameterInfo.Definition.Type)
                         {
                             throw new InvalidTypeError(
-                                $"Passed argument {i} of type {passedInstance.Type} should not undergo implicit cast to {parameterInfo.Type}",
+                                $"Passed argument {i} of type {passedInstance.Type} should not undergo implicit cast to {parameterInfo.Definition.Type}",
                                 null);
                         }
 
@@ -65,7 +65,7 @@ public class FunctionType : Type
                     else
                     {
                         s.InstanceAddresses.Add(parameterInfo.Name,
-                            Program.AllocateId(parameterInfo.Type.CastFrom(passedInstance)));
+                            Program.AllocateId(parameterInfo.Definition.Type.CastFrom(passedInstance)));
                     }
                 }
 
@@ -83,6 +83,6 @@ public class FunctionType : Type
     public override string ToString()
     {
         return
-            $"FUNCTION({string.Join(", ", ParameterInfos.Select(p => $"{(p.IsReference ? "BYREF " : "")}{p.Type}"))}) RETURNS {ReturnType}";
+            $"FUNCTION({string.Join(", ", ParameterInfos.Select(p => $"{(p.IsReference ? "BYREF " : "")}{p.Definition.Type}"))}) RETURNS {ReturnType}";
     }
 }
