@@ -37,7 +37,9 @@ OUTPUT Wing
 
 // Fibonacci sequence
 DECLARE FibCount : INTEGER
-DECLARE FibSeq : ARRAY[1:100] OF INTEGER
+OUTPUT "Max length of sequence?"
+INPUT MaxLength
+DECLARE FibSeq : ARRAY[1:MaxLength] OF INTEGER
 FibSeq[1] <- 1
 FibSeq[2] <- 1
 TopCalculated <- 2
@@ -45,9 +47,9 @@ ContinueFib <- TRUE
 WHILE ContinueFib DO
     k <- 1
     REPEAT
-        OUTPUT "Input Fib Count (1 to 100):"
+        OUTPUT "Input Fib Count (1 to", MaxLength, "):"
         INPUT FibCount
-    UNTIL FibCount <= 100 AND FibCount >= 1
+    UNTIL FibCount <= MaxLength AND FibCount >= 1
     WHILE TopCalculated < FibCount DO
         TopCalculated <- TopCalculated + 1
         FibSeq[TopCalculated] <- FibSeq[TopCalculated - 2] + FibSeq[TopCalculated - 1]

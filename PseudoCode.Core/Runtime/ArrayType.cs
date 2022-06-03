@@ -61,13 +61,12 @@ public class ArrayType : Type
 
     public override bool IsConvertableFrom(Type type)
     {
-        if (type is not ArrayType arrayType) return false;
-        return arrayType.DimensionCount == DimensionCount;
+        return type is ArrayType;
     }
 
     public override string ToString()
     {
-        return $"ARRAY[{DimensionCount}] OF {ElementType}";
+        return $"ARRAY[Dim {DimensionCount}] OF {ElementType}";
     }
 
     public ArrayType(Scope parentScope, PseudoProgram program) : base(parentScope, program)

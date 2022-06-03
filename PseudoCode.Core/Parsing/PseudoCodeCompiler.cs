@@ -152,7 +152,8 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
             CurrentScope.AddOperation(new ArrayIndexOperation(CurrentScope, Program)
             {
                 PoiLocation = sourceLocation,
-                SourceRange = SourceLocationHelper.SourceRange(context)
+                SourceRange = SourceLocationHelper.SourceRange(context),
+                IndexLength = context.array().expression().Length
             });
         }
         else if (context.Identifier() != null && context.IsUnary)

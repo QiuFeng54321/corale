@@ -4,6 +4,7 @@ namespace PseudoCode.Core.Runtime.Operations;
 
 public class ArrayIndexOperation : Operation
 {
+    public int IndexLength;
     public ArrayIndexOperation(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {
     }
@@ -33,10 +34,10 @@ public class ArrayIndexOperation : Operation
         }
         else
         {
-            if (access.DimensionCount < accessedArray.DimensionCount)
+            if (IndexLength < accessedArray.DimensionCount)
                 Program.TypeCheckStack.Push(new ArrayType(ParentScope, Program)
                 {
-                    DimensionCount = accessedArray.DimensionCount - access.DimensionCount,
+                    DimensionCount = accessedArray.DimensionCount - IndexLength,
                     ElementType = accessedArray.ElementType
                 });
             else
