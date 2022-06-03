@@ -80,6 +80,10 @@ public class Type
     {
         return Instance(instance.Value, ParentScope);
     }
+    public virtual Error MakeUnsupported(Instance[] args, [CallerMemberName] string caller = "Unknown")
+    {
+        return new UnsupportedCastError($"Cannot call {this}", null);
+    }
     public virtual Error MakeUnsupported(Instance i1, Instance i2 = null, [CallerMemberName] string caller = "Unknown")
     {
         return MakeUnsupported(i1.Type, i2?.Type, caller);
@@ -199,10 +203,16 @@ public class Type
         return false;
     }
 
+    public virtual Instance Call(FunctionInstance function, Instance[] args)
+    {
+        throw MakeUnsupported(args);
+    }
+
     public virtual Instance CastFrom(Instance i)
     {
         throw MakeUnsupportedCastError(i);
     }
+
 
     private UnsupportedCastError MakeUnsupportedCastError(Instance i, string systemMsg = "")
     {

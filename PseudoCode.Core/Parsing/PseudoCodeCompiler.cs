@@ -72,14 +72,10 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         CurrentScope = CurrentScope.ParentScope;
     }
 
-    public override void ExitDeclarationStatement(PseudoCodeParser.DeclarationStatementContext context)
+    public Type GetType(PseudoCodeParser.DataTypeContext context)
     {
-        base.ExitDeclarationStatement(context);
-        // Console.WriteLine($"DECLARE {context.IDENTIFIER().GetText()} : {context.dataType().GetText()}");
-        var name = context.Identifier().GetText();
-        var type = context.dataType().TypeName;
-        var dimensions = context.dataType().arrayRange().Length;
-        var sourceLocation = SourceLocationHelper.SourceLocation(context);
+        var type = context.TypeName;
+        var dimensions = context.arrayRange().Length;
         var resType = CurrentScope.FindTypeDefinition(type).Type;
         if (dimensions != 0)
         {
@@ -90,11 +86,22 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
             };
         }
 
+        return resType;
+    }
+
+    public override void ExitDeclarationStatement(PseudoCodeParser.DeclarationStatementContext context)
+    {
+        base.ExitDeclarationStatement(context);
+        // Console.WriteLine($"DECLARE {context.IDENTIFIER().GetText()} : {context.dataType().GetText()}");
+        var name = context.Identifier().GetText();
+        var sourceLocation = SourceLocationHelper.SourceLocation(context);
+        var resType = GetType(context.dataType());
+
         var sourceRange = SourceLocationHelper.SourceRange(context.Identifier().Symbol);
         CurrentScope.AddOperation(new DeclareOperation(CurrentScope, Program)
         {
             Name = name,
-            DimensionCount = dimensions,
+            DimensionCount = resType is ArrayType arrayType ? arrayType.DimensionCount : 0,
             PoiLocation = sourceLocation,
             SourceRange = SourceLocationHelper.SourceRange(context),
             Definition = new Definition
@@ -103,6 +110,43 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
                 Name = name,
                 SourceRange = sourceRange
             }
+        });
+    }
+
+    public FunctionType.ParameterInfo[] GetArgumentDeclarations(PseudoCodeParser.ArgumentsDeclarationContext context)
+    {
+        return context.argumentDeclaration().Select(declarationContext => new FunctionType.ParameterInfo
+        {
+            Name = declarationContext.Identifier().GetText(),
+            IsReference = declarationContext.Byref() != null,
+            Type = GetType(declarationContext.dataType())
+        }).ToArray();
+    }
+
+    public override void ExitFunctionDefinition(PseudoCodeParser.FunctionDefinitionContext context)
+    {
+        base.ExitFunctionDefinition(context);
+        var sourceRange = SourceLocationHelper.SourceRange(context);
+        var paramInfo = GetArgumentDeclarations(context.argumentsDeclaration());
+        var returnType = GetType(context.dataType());
+        var name = context.Identifier().GetText();
+        var body = (Scope)CurrentScope.TakeLast();
+        CurrentScope.AddOperation(new MakeFunctionOperation(CurrentScope, Program)
+        {
+            Name = name,
+            FunctionBody = body,
+            Definition = new Definition
+            {
+                Name = name,
+                SourceRange = sourceRange,
+                Type = new FunctionType(CurrentScope, Program)
+                {
+                    ReturnType = returnType,
+                    ParameterInfos = paramInfo
+                }
+            },
+            PoiLocation = SourceLocationHelper.SourceLocation(context.Function().Symbol),
+            SourceRange = SourceLocationHelper.SourceRange(context)
         });
     }
 
@@ -126,6 +170,16 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         {
             Length = length,
             PoiLocation = SourceLocationHelper.SourceLocation(context),
+            SourceRange = SourceLocationHelper.SourceRange(context)
+        });
+    }
+
+    public override void ExitReturnStatement(PseudoCodeParser.ReturnStatementContext context)
+    {
+        base.ExitReturnStatement(context);
+        CurrentScope.AddOperation(new ReturnOperation(CurrentScope, Program)
+        {
+            PoiLocation = SourceLocationHelper.SourceLocation(context.Return().Symbol),
             SourceRange = SourceLocationHelper.SourceRange(context)
         });
     }
@@ -154,6 +208,17 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
                 PoiLocation = sourceLocation,
                 SourceRange = SourceLocationHelper.SourceRange(context),
                 IndexLength = context.array().expression().Length
+            });
+        }
+        else if (context.arguments() != null)
+        {
+            var argumentCount = context.arguments().tuple()?.expression()?.Length ?? 0;
+            var sourceLocation = SourceLocationHelper.SourceLocation(context.arguments().OpenParen().Symbol);
+            CurrentScope.AddOperation(new CallOperation(CurrentScope, Program)
+            {
+                PoiLocation = sourceLocation,
+                SourceRange = SourceLocationHelper.SourceRange(context),
+                ArgumentCount = argumentCount
             });
         }
         else if (context.Identifier() != null && context.IsUnary)

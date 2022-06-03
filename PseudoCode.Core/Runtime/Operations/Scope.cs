@@ -138,16 +138,25 @@ public class Scope : Operation
     public override void Operate()
     {
         base.Operate();
+        Operate(s =>
+        {
+            s.ResetTemporaryContent();
+            return s;
+        });
+    }
+
+    public void Operate(Func<ScopeStates, ScopeStates> scopeStatesGen)
+    {
+        
         if (IsRoot) // Do not remove temp contents. There are predefined types
         {
-            RunOperations();
+            RunOperations(ScopeStates);
             return;
         }
 
         var copy = (ScopeStates)ScopeStates.Clone();
-        ScopeStates.ResetTemporaryContent();
-        RunOperations();
-        ScopeStates = copy; // Reset
+        ScopeStates = scopeStatesGen(ScopeStates);
+        RunOperations(copy);
     }
 
     public override void MetaOperate()
@@ -157,7 +166,7 @@ public class Scope : Operation
             operation.MetaOperate();
     }
 
-    private void RunOperations()
+    private void RunOperations(ScopeStates scopeStates)
     {
         foreach (var operation in ScopeStates.Operations)
             try
@@ -168,10 +177,13 @@ public class Scope : Operation
             {
                 // e.Operation ??= operation;
                 e.OperationStackTrace.Add(this);
+                ScopeStates = scopeStates; // Reset
                 if (!IsRoot) throw;
                 Console.Error.WriteLine(e);
                 return;
             }
+
+        ScopeStates = scopeStates;
     }
 
     public IEnumerable<Definition> GetAllDefinedVariables()

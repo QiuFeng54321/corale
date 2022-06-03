@@ -1,0 +1,18 @@
+FUNCTION fib(n: INTEGER) RETURNS INTEGER
+    IF n = 2 OR n = 1 THEN
+        RETURN 1
+    ENDIF
+    RETURN fib(n - 1) + fib(n - 2)
+ENDFUNCTION
+OUTPUT "Fib of:"
+INPUT Num
+OUTPUT "It is:", fib(Num)
+FUNCTION assign(BYREF n: INTEGER, val: INTEGER) RETURNS INTEGER
+    n <- val
+    RETURN val
+ENDFUNCTION
+
+n <- 10
+res <- assign(n, 20)
+OUTPUT "Assigned n is", n
+    

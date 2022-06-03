@@ -2144,7 +2144,6 @@ public partial class PseudoCodeParser : Parser {
 	}
 
 	public partial class ArgumentDeclarationContext : ParserRuleContext {
-		public IToken passMethod;
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Identifier() { return GetToken(PseudoCodeParser.Identifier, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Colon() { return GetToken(PseudoCodeParser.Colon, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public DataTypeContext dataType() {
@@ -2183,10 +2182,9 @@ public partial class PseudoCodeParser : Parser {
 			if (_la==Byval || _la==Byref) {
 				{
 				State = 322;
-				_localctx.passMethod = TokenStream.LT(1);
 				_la = TokenStream.LA(1);
 				if ( !(_la==Byval || _la==Byref) ) {
-					_localctx.passMethod = ErrorHandler.RecoverInline(this);
+				ErrorHandler.RecoverInline(this);
 				}
 				else {
 					ErrorHandler.ReportMatch(this);

@@ -137,7 +137,7 @@ valueRange: expression To expression;
 procedureDefinition: Procedure identifierWithNew argumentsDeclaration? indentedBlock Endprocedure;
 functionDefinition: Function Identifier argumentsDeclaration? Returns dataType indentedBlock Endfunction;
 argumentsDeclaration: OpenParen (argumentDeclaration (Comma argumentDeclaration)*)? CloseParen;
-argumentDeclaration: passMethod=(Byval | Byref)? Identifier Colon dataType;
+argumentDeclaration: (Byval | Byref)? Identifier Colon dataType;
 tuple: expression (Comma expression)*;
 
 enumDefinition: Type Identifier Equal OpenParen Identifier (Comma Identifier)* CloseParen;
