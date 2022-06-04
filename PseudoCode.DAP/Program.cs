@@ -13,11 +13,11 @@ System.Diagnostics.Debugger.Launch();
 
 Log.Logger = new LoggerConfiguration()
     .Enrich.FromLogContext()
-    .WriteTo.File("/Users/mac/Documents/VSCProjects/vscode-testextension/log.txt", rollingInterval: RollingInterval.Day)
+    .WriteTo.File("/Users/mac/Documents/VSCProjects/vscode-mock-debug/daplog.txt", rollingInterval: RollingInterval.Day)
     .MinimumLevel.Verbose()
     .CreateLogger();
 
-Log.Logger.Information("This only goes file...");
+Log.Logger.Warning("This only goes file...");
 Console.WriteLine("Hello, World!");
 var server = await DebugAdapterServer.From(options =>
     options

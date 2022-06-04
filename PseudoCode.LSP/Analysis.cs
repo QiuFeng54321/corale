@@ -8,6 +8,7 @@ namespace PseudoCode.LSP;
 public class Analysis
 {
     public PseudoProgram Program;
+    public IEnumerable<Definition>? AllVariableDefinitions;
 
     public void Analyse(string source)
     {
@@ -16,5 +17,21 @@ public class Analysis
         var interpreter = new PseudoCodeCompiler();
         PseudoCodeDocument.AddErrorListener(parser, interpreter);
         Program = interpreter.TolerantAnalyse(parser.fileInput());
+        AllVariableDefinitions = Program.GlobalScope.GetAllDefinedVariables();
+        AnalyseUnusedVariables();
+    }
+
+    public void AnalyseUnusedVariables()
+    {
+        if (AllVariableDefinitions == null) return;
+        foreach (var definition in AllVariableDefinitions.Where(d => d.References.Count <= 1))
+        {
+            Program.AnalyserFeedbacks.Add(new Feedback
+            {
+                Message = $"This variable is not used at all",
+                Severity = Feedback.SeverityType.Warning,
+                SourceRange = definition.SourceRange
+            });
+        }
     }
 }

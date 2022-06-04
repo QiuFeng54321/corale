@@ -194,25 +194,40 @@ public class Scope : Operation
         return res;
     }
 
-    public Definition GetHoveredVariableDefinition(SourceLocation location)
+    
+    public static Definition GetHoveredVariableDefinition(IEnumerable<Definition> definitions, SourceLocation location)
     {
-        return GetAllDefinedVariables()
+        return definitions
             .FirstOrDefault(d => d.SourceRange.Contains(location) || d.References.Any(r => r.Contains(location)), null);
     }
 
-    public (Definition, SourceRange) GetHoveredVariable(SourceLocation location)
+    public Definition GetHoveredVariableDefinition(SourceLocation location)
     {
-        var hovered = GetHoveredVariableDefinition(location);
+        return GetHoveredVariableDefinition(GetAllDefinedVariables(), location);
+    }
+
+    public static (Definition, SourceRange) GetHoveredVariable(IEnumerable<Definition> definitions, SourceLocation location)
+    {
+        var hovered = GetHoveredVariableDefinition(definitions, location);
         if (hovered == null) return (null, null);
         return hovered.SourceRange.Contains(location)
             ? (hovered, hovered.SourceRange)
             : (hovered, hovered.References.FirstOrDefault(r => r.Contains(location)));
     }
+    public (Definition, SourceRange) GetHoveredVariable(SourceLocation location)
+    {
+        return GetHoveredVariable(GetAllDefinedVariables(), location);
+    }
+
+    public static IEnumerable<Definition> GetDefinitionsBefore(IEnumerable<Definition> definitions,
+        SourceLocation location)
+    {
+        return definitions.Where(x => x.SourceRange.End <= location);
+    }
 
     public IEnumerable<Definition> GetVariableCompletionBefore(SourceLocation location)
     {
-        var res = InstanceDefinitions.Where(x => x.Value.SourceRange.End <= location)
-            .Select(x => x.Value);
+        var res = GetDefinitionsBefore(InstanceDefinitions.Values, location);
 
         return ChildScopes.Where(s => s.SourceRange.Contains(location)).Aggregate(res,
             (current, childScope) =>
@@ -221,8 +236,7 @@ public class Scope : Operation
 
     public IEnumerable<Definition> GetTypeCompletionBefore(SourceLocation location)
     {
-        var res = TypeDefinitions.Where(x => x.Value.SourceRange.End <= location)
-            .Select(x => x.Value);
+        var res = GetDefinitionsBefore(TypeDefinitions.Values, location);
 
         return ChildScopes.Where(s => s.SourceRange.Contains(location)).Aggregate(res,
             (current, childScope) =>

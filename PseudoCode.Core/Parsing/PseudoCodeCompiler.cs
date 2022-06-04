@@ -98,17 +98,22 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         var resType = GetType(context.dataType());
 
         var sourceRange = SourceLocationHelper.SourceRange(context.Identifier().Symbol);
+        var range = SourceLocationHelper.SourceRange(context);
         CurrentScope.AddOperation(new DeclareOperation(CurrentScope, Program)
         {
             Name = name,
             DimensionCount = resType is ArrayType arrayType ? arrayType.DimensionCount : 0,
             PoiLocation = sourceLocation,
-            SourceRange = SourceLocationHelper.SourceRange(context),
+            SourceRange = range,
             Definition = new Definition
             {
                 Type = resType,
                 Name = name,
-                SourceRange = sourceRange
+                SourceRange = sourceRange,
+                References = new List<SourceRange>
+                {
+                    SourceLocationHelper.SourceRange(context.Identifier().Symbol)
+                }
             }
         });
     }
@@ -123,7 +128,11 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
             {
                 Type = GetType(declarationContext.dataType()),
                 Name = declarationContext.Identifier().GetText(),
-                SourceRange = SourceLocationHelper.SourceRange(declarationContext.Identifier().Symbol)
+                SourceRange = SourceLocationHelper.SourceRange(declarationContext.Identifier().Symbol),
+                References = new List<SourceRange>
+                {
+                    SourceLocationHelper.SourceRange(declarationContext.Identifier().Symbol)
+                }
             }
         }).ToArray();
     }
@@ -148,6 +157,10 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
                 {
                     ReturnType = returnType,
                     ParameterInfos = paramInfo
+                },
+                References = new List<SourceRange>
+                {
+                    SourceLocationHelper.SourceRange(context.Identifier().Symbol)
                 }
             },
             PoiLocation = SourceLocationHelper.SourceLocation(context.Function().Symbol),

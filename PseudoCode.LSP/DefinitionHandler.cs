@@ -3,6 +3,7 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
 using OmniSharp.Extensions.LanguageServer.Protocol.Document;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
+using PseudoCode.Core.Runtime.Operations;
 using Range = OmniSharp.Extensions.LanguageServer.Protocol.Models.Range;
 
 namespace PseudoCode.LSP;
@@ -36,8 +37,9 @@ class DefinitionHandler : DefinitionHandlerBase
         CancellationToken cancellationToken)
     {
         _logger.LogWarning("hover");
-        var (definition, range) = _analysisService.GetAnalysis(request.TextDocument.Uri).Program.GlobalScope
-            .GetHoveredVariable(request.Position.ToLocation());
+        var (definition, range) = 
+            Scope.GetHoveredVariable(_analysisService.GetAnalysis(request.TextDocument.Uri).AllVariableDefinitions,
+                request.Position.ToLocation());
         if (definition == null) return null;
         var link = new LocationLink
         {
