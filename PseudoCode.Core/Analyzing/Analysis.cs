@@ -1,24 +1,29 @@
 using Antlr4.Runtime;
-using PseudoCode.Core.Analyzing;
 using PseudoCode.Core.Parsing;
 using PseudoCode.Core.Runtime;
 
-namespace PseudoCode.LSP;
+namespace PseudoCode.Core.Analyzing;
 
 public class Analysis
 {
     public PseudoProgram Program;
-    public IEnumerable<Definition>? AllVariableDefinitions;
+    public IEnumerable<Definition> AllVariableDefinitions;
 
-    public void Analyse(string source)
+    public void TolerantAnalyse(string source)
     {
         var stream = CharStreams.fromString(source);
         var parser = PseudoCodeDocument.GetParser(stream);
         var interpreter = new PseudoCodeCompiler();
         PseudoCodeDocument.AddErrorListener(parser, interpreter);
         Program = interpreter.TolerantAnalyse(parser.fileInput());
-        AllVariableDefinitions = Program.GlobalScope.GetAllDefinedVariables();
+        SetProgram(Program);
         AnalyseUnusedVariables();
+    }
+
+    public void SetProgram(PseudoProgram program)
+    {
+        Program = program;
+        AllVariableDefinitions = Program.GlobalScope.GetAllDefinedVariables();
     }
 
     public void AnalyseUnusedVariables()
@@ -28,7 +33,7 @@ public class Analysis
         {
             Program.AnalyserFeedbacks.Add(new Feedback
             {
-                Message = $"This variable is not used at all",
+                Message = $"Variable {definition.Name} is not used at all",
                 Severity = Feedback.SeverityType.Warning,
                 SourceRange = definition.SourceRange
             });

@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol;
+using PseudoCode.Core.Analyzing;
 
 namespace PseudoCode.LSP;
 
@@ -81,7 +82,7 @@ public class AnalysisService
         // XXX we could improve this further by *continuing* tokenization from the next lineseparator and stitching the parts
         try
         {
-            analysis.Analyse(source);
+            analysis.TolerantAnalyse(source);
         }
         catch (Exception e)
         {

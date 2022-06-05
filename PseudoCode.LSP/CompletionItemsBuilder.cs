@@ -1,5 +1,6 @@
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Serialization.Converters;
+using PseudoCode.Core.Analyzing;
 using PseudoCode.Core.Runtime;
 
 namespace PseudoCode.LSP;

@@ -72,4 +72,12 @@ public class PseudoProgram
         GlobalScope.AddType(new PlaceholderType (GlobalScope, this));
         Instance.Null = GlobalScope.FindTypeDefinition(Type.NullId).Type.Instance(scope: GlobalScope);
     }
+
+    public void PrintAnalyzerFeedbacks(TextWriter textWriter)
+    {
+        foreach (var feedback in AnalyserFeedbacks)
+        {
+            textWriter.WriteLine(feedback);
+        }
+    }
 }

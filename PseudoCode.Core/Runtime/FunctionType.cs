@@ -83,6 +83,6 @@ public class FunctionType : Type
     public override string ToString()
     {
         return
-            $"FUNCTION({string.Join(", ", ParameterInfos.Select(p => $"{(p.IsReference ? "BYREF " : "")}{p.Definition.Type}"))}) RETURNS {ReturnType}";
+            $"FUNCTION({string.Join(", ", ParameterInfos.Select(p => $"{(p.IsReference ? "BYREF " : "")}{p.Name}: {p.Definition.Type}"))}) {(ReturnType == null ? "" : $"RETURNS {ReturnType}")}";
     }
 }

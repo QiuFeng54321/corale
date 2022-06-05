@@ -14,4 +14,9 @@ public class Feedback
         Information,
         Hint
     }
+
+    public override string ToString()
+    {
+        return $"{Severity}: {Message} at {SourceRange}";
+    }
 }

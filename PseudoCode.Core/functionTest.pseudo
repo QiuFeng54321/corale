@@ -7,12 +7,11 @@ ENDFUNCTION
 OUTPUT "Fib of:"
 INPUT Num
 OUTPUT "It is:", fib(Num)
-FUNCTION assign(BYREF n: INTEGER, val: INTEGER) RETURNS INTEGER
+PROCEDURE assign(BYREF n: INTEGER, val: INTEGER)
     n <- val
-    RETURN val
-ENDFUNCTION
+ENDPROCEDURE
 
 n <- 10
-res <- assign(n, 20)
+CALL assign(n, 20)
 OUTPUT "Assigned n is", n
     

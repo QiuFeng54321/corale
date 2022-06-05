@@ -92,7 +92,7 @@ declarationStatement: Declare Identifier Colon dataType;
 constantStatement: Constant Identifier Equal expression;
 ioStatement: IoKeyword tuple;
 returnStatement: Return expression;
-callStatement: Call expression arguments?;
+callStatement: Call expression;
 fileStatement
  : OpenFile expression For fileMode=(Read | Write | Append | Random)
  | ReadFile expression Comma expression

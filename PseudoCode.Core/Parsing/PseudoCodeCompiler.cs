@@ -164,7 +164,37 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
                 }
             },
             PoiLocation = SourceLocationHelper.SourceLocation(context.Function().Symbol),
-            SourceRange = SourceLocationHelper.SourceRange(context)
+            SourceRange = sourceRange
+        });
+    }
+
+    public override void ExitProcedureDefinition(PseudoCodeParser.ProcedureDefinitionContext context)
+    {
+        base.ExitProcedureDefinition(context);
+        var sourceRange = SourceLocationHelper.SourceRange(context);
+        var paramInfo = GetArgumentDeclarations(context.argumentsDeclaration());
+        var name = context.identifierWithNew().GetText(); // TODO: When class is introduced, handle NEW
+        var body = (Scope)CurrentScope.TakeLast();
+        CurrentScope.AddOperation(new MakeFunctionOperation(CurrentScope, Program)
+        {
+            Name = name,
+            FunctionBody = body,
+            Definition = new Definition
+            {
+                Name = name,
+                SourceRange = SourceLocationHelper.SourceRange(context.identifierWithNew()),
+                Type = new FunctionType(CurrentScope, Program)
+                {
+                    ReturnType = null,
+                    ParameterInfos = paramInfo
+                },
+                References = new List<SourceRange>
+                {
+                    SourceLocationHelper.SourceRange(context.identifierWithNew())
+                }
+            },
+            PoiLocation = SourceLocationHelper.SourceLocation(context.Procedure().Symbol),
+            SourceRange = sourceRange
         });
     }
 
@@ -249,14 +279,7 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         }
         else if (context.arguments() != null)
         {
-            var argumentCount = context.arguments().tuple()?.expression()?.Length ?? 0;
-            var sourceLocation = SourceLocationHelper.SourceLocation(context.arguments().OpenParen().Symbol);
-            CurrentScope.AddOperation(new CallOperation(CurrentScope, Program)
-            {
-                PoiLocation = sourceLocation,
-                SourceRange = SourceLocationHelper.SourceRange(context),
-                ArgumentCount = argumentCount
-            });
+            MakeCall(context, context.arguments());
         }
         else if (context.Identifier() != null && context.IsUnary)
         {
@@ -294,6 +317,33 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
                         SourceRange = SourceLocationHelper.SourceRange(context)
                     });
             }
+        }
+    }
+
+    private void MakeCall(ParserRuleContext context, PseudoCodeParser.ArgumentsContext argContext)
+    {
+        var argumentCount = argContext.tuple()?.expression()?.Length ?? 0;
+        var sourceLocation = SourceLocationHelper.SourceLocation(argContext.OpenParen().Symbol);
+        CurrentScope.AddOperation(new CallOperation(CurrentScope, Program)
+        {
+            PoiLocation = sourceLocation,
+            SourceRange = SourceLocationHelper.SourceRange(context),
+            ArgumentCount = argumentCount
+        });
+    }
+
+    public override void ExitCallStatement(PseudoCodeParser.CallStatementContext context)
+    {
+        base.ExitCallStatement(context);
+        var lastOperation = CurrentScope.ScopeStates.Operations.Last();
+        if (lastOperation is not CallOperation)
+        {
+            Program.AnalyserFeedbacks.Add(new Feedback
+            {
+                Message = "A call statement must be followed by a valid procedure call!",
+                Severity = Feedback.SeverityType.Error,
+                SourceRange = SourceLocationHelper.SourceRange(context)
+            });
         }
     }
 
