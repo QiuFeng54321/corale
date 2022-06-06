@@ -5,14 +5,16 @@ namespace PseudoCode.Core.Runtime.Types;
 
 public class CharacterType : PrimitiveType<char>
 {
+    public CharacterType(Scope parentScope, PseudoProgram program) : base(parentScope, program)
+    {
+    }
+
     public override uint Id => CharId;
     public override string Name => "CHAR";
+
     public override Type BinaryResultType(int type, Type right)
     {
-        if (right is not (IntegerType or RealType or CharacterType))
-        {
-            return new NullType(ParentScope, Program);
-        }
+        if (right is not (IntegerType or RealType or CharacterType)) return new NullType(ParentScope, Program);
         switch (type)
         {
             case PseudoCodeLexer.Equal:
@@ -71,12 +73,9 @@ public class CharacterType : PrimitiveType<char>
                 return false;
         }
     }
+
     public override Instance CastFrom(Instance i)
     {
         return Instance(Convert.ToChar(i.Value), ParentScope);
-    }
-
-    public CharacterType(Scope parentScope, PseudoProgram program) : base(parentScope, program)
-    {
     }
 }

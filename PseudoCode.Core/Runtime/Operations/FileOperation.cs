@@ -8,7 +8,7 @@ public class FileOperation : Operation
     public FileOperation(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {
     }
-    
+
     public string PopPathAtRuntime()
     {
         var stringType = ParentScope.FindTypeDefinition(Type.StringId).Type;
@@ -16,18 +16,17 @@ public class FileOperation : Operation
         var path = pathInstance.Get<string>();
         return path;
     }
-    public Types.Type PopAndCheckPath()
+
+    public Type PopAndCheckPath()
     {
         var path = Program.TypeCheckStack.Pop();
         if (!ParentScope.FindTypeDefinition(Type.StringId).Type.IsConvertableFrom(path))
-        {
             Program.AnalyserFeedbacks.Add(new Feedback
             {
                 Message = $"File path cannot be {path}",
                 Severity = Feedback.SeverityType.Error,
                 SourceRange = SourceRange
             });
-        }
 
         return path;
     }

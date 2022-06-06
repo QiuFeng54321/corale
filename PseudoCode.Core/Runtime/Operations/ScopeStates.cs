@@ -5,11 +5,6 @@ public class ScopeStates : ICloneable
     public Dictionary<string, uint> InstanceAddresses = new();
     public List<Operation> Operations = new();
 
-    public void ResetTemporaryContent()
-    {
-        InstanceAddresses = new Dictionary<string, uint>();
-    }
-
     public object Clone()
     {
         return new ScopeStates
@@ -17,5 +12,10 @@ public class ScopeStates : ICloneable
             InstanceAddresses = new Dictionary<string, uint>(InstanceAddresses),
             Operations = new List<Operation>(Operations)
         };
+    }
+
+    public void ResetTemporaryContent()
+    {
+        InstanceAddresses = new Dictionary<string, uint>();
     }
 }

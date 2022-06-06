@@ -25,7 +25,8 @@ public class LoadOperation : Operation
         {
             if (!Program.AllowUndeclaredVariables) throw;
             // Console.WriteLine($"Warning: {LoadName} is not found in current scope. Creating one...");
-            Program.RuntimeStack.Push(ParentScope.FindTypeDefinition(Type.PlaceholderId).Type.Instance(LoadName, ParentScope));
+            Program.RuntimeStack.Push(ParentScope.FindTypeDefinition(Type.PlaceholderId).Type
+                .Instance(LoadName, ParentScope));
         }
     }
 
@@ -35,7 +36,6 @@ public class LoadOperation : Operation
         var definition = ParentScope.FindInstanceDefinition(LoadName);
         definition?.References?.Add(SourceRange);
         if (definition == null)
-        {
             ParentScope.AddVariableDefinition(LoadName, new Definition
             {
                 Name = LoadName,
@@ -44,9 +44,8 @@ public class LoadOperation : Operation
                     InstanceName = LoadName
                 },
                 SourceRange = SourceRange,
-                References = new List<SourceRange> {SourceRange}
+                References = new List<SourceRange> { SourceRange }
             }, SourceRange);
-        }
 
         Program.TypeCheckStack.Push(ParentScope.FindInstanceDefinition(LoadName).Type);
     }

@@ -4,9 +4,10 @@ namespace PseudoCode.Core.Runtime.Errors;
 
 public class InvalidArgumentsError : Error
 {
-    public override string Name => "InvalidArgumentsError";
-
-    public InvalidArgumentsError(string message, Operation operation, IEnumerable<string> possibleCauses = default, List<Operation> stackTrace = default) : base(message, operation, possibleCauses, stackTrace)
+    public InvalidArgumentsError(string message, Operation operation, IEnumerable<string> possibleCauses = default,
+        List<Operation> stackTrace = default) : base(message, operation, possibleCauses, stackTrace)
     {
     }
+
+    public override string Name => "InvalidArgumentsError";
 }

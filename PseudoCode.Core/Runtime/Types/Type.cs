@@ -25,12 +25,9 @@ public class Type
     private static uint _incrementId = ArrayId;
 
     [JsonIgnore] public Dictionary<int, BinaryOperator> BinaryOperators;
-    [JsonIgnore] public Dictionary<int, UnaryOperator> UnaryOperators;
-    [JsonIgnore] public PseudoProgram Program;
     [JsonIgnore] public Scope ParentScope;
-
-    
-    public virtual bool Serializable => false;
+    [JsonIgnore] public PseudoProgram Program;
+    [JsonIgnore] public Dictionary<int, UnaryOperator> UnaryOperators;
 
     public Type(Scope parentScope, PseudoProgram program)
     {
@@ -61,6 +58,9 @@ public class Type
             { PseudoCodeLexer.Not, Not }
         };
     }
+
+
+    public virtual bool Serializable => false;
 
     public virtual uint Id { get; set; } = ++_incrementId;
     public virtual string Name { get; set; } = null!;
@@ -98,7 +98,7 @@ public class Type
     public virtual Error MakeUnsupported(Type i1, Type i2 = null, [CallerMemberName] string caller = "Unknown")
     {
         return new UnsupportedCastError(
-            string.Format(strings.Type_ThrowUnsupported, caller, i1, (i2 != null ? strings.and + i2 : "")), null);
+            string.Format(strings.Type_ThrowUnsupported, caller, i1, i2 != null ? strings.and + i2 : ""), null);
     }
 
     public virtual Type BinaryResultType(int type, Type right)

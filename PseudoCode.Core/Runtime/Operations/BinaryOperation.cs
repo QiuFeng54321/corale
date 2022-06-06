@@ -27,14 +27,13 @@ public class BinaryOperation : Operation
         var left = Program.TypeCheckStack.Pop();
         var resType = left.BinaryResultType(OperatorMethod, right);
         if (resType.Id == Type.NullId)
-        {
             Program.AnalyserFeedbacks.Add(new Feedback
             {
-                Message = $"This operation on {left} and {right} is either not supported or will be casted to another type at runtime",
+                Message =
+                    $"This operation on {left} and {right} is either not supported or will be casted to another type at runtime",
                 Severity = Feedback.SeverityType.Warning,
                 SourceRange = SourceRange
             });
-        }
         Program.TypeCheckStack.Push(resType);
     }
 

@@ -6,11 +6,15 @@ namespace PseudoCode.Core.Runtime.Types;
 
 public class ArrayType : Type
 {
-    public override string Name => "ARRAY";
-    public override uint Id => ArrayId;
     public int DimensionCount = 1;
     public Type ElementType;
 
+    public ArrayType(Scope parentScope, PseudoProgram program) : base(parentScope, program)
+    {
+    }
+
+    public override string Name => "ARRAY";
+    public override uint Id => ArrayId;
 
 
     public override Instance Instance(object value = null, Scope scope = null)
@@ -39,7 +43,8 @@ public class ArrayType : Type
         var valueLength = value.Get<Instance[]>().Length;
         var toLength = to.Get<Instance[]>().Length;
         if (valueLength != toLength)
-            throw new InvalidAccessError(string.Format(strings.ArrayType_Assign_InvalidArrayLength, valueLength, toLength),
+            throw new InvalidAccessError(
+                string.Format(strings.ArrayType_Assign_InvalidArrayLength, valueLength, toLength),
                 null);
         for (var i = 0; i < valueLength; i++)
             to.Get<Instance[]>()[i].Type.Assign(to.Get<Instance[]>()[i], value.Get<Instance[]>()[i]);
@@ -53,10 +58,13 @@ public class ArrayType : Type
         var arrayInstance = (ArrayInstance)i1.RealInstance;
         if (indexInstance.TotalElements > DimensionCount)
             throw new InvalidAccessError(
-                string.Format(strings.ArrayType_Index_InvalidArrayAccessDimension, indexInstance.TotalElements, DimensionCount),
+                string.Format(strings.ArrayType_Index_InvalidArrayAccessDimension, indexInstance.TotalElements,
+                    DimensionCount),
                 null);
         var indexList = indexInstance.Array.Select((index, i) =>
-            arrayInstance.Dimensions[i].ToRealIndex(ParentScope.FindTypeDefinition(IntegerId).Type.HandledCastFrom(index).Get<int>())).ToList();
+                arrayInstance.Dimensions[i]
+                    .ToRealIndex(ParentScope.FindTypeDefinition(IntegerId).Type.HandledCastFrom(index).Get<int>()))
+            .ToList();
         return arrayInstance.ElementAt(indexList);
     }
 
@@ -68,9 +76,5 @@ public class ArrayType : Type
     public override string ToString()
     {
         return $"ARRAY[Dim {DimensionCount}] OF {ElementType}";
-    }
-
-    public ArrayType(Scope parentScope, PseudoProgram program) : base(parentScope, program)
-    {
     }
 }

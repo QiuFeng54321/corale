@@ -21,8 +21,7 @@ public class Instance
     public virtual Dictionary<string, Instance> Members { get; init; } = new();
     public virtual object Value { get; set; } = null!;
 
-    [JsonIgnore]
-    public virtual Instance RealInstance => this;
+    [JsonIgnore] public virtual Instance RealInstance => this;
 
     public virtual T Get<T>()
     {
@@ -50,6 +49,6 @@ public class Instance
 
     public override string ToString()
     {
-        return Program?.DebugRepresentation ?? false ? DebugRepresent() :  Represent();
+        return Program?.DebugRepresentation ?? false ? DebugRepresent() : Represent();
     }
 }

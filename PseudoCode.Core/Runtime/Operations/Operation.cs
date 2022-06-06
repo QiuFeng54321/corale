@@ -1,13 +1,13 @@
-using Error = PseudoCode.Core.Runtime.Errors.Error;
+using PseudoCode.Core.Runtime.Errors;
 
 namespace PseudoCode.Core.Runtime.Operations;
 
 public class Operation
 {
     public Scope ParentScope;
+    public SourceLocation PoiLocation; // Point of interest, position of operator, etc.
     public PseudoProgram Program;
     public SourceRange SourceRange;
-    public SourceLocation PoiLocation; // Point of interest, position of operator, etc.
 
     public Operation(Scope parentScope, PseudoProgram program)
     {
@@ -23,7 +23,6 @@ public class Operation
 
     public virtual void MetaOperate()
     {
-        
     }
 
     public void HandledOperate()

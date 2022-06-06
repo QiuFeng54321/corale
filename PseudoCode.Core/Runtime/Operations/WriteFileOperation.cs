@@ -1,4 +1,3 @@
-using PseudoCode.Core.Analyzing;
 using Type = PseudoCode.Core.Runtime.Types.Type;
 
 namespace PseudoCode.Core.Runtime.Operations;
@@ -25,5 +24,4 @@ public class WriteFileOperation : FileOperation
         var instance = Program.TypeCheckStack.Pop();
         PopAndCheckPath();
     }
-
 }

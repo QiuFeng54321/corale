@@ -79,13 +79,11 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         var dimensions = context.arrayRange().Length;
         var resType = CurrentScope.FindTypeDefinition(type).Type;
         if (dimensions != 0)
-        {
             resType = new ArrayType(CurrentScope, Program)
             {
                 DimensionCount = dimensions,
                 ElementType = resType
             };
-        }
 
         return resType;
     }
@@ -299,7 +297,6 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
             var sourceLocation = SourceLocationHelper.SourceLocation(context.op);
             var operatorMethod = context.op.Type;
             if (context.IsUnary)
-            {
                 // TODO ambiguous operator with Caret
                 CurrentScope.AddOperation(new UnaryOperation(CurrentScope, Program)
                 {
@@ -307,9 +304,7 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
                     PoiLocation = sourceLocation,
                     SourceRange = SourceLocationHelper.SourceRange(context)
                 });
-            }
             else
-            {
                 CurrentScope.AddOperation(
                     new BinaryOperation(CurrentScope, Program)
                     {
@@ -317,7 +312,6 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
                         PoiLocation = sourceLocation,
                         SourceRange = SourceLocationHelper.SourceRange(context)
                     });
-            }
         }
     }
 
@@ -338,14 +332,12 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         base.ExitCallStatement(context);
         var lastOperation = CurrentScope.ScopeStates.Operations.Last();
         if (lastOperation is not CallOperation)
-        {
             Program.AnalyserFeedbacks.Add(new Feedback
             {
                 Message = "A call statement must be followed by a valid procedure call!",
                 Severity = Feedback.SeverityType.Error,
                 SourceRange = SourceLocationHelper.SourceRange(context)
             });
-        }
     }
 
     public override void ExitLogicExpression(PseudoCodeParser.LogicExpressionContext context)

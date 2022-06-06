@@ -9,6 +9,7 @@ public class PseudoBinaryStream
 {
     public readonly Dictionary<int, Instance> Memory = new();
     [JsonIgnore] public int CurrentAddress;
+
     public static JsonSerializer Serializer { get; } = new()
     {
         TypeNameHandling = TypeNameHandling.Auto,
@@ -22,9 +23,16 @@ public class PseudoBinaryStream
         Memory[CurrentAddress++] = i.RealInstance;
     }
 
-    public Instance Get() => Memory[CurrentAddress ++];
-    public void Seek(int address) => CurrentAddress = address;
-    
+    public Instance Get()
+    {
+        return Memory[CurrentAddress++];
+    }
+
+    public void Seek(int address)
+    {
+        CurrentAddress = address;
+    }
+
 
     public void Write(MemoryStream memoryStream)
     {

@@ -2,16 +2,21 @@ namespace PseudoCode.Core.Runtime;
 
 public class SourceRange
 {
+    public static SourceRange Identity = new(SourceLocation.Identity, SourceLocation.Identity);
+
     public SourceRange(SourceLocation Start, SourceLocation End)
     {
         this.Start = Start;
         this.End = End;
     }
 
-    public bool Contains(SourceLocation location) => Start <= location && End >= location;
     public SourceLocation Start { get; set; }
     public SourceLocation End { get; set; }
-    public static SourceRange Identity = new(SourceLocation.Identity, SourceLocation.Identity);
+
+    public bool Contains(SourceLocation location)
+    {
+        return Start <= location && End >= location;
+    }
 
     public override string ToString()
     {
@@ -23,4 +28,4 @@ public class SourceRange
         Start = this.Start;
         End = this.End;
     }
-};
+}

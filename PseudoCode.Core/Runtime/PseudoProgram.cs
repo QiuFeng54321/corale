@@ -8,17 +8,14 @@ namespace PseudoCode.Core.Runtime;
 
 public class PseudoProgram
 {
+    public List<Feedback> AnalyserFeedbacks = new();
     public uint CurrentInstanceAddress;
     public bool DebugRepresentation;
-    public bool DisplayOperationsAfterCompiled { get; set; }
-    public bool DisplayOperationsAtRuntime { get; set; }
     public Scope GlobalScope;
     public Dictionary<uint, Instance> Memory = new();
+    public Dictionary<string, PseudoFileStream> OpenFiles = new();
     public Stack<Instance> RuntimeStack = new();
     public Stack<Type> TypeCheckStack = new();
-    public List<Feedback> AnalyserFeedbacks = new();
-    public Dictionary<string, PseudoFileStream> OpenFiles = new();
-    public bool AllowUndeclaredVariables { get; set; }
 
     public PseudoProgram()
     {
@@ -26,6 +23,10 @@ public class PseudoProgram
         AddPrimitiveTypes();
         AddBuiltinFunctions();
     }
+
+    public bool DisplayOperationsAfterCompiled { get; set; }
+    public bool DisplayOperationsAtRuntime { get; set; }
+    public bool AllowUndeclaredVariables { get; set; }
 
     public uint AllocateId(Instance i)
     {
@@ -67,14 +68,14 @@ public class PseudoProgram
 
     public void AddPrimitiveTypes()
     {
-        GlobalScope.AddType(new BooleanType (GlobalScope, this));
-        GlobalScope.AddType(new IntegerType (GlobalScope, this));
-        GlobalScope.AddType(new RealType (GlobalScope, this));
-        GlobalScope.AddType(new StringType (GlobalScope, this));
-        GlobalScope.AddType(new CharacterType (GlobalScope, this));
-        GlobalScope.AddType(new DateType (GlobalScope, this));
-        GlobalScope.AddType(new NullType (GlobalScope, this));
-        GlobalScope.AddType(new PlaceholderType (GlobalScope, this));
+        GlobalScope.AddType(new BooleanType(GlobalScope, this));
+        GlobalScope.AddType(new IntegerType(GlobalScope, this));
+        GlobalScope.AddType(new RealType(GlobalScope, this));
+        GlobalScope.AddType(new StringType(GlobalScope, this));
+        GlobalScope.AddType(new CharacterType(GlobalScope, this));
+        GlobalScope.AddType(new DateType(GlobalScope, this));
+        GlobalScope.AddType(new NullType(GlobalScope, this));
+        GlobalScope.AddType(new PlaceholderType(GlobalScope, this));
         Instance.Null = GlobalScope.FindTypeDefinition(Type.NullId).Type.Instance(scope: GlobalScope);
     }
 
@@ -86,11 +87,11 @@ public class PseudoProgram
             Definition = new Definition
             {
                 Name = "EOF",
-                References = new(),
+                References = new List<SourceRange>(),
                 SourceRange = SourceRange.Identity,
                 Type = new BuiltinFunctionType(GlobalScope, this)
                 {
-                    ParameterInfos = new []
+                    ParameterInfos = new[]
                     {
                         new FunctionType.ParameterInfo
                         {
@@ -111,9 +112,6 @@ public class PseudoProgram
 
     public void PrintAnalyzerFeedbacks(TextWriter textWriter)
     {
-        foreach (var feedback in AnalyserFeedbacks)
-        {
-            textWriter.WriteLine(feedback);
-        }
+        foreach (var feedback in AnalyserFeedbacks) textWriter.WriteLine(feedback);
     }
 }

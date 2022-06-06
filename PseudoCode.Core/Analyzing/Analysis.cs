@@ -6,8 +6,8 @@ namespace PseudoCode.Core.Analyzing;
 
 public class Analysis
 {
-    public PseudoProgram Program;
     public IEnumerable<Definition> AllVariableDefinitions;
+    public PseudoProgram Program;
 
     public void TolerantAnalyse(string source)
     {
@@ -29,14 +29,13 @@ public class Analysis
     public void AnalyseUnusedVariables()
     {
         if (AllVariableDefinitions == null) return;
-        foreach (var definition in AllVariableDefinitions.Where(d => d.References.Count <= 1 && d.SourceRange != SourceRange.Identity))
-        {
+        foreach (var definition in AllVariableDefinitions.Where(d =>
+                     d.References.Count <= 1 && d.SourceRange != SourceRange.Identity))
             Program.AnalyserFeedbacks.Add(new Feedback
             {
                 Message = $"Variable {definition.Name} is not used at all",
                 Severity = Feedback.SeverityType.Warning,
                 SourceRange = definition.SourceRange
             });
-        }
     }
 }

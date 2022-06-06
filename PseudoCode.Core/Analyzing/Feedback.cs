@@ -4,9 +4,6 @@ namespace PseudoCode.Core.Analyzing;
 
 public class Feedback
 {
-    public string Message;
-    public SourceRange SourceRange;
-    public SeverityType Severity;
     public enum SeverityType
     {
         Error,
@@ -14,6 +11,10 @@ public class Feedback
         Information,
         Hint
     }
+
+    public string Message;
+    public SeverityType Severity;
+    public SourceRange SourceRange;
 
     public override string ToString()
     {

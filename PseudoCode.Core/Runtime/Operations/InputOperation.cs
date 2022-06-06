@@ -23,20 +23,15 @@ public class InputOperation : Operation
         base.MetaOperate();
         var type = Program.TypeCheckStack.Pop();
         var stringType = ParentScope.FindTypeDefinition(Type.StringId).Type;
-        if (type is PlaceholderType placeholderType)
-        {
-            placeholderType.MetaAssign(stringType);
-        }
+        if (type is PlaceholderType placeholderType) placeholderType.MetaAssign(stringType);
 
         if (!type.IsConvertableFrom(stringType))
-        {
             Program.AnalyserFeedbacks.Add(new Feedback
             {
                 Message = $"INPUT variable is of type {type} and is not convertable from {stringType}",
                 Severity = Feedback.SeverityType.Error,
                 SourceRange = SourceRange
             });
-        }
     }
 
     public override string ToPlainString()

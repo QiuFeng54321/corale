@@ -25,14 +25,13 @@ public class UnaryOperation : Operation
         var to = Program.TypeCheckStack.Pop();
         var resType = to.UnaryResultType(OperatorMethod);
         if (resType.Id == Type.NullId)
-        {
             Program.AnalyserFeedbacks.Add(new Feedback
             {
-                Message = $"This operation on {to} is either not supported or will be casted to another type at runtime",
+                Message =
+                    $"This operation on {to} is either not supported or will be casted to another type at runtime",
                 Severity = Feedback.SeverityType.Warning,
                 SourceRange = SourceRange
             });
-        }
         Program.TypeCheckStack.Push(resType);
     }
 

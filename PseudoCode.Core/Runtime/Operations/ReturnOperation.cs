@@ -11,7 +11,7 @@ public class ReturnOperation : Operation
     public override void Operate()
     {
         base.Operate();
-        throw new ReturnBreak($"Return statement not reaching a function", this);
+        throw new ReturnBreak("Return statement not reaching a function", this);
     }
 
     public override void MetaOperate()
@@ -20,5 +20,8 @@ public class ReturnOperation : Operation
         Program.TypeCheckStack.Pop();
     }
 
-    public override string ToPlainString() => "Return";
+    public override string ToPlainString()
+    {
+        return "Return";
+    }
 }

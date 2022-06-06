@@ -2,10 +2,10 @@ namespace PseudoCode.Core.Runtime.Operations;
 
 public class ForOperation : Operation
 {
-    public Operation TargetValue;
-    public Operation Step;
-    public Operation Next;
     public Operation ForBody;
+    public Operation Next;
+    public Operation Step;
+    public Operation TargetValue;
 
     public ForOperation(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {
@@ -65,7 +65,10 @@ public class ForOperation : Operation
         }.MetaOperate();
     }
 
-    public override string ToPlainString() => "For";
+    public override string ToPlainString()
+    {
+        return "For";
+    }
 
     public override string ToString(int depth)
     {

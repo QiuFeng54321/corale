@@ -4,13 +4,12 @@ namespace PseudoCode.Core.Runtime.Operations;
 
 public class TypeTable
 {
+    public TypeInfo NullType = new() { Name = "NULL" };
+    public VariableInfo NullVar = new() { Name = "Null", Type = new TypeInfo { Name = "NULL" } };
     public TypeTable ParentTable;
-    public Dictionary<string, VariableInfo> VariableInfos = new();
-    public Dictionary<string, TypeInfo> TypeInfos = new();
-    public TypeInfo NullType = new TypeInfo { Name = "NULL" };
-    public VariableInfo NullVar = new VariableInfo { Name = "Null", Type = new TypeInfo() { Name = "NULL" } };
     public PseudoProgram Program;
-    public Stack<Info> TypeChecker { get; set; } = new();
+    public Dictionary<string, TypeInfo> TypeInfos = new();
+    public Dictionary<string, VariableInfo> VariableInfos = new();
 
 
     public TypeTable(TypeTable parentTable, PseudoProgram program)
@@ -18,6 +17,8 @@ public class TypeTable
         ParentTable = parentTable;
         Program = program;
     }
+
+    public Stack<Info> TypeChecker { get; set; } = new();
 
     public TypeInfo FindType(string name)
     {
@@ -78,10 +79,10 @@ public class TypeTable
         {
             Program.AnalyserFeedbacks.Add(new Feedback
             {
-                Message = $"Invalid type of array access",
+                Message = "Invalid type of array access",
                 SourceRange = new SourceRange(location, location)
             });
-            AddToStack(new TypeInfo()
+            AddToStack(new TypeInfo
             {
                 DeclarationLocation = location,
                 Name = "Null"
@@ -90,16 +91,14 @@ public class TypeTable
         else
         {
             if (access.Dimensions < arrayTypeInfo.Dimensions)
-                AddToStack(new ArrayTypeInfo()
+                AddToStack(new ArrayTypeInfo
                 {
                     DeclarationLocation = location,
                     Dimensions = arrayTypeInfo.Dimensions - access.Dimensions,
-                    ElementTypeInfo = arrayTypeInfo.ElementTypeInfo,
+                    ElementTypeInfo = arrayTypeInfo.ElementTypeInfo
                 });
             else
-            {
                 AddToStack(arrayTypeInfo.ElementTypeInfo);
-            }
         }
     }
 
@@ -148,6 +147,20 @@ public class TypeTable
     {
     }
 
+    public IEnumerable<VariableInfo> GetVariableCompletionBefore(SourceLocation location)
+    {
+        return VariableInfos.Where(x => x.Value.DeclarationLocation <= location)
+            .Select(x => x.Value)
+            .Concat(ParentTable?.GetVariableCompletionBefore(location) ?? Array.Empty<VariableInfo>());
+    }
+
+    public IEnumerable<TypeInfo> GetTypeCompletionBefore(SourceLocation location)
+    {
+        return TypeInfos.Where(x => x.Value.DeclarationLocation <= location)
+            .Select(x => x.Value)
+            .Concat(ParentTable?.GetTypeCompletionBefore(location) ?? Array.Empty<TypeInfo>());
+    }
+
     public class Info
     {
         public SourceLocation DeclarationLocation;
@@ -167,8 +180,8 @@ public class TypeTable
 
     public class TypeInfo : Info
     {
-        public override TypeInfo Type => this;
         public Dictionary<string, TypeInfo> Members;
+        public override TypeInfo Type => this;
 
         public override string ToString()
         {
@@ -186,19 +199,5 @@ public class TypeTable
         {
             return $"{Name} OF {ElementTypeInfo}";
         }
-    }
-
-    public IEnumerable<VariableInfo> GetVariableCompletionBefore(SourceLocation location)
-    {
-        return VariableInfos.Where(x => x.Value.DeclarationLocation <= location)
-            .Select(x => x.Value)
-            .Concat(ParentTable?.GetVariableCompletionBefore(location) ?? Array.Empty<VariableInfo>());
-    }
-
-    public IEnumerable<TypeInfo> GetTypeCompletionBefore(SourceLocation location)
-    {
-        return TypeInfos.Where(x => x.Value.DeclarationLocation <= location)
-            .Select(x => x.Value)
-            .Concat(ParentTable?.GetTypeCompletionBefore(location) ?? Array.Empty<TypeInfo>());
     }
 }

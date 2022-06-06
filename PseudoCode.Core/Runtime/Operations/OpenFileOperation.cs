@@ -1,19 +1,16 @@
-using PseudoCode.Core.Analyzing;
-using Type = PseudoCode.Core.Runtime.Types.Type;
-
 namespace PseudoCode.Core.Runtime.Operations;
 
 public class OpenFileOperation : FileOperation
 {
-    public FileMode FileMode;
     public FileAccess FileAccess;
+    public FileMode FileMode;
     public bool IsRandom;
 
     public OpenFileOperation(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {
     }
 
-    public override void Operate()                                                  
+    public override void Operate()
     {
         base.Operate();
         var path = PopPathAtRuntime();
@@ -22,7 +19,8 @@ public class OpenFileOperation : FileOperation
         if (Program.OpenFiles.ContainsKey(path)) Program.OpenFiles.Remove(path);
         Program.OpenFiles.Add(path, stream);
     }
-    public override void MetaOperate()                                                  
+
+    public override void MetaOperate()
     {
         base.Operate();
         PopAndCheckPath();

@@ -8,20 +8,23 @@ namespace PseudoCode.Core.Runtime.Instances;
 public class ArrayInstance : Instance
 {
     public Instance[] Array;
-    public uint StartAddress;
-    public ArrayType ArrayType => (ArrayType)Type;
     public List<Range> Dimensions = new();
-    public int TotalElements => Dimensions.Select(d => d.Length).Aggregate((prev, next) => prev * next);
+    public uint StartAddress;
 
     public ArrayInstance(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {
     }
 
-    [JsonIgnore] public override object Value
+    public ArrayType ArrayType => (ArrayType)Type;
+    public int TotalElements => Dimensions.Select(d => d.Length).Aggregate((prev, next) => prev * next);
+
+    [JsonIgnore]
+    public override object Value
     {
         get => Array;
         set => Array = (Instance[])value;
     }
+
     public void InitialiseArray()
     {
         Array = new Instance[TotalElements];
@@ -55,7 +58,8 @@ public class ArrayInstance : Instance
     public Instance ElementAt(int index)
     {
         if (Array.Length <= index || index < 0)
-            throw new OutOfBoundsError(string.Format(strings.ArrayInstance_ElementAt_OutOfBounds, index, TotalElements), null);
+            throw new OutOfBoundsError(string.Format(strings.ArrayInstance_ElementAt_OutOfBounds, index, TotalElements),
+                null);
         return Array[index];
     }
 
@@ -77,7 +81,7 @@ public class ArrayInstance : Instance
         if (enumerable.Length == ArrayType.DimensionCount)
             return ElementAt(index);
 
-        var newArrayType = new ArrayType (ParentScope, Program)
+        var newArrayType = new ArrayType(ParentScope, Program)
         {
             DimensionCount = ArrayType.DimensionCount - enumerable.Length,
             ElementType = ArrayType.ElementType

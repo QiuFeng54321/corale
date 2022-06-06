@@ -6,15 +6,8 @@ namespace PseudoCode.Core.Runtime.Types;
 
 public class FunctionType : Type
 {
-    public Type ReturnType;
     public ParameterInfo[] ParameterInfos;
-
-    public class ParameterInfo
-    {
-        public string Name;
-        public Definition Definition;
-        public bool IsReference;
-    }
+    public Type ReturnType;
 
     public FunctionType(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {
@@ -42,21 +35,16 @@ public class FunctionType : Type
             {
                 s.ResetTemporaryContent();
                 foreach (var ((parameterInfo, passedInstance), i) in ParameterInfos.Zip(args).Select((v, i) => (v, i)))
-                {
                     if (parameterInfo.IsReference)
                     {
                         if (passedInstance is not ReferenceInstance referenceInstance)
-                        {
                             throw new InvalidTypeError(
                                 $"Passed argument {i} of type {passedInstance.Type} is not reference", null);
-                        }
 
                         if (passedInstance.RealInstance.Type != parameterInfo.Definition.Type)
-                        {
                             throw new InvalidTypeError(
                                 $"Passed argument {i} of type {passedInstance.Type} should not undergo implicit cast to {parameterInfo.Definition.Type}",
                                 null);
-                        }
 
                         s.InstanceAddresses.Add(parameterInfo.Name, referenceInstance.ReferenceAddress);
                     }
@@ -65,7 +53,6 @@ public class FunctionType : Type
                         s.InstanceAddresses.Add(parameterInfo.Name,
                             Program.AllocateId(parameterInfo.Definition.Type.CastFrom(passedInstance)));
                     }
-                }
 
                 return s;
             });
@@ -90,5 +77,12 @@ public class FunctionType : Type
     {
         return
             $"FUNCTION({string.Join(", ", ParameterInfos.Select(p => $"{(p.IsReference ? "BYREF " : "")}{p.Name}: {p.Definition.Type}"))}) {(ReturnType == null ? "" : $"RETURNS {ReturnType}")}";
+    }
+
+    public class ParameterInfo
+    {
+        public Definition Definition;
+        public bool IsReference;
+        public string Name;
     }
 }

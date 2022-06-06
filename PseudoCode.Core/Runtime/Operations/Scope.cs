@@ -1,4 +1,3 @@
-using System.Collections;
 using PseudoCode.Core.Analyzing;
 using PseudoCode.Core.Runtime.Errors;
 using PseudoCode.Core.Runtime.Instances;
@@ -8,22 +7,22 @@ namespace PseudoCode.Core.Runtime.Operations;
 
 public class Scope : Operation
 {
-    public bool IsRoot => ParentScope == null;
+    /// <summary>
+    ///     Instances are created from the type
+    /// </summary>
+    public Dictionary<string, Definition> InstanceDefinitions = new();
+
+    public Dictionary<string, Definition> TypeDefinitions = new();
 
     public Scope(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {
         ScopeStates = new ScopeStates();
     }
 
+    public bool IsRoot => ParentScope == null;
+
     public ScopeStates ScopeStates { get; set; }
     public List<Scope> ChildScopes { get; set; } = new();
-
-    /// <summary>
-    /// Instances are created from the type
-    /// </summary>
-    public Dictionary<string, Definition> InstanceDefinitions = new();
-
-    public Dictionary<string, Definition> TypeDefinitions = new();
 
     public Definition FindInstanceDefinition(string name)
     {
@@ -101,18 +100,14 @@ public class Scope : Operation
     public void AddVariableDefinition(string name, Definition definition, SourceRange sourceRange = null)
     {
         if (InstanceDefinitions.ContainsKey(name))
-        {
             Program.AnalyserFeedbacks.Add(new Feedback
             {
                 Message = $"Variable {name} is already declared",
                 Severity = Feedback.SeverityType.Error,
                 SourceRange = sourceRange
             });
-        }
         else
-        {
             InstanceDefinitions.Add(name, definition);
-        }
     }
 
     public void AddOperation(Operation operation)
@@ -149,7 +144,6 @@ public class Scope : Operation
 
     public void Operate(Func<ScopeStates, ScopeStates> scopeStatesGen)
     {
-        
         if (IsRoot) // Do not remove temp contents. There are predefined types
         {
             RunOperations(ScopeStates);
@@ -165,11 +159,9 @@ public class Scope : Operation
     {
         scope.ScopeStates.Operations.ForEach(o => o.ParentScope = this);
         ScopeStates.Operations.AddRange(scope.ScopeStates.Operations);
-        foreach (var (name, def) in scope.InstanceDefinitions)
-        {
-            InstanceDefinitions.Add(name, def);
-        }
+        foreach (var (name, def) in scope.InstanceDefinitions) InstanceDefinitions.Add(name, def);
     }
+
     public override void MetaOperate()
     {
         base.MetaOperate();
@@ -205,7 +197,7 @@ public class Scope : Operation
         return res;
     }
 
-    
+
     public static Definition GetHoveredVariableDefinition(IEnumerable<Definition> definitions, SourceLocation location)
     {
         return definitions
@@ -217,7 +209,8 @@ public class Scope : Operation
         return GetHoveredVariableDefinition(GetAllDefinedVariables(), location);
     }
 
-    public static (Definition, SourceRange) GetHoveredVariable(IEnumerable<Definition> definitions, SourceLocation location)
+    public static (Definition, SourceRange) GetHoveredVariable(IEnumerable<Definition> definitions,
+        SourceLocation location)
     {
         var hovered = GetHoveredVariableDefinition(definitions, location);
         if (hovered == null) return (null, null);
@@ -225,6 +218,7 @@ public class Scope : Operation
             ? (hovered, hovered.SourceRange)
             : (hovered, hovered.References.FirstOrDefault(r => r.Contains(location)));
     }
+
     public (Definition, SourceRange) GetHoveredVariable(SourceLocation location)
     {
         return GetHoveredVariable(GetAllDefinedVariables(), location);

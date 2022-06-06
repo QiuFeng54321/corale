@@ -6,8 +6,8 @@ namespace PseudoCode.Core.Runtime.Operations;
 
 public class FormImmediateArrayOperation : Operation
 {
-    public int Length;
     public ArrayType ArrayType;
+    public int Length;
 
     public FormImmediateArrayOperation(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {
@@ -27,7 +27,7 @@ public class FormImmediateArrayOperation : Operation
         }
 
         var formedInstance = (ArrayInstance)ArrayType.Instance();
-        formedInstance.Dimensions = new List<Range> { new Range { Start = 1, End = elements.Count } };
+        formedInstance.Dimensions = new List<Range> { new() { Start = 1, End = elements.Count } };
         formedInstance.InitialiseFromList(elements.Select(e => ArrayType.ElementType.HandledCastFrom(e)));
         Program.RuntimeStack.Push(formedInstance);
     }
@@ -40,13 +40,9 @@ public class FormImmediateArrayOperation : Operation
         {
             var type = Program.TypeCheckStack.Pop();
             if (type is ArrayType subArrayType)
-            {
                 arrayElementType = subArrayType.ElementType;
-            }
             else
-            {
                 arrayElementType = type;
-            }
         }
 
         Program.TypeCheckStack.Push(ArrayType = new ArrayType(ParentScope, Program)

@@ -4,7 +4,6 @@ namespace PseudoCode.Core.Runtime.Errors;
 
 public class Error : Exception
 {
-    public virtual string Name => strings.Error_Name;
     public Operation Operation;
     public List<Operation> OperationStackTrace;
     public IEnumerable<string> PossibleCauses;
@@ -16,6 +15,8 @@ public class Error : Exception
         PossibleCauses = possibleCauses ?? new List<string>();
         Operation = operation;
     }
+
+    public virtual string Name => strings.Error_Name;
 
     public override string ToString()
     {

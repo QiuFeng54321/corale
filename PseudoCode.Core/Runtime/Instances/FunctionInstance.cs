@@ -5,10 +5,11 @@ namespace PseudoCode.Core.Runtime.Instances;
 
 public class FunctionInstance : Instance
 {
-    public FunctionType FunctionType => (FunctionType)Type;
     public Scope FunctionBody;
 
     public FunctionInstance(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {
     }
+
+    public FunctionType FunctionType => (FunctionType)Type;
 }

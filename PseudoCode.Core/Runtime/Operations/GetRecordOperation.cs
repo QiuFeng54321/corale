@@ -1,5 +1,3 @@
-using Type = PseudoCode.Core.Runtime.Types.Type;
-
 namespace PseudoCode.Core.Runtime.Operations;
 
 public class GetRecordOperation : FileOperation
@@ -7,6 +5,7 @@ public class GetRecordOperation : FileOperation
     public GetRecordOperation(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {
     }
+
     public override void Operate()
     {
         base.Operate();

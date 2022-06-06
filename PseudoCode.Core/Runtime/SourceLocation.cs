@@ -2,8 +2,9 @@ namespace PseudoCode.Core.Runtime;
 
 public class SourceLocation
 {
-    public int Line, Column;
     public static SourceLocation Identity = new(-1, -1);
+    public int Line, Column;
+
     public SourceLocation(int line, int column)
     {
         Line = line;
@@ -24,7 +25,7 @@ public class SourceLocation
     {
         if (ReferenceEquals(null, obj)) return false;
         if (ReferenceEquals(this, obj)) return true;
-        if (obj.GetType() != this.GetType()) return false;
+        if (obj.GetType() != GetType()) return false;
         return Equals((SourceLocation)obj);
     }
 
@@ -57,6 +58,7 @@ public class SourceLocation
     {
         return left.Line < right.Line || (left.Line == right.Line && left.Column < right.Column);
     }
+
     public static bool operator >(SourceLocation left, SourceLocation right)
     {
         return left.Line > right.Line || (left.Line == right.Line && left.Column > right.Column);

@@ -7,9 +7,14 @@ namespace PseudoCode.Core.Runtime.Types;
 
 public class PlaceholderType : Type
 {
+    public string InstanceName;
+
+    public PlaceholderType(Scope parentScope, PseudoProgram program) : base(parentScope, program)
+    {
+    }
+
     public override uint Id => PlaceholderId;
     public override string Name => "PLACEHOLDER";
-    public string InstanceName;
 
     public Type MetaAssign(Type type)
     {
@@ -56,14 +61,10 @@ public class PlaceholderType : Type
     {
         throw new InvalidAccessError(string.Format(strings.Scope_FindInstanceAddress_NotFound, i1.Get<string>()), null)
         {
-            PossibleCauses = new []
+            PossibleCauses = new[]
             {
                 strings.PlaceholderType_ThrowUnsupported_PossibleCauses_AssignBeforeUse
             }
         };
-    }
-
-    public PlaceholderType(Scope parentScope, PseudoProgram program) : base(parentScope, program)
-    {
     }
 }

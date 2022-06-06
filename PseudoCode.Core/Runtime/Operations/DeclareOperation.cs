@@ -1,5 +1,4 @@
 using PseudoCode.Core.Analyzing;
-using PseudoCode.Core.Runtime.Errors;
 using PseudoCode.Core.Runtime.Instances;
 using Type = PseudoCode.Core.Runtime.Types.Type;
 
@@ -7,9 +6,9 @@ namespace PseudoCode.Core.Runtime.Operations;
 
 public class DeclareOperation : Operation
 {
-    public string Name;
-    public int DimensionCount;
     public Definition Definition;
+    public int DimensionCount;
+    public string Name;
 
     public DeclareOperation(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {
@@ -29,8 +28,10 @@ public class DeclareOperation : Operation
                 var range = new Range { Start = start.Get<int>(), End = end.Get<int>() };
                 arrayInstance.Dimensions.Insert(0, range);
             }
+
             arrayInstance.InitialiseInMemory();
-        } 
+        }
+
         ParentScope.ScopeStates.InstanceAddresses.Add(Name, Program.AllocateId(instance));
     }
 
@@ -47,14 +48,12 @@ public class DeclareOperation : Operation
         }
 
         if (invalidType)
-        {
             Program.AnalyserFeedbacks.Add(new Feedback
             {
-                Message = $"Range value has expressions that does not evaluate or can not be casted to INTEGER",
+                Message = "Range value has expressions that does not evaluate or can not be casted to INTEGER",
                 Severity = Feedback.SeverityType.Error,
                 SourceRange = SourceRange
             });
-        }
         ParentScope.AddVariableDefinition(Name, Definition, SourceRange);
     }
 

@@ -5,6 +5,10 @@ namespace PseudoCode.Core.Runtime.Types;
 
 public class PrimitiveType<T> : Type
 {
+    public PrimitiveType(Scope parentScope, PseudoProgram program) : base(parentScope, program)
+    {
+    }
+
     public override bool Serializable => true;
 
     public Instance ArithmeticOperation(Instance i1, Instance i2, Func<T, T, T> func)
@@ -21,15 +25,12 @@ public class PrimitiveType<T> : Type
 
     public Instance LogicOperation(Instance i1, Instance i2, Func<T, T, bool> func)
     {
-        return ParentScope.FindTypeDefinition(BooleanId).Type.Instance(func(HandledCastFrom(i1).Get<T>(), HandledCastFrom(i2).Get<T>()), ParentScope);
+        return ParentScope.FindTypeDefinition(BooleanId).Type
+            .Instance(func(HandledCastFrom(i1).Get<T>(), HandledCastFrom(i2).Get<T>()), ParentScope);
     }
 
     public Instance LogicUnaryOperation(Instance i, Func<T, bool> func)
     {
         return ParentScope.FindTypeDefinition(BooleanId).Type.Instance(func(HandledCastFrom(i).Get<T>()), ParentScope);
-    }
-
-    public PrimitiveType(Scope parentScope, PseudoProgram program) : base(parentScope, program)
-    {
     }
 }

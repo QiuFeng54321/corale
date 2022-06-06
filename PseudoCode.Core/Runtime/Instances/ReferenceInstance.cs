@@ -18,7 +18,8 @@ public class ReferenceInstance : Instance
     [JsonIgnore] public override Dictionary<string, Instance> Members => RealInstance.Members;
     [JsonIgnore] public override Type Type => RealInstance.Type;
 
-    [JsonIgnore] public override object Value
+    [JsonIgnore]
+    public override object Value
     {
         get => RealInstance.Value;
         set => RealInstance.Value = value;

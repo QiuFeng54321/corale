@@ -5,6 +5,10 @@ namespace PseudoCode.Core.Runtime.Types;
 
 public class StringType : PrimitiveType<string>
 {
+    public StringType(Scope parentScope, PseudoProgram program) : base(parentScope, program)
+    {
+    }
+
     public override uint Id => StringId;
     public override string Name => "STRING";
 
@@ -21,7 +25,7 @@ public class StringType : PrimitiveType<string>
                 return null;
         }
     }
-    
+
     public override Instance Equal(Instance i1, Instance i2)
     {
         return LogicOperation(i1, i2, (arg1, arg2) => arg1 == arg2);
@@ -36,16 +40,14 @@ public class StringType : PrimitiveType<string>
     {
         return Instance(i1.ToString() + i2, ParentScope);
     }
+
     public override bool IsConvertableFrom(Type type)
     {
         return true;
     }
+
     public override Instance CastFrom(Instance i)
     {
         return Instance(Convert.ToString(i.Value), ParentScope);
-    }
-
-    public StringType(Scope parentScope, PseudoProgram program) : base(parentScope, program)
-    {
     }
 }

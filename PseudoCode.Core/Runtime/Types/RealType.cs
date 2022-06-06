@@ -5,6 +5,10 @@ namespace PseudoCode.Core.Runtime.Types;
 
 public class RealType : PrimitiveType<decimal>
 {
+    public RealType(Scope parentScope, PseudoProgram program) : base(parentScope, program)
+    {
+    }
+
     public override uint Id => RealId;
     public override string Name => "REAL";
 
@@ -17,10 +21,7 @@ public class RealType : PrimitiveType<decimal>
 
     public override Type BinaryResultType(int type, Type right)
     {
-        if (right is not (IntegerType or RealType))
-        {
-            return new NullType(ParentScope, Program);
-        }
+        if (right is not (IntegerType or RealType)) return new NullType(ParentScope, Program);
 
         switch (type)
         {
@@ -140,9 +141,5 @@ public class RealType : PrimitiveType<decimal>
             default:
                 return false;
         }
-    }
-
-    public RealType(Scope parentScope, PseudoProgram program) : base(parentScope, program)
-    {
     }
 }

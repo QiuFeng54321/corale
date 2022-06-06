@@ -5,6 +5,10 @@ namespace PseudoCode.Core.Runtime.Types;
 
 public class DateType : PrimitiveType<DateOnly>
 {
+    public DateType(Scope parentScope, PseudoProgram program) : base(parentScope, program)
+    {
+    }
+
     public override uint Id => DateId;
     public override string Name => "DATE";
 
@@ -16,10 +20,7 @@ public class DateType : PrimitiveType<DateOnly>
     // }
     public override Type BinaryResultType(int type, Type right)
     {
-        if (right is not (DateType))
-        {
-            return new NullType(ParentScope, Program);
-        }
+        if (right is not DateType) return new NullType(ParentScope, Program);
         switch (type)
         {
             case PseudoCodeLexer.Equal:
@@ -35,6 +36,7 @@ public class DateType : PrimitiveType<DateOnly>
                 return new NullType(ParentScope, Program);
         }
     }
+
     public override Instance Add(Instance i1, Instance i2)
     {
         return ArithmeticOperation(i1, i2, AddDate);
@@ -74,10 +76,12 @@ public class DateType : PrimitiveType<DateOnly>
     {
         return new DateOnly(d1.Year, d1.Month, d1.Day).AddDays(d2.Day).AddMonths(d2.Month).AddYears(d2.Year);
     }
+
     public override bool IsConvertableFrom(Type type)
     {
         return type.Id is DateId or StringId;
     }
+
     public override Instance CastFrom(Instance i)
     {
         return i.Type.Id switch
@@ -86,10 +90,5 @@ public class DateType : PrimitiveType<DateOnly>
             StringId => Instance(DateOnly.ParseExact(i.Get<string>(), "dd/MM/yyyy"), ParentScope),
             _ => base.CastFrom(i)
         };
-    }
-
-
-    public DateType(Scope parentScope, PseudoProgram program) : base(parentScope, program)
-    {
     }
 }

@@ -5,14 +5,16 @@ namespace PseudoCode.Core.Runtime.Types;
 
 public class BooleanType : PrimitiveType<bool>
 {
+    public BooleanType(Scope parentScope, PseudoProgram program) : base(parentScope, program)
+    {
+    }
+
     public override uint Id => BooleanId;
     public override string Name => "BOOLEAN";
+
     public override Type BinaryResultType(int type, Type right)
     {
-        if (right is not BooleanType)
-        {
-            return new NullType(ParentScope, Program);
-        }
+        if (right is not BooleanType) return new NullType(ParentScope, Program);
         switch (type)
         {
             case PseudoCodeLexer.And:
@@ -39,6 +41,7 @@ public class BooleanType : PrimitiveType<bool>
                 return false;
         }
     }
+
     public override Type UnaryResultType(int type)
     {
         return type == PseudoCodeLexer.Not ? this : null;
@@ -72,9 +75,5 @@ public class BooleanType : PrimitiveType<bool>
     public override Instance CastFrom(Instance i)
     {
         return Instance(Convert.ToBoolean(i.Value), ParentScope);
-    }
-
-    public BooleanType(Scope parentScope, PseudoProgram program) : base(parentScope, program)
-    {
     }
 }

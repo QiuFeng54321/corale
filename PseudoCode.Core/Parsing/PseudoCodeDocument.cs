@@ -1,5 +1,4 @@
 using Antlr4.Runtime;
-using Antlr4.Runtime.Tree;
 
 namespace PseudoCode.Core.Parsing;
 
@@ -11,7 +10,7 @@ public static class PseudoCodeDocument
         ITokenStream tokens = new CommonTokenStream(lexer);
         PseudoCodeParser parser = new(tokens)
         {
-            BuildParseTree = true,
+            BuildParseTree = true
         };
         return parser;
     }

@@ -7,6 +7,7 @@ namespace PseudoCode.Core.Runtime.Operations;
 public class ArrayIndexOperation : Operation
 {
     public int IndexLength;
+
     public ArrayIndexOperation(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {
     }
@@ -43,9 +44,7 @@ public class ArrayIndexOperation : Operation
                     ElementType = accessedArray.ElementType
                 });
             else
-            {
                 Program.TypeCheckStack.Push(accessedArray.ElementType);
-            }
         }
     }
 

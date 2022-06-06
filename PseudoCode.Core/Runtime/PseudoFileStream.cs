@@ -4,14 +4,13 @@ namespace PseudoCode.Core.Runtime;
 
 public class PseudoFileStream : IDisposable
 {
-    public FileMode FileMode;
     public FileAccess FileAccess;
-    public bool IsBinary;
+    public FileMode FileMode;
     public FileStream FileStream;
+    public bool IsBinary;
     public PseudoBinaryStream PseudoBinaryStream;
     public StreamReader StreamReader;
     public StreamWriter StreamWriter;
-    public string Path { get; set; }
 
     public PseudoFileStream(string path, FileMode fileMode, FileAccess fileAccess, bool isBinary)
     {
@@ -19,6 +18,16 @@ public class PseudoFileStream : IDisposable
         FileAccess = fileAccess;
         IsBinary = isBinary;
         Path = path;
+    }
+
+    public string Path { get; set; }
+
+
+    public void Dispose()
+    {
+        FileStream?.Dispose();
+        StreamReader?.Dispose();
+        StreamWriter?.Dispose();
     }
 
     public void Open()
@@ -72,18 +81,13 @@ public class PseudoFileStream : IDisposable
         PseudoBinaryStream.Put(i);
     }
 
-    public Instance Get() => PseudoBinaryStream.Get();
+    public Instance Get()
+    {
+        return PseudoBinaryStream.Get();
+    }
 
     public bool Eof()
     {
         return !IsBinary && StreamReader.EndOfStream;
-    }
-
-
-    public void Dispose()
-    {
-        FileStream?.Dispose();
-        StreamReader?.Dispose();
-        StreamWriter?.Dispose();
     }
 }

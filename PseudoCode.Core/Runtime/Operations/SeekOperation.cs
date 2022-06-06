@@ -7,7 +7,7 @@ public class SeekOperation : FileOperation
     public SeekOperation(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {
     }
-    
+
     public override void Operate()
     {
         base.Operate();

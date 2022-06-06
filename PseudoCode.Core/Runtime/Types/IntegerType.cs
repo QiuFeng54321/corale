@@ -5,14 +5,16 @@ namespace PseudoCode.Core.Runtime.Types;
 
 public class IntegerType : PrimitiveType<int>
 {
+    public IntegerType(Scope parentScope, PseudoProgram program) : base(parentScope, program)
+    {
+    }
+
     public override uint Id => IntegerId;
     public override string Name => "INTEGER";
+
     public override Type BinaryResultType(int type, Type right)
     {
-        if (right is not (IntegerType or RealType))
-        {
-            return new NullType(ParentScope, Program);
-        }
+        if (right is not (IntegerType or RealType)) return new NullType(ParentScope, Program);
         switch (type)
         {
             case PseudoCodeLexer.Equal:
@@ -125,6 +127,7 @@ public class IntegerType : PrimitiveType<int>
     {
         return ParentScope.FindTypeDefinition(RealId).Type.HandledCastFrom(i);
     }
+
     public override bool IsConvertableFrom(Type type)
     {
         switch (type.Id)
@@ -138,8 +141,5 @@ public class IntegerType : PrimitiveType<int>
             default:
                 return false;
         }
-    }
-    public IntegerType(Scope parentScope, PseudoProgram program) : base(parentScope, program)
-    {
     }
 }

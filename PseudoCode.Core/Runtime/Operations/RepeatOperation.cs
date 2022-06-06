@@ -1,4 +1,3 @@
-using PseudoCode.Core.Analyzing;
 using Type = PseudoCode.Core.Runtime.Types.Type;
 
 namespace PseudoCode.Core.Runtime.Operations;
@@ -18,7 +17,8 @@ public class RepeatOperation : Operation
         while (test)
         {
             RepeatBlock.HandledOperate();
-            test = ParentScope.FindTypeDefinition(Type.BooleanId).Type.HandledCastFrom(Program.RuntimeStack.Pop()).Get<bool>();
+            test = ParentScope.FindTypeDefinition(Type.BooleanId).Type.HandledCastFrom(Program.RuntimeStack.Pop())
+                .Get<bool>();
         }
     }
 
@@ -28,10 +28,14 @@ public class RepeatOperation : Operation
         RepeatBlock.MetaOperate();
     }
 
-    public override string ToPlainString() => "Repeat-Until";
+    public override string ToPlainString()
+    {
+        return "Repeat-Until";
+    }
 
     public override string ToString(int depth)
     {
-        return string.Format(strings.RepeatOperation_ToString_Repeat, Indent(depth), RepeatBlock.ToString(depth), Indent(depth));
+        return string.Format(strings.RepeatOperation_ToString_Repeat, Indent(depth), RepeatBlock.ToString(depth),
+            Indent(depth));
     }
 }
