@@ -379,7 +379,7 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
             var random = false;
             var fileAccess = FileAccess.Read;
             var fileMode = FileMode.OpenOrCreate;
-            if (context.Read() != null) fileAccess = FileAccess.Read;
+            fileAccess = context.Read() != null ? FileAccess.Read : FileAccess.Write;
             if (context.Append() != null) fileMode = FileMode.Append;
             if (context.Random() != null) random = true;
             CurrentScope.AddOperation(new OpenFileOperation(CurrentScope, Program)
@@ -394,6 +394,20 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         else if (context.ReadFile() != null)
         {
             CurrentScope.AddOperation(new ReadFileOperation(CurrentScope, Program)
+            {
+                PoiLocation = sourceLocation,
+                SourceRange = sourceRange
+            });
+        } else if (context.WriteFile() != null)
+        {
+            CurrentScope.AddOperation(new WriteFileOperation(CurrentScope, Program)
+            {
+                PoiLocation = sourceLocation,
+                SourceRange = sourceRange
+            });
+        } else if (context.CloseFile() != null)
+        {
+            CurrentScope.AddOperation(new CloseFileOperation(CurrentScope, Program)
             {
                 PoiLocation = sourceLocation,
                 SourceRange = sourceRange

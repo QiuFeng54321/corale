@@ -3,7 +3,7 @@ using Type = PseudoCode.Core.Runtime.Types.Type;
 
 namespace PseudoCode.Core.Runtime.Operations;
 
-public class ReadFileOperation : Operation
+public class ReadFileOperation : FileOperation
 {
 
     public ReadFileOperation(Scope parentScope, PseudoProgram program) : base(parentScope, program)
@@ -25,15 +25,6 @@ public class ReadFileOperation : Operation
     {
         base.Operate();
         var instance = Program.TypeCheckStack.Pop();
-        var path = Program.TypeCheckStack.Pop();
-        if (!ParentScope.FindTypeDefinition(Type.StringId).Type.IsConvertableFrom(path))
-        {
-            Program.AnalyserFeedbacks.Add(new Feedback
-            {
-                Message = $"File path cannot be {path}",
-                Severity = Feedback.SeverityType.Error,
-                SourceRange = SourceRange
-            });
-        }
+        PopAndCheckPath();
     }
 }

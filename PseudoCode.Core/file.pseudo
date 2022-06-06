@@ -4,3 +4,12 @@ WHILE NOT EOF(selfPath) DO
     READFILE selfPath, content
     OUTPUT content
 ENDWHILE
+CLOSEFILE selfPath
+
+writePath <- "fileOut.txt"
+OPENFILE writePath FOR WRITE
+REPEAT
+    INPUT content
+    WRITEFILE writePath, content & "\n"
+UNTIL content = ""
+CLOSEFILE writePath

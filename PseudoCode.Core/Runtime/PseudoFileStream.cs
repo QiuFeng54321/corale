@@ -44,6 +44,19 @@ public class PseudoFileStream : IDisposable
         return StreamReader.ReadLine();
     }
 
+    public void Write(string content)
+    {
+        StreamWriter.Write(content);
+    }
+
+    public void Close()
+    {
+        StreamReader?.Close();
+        StreamWriter?.Close();
+        BinaryReader?.Close();
+        BinaryWriter?.Close();
+    }
+
     public bool Eof()
     {
         return IsBinary ? BinaryReader.BaseStream.Position == BinaryReader.BaseStream.Length:
