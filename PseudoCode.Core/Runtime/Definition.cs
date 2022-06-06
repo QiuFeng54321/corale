@@ -1,3 +1,5 @@
+using Type = PseudoCode.Core.Runtime.Types.Type;
+
 namespace PseudoCode.Core.Runtime;
 
 public class Definition

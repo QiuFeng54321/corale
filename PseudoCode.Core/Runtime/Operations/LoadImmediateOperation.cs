@@ -1,3 +1,5 @@
+using PseudoCode.Core.Runtime.Instances;
+
 namespace PseudoCode.Core.Runtime.Operations;
 
 public class LoadImmediateOperation : Operation

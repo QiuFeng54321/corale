@@ -1,4 +1,6 @@
 using PseudoCode.Core.Analyzing;
+using PseudoCode.Core.Runtime.Types;
+using Type = PseudoCode.Core.Runtime.Types.Type;
 
 namespace PseudoCode.Core.Runtime.Operations;
 

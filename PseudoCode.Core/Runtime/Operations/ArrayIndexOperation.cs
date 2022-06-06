@@ -1,4 +1,6 @@
 using PseudoCode.Core.Analyzing;
+using PseudoCode.Core.Runtime.Instances;
+using PseudoCode.Core.Runtime.Types;
 
 namespace PseudoCode.Core.Runtime.Operations;
 

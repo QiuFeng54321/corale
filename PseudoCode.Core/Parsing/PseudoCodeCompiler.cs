@@ -3,7 +3,8 @@ using Antlr4.Runtime.Tree;
 using PseudoCode.Core.Analyzing;
 using PseudoCode.Core.Runtime;
 using PseudoCode.Core.Runtime.Operations;
-using Type = PseudoCode.Core.Runtime.Type;
+using PseudoCode.Core.Runtime.Types;
+using Type = PseudoCode.Core.Runtime.Types.Type;
 
 namespace PseudoCode.Core.Parsing;
 

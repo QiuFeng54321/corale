@@ -1,6 +1,6 @@
 using PseudoCode.Core.Runtime.Operations;
 
-namespace PseudoCode.Core.Runtime;
+namespace PseudoCode.Core.Runtime.Instances;
 
 /// <summary>
 /// Acts as placeholder variable when the variable is not declared.

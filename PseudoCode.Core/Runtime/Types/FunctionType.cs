@@ -1,7 +1,8 @@
 using PseudoCode.Core.Runtime.Errors;
+using PseudoCode.Core.Runtime.Instances;
 using PseudoCode.Core.Runtime.Operations;
 
-namespace PseudoCode.Core.Runtime;
+namespace PseudoCode.Core.Runtime.Types;
 
 public class FunctionType : Type
 {
@@ -74,7 +75,7 @@ public class FunctionType : Type
             return Program.RuntimeStack.Pop();
         }
 
-        return Runtime.Instance.Null;
+        return Instances.Instance.Null;
     }
 
     public void CheckArguments(Instance[] args)

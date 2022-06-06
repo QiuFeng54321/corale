@@ -1,3 +1,7 @@
+using PseudoCode.Core.Runtime.Instances;
+using PseudoCode.Core.Runtime.Types;
+using Type = PseudoCode.Core.Runtime.Types.Type;
+
 namespace PseudoCode.Core.Runtime.Operations;
 
 public class FormImmediateArrayOperation : Operation

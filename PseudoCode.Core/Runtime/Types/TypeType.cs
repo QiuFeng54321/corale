@@ -1,6 +1,6 @@
 using PseudoCode.Core.Runtime.Operations;
 
-namespace PseudoCode.Core.Runtime;
+namespace PseudoCode.Core.Runtime.Types;
 
 public class TypeType : Type
 {

@@ -1,6 +1,7 @@
 using PseudoCode.Core.Runtime.Operations;
+using Type = PseudoCode.Core.Runtime.Types.Type;
 
-namespace PseudoCode.Core.Runtime;
+namespace PseudoCode.Core.Runtime.Instances;
 
 public class Instance
 {

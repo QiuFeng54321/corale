@@ -1,7 +1,8 @@
 using PseudoCode.Core.Runtime.Errors;
+using PseudoCode.Core.Runtime.Instances;
 using PseudoCode.Core.Runtime.Operations;
 
-namespace PseudoCode.Core.Runtime;
+namespace PseudoCode.Core.Runtime.Types;
 
 public class ArrayType : Type
 {

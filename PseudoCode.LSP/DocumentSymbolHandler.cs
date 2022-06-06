@@ -5,6 +5,7 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using PseudoCode.Core.Runtime;
 using PseudoCode.Core.Runtime.Operations;
+using PseudoCode.Core.Runtime.Types;
 
 namespace PseudoCode.LSP;
 

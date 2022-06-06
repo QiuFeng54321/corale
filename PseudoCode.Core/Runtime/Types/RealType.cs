@@ -1,17 +1,27 @@
+using PseudoCode.Core.Runtime.Instances;
 using PseudoCode.Core.Runtime.Operations;
 
-namespace PseudoCode.Core.Runtime;
+namespace PseudoCode.Core.Runtime.Types;
 
-public class IntegerType : PrimitiveType<int>
+public class RealType : PrimitiveType<decimal>
 {
-    public override uint Id => IntegerId;
-    public override string Name => "INTEGER";
+    public override uint Id => RealId;
+    public override string Name => "REAL";
+
+    // public Instance ArithmeticOperation(Instance i1, Instance i2 , Func<decimal, decimal, decimal> func)
+    // {
+    //     if (i2.Type.Id is not (IntegerId or RealId))
+    //         throw new InvalidOperationException($"Invalid right operand type {i2.Type}");
+    //     return Instance(func(i1.Get<decimal>(), i2.Get<decimal>()));
+    // }
+
     public override Type BinaryResultType(int type, Type right)
     {
         if (right is not (IntegerType or RealType))
         {
             return new NullType(ParentScope, Program);
         }
+
         switch (type)
         {
             case PseudoCodeLexer.Equal:
@@ -28,7 +38,7 @@ public class IntegerType : PrimitiveType<int>
             case PseudoCodeLexer.Or:
                 return new NullType(ParentScope, Program);
             default:
-                return right;
+                return this;
         }
     }
 
@@ -39,91 +49,84 @@ public class IntegerType : PrimitiveType<int>
 
     public override Instance Add(Instance i1, Instance i2)
     {
-        return i2.Type == this
-            ? ArithmeticOperation(i1, i2, (arg1, arg2) => arg1 + arg2)
-            : ParentScope.FindTypeDefinition(RealId).Type.Add(i1, i2);
-    }
-
-    public override Instance Subtract(Instance i1, Instance i2)
-    {
-        return i2.Type == this
-            ? ArithmeticOperation(i1, i2, (arg1, arg2) => arg1 - arg2)
-            : ParentScope.FindTypeDefinition(RealId).Type.Subtract(i1, i2);
+        return ArithmeticOperation(i1, i2, (arg1, arg2) => arg1 + arg2);
     }
 
     public override Instance Negative(Instance i)
     {
-        return ArithmeticOperation(i, null, (arg1, _) => -arg1);
+        return ArithmeticUnaryOperation(i, arg => -arg);
+    }
+
+    public override Instance Subtract(Instance i1, Instance i2)
+    {
+        // if (i2.Type.Id is not (IntegerId or RealId))
+        //     throw new InvalidOperationException($"Invalid right operand type {i2.Type}");
+        // return Instance(i1.Get<decimal>() - i2.Get<decimal>());
+        return ArithmeticOperation(i1, i2, (arg1, arg2) => arg1 - arg2);
+        // return Add(i1, Negative(i2));
     }
 
     public override Instance Multiply(Instance i1, Instance i2)
     {
-        return i2.Type == this
-            ? ArithmeticOperation(i1, i2, (arg1, arg2) => arg1 * arg2)
-            : ParentScope.FindTypeDefinition(RealId).Type.Multiply(i1, i2);
+        return ArithmeticOperation(i1, i2, (arg1, arg2) => arg1 * arg2);
     }
 
     public override Instance Divide(Instance i1, Instance i2)
     {
-        return ParentScope.FindTypeDefinition(RealId).Type.Divide(i1, i2);
+        return ArithmeticOperation(i1, i2, (arg1, arg2) => arg1 / arg2);
     }
 
     public override Instance Mod(Instance i1, Instance i2)
     {
-        return i2.Type == this
-            ? ArithmeticOperation(i1, i2, (arg1, arg2) => arg1 % arg2)
-            : ParentScope.FindTypeDefinition(RealId).Type.Mod(i1, i2);
+        return ArithmeticOperation(i1, i2, (arg1, arg2) => arg1 % arg2);
     }
 
     public override Instance Pow(Instance i1, Instance i2)
     {
-        return ParentScope.FindTypeDefinition(RealId).Type.Pow(i1, i2);
+        return ArithmeticOperation(i1, i2, (arg1, arg2) => (decimal)Math.Pow((double)arg1, (double)arg2));
     }
 
     public override Instance IntDivide(Instance i1, Instance i2)
     {
-        return ArithmeticOperation(i1, i2, (arg1, arg2) => arg1 / arg2);
+        return ParentScope.FindTypeDefinition(IntegerId).Type.HandledCastFrom(
+            ArithmeticOperation(i1, i2, (arg1, arg2) => (int)(arg1 / arg2)));
     }
 
     public override Instance Greater(Instance i1, Instance i2)
     {
-        return ParentScope.FindTypeDefinition(RealId).Type.Greater(i1, i2);
+        return LogicOperation(i1, i2, (arg1, arg2) => arg1 > arg2);
     }
 
     public override Instance GreaterEqual(Instance i1, Instance i2)
     {
-        return ParentScope.FindTypeDefinition(RealId).Type.GreaterEqual(i1, i2);
+        return LogicOperation(i1, i2, (arg1, arg2) => arg1 >= arg2);
     }
 
     public override Instance Smaller(Instance i1, Instance i2)
     {
-        return ParentScope.FindTypeDefinition(RealId).Type.Smaller(i1, i2);
+        return LogicOperation(i1, i2, (arg1, arg2) => arg1 < arg2);
     }
 
     public override Instance SmallerEqual(Instance i1, Instance i2)
     {
-        return ParentScope.FindTypeDefinition(RealId).Type.SmallerEqual(i1, i2);
+        return LogicOperation(i1, i2, (arg1, arg2) => arg1 <= arg2);
     }
 
     public override Instance Equal(Instance i1, Instance i2)
     {
-        return ParentScope.FindTypeDefinition(RealId).Type.Equal(i1, i2);
+        return LogicOperation(i1, i2, (arg1, arg2) => arg1 == arg2);
     }
 
     public override Instance NotEqual(Instance i1, Instance i2)
     {
-        return ParentScope.FindTypeDefinition(RealId).Type.NotEqual(i1, i2);
+        return LogicOperation(i1, i2, (arg1, arg2) => arg1 != arg2);
     }
 
     public override Instance CastFrom(Instance i)
     {
-        return Instance(Convert.ToInt32(i.Value), ParentScope);
+        return Instance(Convert.ToDecimal(i.Value), ParentScope);
     }
 
-    public Instance CastToReal(Instance i)
-    {
-        return ParentScope.FindTypeDefinition(RealId).Type.HandledCastFrom(i);
-    }
     public override bool IsConvertableFrom(Type type)
     {
         switch (type.Id)
@@ -131,14 +134,15 @@ public class IntegerType : PrimitiveType<int>
             case IntegerId:
             case BooleanId:
             case StringId:
-            case CharId:
             case RealId:
+            case CharId:
                 return true;
             default:
                 return false;
         }
     }
-    public IntegerType(Scope parentScope, PseudoProgram program) : base(parentScope, program)
+
+    public RealType(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {
     }
 }

@@ -1,6 +1,7 @@
 using PseudoCode.Core.Runtime.Operations;
+using PseudoCode.Core.Runtime.Types;
 
-namespace PseudoCode.Core.Runtime;
+namespace PseudoCode.Core.Runtime.Instances;
 using FuncType = Func<Scope, PseudoProgram, Instance[], Instance>;
 public class BuiltinFunctionInstance : FunctionInstance
 {
