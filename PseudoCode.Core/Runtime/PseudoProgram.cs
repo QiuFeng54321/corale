@@ -14,12 +14,14 @@ public class PseudoProgram
     public Stack<Instance> RuntimeStack = new();
     public Stack<Type> TypeCheckStack = new();
     public List<Feedback> AnalyserFeedbacks = new();
+    public Dictionary<string, PseudoFileStream> OpenFiles = new();
     public bool AllowUndeclaredVariables { get; set; }
 
     public PseudoProgram()
     {
         GlobalScope = new Scope(null, this);
         AddPrimitiveTypes();
+        AddBuiltinFunctions();
     }
 
     public uint AllocateId(Instance i)
@@ -71,6 +73,36 @@ public class PseudoProgram
         GlobalScope.AddType(new NullType (GlobalScope, this));
         GlobalScope.AddType(new PlaceholderType (GlobalScope, this));
         Instance.Null = GlobalScope.FindTypeDefinition(Type.NullId).Type.Instance(scope: GlobalScope);
+    }
+
+    public void AddBuiltinFunctions()
+    {
+        GlobalScope.AddOperation(new MakeBuiltinFunctionOperation(GlobalScope, this)
+        {
+            Name = "EOF",
+            Definition = new Definition
+            {
+                Name = "EOF",
+                References = new(),
+                SourceRange = SourceRange.Identity,
+                Type = new BuiltinFunctionType(GlobalScope, this)
+                {
+                    ParameterInfos = new []
+                    {
+                        new FunctionType.ParameterInfo
+                        {
+                            Definition = GlobalScope.FindTypeDefinition(Type.StringId)
+                        }
+                    },
+                    ReturnType = GlobalScope.FindTypeDefinition(Type.BooleanId).Type
+                }
+            },
+            Func = (scope, program, args) =>
+            {
+                var path = args[0].Get<string>();
+                return scope.FindTypeDefinition(Type.BooleanId).Type.Instance(program.OpenFiles[path].Eof());
+            }
+        });
     }
 
     public void PrintAnalyzerFeedbacks(TextWriter textWriter)

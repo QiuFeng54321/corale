@@ -1,0 +1,6 @@
+selfPath <- "file.pseudo"
+OPENFILE selfPath FOR READ
+WHILE NOT EOF(selfPath) DO
+    READFILE selfPath, content
+    OUTPUT content
+ENDWHILE

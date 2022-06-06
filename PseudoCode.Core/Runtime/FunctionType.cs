@@ -34,10 +34,7 @@ public class FunctionType : Type
 
     public override Instance Call(FunctionInstance functionInstance, Instance[] args)
     {
-        if (args.Length != ParameterInfos.Length ||
-            args.Zip(ParameterInfos).Any(zip => !zip.Second.Definition.Type.IsConvertableFrom(zip.First.Type)))
-            throw new InvalidArgumentsError(
-                $"Calling {this} with arguments ({string.Join(", ", args.Select(arg => arg.Type))})", null);
+        CheckArguments(args);
         try
         {
             functionInstance.FunctionBody.Operate(s =>
@@ -78,6 +75,14 @@ public class FunctionType : Type
         }
 
         return Runtime.Instance.Null;
+    }
+
+    public void CheckArguments(Instance[] args)
+    {
+        if (args.Length != ParameterInfos.Length ||
+            args.Zip(ParameterInfos).Any(zip => !zip.Second.Definition.Type.IsConvertableFrom(zip.First.Type)))
+            throw new InvalidArgumentsError(
+                $"Calling {this} with arguments ({string.Join(", ", args.Select(arg => arg.Type))})", null);
     }
 
     public override string ToString()

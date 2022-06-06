@@ -29,7 +29,7 @@ public class Analysis
     public void AnalyseUnusedVariables()
     {
         if (AllVariableDefinitions == null) return;
-        foreach (var definition in AllVariableDefinitions.Where(d => d.References.Count <= 1))
+        foreach (var definition in AllVariableDefinitions.Where(d => d.References.Count <= 1 && d.SourceRange != SourceRange.Identity))
         {
             Program.AnalyserFeedbacks.Add(new Feedback
             {

@@ -14,7 +14,7 @@ public class MakeFunctionOperation : Operation
     public override void Operate()
     {
         base.Operate();
-        var instance = ParentScope.FindInstanceDefinition(Name).Type.Instance();
+        var instance = Definition.Type.Instance();
         if (instance is not FunctionInstance functionInstance)
         {
             throw new InvalidTypeError($"I'm making a function of {instance.Type}???", this);

@@ -11,6 +11,7 @@ public class SourceRange
     public bool Contains(SourceLocation location) => Start <= location && End >= location;
     public SourceLocation Start { get; set; }
     public SourceLocation End { get; set; }
+    public static SourceRange Identity = new(SourceLocation.Identity, SourceLocation.Identity);
 
     public override string ToString()
     {

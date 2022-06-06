@@ -368,6 +368,38 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
                 });
     }
 
+    public override void ExitFileStatement(PseudoCodeParser.FileStatementContext context)
+    {
+        base.ExitFileStatement(context);
+        var sourceRange = SourceLocationHelper.SourceRange(context);
+        var sourceLocation = SourceLocationHelper.SourceLocation(context.Start);
+        if (context.OpenFile() != null)
+        {
+            var random = false;
+            var fileAccess = FileAccess.Read;
+            var fileMode = FileMode.OpenOrCreate;
+            if (context.Read() != null) fileAccess = FileAccess.Read;
+            if (context.Append() != null) fileMode = FileMode.Append;
+            if (context.Random() != null) random = true;
+            CurrentScope.AddOperation(new OpenFileOperation(CurrentScope, Program)
+            {
+                FileAccess = fileAccess,
+                FileMode = fileMode,
+                IsRandom = random,
+                PoiLocation = sourceLocation,
+                SourceRange = sourceRange
+            });
+        }
+        else if (context.ReadFile() != null)
+        {
+            CurrentScope.AddOperation(new ReadFileOperation(CurrentScope, Program)
+            {
+                PoiLocation = sourceLocation,
+                SourceRange = sourceRange
+            });
+        }
+    }
+
     public override void ExitIoStatement(PseudoCodeParser.IoStatementContext context)
     {
         base.ExitIoStatement(context);

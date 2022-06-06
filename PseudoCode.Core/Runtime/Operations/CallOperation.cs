@@ -48,28 +48,32 @@ public class CallOperation : Operation
             });
             functionType = null;
         }
-
-        if (arguments.Count != functionType.ParameterInfos.Length)
+        else
         {
-            Program.AnalyserFeedbacks.Add(new Feedback
-            {
-                Message = $"Calling {functionType} with arguments: ({string.Join(", ", arguments)})",
-                Severity = Feedback.SeverityType.Error,
-                SourceRange = SourceRange
-            });
-        }
 
-        foreach (var ((parameterInfo, passedInstance), i) in functionType.ParameterInfos.Zip(arguments)
-                     .Select((v, i) => (v, i)))
-        {
-            if (!parameterInfo.Definition.Type.IsConvertableFrom(passedInstance))
+            if (arguments.Count != functionType.ParameterInfos.Length)
             {
                 Program.AnalyserFeedbacks.Add(new Feedback
                 {
-                    Message = $"Argument {i + 1} cannot be casted from {passedInstance} to {parameterInfo.Definition.Type}",
+                    Message = $"Calling {functionType} with arguments: ({string.Join(", ", arguments)})",
                     Severity = Feedback.SeverityType.Error,
                     SourceRange = SourceRange
                 });
+            }
+
+            foreach (var ((parameterInfo, passedInstance), i) in functionType.ParameterInfos.Zip(arguments)
+                         .Select((v, i) => (v, i)))
+            {
+                if (!parameterInfo.Definition.Type.IsConvertableFrom(passedInstance))
+                {
+                    Program.AnalyserFeedbacks.Add(new Feedback
+                    {
+                        Message =
+                            $"Argument {i + 1} cannot be casted from {passedInstance} to {parameterInfo.Definition.Type}",
+                        Severity = Feedback.SeverityType.Error,
+                        SourceRange = SourceRange
+                    });
+                }
             }
         }
 
