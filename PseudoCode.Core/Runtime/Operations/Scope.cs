@@ -159,6 +159,15 @@ public class Scope : Operation
         RunOperations(copy);
     }
 
+    public void Join(Scope scope)
+    {
+        scope.ScopeStates.Operations.ForEach(o => o.ParentScope = this);
+        ScopeStates.Operations.AddRange(scope.ScopeStates.Operations);
+        foreach (var (name, def) in scope.InstanceDefinitions)
+        {
+            InstanceDefinitions.Add(name, def);
+        }
+    }
     public override void MetaOperate()
     {
         base.MetaOperate();

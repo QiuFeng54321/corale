@@ -122,8 +122,7 @@ Possible Causes:
     <data name="RepeatOperation_ToString_Repeat" xml:space="preserve">
         <value>{0}Do:
 {1}
-{2}While:
-{3}</value>
+{2}Repeat</value>
     </data>
     <data name="UnaryOperation_ToPlainString" xml:space="preserve">
         <value>Unary {0}</value>

@@ -1,9 +1,16 @@
 // Type test
+REPEAT
+    INPUT something
+    OUTPUT something
+UNTIL something = "YES"
+
+arr <- [2]
 DECLARE a : REAL
 DECLARE b : ARRAY[1:3, 1:4] OF INTEGER
 DECLARE c : BOOLEAN
 DECLARE Char : CHAR
 DECLARE Date : DATE
+DECLARE Date2 : DATE
 a <- -(a + a * -a POW 2 POW 3) DIV 100 MOD 100
 c <- a < 63 - 2.3 OR (a > 65 OR a > 63) AND NOT a < 65 AND TRUE
 Char <- '\n'
@@ -26,6 +33,7 @@ OUTPUT "eaf:", eaf
 // Uses for-loop to make a wing
 Wing <- ""
 MaxLength <- 80
+
 FOR i <- 1 TO MaxLength STEP i
     OUTPUT "i =", i
     FOR j <- i TO MaxLength
@@ -59,3 +67,22 @@ WHILE ContinueFib DO
     OUTPUT "Continue?"
     INPUT ContinueFib
 ENDWHILE
+
+FUNCTION fib(n: INTEGER) RETURNS INTEGER
+    IF n = 2 OR n = 1 THEN
+        RETURN 1
+    ENDIF
+    RETURN fib(n - 1) + fib(n - 2)
+ENDFUNCTION
+OUTPUT "Fib of:"
+INPUT Num
+OUTPUT "It is:", fib(Num)
+FUNCTION assign(BYREF n: INTEGER, val: INTEGER) RETURNS INTEGER
+    n <- val
+    RETURN val
+ENDFUNCTION
+
+n <- 10
+res <- assign(n, 20)
+OUTPUT "Assigned n is", n
+    

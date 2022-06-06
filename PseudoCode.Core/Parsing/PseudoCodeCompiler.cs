@@ -412,10 +412,9 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         base.ExitWhileStatement(context);
         var repeatBlock = CurrentScope.TakeLast();
         var testScope = (Scope)CurrentScope.TakeLast();
-        CurrentScope.AddOperation(new RepeatOperation(CurrentScope, Program)
+        CurrentScope.AddOperation(new WhileOperation(CurrentScope, Program)
         {
             RepeatBlock = repeatBlock, TestExpressionScope = testScope,
-            TestFirst = true,
             PoiLocation = SourceLocationHelper.SourceLocation(context),
             SourceRange = SourceLocationHelper.SourceRange(context)
         });
@@ -432,11 +431,11 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
             PoiLocation = SourceLocationHelper.SourceLocation(context.scopedExpression().Stop),
             SourceRange = SourceLocationHelper.SourceRange(context)
         });
-        var repeatBlock = CurrentScope.TakeLast();
+        var repeatBlock = (Scope)CurrentScope.TakeLast();
+        repeatBlock.Join(testScope);
         CurrentScope.AddOperation(new RepeatOperation(CurrentScope, Program)
         {
-            RepeatBlock = repeatBlock, TestExpressionScope = testScope,
-            TestFirst = false,
+            RepeatBlock = repeatBlock,
             PoiLocation = SourceLocationHelper.SourceLocation(context),
             SourceRange = SourceLocationHelper.SourceRange(context)
         });
