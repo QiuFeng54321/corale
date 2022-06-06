@@ -10,7 +10,6 @@ public class BuiltinFunctionInstance : FunctionInstance
         get => (FuncType)Value;
         set => Value = value;
     }
-    
     public BuiltinFunctionType BuiltinFunctionType => (BuiltinFunctionType)Type;
     public BuiltinFunctionInstance(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {

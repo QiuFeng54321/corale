@@ -94,6 +94,7 @@ public class PseudoProgram
                     {
                         new FunctionType.ParameterInfo
                         {
+                            Name = "path",
                             Definition = GlobalScope.FindTypeDefinition(Type.StringId)
                         }
                     },

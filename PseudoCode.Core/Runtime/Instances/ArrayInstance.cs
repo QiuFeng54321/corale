@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using PseudoCode.Core.Runtime.Errors;
 using PseudoCode.Core.Runtime.Operations;
 using PseudoCode.Core.Runtime.Types;
@@ -16,7 +17,7 @@ public class ArrayInstance : Instance
     {
     }
 
-    public override object Value
+    [JsonIgnore] public override object Value
     {
         get => Array;
         set => Array = (Instance[])value;

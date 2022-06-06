@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using PseudoCode.Core.Runtime.Operations;
 using Type = PseudoCode.Core.Runtime.Types.Type;
 
@@ -7,8 +8,8 @@ public class Instance
 {
     public static Instance Null;
     public uint InstanceAddress;
-    public Scope ParentScope;
-    public PseudoProgram Program;
+    [JsonIgnore] public Scope ParentScope;
+    [JsonIgnore] public PseudoProgram Program;
 
     public Instance(Scope parentScope, PseudoProgram program)
     {
@@ -20,12 +21,14 @@ public class Instance
     public virtual Dictionary<string, Instance> Members { get; init; } = new();
     public virtual object Value { get; set; } = null!;
 
+    [JsonIgnore]
     public virtual Instance RealInstance => this;
 
     public virtual T Get<T>()
     {
         return (T)Value;
     }
+
 
     public virtual string Represent()
     {

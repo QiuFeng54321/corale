@@ -1,3 +1,5 @@
+using PseudoCode.Core.Runtime.Instances;
+
 namespace PseudoCode.Core.Runtime;
 
 public class PseudoFileStream : IDisposable
@@ -6,8 +8,7 @@ public class PseudoFileStream : IDisposable
     public FileAccess FileAccess;
     public bool IsBinary;
     public FileStream FileStream;
-    public BinaryReader BinaryReader;
-    public BinaryWriter BinaryWriter;
+    public PseudoBinaryStream PseudoBinaryStream;
     public StreamReader StreamReader;
     public StreamWriter StreamWriter;
     public string Path { get; set; }
@@ -22,20 +23,19 @@ public class PseudoFileStream : IDisposable
 
     public void Open()
     {
-        var stream = File.Open(Path, FileMode, FileAccess);
         if (IsBinary)
         {
-            if (FileAccess.HasFlag(FileAccess.Read))
-                BinaryReader = new BinaryReader(stream);
-            if (FileAccess.HasFlag(FileAccess.Write))
-                BinaryWriter = new BinaryWriter(stream);
+            PseudoBinaryStream = File.Exists(Path)
+                ? PseudoBinaryStream.From(new MemoryStream(File.ReadAllBytes(Path)))
+                : new PseudoBinaryStream();
         }
         else
         {
+            FileStream = File.Open(Path, FileMode, FileAccess);
             if (FileAccess.HasFlag(FileAccess.Read))
-                StreamReader = new StreamReader(stream);
+                StreamReader = new StreamReader(FileStream);
             if (FileAccess.HasFlag(FileAccess.Write))
-                StreamWriter = new StreamWriter(stream);
+                StreamWriter = new StreamWriter(FileStream);
         }
     }
 
@@ -53,22 +53,36 @@ public class PseudoFileStream : IDisposable
     {
         StreamReader?.Close();
         StreamWriter?.Close();
-        BinaryReader?.Close();
-        BinaryWriter?.Close();
+        if (!IsBinary) return;
+        var memoryStream = new MemoryStream();
+        PseudoBinaryStream?.Write(memoryStream);
+        FileStream = File.Open(Path, FileMode.OpenOrCreate, FileAccess.Write);
+        memoryStream.WriteTo(FileStream);
+        memoryStream.Close();
+        FileStream.Close();
     }
+
+    public void Seek(int address)
+    {
+        PseudoBinaryStream.Seek(address);
+    }
+
+    public void Put(Instance i)
+    {
+        PseudoBinaryStream.Put(i);
+    }
+
+    public Instance Get() => PseudoBinaryStream.Get();
 
     public bool Eof()
     {
-        return IsBinary ? BinaryReader.BaseStream.Position == BinaryReader.BaseStream.Length:
-                StreamReader.EndOfStream;
+        return !IsBinary && StreamReader.EndOfStream;
     }
 
 
     public void Dispose()
     {
         FileStream?.Dispose();
-        BinaryReader?.Dispose();
-        BinaryWriter?.Dispose();
         StreamReader?.Dispose();
         StreamWriter?.Dispose();
     }

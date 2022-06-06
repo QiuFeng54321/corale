@@ -5,6 +5,8 @@ namespace PseudoCode.Core.Runtime.Types;
 
 public class PrimitiveType<T> : Type
 {
+    public override bool Serializable => true;
+
     public Instance ArithmeticOperation(Instance i1, Instance i2, Func<T, T, T> func)
     {
         // if (i2.Type.Id is not (IntegerId or RealId))

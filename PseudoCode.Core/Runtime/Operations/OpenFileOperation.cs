@@ -16,10 +16,10 @@ public class OpenFileOperation : FileOperation
     public override void Operate()                                                  
     {
         base.Operate();
-        var pathInstance = ParentScope.FindTypeDefinition(Type.StringId).Type.CastFrom(Program.RuntimeStack.Pop());
-        var path = pathInstance.Get<string>();
+        var path = PopPathAtRuntime();
         var stream = new PseudoFileStream(path, FileMode, FileAccess, IsRandom);
         stream.Open();
+        if (Program.OpenFiles.ContainsKey(path)) Program.OpenFiles.Remove(path);
         Program.OpenFiles.Add(path, stream);
     }
     public override void MetaOperate()                                                  

@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using Newtonsoft.Json;
 using PseudoCode.Core.Runtime.Errors;
 using PseudoCode.Core.Runtime.Instances;
 using PseudoCode.Core.Runtime.Operations;
@@ -23,11 +24,13 @@ public class Type
 
     private static uint _incrementId = ArrayId;
 
-    public Dictionary<int, BinaryOperator> BinaryOperators;
-    public Dictionary<int, UnaryOperator> UnaryOperators;
-    public PseudoProgram Program;
-    public Scope ParentScope;
+    [JsonIgnore] public Dictionary<int, BinaryOperator> BinaryOperators;
+    [JsonIgnore] public Dictionary<int, UnaryOperator> UnaryOperators;
+    [JsonIgnore] public PseudoProgram Program;
+    [JsonIgnore] public Scope ParentScope;
 
+    
+    public virtual bool Serializable => false;
 
     public Type(Scope parentScope, PseudoProgram program)
     {
@@ -76,19 +79,22 @@ public class Type
         return instance;
     }
 
-    
+
     public virtual Instance Clone(Instance instance)
     {
         return Instance(instance.Value, ParentScope);
     }
+
     public virtual Error MakeUnsupported(Instance[] args, [CallerMemberName] string caller = "Unknown")
     {
         return new UnsupportedCastError($"Cannot call {this}", null);
     }
+
     public virtual Error MakeUnsupported(Instance i1, Instance i2 = null, [CallerMemberName] string caller = "Unknown")
     {
         return MakeUnsupported(i1.Type, i2?.Type, caller);
     }
+
     public virtual Error MakeUnsupported(Type i1, Type i2 = null, [CallerMemberName] string caller = "Unknown")
     {
         return new UnsupportedCastError(
@@ -159,6 +165,7 @@ public class Type
     {
         throw MakeUnsupported(i1, i2);
     }
+
     public virtual Instance BitAnd(Instance i1, Instance i2)
     {
         throw MakeUnsupported(i1, i2);
@@ -217,7 +224,9 @@ public class Type
 
     private UnsupportedCastError MakeUnsupportedCastError(Instance i, string systemMsg = "")
     {
-        return new UnsupportedCastError(string.Format(strings.Type_MakeUnsupportedCastError, i.Type, this, systemMsg.Length != 0 ? ": " : "", systemMsg), null);
+        return new UnsupportedCastError(
+            string.Format(strings.Type_MakeUnsupportedCastError, i.Type, this, systemMsg.Length != 0 ? ": " : "",
+                systemMsg), null);
     }
 
     public Instance HandledCastFrom(Instance i)
@@ -252,6 +261,17 @@ public class Type
         to.Members.Clear();
         foreach (var p in value.Members) to.Members.Add(p.Key, p.Value);
         return to;
+    }
+
+
+    public virtual void WriteBinary(Instance i, BinaryWriter writer)
+    {
+        throw new FileError($"Cannot write {this}", null);
+    }
+
+    public virtual Instance ReadBinary(BinaryReader reader)
+    {
+        throw new FileError($"Cannot read {this}", null);
     }
 
     public override string ToString()

@@ -9,6 +9,13 @@ public class FileOperation : Operation
     {
     }
     
+    public string PopPathAtRuntime()
+    {
+        var stringType = ParentScope.FindTypeDefinition(Type.StringId).Type;
+        var pathInstance = stringType.CastFrom(Program.RuntimeStack.Pop());
+        var path = pathInstance.Get<string>();
+        return path;
+    }
     public Types.Type PopAndCheckPath()
     {
         var path = Program.TypeCheckStack.Pop();

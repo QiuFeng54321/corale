@@ -13,3 +13,13 @@ REPEAT
     WRITEFILE writePath, content & "\n"
 UNTIL content = ""
 CLOSEFILE writePath
+
+binPath <- "binOut.bin"
+OPENFILE binPath FOR RANDOM
+PUTRECORD binPath, binPath
+CLOSEFILE binPath
+
+OPENFILE binPath FOR RANDOM
+GETRECORD binPath, gotContent
+CLOSEFILE binPath
+OUTPUT gotContent

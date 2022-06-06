@@ -11,9 +11,7 @@ public class CloseFileOperation : FileOperation
     public override void Operate()
     {
         base.Operate();
-        var stringType = ParentScope.FindTypeDefinition(Type.StringId).Type;
-        var pathInstance = stringType.CastFrom(Program.RuntimeStack.Pop());
-        var path = pathInstance.Get<string>();
+        var path = PopPathAtRuntime();
         Program.OpenFiles[path].Close();
     }
 

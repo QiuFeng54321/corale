@@ -15,8 +15,7 @@ public class ReadFileOperation : FileOperation
         base.Operate();
         var instance = Program.RuntimeStack.Pop();
         var stringType = ParentScope.FindTypeDefinition(Type.StringId).Type;
-        var pathInstance = stringType.CastFrom(Program.RuntimeStack.Pop());
-        var path = pathInstance.Get<string>();                                          
+        var path = PopPathAtRuntime();                                         
         var str = Program.OpenFiles[path].ReadLine();
         var strInstance = stringType.Instance(str);
         instance.Type.Assign(instance, strInstance);

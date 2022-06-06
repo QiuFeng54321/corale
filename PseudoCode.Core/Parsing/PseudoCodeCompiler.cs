@@ -398,16 +398,42 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
                 PoiLocation = sourceLocation,
                 SourceRange = sourceRange
             });
-        } else if (context.WriteFile() != null)
+        }
+        else if (context.WriteFile() != null)
         {
             CurrentScope.AddOperation(new WriteFileOperation(CurrentScope, Program)
             {
                 PoiLocation = sourceLocation,
                 SourceRange = sourceRange
             });
-        } else if (context.CloseFile() != null)
+        }
+        else if (context.CloseFile() != null)
         {
             CurrentScope.AddOperation(new CloseFileOperation(CurrentScope, Program)
+            {
+                PoiLocation = sourceLocation,
+                SourceRange = sourceRange
+            });
+        }
+        else if (context.Seek() != null)
+        {
+            CurrentScope.AddOperation(new SeekOperation(CurrentScope, Program)
+            {
+                PoiLocation = sourceLocation,
+                SourceRange = sourceRange
+            });
+        }
+        else if (context.PutRecord() != null)
+        {
+            CurrentScope.AddOperation(new PutRecordOperation(CurrentScope, Program)
+            {
+                PoiLocation = sourceLocation,
+                SourceRange = sourceRange
+            });
+        }
+        else if (context.GetRecord() != null)
+        {
+            CurrentScope.AddOperation(new GetRecordOperation(CurrentScope, Program)
             {
                 PoiLocation = sourceLocation,
                 SourceRange = sourceRange
