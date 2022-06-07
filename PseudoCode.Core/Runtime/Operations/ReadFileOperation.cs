@@ -14,7 +14,7 @@ public class ReadFileOperation : FileOperation
     {
         base.Operate();
         var instance = Program.RuntimeStack.Pop();
-        var stringType = ParentScope.FindTypeDefinition(Type.StringId).Type;
+        var stringType = Program.FindTypeDefinition(Type.StringId).Type;
         var path = PopPathAtRuntime();
         var str = Program.OpenFiles[path].ReadLine();
         var strInstance = stringType.Instance(str);
@@ -26,7 +26,7 @@ public class ReadFileOperation : FileOperation
         base.Operate();
         var typeInfo = Program.TypeCheckStack.Pop();
         
-        var stringType = ParentScope.FindTypeDefinition(Type.StringId).Type;
+        var stringType = Program.FindTypeDefinition(Type.StringId).Type;
         if (typeInfo.Type is PlaceholderType placeholderType) placeholderType.MetaAssign(stringType);
 
         if (!typeInfo.Type.IsConvertableFrom(stringType))

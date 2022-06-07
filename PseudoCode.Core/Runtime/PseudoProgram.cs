@@ -14,6 +14,7 @@ public class PseudoProgram
     public Scope GlobalScope;
     public Dictionary<uint, Instance> Memory = new();
     public Dictionary<string, PseudoFileStream> OpenFiles = new();
+    public Dictionary<string, Definition> TypeDefinitions = new();
     public Stack<Instance> RuntimeStack = new();
     public Stack<TypeInfo> TypeCheckStack = new();
 
@@ -31,6 +32,15 @@ public class PseudoProgram
     public bool DisplayOperationsAtRuntime { get; set; }
     public bool AllowUndeclaredVariables { get; set; }
 
+    
+    public Definition FindTypeDefinition(uint id)
+    {
+        return TypeDefinitions.First(p => p.Value.Type.Id == id).Value;
+    }
+    public Definition FindTypeDefinition(string name)
+    {
+        return TypeDefinitions.GetValueOrDefault(name, null);
+    }
     public uint AllocateId(Instance i)
     {
         i.InstanceAddress = CurrentInstanceAddress++;

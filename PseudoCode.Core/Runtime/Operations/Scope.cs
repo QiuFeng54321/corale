@@ -1,6 +1,7 @@
 using PseudoCode.Core.Analyzing;
 using PseudoCode.Core.Runtime.Errors;
 using PseudoCode.Core.Runtime.Instances;
+using PseudoCode.Core.Runtime.Types;
 using Type = PseudoCode.Core.Runtime.Types.Type;
 
 namespace PseudoCode.Core.Runtime.Operations;
@@ -11,8 +12,6 @@ public class Scope : Operation
     ///     Instances are created from the type
     /// </summary>
     public Dictionary<string, Definition> InstanceDefinitions = new();
-
-    public Dictionary<string, Definition> TypeDefinitions = new();
 
     public Scope(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {
@@ -35,15 +34,15 @@ public class Scope : Operation
 
     public Definition FindTypeDefinition(string typeName)
     {
-        return TypeDefinitions.ContainsKey(typeName)
-            ? TypeDefinitions[typeName]
-            : ParentScope?.FindTypeDefinition(typeName);
+        return InstanceDefinitions.ContainsKey(typeName)
+            ? InstanceDefinitions[typeName]
+            : ParentScope?.FindTypeDefinition(typeName) ?? Program.FindTypeDefinition(typeName);
     }
 
     public Definition FindTypeDefinition(uint id)
     {
-        var t = TypeDefinitions.FirstOrDefault(t => t.Value.Type.Id == id, new KeyValuePair<string, Definition>());
-        return t.Value ?? ParentScope?.FindTypeDefinition(id);
+        var t = InstanceDefinitions.FirstOrDefault(t => t.Value.Type.Id == id, new KeyValuePair<string, Definition>());
+        return t.Value ?? ParentScope?.FindTypeDefinition(id) ?? Program.FindTypeDefinition(id);
     }
 
     public void RegisterInstanceType(string name, Type type)
@@ -91,7 +90,7 @@ public class Scope : Operation
     public void AddType(Type type)
     {
         type.ParentScope = this;
-        TypeDefinitions.Add(type.Name, new Definition
+        Program.TypeDefinitions.Add(type.Name, new Definition
         {
             Name = type.Name,
             Type = type,
@@ -250,7 +249,7 @@ public class Scope : Operation
 
     public IEnumerable<Definition> GetVariableCompletionBefore(SourceLocation location)
     {
-        var res = GetDefinitionsBefore(InstanceDefinitions.Values, location);
+        var res = GetDefinitionsBefore(InstanceDefinitions.Values.Where(d => d.Type is not TypeType), location);
 
         return ChildScopes.Where(s => s.SourceRange.Contains(location)).Aggregate(res,
             (current, childScope) =>
@@ -259,7 +258,7 @@ public class Scope : Operation
 
     public IEnumerable<Definition> GetTypeCompletionBefore(SourceLocation location)
     {
-        var res = GetDefinitionsBefore(TypeDefinitions.Values, location);
+        var res = GetDefinitionsBefore(InstanceDefinitions.Values.Where(d => d.Type is TypeType), location);
 
         return ChildScopes.Where(s => s.SourceRange.Contains(location)).Aggregate(res,
             (current, childScope) =>
