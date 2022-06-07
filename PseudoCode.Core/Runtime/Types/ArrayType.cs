@@ -19,12 +19,7 @@ public class ArrayType : Type
 
     public override Instance Instance(object value = null, Scope scope = null)
     {
-        return new ArrayInstance(scope ?? ParentScope, Program)
-        {
-            Type = this,
-            Members = new Dictionary<string, Instance>(),
-            Value = value
-        };
+        return DefaultInstance<ArrayInstance>(value, scope);
     }
 
     public override Instance Clone(Instance instance)

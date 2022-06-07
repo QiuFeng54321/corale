@@ -46,15 +46,7 @@ public class PlaceholderType : Type
 
     public override Instance Instance(object value = null, Scope scope = null)
     {
-        var instance = new PlaceholderInstance(scope ?? ParentScope, Program)
-        {
-            Type = this,
-            Members = new Dictionary<string, Instance>(),
-            Value = value
-        };
-        foreach (var member in Members) instance.Members[member.Key] = member.Value.Instance(scope: ParentScope);
-
-        return instance;
+        return DefaultInstance<PlaceholderInstance>(value, scope);
     }
 
     public override Error MakeUnsupported(Instance i1, Instance i2 = null, [CallerMemberName] string caller = "Unknown")

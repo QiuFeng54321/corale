@@ -8,6 +8,10 @@ namespace PseudoCode.Core.Runtime.Instances;
 /// </summary>
 public class PlaceholderInstance : Instance
 {
+    public PlaceholderInstance()
+    {
+    }
+
     public PlaceholderInstance(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {
     }

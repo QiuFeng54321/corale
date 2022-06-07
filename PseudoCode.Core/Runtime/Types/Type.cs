@@ -64,17 +64,23 @@ public class Type
 
     public virtual uint Id { get; set; } = ++_incrementId;
     public virtual string Name { get; set; } = null!;
-    public Dictionary<string, Type> Members { get; } = new();
+    public Dictionary<string, Definition> Members { get; } = new();
 
     public virtual Instance Instance(object value = null, Scope scope = null)
     {
-        var instance = new Instance(scope ?? ParentScope, Program)
+        return DefaultInstance<Instance>(value, scope);
+    }
+    public virtual T DefaultInstance<T>(object value = null, Scope scope = null) where T : Instance, new()
+    {
+        var instance = new T
         {
             Type = this,
             Members = new Dictionary<string, Instance>(),
-            Value = value
+            Value = value,
+            Program = Program,
+            ParentScope = scope ?? ParentScope
         };
-        foreach (var member in Members) instance.Members[member.Key] = member.Value.Instance(scope: ParentScope);
+        foreach (var member in Members) instance.Members[member.Key] = member.Value.Type.Instance(scope: ParentScope);
 
         return instance;
     }
@@ -109,6 +115,10 @@ public class Type
     public virtual Type UnaryResultType(int type)
     {
         return new NullType(ParentScope, Program);
+    }
+    public virtual Type MemberAccessResultType(string member)
+    {
+        return !Members.ContainsKey(member) ? new NullType(ParentScope, Program) : Members[member].Type;
     }
 
     public virtual Instance Add(Instance i1, Instance i2)
@@ -204,6 +214,15 @@ public class Type
     public virtual Instance SmallerEqual(Instance i1, Instance i2)
     {
         throw MakeUnsupported(i1, i2);
+    }
+
+    public virtual Instance MemberAccess(Instance i1, string member)
+    {
+        if (!i1.Members.ContainsKey(member))
+        {
+            throw new InvalidAccessError($"Accessing non-existent member {member} on {i1.Type}", null);
+        }
+        return i1.Members[member];
     }
 
     public virtual bool IsConvertableFrom(Type type)

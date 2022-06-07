@@ -7,6 +7,10 @@ using FuncType = Func<Scope, PseudoProgram, Instance[], Instance>;
 
 public class BuiltinFunctionInstance : FunctionInstance
 {
+    public BuiltinFunctionInstance()
+    {
+    }
+
     public BuiltinFunctionInstance(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {
     }

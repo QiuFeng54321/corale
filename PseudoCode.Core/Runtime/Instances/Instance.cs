@@ -12,6 +12,10 @@ public class Instance
     [JsonIgnore] public Scope ParentScope;
     [JsonIgnore] public PseudoProgram Program;
 
+    public Instance()
+    {
+    }
+
     public Instance(Scope parentScope, PseudoProgram program)
     {
         ParentScope = parentScope;
@@ -44,10 +48,8 @@ public class Instance
 
     public virtual string DebugRepresent()
     {
-        var represent = Represent();
-        if (Type.Id is Type.StringId or Type.CharId) represent = Regex.Escape(represent);
         return
-            $"{{{Type} {represent} {{{(Members != null ? string.Join(',', Members.Select(p => $"{p.Key} = {p.Value}")) : "")}}}}}";
+            $"{{{Type} {Represent()} {{{(Members != null ? string.Join(',', Members.Select(p => $"{p.Key} = {p.Value}")) : "")}}}}}";
     }
 
     public override string ToString()

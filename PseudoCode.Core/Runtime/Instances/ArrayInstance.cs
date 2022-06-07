@@ -15,6 +15,10 @@ public class ArrayInstance : Instance
     {
     }
 
+    public ArrayInstance()
+    {
+    }
+
     public ArrayType ArrayType => (ArrayType)Type;
     public int TotalElements => Dimensions.Select(d => d.Length).Aggregate((prev, next) => prev * next);
 

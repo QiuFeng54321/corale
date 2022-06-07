@@ -11,15 +11,7 @@ public class BuiltinFunctionType : FunctionType
 
     public override Instance Instance(object value = null, Scope scope = null)
     {
-        var instance = new BuiltinFunctionInstance(scope ?? ParentScope, Program)
-        {
-            Type = this,
-            Members = new Dictionary<string, Instance>(),
-            Value = value
-        };
-        foreach (var member in Members) instance.Members[member.Key] = member.Value.Instance(scope: ParentScope);
-
-        return instance;
+        return DefaultInstance<BuiltinFunctionInstance>(value, scope);
     }
 
     public override Instance Call(FunctionInstance functionInstance, Instance[] args)
