@@ -45,7 +45,15 @@ public class BinaryOperation : Operation
                 {
                     Message = $"Replace with constant {constantInstance}",
                     SourceRange = SourceRange,
-                    Severity = Feedback.SeverityType.Hint
+                    Severity = Feedback.SeverityType.Hint,
+                    Replacements = new List<Feedback.Replacement>
+                    {
+                        new()
+                        {
+                            SourceRange = SourceRange,
+                            Text = constantInstance.Represent()
+                        }
+                    }
                 });
         }
 

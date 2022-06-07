@@ -1,4 +1,6 @@
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using OmniSharp.Extensions.LanguageServer.Protocol;
 using OmniSharp.Extensions.LanguageServer.Protocol.Document;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
@@ -12,6 +14,12 @@ public class DiagnosticService
 {
     private readonly ILanguageServerFacade _facade;
     private readonly ILogger<DiagnosticService> _logger;
+
+    public static JsonSerializerSettings SerializerSettings = new JsonSerializerSettings
+    {
+        TypeNameHandling = TypeNameHandling.Auto,
+        TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple
+    };
 
     public DiagnosticService(ILanguageServerFacade facade, ILogger<DiagnosticService> logger)
     {
@@ -35,7 +43,8 @@ public class DiagnosticService
                 Source = "pseudocode",
                 Range = feedback.SourceRange.ToRange(),
                 // Code = w.Kind.ToString(),
-                Message = feedback.Message
+                Message = feedback.Message,
+                Code = new DiagnosticCode(JsonConvert.SerializeObject(feedback, SerializerSettings))
             })
             .ToList();
         _facade.TextDocument.PublishDiagnostics(new PublishDiagnosticsParams

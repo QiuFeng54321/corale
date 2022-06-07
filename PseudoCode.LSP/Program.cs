@@ -53,6 +53,7 @@ namespace PseudoCode.LSP
                        // .WithHandler<MyWorkspaceSymbolsHandler>()
                        // .WithHandler<MyDocumentSymbolHandler>()
                        // .WithHandler<SemanticTokensHandler>()
+                       .WithHandler<CodeActionHandler>()
                        .WithHandler<CompletionHandler>()
                        .WithHandler<HoverHandler>()
                        .WithHandler<TextDocumentSyncHandler>()

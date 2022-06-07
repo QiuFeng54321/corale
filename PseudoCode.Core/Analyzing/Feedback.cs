@@ -15,6 +15,13 @@ public class Feedback
     public string Message;
     public SeverityType Severity;
     public SourceRange SourceRange;
+    public List<Replacement> Replacements = new();
+
+    public class Replacement
+    {
+        public SourceRange SourceRange;
+        public string Text;
+    }
 
     public override string ToString()
     {
