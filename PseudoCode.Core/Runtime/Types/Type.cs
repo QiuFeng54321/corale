@@ -70,6 +70,7 @@ public class Type
     {
         return DefaultInstance<Instance>(value, scope);
     }
+
     public virtual T DefaultInstance<T>(object value = null, Scope scope = null) where T : Instance, new()
     {
         var instance = new T
@@ -80,7 +81,11 @@ public class Type
             Program = Program,
             ParentScope = scope ?? ParentScope
         };
-        foreach (var member in Members) instance.Members[member.Key] = member.Value.Type.Instance(scope: ParentScope);
+        foreach (var member in Members)
+            instance.Members[member.Key] = new ReferenceInstance(ParentScope, Program)
+            {
+                InstanceAddress = Program.AllocateId(member.Value.Type.Instance(scope: ParentScope))
+            };
 
         return instance;
     }
@@ -116,6 +121,7 @@ public class Type
     {
         return new NullType(ParentScope, Program);
     }
+
     public virtual Type MemberAccessResultType(string member)
     {
         return !Members.ContainsKey(member) ? new NullType(ParentScope, Program) : Members[member].Type;
@@ -222,6 +228,7 @@ public class Type
         {
             throw new InvalidAccessError($"Accessing non-existent member {member} on {i1.Type}", null);
         }
+
         return i1.Members[member];
     }
 

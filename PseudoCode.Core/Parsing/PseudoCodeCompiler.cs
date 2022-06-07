@@ -276,6 +276,16 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
                 IndexLength = context.array().expression().Length
             });
         }
+        else if (context.Dot() != null)
+        {
+            var sourceLocation = SourceLocationHelper.SourceLocation(context.array());
+            CurrentScope.AddOperation(new MemberAccessOperation(CurrentScope, Program)
+            {
+                PoiLocation = sourceLocation,
+                SourceRange = SourceLocationHelper.SourceRange(context),
+                MemberName = context.Identifier().GetText()
+            });
+        }
         else if (context.arguments() != null)
         {
             MakeCall(context, context.arguments());
