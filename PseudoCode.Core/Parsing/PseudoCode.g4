@@ -125,14 +125,14 @@ forStatement locals [bool HasStep]: For expression AssignmentNotation expression
 whileStatement: While scopedExpression Do indentedBlock Endwhile;
 repeatStatement: Repeat indentedBlock Until scopedExpression;
 
-caseStatement: Case arithmeticExpression Of caseBody Endcase;
+caseStatement: Case expression Of caseBody Endcase;
 caseBranch
- : (Otherwise | atom | valueRange) Colon alignedBlock
+ : (Otherwise | scopedExpression | valueRange) Colon alignedBlock
  | NL
  ;
 caseBody: INDENT caseBranch+ DEDENT;
 
-valueRange: expression To expression;
+valueRange: from=scopedExpression To to=scopedExpression;
 
 procedureDefinition: Procedure identifierWithNew argumentsDeclaration? indentedBlock Endprocedure;
 functionDefinition: Function Identifier argumentsDeclaration? Returns dataType indentedBlock Endfunction;

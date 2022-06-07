@@ -1,6 +1,7 @@
 using Antlr4.Runtime;
 using PseudoCode.Core.Parsing;
 using PseudoCode.Core.Runtime;
+using PseudoCode.Core.Runtime.Types;
 
 namespace PseudoCode.Core.Analyzing;
 
@@ -29,13 +30,25 @@ public class Analysis
     public void AnalyseUnusedVariables()
     {
         if (AllVariableDefinitions == null) return;
-        foreach (var definition in AllVariableDefinitions.Where(d =>
-                     d.References.Count <= 1 && d.SourceRange != SourceRange.Identity))
-            Program.AnalyserFeedbacks.Add(new Feedback
+        foreach (var definition in AllVariableDefinitions)
+        {
+            if (definition.Type is PlaceholderType)
             {
-                Message = $"Variable {definition.Name} is not used at all",
-                Severity = Feedback.SeverityType.Warning,
-                SourceRange = definition.SourceRange
-            });
+                Program.AnalyserFeedbacks.Add(new Feedback
+                {
+                    Message = $"Invalid variable {definition.Name}",
+                    Severity = Feedback.SeverityType.Error,
+                    SourceRange = definition.SourceRange
+                });
+            }
+
+            else if (definition.References.Count <= 1 && definition.SourceRange != SourceRange.Identity)
+                Program.AnalyserFeedbacks.Add(new Feedback
+                {
+                    Message = $"Variable {definition.Name} is not used at all",
+                    Severity = Feedback.SeverityType.Warning,
+                    SourceRange = definition.SourceRange
+                });
+        }
     }
 }

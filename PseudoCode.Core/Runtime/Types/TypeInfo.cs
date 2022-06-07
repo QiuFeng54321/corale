@@ -10,4 +10,9 @@ public class TypeInfo
     public bool IsConstantEvaluated;
     public SourceRange SourceRange;
     public Instance ConstantInstance;
+
+    public override string ToString()
+    {
+        return $"{(IsConstant ? "CONST " : "")}{(IsReference ? "REF " : "")}{Type}";
+    }
 }

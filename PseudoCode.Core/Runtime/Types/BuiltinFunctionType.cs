@@ -25,6 +25,7 @@ public class BuiltinFunctionType : FunctionType
     public override Instance Call(FunctionInstance functionInstance, Instance[] args)
     {
         CheckArguments(args);
-        return ((BuiltinFunctionInstance)functionInstance).Func(ParentScope, Program, args);
+        return ((BuiltinFunctionInstance)functionInstance).Func(ParentScope, Program,
+            args.Zip(ParameterInfos).Select((p, _) => p.Second.Definition.Type.CastFrom(p.First)).ToArray());
     }
 }

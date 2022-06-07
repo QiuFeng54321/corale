@@ -472,6 +472,80 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         });
     }
 
+    public override void ExitCaseStatement(PseudoCodeParser.CaseStatementContext context)
+    {
+        base.ExitCaseStatement(context);
+        var list = new List<(Scope Condition, Scope Operation)>();
+        Scope defaultScope = null;
+        foreach (var caseBranchContext in context.caseBody().caseBranch().Reverse())
+        {
+            if (caseBranchContext.NL() != null) continue;
+            Scope condition = null;
+            var body = (Scope)CurrentScope.TakeLast();
+            if (caseBranchContext.Otherwise() != null)
+            {
+                defaultScope = body;
+                continue;
+            } 
+            if (caseBranchContext.scopedExpression() != null)
+            {
+                condition = (Scope)CurrentScope.TakeLast();
+                condition.InsertOperation(0, new DuplicateOperation(condition, Program)
+                {
+                    PoiLocation = condition.PoiLocation,
+                    SourceRange = condition.SourceRange
+                });
+                condition.AddOperation(new BinaryOperation(condition.ParentScope, Program)
+                {
+                    OperatorMethod = PseudoCodeLexer.Equal,
+                    PoiLocation = condition.PoiLocation,
+                    SourceRange = condition.SourceRange
+                });
+            } else if (caseBranchContext.valueRange() != null)
+            {
+                var to = (Scope)CurrentScope.TakeLast();
+                condition = (Scope)CurrentScope.TakeLast();
+                var poiLocation = SourceLocationHelper.SourceLocation(caseBranchContext.valueRange().To().Symbol);
+                var sourceRange = SourceLocationHelper.SourceRange(caseBranchContext.valueRange());
+                // [t, t, from]
+                condition.InsertOperation(0, new DuplicateOperation(condition, Program)
+                {
+                    PoiLocation = poiLocation,
+                    SourceRange = sourceRange
+                });
+                // [t, t, func, from]
+                condition.InsertOperation(1, new LoadOperation(CurrentScope, Program)
+                {
+                    LoadName = "$InRange",
+                    PoiLocation = poiLocation,
+                    SourceRange = sourceRange
+                });
+                // [t, func, t, from]
+                condition.InsertOperation(2, new SwapOperation(CurrentScope, Program)
+                {
+                    PoiLocation = poiLocation,
+                    SourceRange = sourceRange
+                });
+                // [t, func, t, from, to]
+                condition.Join(to);
+                condition.AddOperation(new CallOperation(CurrentScope, Program)
+                {
+                    ArgumentCount = 3,
+                    PoiLocation = poiLocation,
+                    SourceRange = sourceRange
+                });
+            }
+            list.Insert(0, (condition, body));
+        }
+        CurrentScope.AddOperation(new CaseOperation(CurrentScope, Program)
+        {
+            Cases = list,
+            DefaultCase = defaultScope,
+            PoiLocation = SourceLocationHelper.SourceLocation(context),
+            SourceRange = SourceLocationHelper.SourceRange(context)
+        });
+    }
+
     public override void ExitWhileStatement(PseudoCodeParser.WhileStatementContext context)
     {
         base.ExitWhileStatement(context);

@@ -1632,8 +1632,8 @@ public partial class PseudoCodeParser : Parser {
 
 	public partial class CaseStatementContext : ParserRuleContext {
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Case() { return GetToken(PseudoCodeParser.Case, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ArithmeticExpressionContext arithmeticExpression() {
-			return GetRuleContext<ArithmeticExpressionContext>(0);
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
 		}
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Of() { return GetToken(PseudoCodeParser.Of, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public CaseBodyContext caseBody() {
@@ -1667,7 +1667,7 @@ public partial class PseudoCodeParser : Parser {
 			State = 261;
 			Match(Case);
 			State = 262;
-			arithmeticExpression(0);
+			expression();
 			State = 263;
 			Match(Of);
 			State = 264;
@@ -1693,8 +1693,8 @@ public partial class PseudoCodeParser : Parser {
 			return GetRuleContext<AlignedBlockContext>(0);
 		}
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Otherwise() { return GetToken(PseudoCodeParser.Otherwise, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public AtomContext atom() {
-			return GetRuleContext<AtomContext>(0);
+		[System.Diagnostics.DebuggerNonUserCode] public ScopedExpressionContext scopedExpression() {
+			return GetRuleContext<ScopedExpressionContext>(0);
 		}
 		[System.Diagnostics.DebuggerNonUserCode] public ValueRangeContext valueRange() {
 			return GetRuleContext<ValueRangeContext>(0);
@@ -1753,7 +1753,7 @@ public partial class PseudoCodeParser : Parser {
 				case 2:
 					{
 					State = 268;
-					atom();
+					scopedExpression();
 					}
 					break;
 				case 3:
@@ -1857,13 +1857,15 @@ public partial class PseudoCodeParser : Parser {
 	}
 
 	public partial class ValueRangeContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext[] expression() {
-			return GetRuleContexts<ExpressionContext>();
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression(int i) {
-			return GetRuleContext<ExpressionContext>(i);
-		}
+		public ScopedExpressionContext from;
+		public ScopedExpressionContext to;
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode To() { return GetToken(PseudoCodeParser.To, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ScopedExpressionContext[] scopedExpression() {
+			return GetRuleContexts<ScopedExpressionContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ScopedExpressionContext scopedExpression(int i) {
+			return GetRuleContext<ScopedExpressionContext>(i);
+		}
 		public ValueRangeContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -1889,11 +1891,11 @@ public partial class PseudoCodeParser : Parser {
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 285;
-			expression();
+			_localctx.from = scopedExpression();
 			State = 286;
 			Match(To);
 			State = 287;
-			expression();
+			_localctx.to = scopedExpression();
 			}
 		}
 		catch (RecognitionException re) {
@@ -4207,14 +4209,14 @@ public partial class PseudoCodeParser : Parser {
 		0,247,248,5,21,0,0,248,249,3,26,13,0,249,35,1,0,0,0,250,251,5,22,0,0,251,
 		252,3,26,13,0,252,253,5,23,0,0,253,254,3,28,14,0,254,255,5,24,0,0,255,
 		37,1,0,0,0,256,257,5,25,0,0,257,258,3,28,14,0,258,259,5,26,0,0,259,260,
-		3,26,13,0,260,39,1,0,0,0,261,262,5,14,0,0,262,263,3,84,42,0,263,264,5,
+		3,26,13,0,260,39,1,0,0,0,261,262,5,14,0,0,262,263,3,78,39,0,263,264,5,
 		15,0,0,264,265,3,44,22,0,265,266,5,17,0,0,266,41,1,0,0,0,267,271,5,16,
-		0,0,268,271,3,88,44,0,269,271,3,46,23,0,270,267,1,0,0,0,270,268,1,0,0,
+		0,0,268,271,3,26,13,0,269,271,3,46,23,0,270,267,1,0,0,0,270,268,1,0,0,
 		0,270,269,1,0,0,0,271,272,1,0,0,0,272,273,5,68,0,0,273,276,3,30,15,0,274,
 		276,5,7,0,0,275,270,1,0,0,0,275,274,1,0,0,0,276,43,1,0,0,0,277,279,5,90,
 		0,0,278,280,3,42,21,0,279,278,1,0,0,0,280,281,1,0,0,0,281,279,1,0,0,0,
 		281,282,1,0,0,0,282,283,1,0,0,0,283,284,5,91,0,0,284,45,1,0,0,0,285,286,
-		3,78,39,0,286,287,5,19,0,0,287,288,3,78,39,0,288,47,1,0,0,0,289,290,5,
+		3,26,13,0,286,287,5,19,0,0,287,288,3,26,13,0,288,47,1,0,0,0,289,290,5,
 		31,0,0,290,292,3,100,50,0,291,293,3,52,26,0,292,291,1,0,0,0,292,293,1,
 		0,0,0,293,294,1,0,0,0,294,295,3,28,14,0,295,296,5,32,0,0,296,49,1,0,0,
 		0,297,298,5,34,0,0,298,300,5,87,0,0,299,301,3,52,26,0,300,299,1,0,0,0,

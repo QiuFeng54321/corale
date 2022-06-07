@@ -29,4 +29,5 @@ public class PutRecordOperation : FileOperation
             });
         PopAndCheckPath();
     }
+    public override string ToPlainString() => "Put record";
 }

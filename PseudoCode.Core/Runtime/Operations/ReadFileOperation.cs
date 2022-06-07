@@ -1,3 +1,5 @@
+using PseudoCode.Core.Analyzing;
+using PseudoCode.Core.Runtime.Types;
 using Type = PseudoCode.Core.Runtime.Types.Type;
 
 namespace PseudoCode.Core.Runtime.Operations;
@@ -22,7 +24,19 @@ public class ReadFileOperation : FileOperation
     public override void MetaOperate()
     {
         base.Operate();
-        var instance = Program.TypeCheckStack.Pop();
+        var typeInfo = Program.TypeCheckStack.Pop();
+        
+        var stringType = ParentScope.FindTypeDefinition(Type.StringId).Type;
+        if (typeInfo.Type is PlaceholderType placeholderType) placeholderType.MetaAssign(stringType);
+
+        if (!typeInfo.Type.IsConvertableFrom(stringType))
+            Program.AnalyserFeedbacks.Add(new Feedback
+            {
+                Message = $"READFILE variable is of type {typeInfo} and is not convertable from {stringType}",
+                Severity = Feedback.SeverityType.Error,
+                SourceRange = SourceRange
+            });
         PopAndCheckPath();
     }
+    public override string ToPlainString() => "Read line";
 }

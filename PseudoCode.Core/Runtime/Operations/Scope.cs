@@ -114,6 +114,10 @@ public class Scope : Operation
     {
         ScopeStates.Operations.Add(operation);
     }
+    public void InsertOperation(int index, Operation operation)
+    {
+        ScopeStates.Operations.Insert(index, operation);
+    }
 
     public Operation Take(int i)
     {

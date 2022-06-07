@@ -108,10 +108,47 @@ public class PseudoProgram
                 return scope.FindTypeDefinition(Type.BooleanId).Type.Instance(program.OpenFiles[path].Eof());
             }
         });
+        GlobalScope.AddOperation(new MakeBuiltinFunctionOperation(GlobalScope, this)
+        {
+            Name = "$InRange",
+            Definition = new Definition
+            {
+                Name = "$InRange",
+                References = new List<SourceRange>(),
+                SourceRange = SourceRange.Identity,
+                Type = new BuiltinFunctionType(GlobalScope, this)
+                {
+                    ParameterInfos = new[]
+                    {
+                        new FunctionType.ParameterInfo
+                        {
+                            Name = "target",
+                            Definition = GlobalScope.FindTypeDefinition(Type.RealId)
+                        },new FunctionType.ParameterInfo
+                        {
+                            Name = "from",
+                            Definition = GlobalScope.FindTypeDefinition(Type.RealId)
+                        },new FunctionType.ParameterInfo
+                        {
+                            Name = "to",
+                            Definition = GlobalScope.FindTypeDefinition(Type.RealId)
+                        },
+                    },
+                    ReturnType = GlobalScope.FindTypeDefinition(Type.BooleanId).Type
+                }
+            },
+            Func = (scope, program, args) =>
+            {
+                var target = args[0].Get<decimal>();
+                var from = args[1].Get<decimal>();
+                var to = args[2].Get<decimal>();
+                return scope.FindTypeDefinition(Type.BooleanId).Type.Instance(from <= target && target <= to);
+            }
+        });
     }
 
     public void PrintAnalyzerFeedbacks(TextWriter textWriter)
     {
-        foreach (var feedback in AnalyserFeedbacks) textWriter.WriteLine(feedback);
+        foreach (var feedback in AnalyserFeedbacks.OrderBy(f => f.Severity)) textWriter.WriteLine(feedback);
     }
 }

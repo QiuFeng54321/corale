@@ -18,4 +18,7 @@ public class CloseFileOperation : FileOperation
         base.Operate();
         PopAndCheckPath();
     }
+
+    public override string ToPlainString() => "Close file";
+
 }

@@ -23,7 +23,7 @@ public class GetRecordOperation : FileOperation
     {
         base.Operate();
         var type = Program.TypeCheckStack.Pop();
-        if (type is PlaceholderType)
+        if (type.Type is PlaceholderType)
         {
             Program.AnalyserFeedbacks.Add(new Feedback
             {
@@ -34,4 +34,5 @@ public class GetRecordOperation : FileOperation
         }
         PopAndCheckPath();
     }
+    public override string ToPlainString() => "Get record";
 }
