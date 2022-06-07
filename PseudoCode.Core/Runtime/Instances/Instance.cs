@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using PseudoCode.Core.Runtime.Operations;
 using Type = PseudoCode.Core.Runtime.Types.Type;
@@ -43,8 +44,10 @@ public class Instance
 
     public virtual string DebugRepresent()
     {
+        var represent = Represent();
+        if (Type.Id is Type.StringId or Type.CharId) represent = Regex.Escape(represent);
         return
-            $"{{{Type} {Represent()} {{{(Members != null ? string.Join(',', Members.Select(p => $"{p.Key} = {p.Value}")) : "")}}}}}";
+            $"{{{Type} {represent} {{{(Members != null ? string.Join(',', Members.Select(p => $"{p.Key} = {p.Value}")) : "")}}}}}";
     }
 
     public override string ToString()
