@@ -19,7 +19,10 @@ public class PseudoProgram
 
     public PseudoProgram()
     {
-        GlobalScope = new Scope(null, this);
+        GlobalScope = new Scope(null, this)
+        {
+            AllowStatements = true
+        };
         AddPrimitiveTypes();
         AddBuiltinFunctions();
     }

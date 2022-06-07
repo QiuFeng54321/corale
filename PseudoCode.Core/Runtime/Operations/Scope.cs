@@ -23,6 +23,8 @@ public class Scope : Operation
 
     public ScopeStates ScopeStates { get; set; }
     public List<Scope> ChildScopes { get; set; } = new();
+    public bool AllowStatements;
+    public SourceLocation FirstLocation;
 
     public Definition FindInstanceDefinition(string name)
     {
@@ -113,6 +115,9 @@ public class Scope : Operation
     public void AddOperation(Operation operation)
     {
         ScopeStates.Operations.Add(operation);
+        if (operation.SourceRange == null) return;
+        FirstLocation ??= operation.SourceRange.Start;
+        if (FirstLocation > operation.SourceRange.Start) FirstLocation = operation.SourceRange.Start;
     }
     public void InsertOperation(int index, Operation operation)
     {
@@ -199,6 +204,15 @@ public class Scope : Operation
             .Select(x => x.Value);
         res = ChildScopes.Aggregate(res, (current, childScope) => current.Concat(childScope.GetAllDefinedVariables()));
         return res;
+    }
+    public Scope GetNearestStatementScopeBefore(SourceLocation sourceLocation)
+    {
+        foreach (var scope in ChildScopes.Where(scope => scope.AllowStatements && scope.SourceRange.Contains(sourceLocation)))
+        {
+            return scope.GetNearestStatementScopeBefore(sourceLocation);
+        }
+
+        return AllowStatements && SourceRange.Contains(sourceLocation) ? this : null;
     }
 
 

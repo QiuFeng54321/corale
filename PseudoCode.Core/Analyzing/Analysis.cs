@@ -34,11 +34,20 @@ public class Analysis
         {
             if (definition.Type is PlaceholderType)
             {
+                var scopeSourceLocation = Program.GlobalScope.GetNearestStatementScopeBefore(definition.SourceRange.Start).FirstLocation;
                 Program.AnalyserFeedbacks.Add(new Feedback
                 {
                     Message = $"Invalid variable {definition.Name}",
                     Severity = Feedback.SeverityType.Error,
-                    SourceRange = definition.SourceRange
+                    SourceRange = definition.SourceRange,
+                    Replacements = new List<Feedback.Replacement>
+                    {
+                        new()
+                        {
+                            SourceRange = new SourceRange(scopeSourceLocation, scopeSourceLocation),
+                            Text = $"DECLARE {definition.Name} : STRING\n"
+                        }
+                    }
                 });
             }
 

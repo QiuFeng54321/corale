@@ -616,6 +616,7 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
     {
         base.EnterIndentedBlock(context);
         EnterScope(context);
+        CurrentScope.AllowStatements = true;
     }
 
     public override void ExitIndentedBlock(PseudoCodeParser.IndentedBlockContext context)
