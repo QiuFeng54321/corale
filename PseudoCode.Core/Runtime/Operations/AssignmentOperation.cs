@@ -42,6 +42,15 @@ public class AssignmentOperation : Operation
             return;
         }
 
+        if (!to.IsReference)
+        {
+            Program.AnalyserFeedbacks.Add(new Feedback
+            {
+                Message = $"The target instance is not a reference",
+                Severity = Feedback.SeverityType.Error,
+                SourceRange = SourceRange
+            });
+        }
         if (to.Type is PlaceholderType placeholderType) to.Type = placeholderType.MetaAssign(value.Type);
         // TODO: Type check
         if (!to.Type.IsConvertableFrom(value.Type))
