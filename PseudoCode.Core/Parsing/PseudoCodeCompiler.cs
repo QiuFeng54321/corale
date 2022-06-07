@@ -516,7 +516,7 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
                 // [t, t, func, from]
                 condition.InsertOperation(1, new LoadOperation(CurrentScope, Program)
                 {
-                    LoadName = "__in_range",
+                    LoadName = "$InRange",
                     PoiLocation = poiLocation,
                     SourceRange = sourceRange
                 });

@@ -32,26 +32,17 @@ public class Scope : Operation
             : ParentScope?.FindInstanceDefinition(name);
     }
 
-    private Definition FindTypeDefinitionInternal(string typeName)
-    {
-        return InstanceDefinitions.ContainsKey(typeName)
-                ? InstanceDefinitions[typeName]
-                : ParentScope?.FindTypeDefinitionInternal(typeName);
-    }
-
-    private Definition FindTypeDefinitionInternal(uint id)
-    {
-        var t = InstanceDefinitions.FirstOrDefault(t => t.Value.Type.Id == id, new KeyValuePair<string, Definition>());
-        return t.Value ?? ParentScope?.FindTypeDefinitionInternal(id);
-    }
     public Definition FindTypeDefinition(string typeName)
     {
-        return Program.FindTypeDefinition(typeName) ?? FindTypeDefinitionInternal(typeName);
+        return InstanceDefinitions.ContainsKey(typeName)
+            ? InstanceDefinitions[typeName]
+            : ParentScope?.FindTypeDefinition(typeName) ?? Program.FindTypeDefinition(typeName);
     }
 
     public Definition FindTypeDefinition(uint id)
     {
-        return Program.FindTypeDefinition(id) ?? FindTypeDefinitionInternal(id);
+        var t = InstanceDefinitions.FirstOrDefault(t => t.Value.Type.Id == id, new KeyValuePair<string, Definition>());
+        return t.Value ?? ParentScope?.FindTypeDefinition(id) ?? Program.FindTypeDefinition(id);
     }
 
     public void RegisterInstanceType(string name, Type type)
@@ -127,7 +118,6 @@ public class Scope : Operation
         FirstLocation ??= operation.SourceRange.Start;
         if (FirstLocation > operation.SourceRange.Start) FirstLocation = operation.SourceRange.Start;
     }
-
     public void InsertOperation(int index, Operation operation)
     {
         ScopeStates.Operations.Insert(index, operation);
@@ -214,11 +204,9 @@ public class Scope : Operation
         res = ChildScopes.Aggregate(res, (current, childScope) => current.Concat(childScope.GetAllDefinedVariables()));
         return res;
     }
-
     public Scope GetNearestStatementScopeBefore(SourceLocation sourceLocation)
     {
-        foreach (var scope in ChildScopes.Where(scope =>
-                     scope.AllowStatements && scope.SourceRange.Contains(sourceLocation)))
+        foreach (var scope in ChildScopes.Where(scope => scope.AllowStatements && scope.SourceRange.Contains(sourceLocation)))
         {
             return scope.GetNearestStatementScopeBefore(sourceLocation);
         }

@@ -123,10 +123,10 @@ public class PseudoProgram
         });
         GlobalScope.AddOperation(new MakeBuiltinFunctionOperation(GlobalScope, this)
         {
-            Name = "__in_range",
+            Name = "$InRange",
             Definition = new Definition
             {
-                Name = "__in_range",
+                Name = "$InRange",
                 References = new List<SourceRange>(),
                 SourceRange = SourceRange.Identity,
                 Type = new BuiltinFunctionType(GlobalScope, this)
