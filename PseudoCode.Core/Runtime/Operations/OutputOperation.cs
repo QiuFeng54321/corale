@@ -16,7 +16,7 @@ public class OutputOperation : Operation
         List<Instance> arguments = new();
         for (var i = 0; i < ArgumentCount; i++)
             arguments.Insert(0, Program.RuntimeStack.Pop());
-        Console.WriteLine(string.Join(' ', arguments));
+        Console.WriteLine(string.Join(' ', arguments.Select(arg => arg.Represent())));
     }
 
     public override void MetaOperate()

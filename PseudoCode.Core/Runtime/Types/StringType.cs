@@ -38,7 +38,7 @@ public class StringType : PrimitiveType<string>
 
     public override Instance BitAnd(Instance i1, Instance i2)
     {
-        return Instance(i1.ToString() + i2, ParentScope);
+        return Instance(i1.Represent() + i2.Represent(), ParentScope);
     }
 
     public override bool IsConvertableFrom(Type type)
