@@ -12,7 +12,7 @@ public class SeekOperation : FileOperation
     {
         base.Operate();
         var addressInstance = Program.RuntimeStack.Pop();
-        var address = Program.FindTypeDefinition(Type.IntegerId).Type.CastFrom(addressInstance).Get<int>();
+        var address = ParentScope.FindTypeDefinition(Type.IntegerId).Type.CastFrom(addressInstance).Get<int>();
         var path = PopPathAtRuntime();
         Program.OpenFiles[path].Seek(address);
     }

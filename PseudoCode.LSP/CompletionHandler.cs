@@ -45,7 +45,6 @@ public class CompletionHandler : CompletionHandlerBase
         var cursor = request.Position.ToLocation();
         _logger.LogInformation(cursor.ToString());
         
-        completionBuilder.AddPrimitiveTypes(analysis, cursor);
         completionBuilder.AddTypes(analysis, cursor);
         completionBuilder.AddVariables(analysis, cursor);
         _logger.LogWarning("Complete complete");

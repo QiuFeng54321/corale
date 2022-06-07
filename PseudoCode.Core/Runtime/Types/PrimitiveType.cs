@@ -25,12 +25,12 @@ public class PrimitiveType<T> : Type
 
     public Instance LogicOperation(Instance i1, Instance i2, Func<T, T, bool> func)
     {
-        return Program.FindTypeDefinition(BooleanId).Type
+        return ParentScope.FindTypeDefinition(BooleanId).Type
             .Instance(func(HandledCastFrom(i1).Get<T>(), HandledCastFrom(i2).Get<T>()), ParentScope);
     }
 
     public Instance LogicUnaryOperation(Instance i, Func<T, bool> func)
     {
-        return Program.FindTypeDefinition(BooleanId).Type.Instance(func(HandledCastFrom(i).Get<T>()), ParentScope);
+        return ParentScope.FindTypeDefinition(BooleanId).Type.Instance(func(HandledCastFrom(i).Get<T>()), ParentScope);
     }
 }

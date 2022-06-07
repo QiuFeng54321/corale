@@ -16,7 +16,7 @@ public class IfOperation : Operation
     {
         base.Operate();
         TestExpressionScope.HandledOperate();
-        var test = Program.FindTypeDefinition(Type.BooleanId).Type.HandledCastFrom(Program.RuntimeStack.Pop());
+        var test = ParentScope.FindTypeDefinition(Type.BooleanId).Type.HandledCastFrom(Program.RuntimeStack.Pop());
         if (test.Get<bool>())
             TrueBlock.HandledOperate();
         else
@@ -28,7 +28,7 @@ public class IfOperation : Operation
         base.MetaOperate();
         TestExpressionScope.MetaOperate();
         var testType = Program.TypeCheckStack.Pop();
-        if (!Program.FindTypeDefinition(Type.BooleanId).Type.IsConvertableFrom(testType.Type))
+        if (!ParentScope.FindTypeDefinition(Type.BooleanId).Type.IsConvertableFrom(testType.Type))
             Program.AnalyserFeedbacks.Add(new Feedback
             {
                 Message = $"Test expression is of type {testType} and cannot be converted into BOOLEAN",

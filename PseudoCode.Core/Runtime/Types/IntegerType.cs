@@ -23,9 +23,9 @@ public class IntegerType : PrimitiveType<int>
             case PseudoCodeLexer.GreaterEqual:
             case PseudoCodeLexer.Smaller:
             case PseudoCodeLexer.SmallerEqual:
-                return Program.FindTypeDefinition(BooleanId).Type;
+                return ParentScope.FindTypeDefinition(BooleanId).Type;
             case PseudoCodeLexer.IntDivide:
-                return Program.FindTypeDefinition(IntegerId).Type;
+                return ParentScope.FindTypeDefinition(IntegerId).Type;
             case PseudoCodeLexer.And:
             case PseudoCodeLexer.BitAnd:
             case PseudoCodeLexer.Or:
@@ -37,21 +37,21 @@ public class IntegerType : PrimitiveType<int>
 
     public override Type UnaryResultType(int type)
     {
-        return type == PseudoCodeLexer.Not ? Program.FindTypeDefinition(BooleanId).Type : this;
+        return type == PseudoCodeLexer.Not ? ParentScope.FindTypeDefinition(BooleanId).Type : this;
     }
 
     public override Instance Add(Instance i1, Instance i2)
     {
         return i2.Type == this
             ? ArithmeticOperation(i1, i2, (arg1, arg2) => arg1 + arg2)
-            : Program.FindTypeDefinition(RealId).Type.Add(i1, i2);
+            : ParentScope.FindTypeDefinition(RealId).Type.Add(i1, i2);
     }
 
     public override Instance Subtract(Instance i1, Instance i2)
     {
         return i2.Type == this
             ? ArithmeticOperation(i1, i2, (arg1, arg2) => arg1 - arg2)
-            : Program.FindTypeDefinition(RealId).Type.Subtract(i1, i2);
+            : ParentScope.FindTypeDefinition(RealId).Type.Subtract(i1, i2);
     }
 
     public override Instance Negative(Instance i)
@@ -63,24 +63,24 @@ public class IntegerType : PrimitiveType<int>
     {
         return i2.Type == this
             ? ArithmeticOperation(i1, i2, (arg1, arg2) => arg1 * arg2)
-            : Program.FindTypeDefinition(RealId).Type.Multiply(i1, i2);
+            : ParentScope.FindTypeDefinition(RealId).Type.Multiply(i1, i2);
     }
 
     public override Instance Divide(Instance i1, Instance i2)
     {
-        return Program.FindTypeDefinition(RealId).Type.Divide(i1, i2);
+        return ParentScope.FindTypeDefinition(RealId).Type.Divide(i1, i2);
     }
 
     public override Instance Mod(Instance i1, Instance i2)
     {
         return i2.Type == this
             ? ArithmeticOperation(i1, i2, (arg1, arg2) => arg1 % arg2)
-            : Program.FindTypeDefinition(RealId).Type.Mod(i1, i2);
+            : ParentScope.FindTypeDefinition(RealId).Type.Mod(i1, i2);
     }
 
     public override Instance Pow(Instance i1, Instance i2)
     {
-        return Program.FindTypeDefinition(RealId).Type.Pow(i1, i2);
+        return ParentScope.FindTypeDefinition(RealId).Type.Pow(i1, i2);
     }
 
     public override Instance IntDivide(Instance i1, Instance i2)
@@ -90,32 +90,32 @@ public class IntegerType : PrimitiveType<int>
 
     public override Instance Greater(Instance i1, Instance i2)
     {
-        return Program.FindTypeDefinition(RealId).Type.Greater(i1, i2);
+        return ParentScope.FindTypeDefinition(RealId).Type.Greater(i1, i2);
     }
 
     public override Instance GreaterEqual(Instance i1, Instance i2)
     {
-        return Program.FindTypeDefinition(RealId).Type.GreaterEqual(i1, i2);
+        return ParentScope.FindTypeDefinition(RealId).Type.GreaterEqual(i1, i2);
     }
 
     public override Instance Smaller(Instance i1, Instance i2)
     {
-        return Program.FindTypeDefinition(RealId).Type.Smaller(i1, i2);
+        return ParentScope.FindTypeDefinition(RealId).Type.Smaller(i1, i2);
     }
 
     public override Instance SmallerEqual(Instance i1, Instance i2)
     {
-        return Program.FindTypeDefinition(RealId).Type.SmallerEqual(i1, i2);
+        return ParentScope.FindTypeDefinition(RealId).Type.SmallerEqual(i1, i2);
     }
 
     public override Instance Equal(Instance i1, Instance i2)
     {
-        return Program.FindTypeDefinition(RealId).Type.Equal(i1, i2);
+        return ParentScope.FindTypeDefinition(RealId).Type.Equal(i1, i2);
     }
 
     public override Instance NotEqual(Instance i1, Instance i2)
     {
-        return Program.FindTypeDefinition(RealId).Type.NotEqual(i1, i2);
+        return ParentScope.FindTypeDefinition(RealId).Type.NotEqual(i1, i2);
     }
 
     public override Instance CastFrom(Instance i)
@@ -125,7 +125,7 @@ public class IntegerType : PrimitiveType<int>
 
     public Instance CastToReal(Instance i)
     {
-        return Program.FindTypeDefinition(RealId).Type.HandledCastFrom(i);
+        return ParentScope.FindTypeDefinition(RealId).Type.HandledCastFrom(i);
     }
 
     public override bool IsConvertableFrom(Type type)

@@ -22,7 +22,7 @@ public class DeclareOperation : Operation
         {
             for (var i = 0; i < DimensionCount; i++)
             {
-                var intType = Program.FindTypeDefinition(Type.IntegerId).Type;
+                var intType = ParentScope.FindTypeDefinition(Type.IntegerId).Type;
                 var end = intType.CastFrom(Program.RuntimeStack.Pop());
                 var start = intType.CastFrom(Program.RuntimeStack.Pop());
                 var range = new Range { Start = start.Get<int>(), End = end.Get<int>() };
@@ -41,7 +41,7 @@ public class DeclareOperation : Operation
         var invalidType = false;
         for (var i = 0; i < DimensionCount; i++)
         {
-            var intType = Program.FindTypeDefinition(Type.IntegerId).Type;
+            var intType = ParentScope.FindTypeDefinition(Type.IntegerId).Type;
             var invalidEnd = !intType.IsConvertableFrom(Program.TypeCheckStack.Pop().Type);
             var invalidStart = !intType.IsConvertableFrom(Program.TypeCheckStack.Pop().Type);
             invalidType |= invalidStart || invalidEnd;

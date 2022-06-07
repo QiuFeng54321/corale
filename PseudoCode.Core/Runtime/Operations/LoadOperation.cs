@@ -25,7 +25,7 @@ public class LoadOperation : Operation
         {
             if (!Program.AllowUndeclaredVariables) throw;
             // Console.WriteLine($"Warning: {LoadName} is not found in current scope. Creating one...");
-            Program.RuntimeStack.Push(Program.FindTypeDefinition(Type.PlaceholderId).Type
+            Program.RuntimeStack.Push(ParentScope.FindTypeDefinition(Type.PlaceholderId).Type
                 .Instance(LoadName, ParentScope));
         }
     }

@@ -17,7 +17,7 @@ public class RepeatOperation : Operation
         while (test)
         {
             RepeatBlock.HandledOperate();
-            test = Program.FindTypeDefinition(Type.BooleanId).Type.HandledCastFrom(Program.RuntimeStack.Pop())
+            test = ParentScope.FindTypeDefinition(Type.BooleanId).Type.HandledCastFrom(Program.RuntimeStack.Pop())
                 .Get<bool>();
         }
     }

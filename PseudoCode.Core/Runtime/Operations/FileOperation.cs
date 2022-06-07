@@ -12,7 +12,7 @@ public class FileOperation : Operation
 
     public string PopPathAtRuntime()
     {
-        var stringType = Program.FindTypeDefinition(Type.StringId).Type;
+        var stringType = ParentScope.FindTypeDefinition(Type.StringId).Type;
         var pathInstance = stringType.CastFrom(Program.RuntimeStack.Pop());
         var path = pathInstance.Get<string>();
         return path;
@@ -21,7 +21,7 @@ public class FileOperation : Operation
     public TypeInfo PopAndCheckPath()
     {
         var path = Program.TypeCheckStack.Pop();
-        if (!Program.FindTypeDefinition(Type.StringId).Type.IsConvertableFrom(path.Type))
+        if (!ParentScope.FindTypeDefinition(Type.StringId).Type.IsConvertableFrom(path.Type))
             Program.AnalyserFeedbacks.Add(new Feedback
             {
                 Message = $"File path cannot be {path}",
