@@ -41,7 +41,7 @@ public class CodeActionHandler : CodeActionHandlerBase
         CancellationToken cancellationToken)
     {
         _logger.LogWarning("Codeactioning");
-        return new CommandOrCodeActionContainer(request.Context.Diagnostics.Where(d => d.Code.HasValue).Select(d => JsonConvert.DeserializeObject<Feedback>(d.Code?.String)).Where(f => f.Replacements.Count != 0)
+        return new CommandOrCodeActionContainer(request.Context.Diagnostics.SelectMany(d => _analysisService.GetAnalysis(request.TextDocument.Uri).Program.AnalyserFeedbacks.Where(f => f.SourceRange == d.Range.ToRange())).Where(f => f.Replacements.Count != 0)
             .Select(f => new CommandOrCodeAction(new CodeAction
             {
                 Kind = CodeActionKind.QuickFix,

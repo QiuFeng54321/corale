@@ -18,6 +18,33 @@ public class SourceRange
         return Start <= location && End >= location;
     }
 
+    protected bool Equals(SourceRange other)
+    {
+        return Equals(Start, other.Start) && Equals(End, other.End);
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (ReferenceEquals(null, obj)) return false;
+        if (ReferenceEquals(this, obj)) return true;
+        return obj.GetType() == GetType() && Equals((SourceRange)obj);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Start, End);
+    }
+
+    public static bool operator ==(SourceRange left, SourceRange right)
+    {
+        return Equals(left, right);
+    }
+
+    public static bool operator !=(SourceRange left, SourceRange right)
+    {
+        return !Equals(left, right);
+    }
+
     public override string ToString()
     {
         return $"{Start} to {End}";

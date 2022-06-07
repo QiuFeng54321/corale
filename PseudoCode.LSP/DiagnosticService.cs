@@ -43,8 +43,7 @@ public class DiagnosticService
                 Source = "pseudocode",
                 Range = feedback.SourceRange.ToRange(),
                 // Code = w.Kind.ToString(),
-                Message = feedback.Message,
-                Code = new DiagnosticCode(JsonConvert.SerializeObject(feedback, SerializerSettings))
+                Message = feedback.Message
             })
             .ToList();
         _facade.TextDocument.PublishDiagnostics(new PublishDiagnosticsParams
