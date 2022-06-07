@@ -32,9 +32,9 @@ public class CallOperation : Operation
     {
         base.MetaOperate();
         var arguments = new List<Type>();
-        for (var i = 0; i < ArgumentCount; i++) arguments.Insert(0, Program.TypeCheckStack.Pop());
+        for (var i = 0; i < ArgumentCount; i++) arguments.Insert(0, Program.TypeCheckStack.Pop().Type);
         var called = Program.TypeCheckStack.Pop();
-        if (called is not FunctionType functionType)
+        if (called.Type is not FunctionType functionType)
         {
             Program.AnalyserFeedbacks.Add(new Feedback
             {
@@ -67,7 +67,10 @@ public class CallOperation : Operation
         }
 
         var ret = functionType?.ReturnType ?? new NullType(ParentScope, Program);
-        if (ret is not NullType) Program.TypeCheckStack.Push(ret);
+        if (ret is not NullType) Program.TypeCheckStack.Push(new TypeInfo {
+            Type = ret,
+            SourceRange = SourceRange
+        });
     }
 
     public override string ToPlainString()

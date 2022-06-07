@@ -15,7 +15,7 @@ public class PseudoProgram
     public Dictionary<uint, Instance> Memory = new();
     public Dictionary<string, PseudoFileStream> OpenFiles = new();
     public Stack<Instance> RuntimeStack = new();
-    public Stack<Type> TypeCheckStack = new();
+    public Stack<TypeInfo> TypeCheckStack = new();
 
     public PseudoProgram()
     {

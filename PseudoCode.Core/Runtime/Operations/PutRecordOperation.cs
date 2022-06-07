@@ -20,7 +20,7 @@ public class PutRecordOperation : FileOperation
     {
         base.Operate();
         var type = Program.TypeCheckStack.Pop();
-        if (!type.Serializable)
+        if (!type.Type.Serializable)
             Program.AnalyserFeedbacks.Add(new Feedback
             {
                 Message = $"Cannot serialize {type}",

@@ -42,8 +42,8 @@ public class DeclareOperation : Operation
         for (var i = 0; i < DimensionCount; i++)
         {
             var intType = ParentScope.FindTypeDefinition(Type.IntegerId).Type;
-            var invalidEnd = !intType.IsConvertableFrom(Program.TypeCheckStack.Pop());
-            var invalidStart = !intType.IsConvertableFrom(Program.TypeCheckStack.Pop());
+            var invalidEnd = !intType.IsConvertableFrom(Program.TypeCheckStack.Pop().Type);
+            var invalidStart = !intType.IsConvertableFrom(Program.TypeCheckStack.Pop().Type);
             invalidType |= invalidStart || invalidEnd;
         }
 

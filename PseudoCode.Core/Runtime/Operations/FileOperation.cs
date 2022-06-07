@@ -1,4 +1,5 @@
 using PseudoCode.Core.Analyzing;
+using PseudoCode.Core.Runtime.Types;
 using Type = PseudoCode.Core.Runtime.Types.Type;
 
 namespace PseudoCode.Core.Runtime.Operations;
@@ -17,10 +18,10 @@ public class FileOperation : Operation
         return path;
     }
 
-    public Type PopAndCheckPath()
+    public TypeInfo PopAndCheckPath()
     {
         var path = Program.TypeCheckStack.Pop();
-        if (!ParentScope.FindTypeDefinition(Type.StringId).Type.IsConvertableFrom(path))
+        if (!ParentScope.FindTypeDefinition(Type.StringId).Type.IsConvertableFrom(path.Type))
             Program.AnalyserFeedbacks.Add(new Feedback
             {
                 Message = $"File path cannot be {path}",

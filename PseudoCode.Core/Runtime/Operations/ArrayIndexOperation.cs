@@ -24,27 +24,42 @@ public class ArrayIndexOperation : Operation
     public override void MetaOperate()
     {
         base.MetaOperate();
-        var access = (ArrayType)Program.TypeCheckStack.Pop();
+        var access = (ArrayType)Program.TypeCheckStack.Pop().Type;
         var accessed = Program.TypeCheckStack.Pop();
-        if (accessed is not ArrayType accessedArray)
+        if (accessed.Type is not ArrayType accessedArray)
         {
             Program.AnalyserFeedbacks.Add(new Feedback
             {
                 Message = $"Invalid type of array access: {accessed}",
                 SourceRange = SourceRange
             });
-            Program.TypeCheckStack.Push(new NullType(ParentScope, Program));
+            Program.TypeCheckStack.Push(new TypeInfo
+            {
+                Type = new NullType(ParentScope, Program),
+                IsReference = true,
+                SourceRange = SourceRange
+            });
         }
         else
         {
             if (IndexLength < accessedArray.DimensionCount)
-                Program.TypeCheckStack.Push(new ArrayType(ParentScope, Program)
+                Program.TypeCheckStack.Push(new TypeInfo
                 {
-                    DimensionCount = accessedArray.DimensionCount - IndexLength,
-                    ElementType = accessedArray.ElementType
+                    Type = new ArrayType(ParentScope, Program)
+                    {
+                        DimensionCount = accessedArray.DimensionCount - IndexLength,
+                        ElementType = accessedArray.ElementType
+                    },
+                    IsReference = accessed.IsReference,
+                    SourceRange = SourceRange
                 });
             else
-                Program.TypeCheckStack.Push(accessedArray.ElementType);
+                Program.TypeCheckStack.Push(new TypeInfo
+                {
+                    Type = accessedArray.ElementType,
+                    IsReference = accessed.IsReference,
+                    SourceRange = SourceRange
+                });
         }
     }
 

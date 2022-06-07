@@ -39,7 +39,7 @@ public class WhileOperation : Operation
     {
         TestExpressionScope.MetaOperate();
         var testType = Program.TypeCheckStack.Pop();
-        if (!ParentScope.FindTypeDefinition(Type.BooleanId).Type.IsConvertableFrom(testType))
+        if (!ParentScope.FindTypeDefinition(Type.BooleanId).Type.IsConvertableFrom(testType.Type))
             Program.AnalyserFeedbacks.Add(new Feedback
             {
                 Message = $"Test expression is of type {testType} and cannot be converted into BOOLEAN",

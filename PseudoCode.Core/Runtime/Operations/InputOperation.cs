@@ -23,9 +23,9 @@ public class InputOperation : Operation
         base.MetaOperate();
         var type = Program.TypeCheckStack.Pop();
         var stringType = ParentScope.FindTypeDefinition(Type.StringId).Type;
-        if (type is PlaceholderType placeholderType) placeholderType.MetaAssign(stringType);
+        if (type.Type is PlaceholderType placeholderType) placeholderType.MetaAssign(stringType);
 
-        if (!type.IsConvertableFrom(stringType))
+        if (!type.Type.IsConvertableFrom(stringType))
             Program.AnalyserFeedbacks.Add(new Feedback
             {
                 Message = $"INPUT variable is of type {type} and is not convertable from {stringType}",

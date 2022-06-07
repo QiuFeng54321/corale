@@ -39,16 +39,20 @@ public class FormImmediateArrayOperation : Operation
         for (var i = 0; i < Length; i++)
         {
             var type = Program.TypeCheckStack.Pop();
-            if (type is ArrayType subArrayType)
+            if (type.Type is ArrayType subArrayType)
                 arrayElementType = subArrayType.ElementType;
             else
-                arrayElementType = type;
+                arrayElementType = type.Type;
         }
 
-        Program.TypeCheckStack.Push(ArrayType = new ArrayType(ParentScope, Program)
+        Program.TypeCheckStack.Push(new TypeInfo
         {
-            DimensionCount = 1,
-            ElementType = arrayElementType
+            Type = ArrayType = new ArrayType(ParentScope, Program)
+            {
+                DimensionCount = 1,
+                ElementType = arrayElementType
+            },
+            SourceRange = SourceRange
         });
     }
 

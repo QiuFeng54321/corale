@@ -1,4 +1,6 @@
 using PseudoCode.Core.Analyzing;
+using PseudoCode.Core.Runtime.Instances;
+using PseudoCode.Core.Runtime.Types;
 using Type = PseudoCode.Core.Runtime.Types.Type;
 
 namespace PseudoCode.Core.Runtime.Operations;
@@ -25,7 +27,7 @@ public class BinaryOperation : Operation
         base.MetaOperate();
         var right = Program.TypeCheckStack.Pop();
         var left = Program.TypeCheckStack.Pop();
-        var resType = left.BinaryResultType(OperatorMethod, right);
+        var resType = left.Type.BinaryResultType(OperatorMethod, right.Type);
         if (resType.Id == Type.NullId)
             Program.AnalyserFeedbacks.Add(new Feedback
             {
@@ -34,7 +36,26 @@ public class BinaryOperation : Operation
                 Severity = Feedback.SeverityType.Warning,
                 SourceRange = SourceRange
             });
-        Program.TypeCheckStack.Push(resType);
+
+        var isConstant = left.IsConstant && right.IsConstant;
+        var constantInstance = isConstant ? left.Type.BinaryOperators[OperatorMethod](left.ConstantInstance, right.ConstantInstance) : Instance.Null;
+        if (isConstant)
+        {
+            Program.AnalyserFeedbacks.Add(new Feedback
+                {
+                    Message = $"Replace with constant {constantInstance}",
+                    SourceRange = SourceRange,
+                    Severity = Feedback.SeverityType.Hint
+                });
+        }
+
+        Program.TypeCheckStack.Push(new TypeInfo {
+            Type = resType,
+            IsConstant = isConstant,
+            SourceRange = SourceRange,
+            ConstantInstance = constantInstance,
+            IsConstantEvaluated = true
+        });
     }
 
     public override string ToPlainString()

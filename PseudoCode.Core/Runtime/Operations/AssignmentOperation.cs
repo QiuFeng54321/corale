@@ -25,7 +25,7 @@ public class AssignmentOperation : Operation
     {
         base.MetaOperate();
         var value = Program.TypeCheckStack.Pop();
-        Type to;
+        TypeInfo to;
         try
         {
             to = Program.TypeCheckStack.Pop();
@@ -42,9 +42,9 @@ public class AssignmentOperation : Operation
             return;
         }
 
-        if (to is PlaceholderType placeholderType) to = placeholderType.MetaAssign(value);
+        if (to.Type is PlaceholderType placeholderType) to.Type = placeholderType.MetaAssign(value.Type);
         // TODO: Type check
-        if (!to.IsConvertableFrom(value))
+        if (!to.Type.IsConvertableFrom(value.Type))
             Program.AnalyserFeedbacks.Add(new Feedback
             {
                 Message = $"Cannot assign {value} to {to}",

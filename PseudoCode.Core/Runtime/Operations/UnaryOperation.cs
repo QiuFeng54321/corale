@@ -1,4 +1,6 @@
 using PseudoCode.Core.Analyzing;
+using PseudoCode.Core.Runtime.Instances;
+using PseudoCode.Core.Runtime.Types;
 using Type = PseudoCode.Core.Runtime.Types.Type;
 
 namespace PseudoCode.Core.Runtime.Operations;
@@ -23,7 +25,7 @@ public class UnaryOperation : Operation
     {
         base.MetaOperate();
         var to = Program.TypeCheckStack.Pop();
-        var resType = to.UnaryResultType(OperatorMethod);
+        var resType = to.Type.UnaryResultType(OperatorMethod);
         if (resType.Id == Type.NullId)
             Program.AnalyserFeedbacks.Add(new Feedback
             {
@@ -32,7 +34,13 @@ public class UnaryOperation : Operation
                 Severity = Feedback.SeverityType.Warning,
                 SourceRange = SourceRange
             });
-        Program.TypeCheckStack.Push(resType);
+        var isConstant = to.IsConstant;
+        Program.TypeCheckStack.Push(new TypeInfo {
+            Type = resType,
+            IsConstant = isConstant,
+            ConstantInstance = isConstant ? to.Type.UnaryOperators[OperatorMethod](to.ConstantInstance) : Instance.Null,
+            IsConstantEvaluated = true
+        });
     }
 
     public override string ToPlainString()
