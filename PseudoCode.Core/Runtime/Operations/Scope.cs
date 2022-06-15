@@ -46,14 +46,6 @@ public class Scope : Operation
         return t.Value ?? ParentScope?.FindTypeDefinition(id);
     }
 
-    public void RegisterInstanceType(string name, Type type)
-    {
-        InstanceDefinitions.Add(name, new Definition
-        {
-            Name = name, Type = type
-        });
-    }
-
     public Instance FindInstance(string name)
     {
         return ParentScope.Program.Memory[FindInstanceAddress(name)];
@@ -91,7 +83,7 @@ public class Scope : Operation
     public void AddType(Type type)
     {
         type.ParentScope = this;
-        TypeDefinitions.Add(type.Name, new Definition
+        TypeDefinitions.Add(type.Name, new Definition (ParentScope, Program)
         {
             Name = type.Name,
             Type = type,
@@ -111,7 +103,18 @@ public class Scope : Operation
         else
             InstanceDefinitions.Add(name, definition);
     }
-
+    public void AddTypeDefinition(string name, Definition definition, SourceRange sourceRange = null)
+    {
+        if (TypeDefinitions.ContainsKey(name))
+            Program.AnalyserFeedbacks.Add(new Feedback
+            {
+                Message = $"Type {name} is already declared",
+                Severity = Feedback.SeverityType.Error,
+                SourceRange = sourceRange
+            });
+        else
+            TypeDefinitions.Add(name, definition);
+    }
     public void AddOperation(Operation operation)
     {
         ScopeStates.Operations.Add(operation);

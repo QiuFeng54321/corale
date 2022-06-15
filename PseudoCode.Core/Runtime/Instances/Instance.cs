@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using PseudoCode.Core.Runtime.Operations;
+using PseudoCode.Core.Runtime.Types;
 using Type = PseudoCode.Core.Runtime.Types.Type;
 
 namespace PseudoCode.Core.Runtime.Instances;
@@ -9,8 +10,10 @@ public class Instance
 {
     public static Instance Null;
     public uint InstanceAddress;
+    public virtual Instance ParentInstance { get; set; } = null;
     [JsonIgnore] public Scope ParentScope;
     [JsonIgnore] public PseudoProgram Program;
+    
 
     public Instance()
     {
@@ -36,22 +39,29 @@ public class Instance
 
     public virtual string Represent()
     {
-        return Type.Id switch
+        return Type switch
         {
-            Type.DateId => Get<DateOnly>().ToString("dd/MM/yyyy"),
-            Type.BooleanId => Value?.ToString()?.ToUpper(),
-            Type.NullId => "NULL",
+            DateType => Get<DateOnly>().ToString("dd/MM/yyyy"),
+            BooleanType => Value?.ToString()?.ToUpper(),
+            NullType => "NULL",
+            TypeType => $"{Type.Name} {MembersString()}",
             // Type.StringId or Type.CharId or Type.IntegerId or Type.RealId => Value?.ToString(),
             _ => Value?.ToString()
         } ?? "NULL";
     }
+
+    private string MembersString()
+    {
+        return $"{{{(Members == null ? "" : string.Join(", ", Members.Select(m => $"{m.Key} = {m.Value}")))}}}";
+    }
+    
 
     public virtual string DebugRepresent()
     {
         var represent = Represent();
         if (Type.Id is Type.StringId or Type.CharId) represent = Regex.Escape(represent);
         return
-            $"{{{Type} {represent} {{{(Members != null ? string.Join(',', Members.Select(p => $"{p.Key} = {p.Value}")) : "")}}}}}";
+            $"{{{Type} {represent} {MembersString()}}}";
     }
 
     public override string ToString()

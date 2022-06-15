@@ -29,6 +29,39 @@ public class Type
     [JsonIgnore] public PseudoProgram Program;
     [JsonIgnore] public Dictionary<int, UnaryOperator> UnaryOperators;
 
+    public record TypeDescriptor(string Name, int Dimensions = 0, TypeDescriptor ElementType = null, TypeDescriptor ReturnType = null, FunctionType.ParameterInfo[] ParameterInfos = null)
+    {
+
+        public Type GetType(Scope scope, PseudoProgram program)
+        {
+            return Name switch
+            {
+                "ARRAY" => new ArrayType(scope, program)
+                {
+                    ElementType = ElementType.GetType(scope, program), DimensionCount = Dimensions
+                },
+                "FUNCTION" => new FunctionType(scope, program)
+                {
+                    ReturnType = ReturnType.GetType(scope, program), ParameterInfos = ParameterInfos
+                },
+                _ => scope.FindTypeDefinition(Name)?.Type
+            };
+        }
+
+        public override string ToString()
+        {
+            return Name switch
+            {
+                "ARRAY" => string.Format(strings.ArrayType_ToString, Dimensions, ElementType),
+                "FUNCTION" => string.Format(strings.FunctionType_ToString,
+                    string.Join(", ",
+                        ParameterInfos.Select(p => $"{(p.IsReference ? "BYREF " : "")}{p.Name}: {p.Definition.TypeDescriptor}")),
+                    ReturnType == null ? "" : $"RETURNS {ReturnType}"),
+                _ => Name
+            };
+        }
+    };
+
     public Type(Scope parentScope, PseudoProgram program)
     {
         Program = program;
@@ -64,6 +97,7 @@ public class Type
 
     public virtual uint Id { get; set; } = ++_incrementId;
     public virtual string Name { get; set; } = null!;
+    public virtual uint Size => (uint)(Members?.Count ?? 0 + 1);
     public virtual Dictionary<string, Definition> Members { get; init; } = new();
 
     public virtual Instance Instance(object value = null, Scope scope = null)
@@ -84,7 +118,7 @@ public class Type
         foreach (var member in Members)
             instance.Members[member.Key] = new ReferenceInstance(ParentScope, Program)
             {
-                InstanceAddress = Program.AllocateId(member.Value.Type.Instance(scope: ParentScope))
+                ReferenceAddress = Program.AllocateId(member.Value.Type.Instance(scope: ParentScope))
             };
 
         return instance;
@@ -124,7 +158,11 @@ public class Type
 
     public virtual Type MemberAccessResultType(string member)
     {
-        return !Members.ContainsKey(member) ? new NullType(ParentScope, Program) : Members[member].Type;
+        return MemberAccessResultDefinition(member)?.Type ?? new NullType(ParentScope, Program);
+    }
+    public virtual Definition MemberAccessResultDefinition(string member)
+    {
+        return !Members.ContainsKey(member) ? null : Members[member];
     }
 
     public virtual Instance Add(Instance i1, Instance i2)

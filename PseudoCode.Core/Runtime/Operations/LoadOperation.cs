@@ -36,7 +36,7 @@ public class LoadOperation : Operation
         var definition = ParentScope.FindInstanceDefinition(LoadName);
         definition?.References?.Add(SourceRange);
         if (definition == null)
-            ParentScope.AddVariableDefinition(LoadName, new Definition
+            ParentScope.AddVariableDefinition(LoadName, new Definition (ParentScope, Program)
             {
                 Name = LoadName,
                 Type = new PlaceholderType(ParentScope, Program)

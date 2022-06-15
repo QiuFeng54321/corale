@@ -70,6 +70,6 @@ public class ArrayType : Type
 
     public override string ToString()
     {
-        return $"ARRAY[Dim {DimensionCount}] OF {ElementType}";
+        return string.Format(strings.ArrayType_ToString, DimensionCount, ElementType);
     }
 }

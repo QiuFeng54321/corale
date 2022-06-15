@@ -158,4 +158,10 @@ Possible Causes:
     <data name="ArrayInstance_ElementAt_OutOfBounds" xml:space="preserve">
         <value>Accessed index {0}, total length {1}</value>
     </data>
+    <data name="ArrayType_ToString" xml:space="preserve">
+        <value>ARRAY[Dim {0}] OF {1}</value>
+    </data>
+    <data name="FunctionType_ToString" xml:space="preserve">
+        <value>FUNCTION({0}) {1}</value>
+    </data>
 </root>
