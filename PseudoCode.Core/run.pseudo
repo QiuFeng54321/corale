@@ -29,6 +29,7 @@ OUTPUT b
 eaf <- 1.2 + 2
 eaf <- eaf + 1
 OUTPUT "eaf:", eaf
+1.a <- 4
 
 // Uses for-loop to make a wing
 Wing <- ""

@@ -17,7 +17,7 @@ public class DeclareOperation : Operation
     public override void Operate()
     {
         base.Operate();
-        var instance = Definition.Type.Instance();
+        var instance = Definition.DefaultInstance != null ? Definition.Type.Clone(Definition.DefaultInstance) : Definition.Type.Instance();
         if (instance is ArrayInstance arrayInstance)
         {
             for (var i = 0; i < DimensionCount; i++)

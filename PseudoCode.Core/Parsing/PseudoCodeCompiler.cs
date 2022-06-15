@@ -278,7 +278,7 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         }
         else if (context.Dot() != null)
         {
-            var sourceLocation = SourceLocationHelper.SourceLocation(context.array());
+            var sourceLocation = SourceLocationHelper.SourceLocation(context.Dot().Symbol);
             CurrentScope.AddOperation(new MemberAccessOperation(CurrentScope, Program)
             {
                 PoiLocation = sourceLocation,

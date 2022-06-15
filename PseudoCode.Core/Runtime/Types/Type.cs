@@ -64,7 +64,7 @@ public class Type
 
     public virtual uint Id { get; set; } = ++_incrementId;
     public virtual string Name { get; set; } = null!;
-    public Dictionary<string, Definition> Members { get; } = new();
+    public virtual Dictionary<string, Definition> Members { get; init; } = new();
 
     public virtual Instance Instance(object value = null, Scope scope = null)
     {

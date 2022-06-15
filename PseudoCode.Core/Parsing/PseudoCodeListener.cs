@@ -536,6 +536,26 @@ public interface IPseudoCodeListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitNumber([NotNull] PseudoCodeParser.NumberContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="PseudoCodeParser.decimal"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDecimal([NotNull] PseudoCodeParser.DecimalContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="PseudoCodeParser.decimal"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDecimal([NotNull] PseudoCodeParser.DecimalContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="PseudoCodeParser.integer"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterInteger([NotNull] PseudoCodeParser.IntegerContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="PseudoCodeParser.integer"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitInteger([NotNull] PseudoCodeParser.IntegerContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="PseudoCodeParser.identifierWithNew"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

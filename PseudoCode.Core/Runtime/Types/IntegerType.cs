@@ -5,8 +5,10 @@ namespace PseudoCode.Core.Runtime.Types;
 
 public class IntegerType : PrimitiveType<int>
 {
+
     public IntegerType(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {
+        
     }
 
     public override uint Id => IntegerId;

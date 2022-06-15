@@ -641,6 +641,30 @@ public partial class PseudoCodeBaseListener : IPseudoCodeListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitNumber([NotNull] PseudoCodeParser.NumberContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="PseudoCodeParser.decimal"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterDecimal([NotNull] PseudoCodeParser.DecimalContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="PseudoCodeParser.decimal"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitDecimal([NotNull] PseudoCodeParser.DecimalContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="PseudoCodeParser.integer"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterInteger([NotNull] PseudoCodeParser.IntegerContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="PseudoCodeParser.integer"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitInteger([NotNull] PseudoCodeParser.IntegerContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="PseudoCodeParser.identifierWithNew"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

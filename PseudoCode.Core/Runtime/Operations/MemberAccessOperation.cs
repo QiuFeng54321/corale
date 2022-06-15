@@ -1,3 +1,4 @@
+using PseudoCode.Core.Analyzing;
 using PseudoCode.Core.Runtime.Types;
 
 namespace PseudoCode.Core.Runtime.Operations;
@@ -20,8 +21,18 @@ public class MemberAccessOperation : Operation
     {
         base.MetaOperate();
         var accessed = Program.TypeCheckStack.Pop();
+        var resultType = accessed.Type.MemberAccessResultType(MemberName);
+        if (resultType is NullType)
+        {
+            Program.AnalyserFeedbacks.Add(new Feedback
+            {
+                Message = $"{accessed} does not have field '{MemberName}'",
+                Severity = Feedback.SeverityType.Error,
+                SourceRange = SourceRange
+            });
+        }
         Program.TypeCheckStack.Push(new TypeInfo {
-            Type = accessed.Type.MemberAccessResultType(MemberName),
+            Type = resultType,
             IsReference = true,
             SourceRange = SourceRange
         });

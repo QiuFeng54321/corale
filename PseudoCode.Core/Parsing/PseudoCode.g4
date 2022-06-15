@@ -263,10 +263,14 @@ array
  */
 
 number
- : Integer {$atom::AtomType = "INTEGER"; $atom::Value = int.Parse($Integer.text);}
- | Decimal {$atom::AtomType = "REAL"; $atom::Value = decimal.Parse($Decimal.text);}
+ : integer {$atom::AtomType = "INTEGER"; $atom::Value = int.Parse($integer.text);}
+ | decimal {$atom::AtomType = "REAL"; $atom::Value = decimal.Parse($decimal.text);}
  ;
- 
+ // Value is either 1. or .1 and not just a single '.' to avoid ambiguity with DOT
+ decimal
+  : Subtract? (NumberSequence? Dot NumberSequence | NumberSequence Dot NumberSequence?)
+  ;
+ integer : Subtract? NumberSequence;
  identifierWithNew: Identifier | New;
 
  
@@ -281,11 +285,8 @@ String
 
 
 Date : Digit Digit '/' Digit Digit '/' Digit Digit Digit Digit;
-// Value is either 1. or .1 and not just a single '.' to avoid ambiguity with DOT
-Decimal
- : '-'? (Digit* '.' Digit+ | Digit+ '.' Digit*)
- ;
-Integer : '-' ? Digit+;
+
+NumberSequence: Digit+;
 
 Boolean : 'TRUE' | 'FALSE';
 
