@@ -16,7 +16,7 @@ public class MakeBuiltinFunctionOperation : Operation
     public override void Operate()
     {
         base.Operate();
-        var instance = ParentScope.FindInstanceDefinition(Name).Type.Instance(Func);
+        var instance = ParentScope.FindDefinition(Name).Type.Instance(Func);
         if (instance is not BuiltinFunctionInstance functionInstance)
             throw new InvalidTypeError($"I'm making a function of {instance.Type}???", this);
         ParentScope.ScopeStates.InstanceAddresses.Add(Name, Program.AllocateId(functionInstance));

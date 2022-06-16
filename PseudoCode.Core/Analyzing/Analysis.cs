@@ -7,7 +7,7 @@ namespace PseudoCode.Core.Analyzing;
 
 public class Analysis
 {
-    public IEnumerable<Definition> AllVariableDefinitions;
+    public IEnumerable<Definition> AllDefinitions;
     public PseudoProgram Program;
 
     public void TolerantAnalyse(string source)
@@ -24,13 +24,13 @@ public class Analysis
     public void SetProgram(PseudoProgram program)
     {
         Program = program;
-        AllVariableDefinitions = Program.GlobalScope.GetAllDefinedVariables();
+        AllDefinitions = Program.GlobalScope.GetAllDefinedDefinitions();
     }
 
     public void AnalyseUnusedVariables()
     {
-        if (AllVariableDefinitions == null) return;
-        foreach (var definition in AllVariableDefinitions)
+        if (AllDefinitions == null) return;
+        foreach (var definition in AllDefinitions.Where(definition => !definition.Attributes.HasFlag(Definition.Attribute.Type)))
         {
             if (definition.Type is PlaceholderType)
             {

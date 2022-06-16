@@ -37,7 +37,7 @@ public class DocumentHighlightHandler : DocumentHighlightHandlerBase
         CancellationToken cancellationToken)
     {
         var (definition, range) =
-            Scope.GetHoveredVariable(_analysisService.GetAnalysis(request.TextDocument.Uri).AllVariableDefinitions,
+            Scope.GetHoveredVariable(_analysisService.GetAnalysis(request.TextDocument.Uri).AllDefinitions,
                 request.Position.ToLocation());
         if (definition == null) return new DocumentHighlightContainer();
         return new DocumentHighlightContainer(definition.References.Select(r => new DocumentHighlight

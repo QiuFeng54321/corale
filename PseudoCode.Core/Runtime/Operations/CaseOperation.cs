@@ -20,7 +20,7 @@ public class CaseOperation : Operation
         {
             condition.Operate();
             var test = Program.RuntimeStack.Pop();
-            if (!Program.FindTypeDefinition(Type.BooleanId).Type.CastFrom(test).Get<bool>()) continue;
+            if (!Program.FindDefinition(Type.BooleanId).Type.CastFrom(test).Get<bool>()) continue;
             operation.Operate();
             fallback = false;
             break;

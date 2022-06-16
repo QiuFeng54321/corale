@@ -25,7 +25,7 @@ public class LoadOperation : Operation
         {
             if (!Program.AllowUndeclaredVariables) throw;
             // Console.WriteLine($"Warning: {LoadName} is not found in current scope. Creating one...");
-            Program.RuntimeStack.Push(Program.FindTypeDefinition(Type.PlaceholderId).Type
+            Program.RuntimeStack.Push(Program.FindDefinition(Type.PlaceholderId).Type
                 .Instance(LoadName, ParentScope));
         }
     }
@@ -33,7 +33,7 @@ public class LoadOperation : Operation
     public override void MetaOperate()
     {
         base.MetaOperate();
-        var definition = ParentScope.FindInstanceDefinition(LoadName);
+        var definition = ParentScope.FindDefinition(LoadName);
         definition?.References?.Add(SourceRange);
         if (definition == null)
             ParentScope.AddVariableDefinition(LoadName, new Definition (ParentScope, Program)
@@ -48,7 +48,7 @@ public class LoadOperation : Operation
             }, SourceRange);
 
         Program.TypeCheckStack.Push(new TypeInfo {
-            Type = ParentScope.FindInstanceDefinition(LoadName).Type,
+            Type = ParentScope.FindDefinition(LoadName).Type,
             IsReference = true,
             SourceRange = SourceRange
         });

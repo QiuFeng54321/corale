@@ -38,7 +38,7 @@ class DefinitionHandler : DefinitionHandlerBase
     {
         _logger.LogWarning("hover");
         var (definition, range) = 
-            Scope.GetHoveredVariable(_analysisService.GetAnalysis(request.TextDocument.Uri).AllVariableDefinitions,
+            Scope.GetHoveredVariable(_analysisService.GetAnalysis(request.TextDocument.Uri).AllDefinitions,
                 request.Position.ToLocation());
         if (definition == null) return null;
         var link = new LocationLink

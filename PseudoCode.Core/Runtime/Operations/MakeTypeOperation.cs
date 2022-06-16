@@ -29,7 +29,8 @@ public class MakeTypeOperation : Operation
             },
             Name = Name,
             SourceRange = SourceRange,
-            References = new List<SourceRange> {SourceRange}
+            References = new List<SourceRange> {SourceRange},
+            Attributes = Definition.Attribute.Type
         });
     }
 }

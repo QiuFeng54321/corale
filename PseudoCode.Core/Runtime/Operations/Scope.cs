@@ -1,7 +1,6 @@
 using PseudoCode.Core.Analyzing;
 using PseudoCode.Core.Runtime.Errors;
 using PseudoCode.Core.Runtime.Instances;
-using PseudoCode.Core.Runtime.Types;
 using Type = PseudoCode.Core.Runtime.Types.Type;
 
 namespace PseudoCode.Core.Runtime.Operations;
@@ -25,46 +24,17 @@ public class Scope : Operation
     public bool AllowStatements;
     public SourceLocation FirstLocation;
 
-    public Definition FindInstanceDefinition(string name)
+    public Definition FindDefinition(string name)
     {
         return InstanceDefinitions.ContainsKey(name)
             ? InstanceDefinitions[name]
-            : ParentScope?.FindInstanceDefinition(name);
+            : ParentScope?.FindDefinition(name);
     }
 
-    private Definition FindTypeDefinitionInternal(string typeName)
-    {
-        return InstanceDefinitions.ContainsKey(typeName)
-                ? InstanceDefinitions[typeName]
-                : ParentScope?.FindTypeDefinitionInternal(typeName);
-    }
-
-    private Definition FindTypeDefinitionInternal(uint id)
+    public Definition FindDefinition(uint id)
     {
         var t = InstanceDefinitions.FirstOrDefault(t => t.Value.Type.Id == id, new KeyValuePair<string, Definition>());
-        return t.Value ?? ParentScope?.FindTypeDefinitionInternal(id);
-    }
-    public Definition FindTypeDefinition(string typeName)
-    {
-        return Program.FindTypeDefinition(typeName) ?? FindTypeDefinitionInternal(typeName);
-    }
-
-    public Definition FindTypeDefinition(uint id)
-    {
-        return Program.FindTypeDefinition(id) ?? FindTypeDefinitionInternal(id);
-    }
-
-    public void RegisterInstanceType(string name, Type type)
-    {
-        InstanceDefinitions.Add(name, new Definition
-        {
-            Name = name, Type = type
-        });
-    }
-
-    public Instance FindInstance(string name)
-    {
-        return ParentScope.Program.Memory[FindInstanceAddress(name)];
+        return t.Value ?? ParentScope?.FindDefinition(id);
     }
 
     public uint FindInstanceAddress(string name)
@@ -99,12 +69,14 @@ public class Scope : Operation
     public void AddType(Type type)
     {
         type.ParentScope = this;
-        Program.TypeDefinitions.Add(type.Name, new Definition
+        AddTypeDefinition(type.Name, new Definition(ParentScope, Program)
         {
             Name = type.Name,
             Type = type,
-            SourceRange = new SourceRange(new SourceLocation(-1, -1), new SourceLocation(-1, -1))
-        });
+            Attributes = Definition.Attribute.Type,
+            SourceRange = SourceRange.Identity,
+            References = new List<SourceRange> { SourceRange.Identity }
+        }, SourceRange.Identity);
     }
 
     public void AddVariableDefinition(string name, Definition definition, SourceRange sourceRange = null)
@@ -113,6 +85,19 @@ public class Scope : Operation
             Program.AnalyserFeedbacks.Add(new Feedback
             {
                 Message = $"Variable {name} is already declared",
+                Severity = Feedback.SeverityType.Error,
+                SourceRange = sourceRange
+            });
+        else
+            InstanceDefinitions.Add(name, definition);
+    }
+
+    public void AddTypeDefinition(string name, Definition definition, SourceRange sourceRange = null)
+    {
+        if (InstanceDefinitions.ContainsKey(name))
+            Program.AnalyserFeedbacks.Add(new Feedback
+            {
+                Message = $"Type {name} is already declared",
                 Severity = Feedback.SeverityType.Error,
                 SourceRange = sourceRange
             });
@@ -207,11 +192,11 @@ public class Scope : Operation
         ScopeStates = scopeStates;
     }
 
-    public IEnumerable<Definition> GetAllDefinedVariables()
+    public IEnumerable<Definition> GetAllDefinedDefinitions()
     {
         var res = InstanceDefinitions
             .Select(x => x.Value);
-        res = ChildScopes.Aggregate(res, (current, childScope) => current.Concat(childScope.GetAllDefinedVariables()));
+        res = ChildScopes.Aggregate(res, (current, childScope) => current.Concat(childScope.GetAllDefinedDefinitions()));
         return res;
     }
 
@@ -235,7 +220,7 @@ public class Scope : Operation
 
     public Definition GetHoveredVariableDefinition(SourceLocation location)
     {
-        return GetHoveredVariableDefinition(GetAllDefinedVariables(), location);
+        return GetHoveredVariableDefinition(GetAllDefinedDefinitions(), location);
     }
 
     public static (Definition, SourceRange) GetHoveredVariable(IEnumerable<Definition> definitions,
@@ -250,7 +235,7 @@ public class Scope : Operation
 
     public (Definition, SourceRange) GetHoveredVariable(SourceLocation location)
     {
-        return GetHoveredVariable(GetAllDefinedVariables(), location);
+        return GetHoveredVariable(GetAllDefinedDefinitions(), location);
     }
 
     public static IEnumerable<Definition> GetDefinitionsBefore(IEnumerable<Definition> definitions,
@@ -261,7 +246,7 @@ public class Scope : Operation
 
     public IEnumerable<Definition> GetVariableCompletionBefore(SourceLocation location)
     {
-        var res = GetDefinitionsBefore(InstanceDefinitions.Values.Where(d => d.Type is not TypeType), location);
+        var res = GetDefinitionsBefore(InstanceDefinitions.Values, location);
 
         return ChildScopes.Where(s => s.SourceRange.Contains(location)).Aggregate(res,
             (current, childScope) =>
@@ -270,7 +255,7 @@ public class Scope : Operation
 
     public IEnumerable<Definition> GetTypeCompletionBefore(SourceLocation location)
     {
-        var res = GetDefinitionsBefore(InstanceDefinitions.Values.Where(d => d.Type is TypeType), location);
+        var res = GetDefinitionsBefore(InstanceDefinitions.Values, location);
 
         return ChildScopes.Where(s => s.SourceRange.Contains(location)).Aggregate(res,
             (current, childScope) =>

@@ -10,14 +10,10 @@ DECLARE Date2 : DATE
 TYPE Student
     DECLARE Name : STRING
     DECLARE Id : INTEGER
-    DECLARE Numbers : ARRAY[1:10] OF INTEGER
 ENDTYPE
 DECLARE Students : ARRAY[1:10] OF Student
 FOR i <- 1 TO 10
     Students[i].Name <- "Student" & i
-    FOR j <- 1 TO 10
-        Students[i].Numbers[j] <- j + i
-    NEXT j
 NEXT i
 OUTPUT Students
 a <- -(a + a * -a POW 2 POW 3) DIV 100 MOD 100

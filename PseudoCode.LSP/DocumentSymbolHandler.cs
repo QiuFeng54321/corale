@@ -37,7 +37,7 @@ public class DocumentSymbolHandler : DocumentSymbolHandlerBase
     public override async Task<SymbolInformationOrDocumentSymbolContainer> Handle(DocumentSymbolParams request,
         CancellationToken cancellationToken)
     {
-        var definitions = _analysisService.GetAnalysis(request.TextDocument.Uri).AllVariableDefinitions;
+        var definitions = _analysisService.GetAnalysis(request.TextDocument.Uri).AllDefinitions;
         if (definitions == null) return new SymbolInformationOrDocumentSymbolContainer();
         return new SymbolInformationOrDocumentSymbolContainer(definitions.Select(r => new SymbolInformationOrDocumentSymbol(new DocumentSymbol
         {
