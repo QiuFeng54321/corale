@@ -1,7 +1,6 @@
 using PseudoCode.Core.Analyzing;
 using PseudoCode.Core.Runtime.Errors;
 using PseudoCode.Core.Runtime.Instances;
-using PseudoCode.Core.Runtime.Types;
 using Type = PseudoCode.Core.Runtime.Types.Type;
 
 namespace PseudoCode.Core.Runtime.Operations;
@@ -12,6 +11,8 @@ public class Scope : Operation
     ///     Instances are created from the type
     /// </summary>
     public Dictionary<string, Definition> InstanceDefinitions = new();
+
+    public Dictionary<string, Definition> TypeDefinitions = new();
 
     public Scope(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {
@@ -32,26 +33,17 @@ public class Scope : Operation
             : ParentScope?.FindInstanceDefinition(name);
     }
 
-    private Definition FindTypeDefinitionInternal(string typeName)
-    {
-        return InstanceDefinitions.ContainsKey(typeName)
-                ? InstanceDefinitions[typeName]
-                : ParentScope?.FindTypeDefinitionInternal(typeName);
-    }
-
-    private Definition FindTypeDefinitionInternal(uint id)
-    {
-        var t = InstanceDefinitions.FirstOrDefault(t => t.Value.Type.Id == id, new KeyValuePair<string, Definition>());
-        return t.Value ?? ParentScope?.FindTypeDefinitionInternal(id);
-    }
     public Definition FindTypeDefinition(string typeName)
     {
-        return Program.FindTypeDefinition(typeName) ?? FindTypeDefinitionInternal(typeName);
+        return TypeDefinitions.ContainsKey(typeName)
+            ? TypeDefinitions[typeName]
+            : ParentScope?.FindTypeDefinition(typeName);
     }
 
     public Definition FindTypeDefinition(uint id)
     {
-        return Program.FindTypeDefinition(id) ?? FindTypeDefinitionInternal(id);
+        var t = TypeDefinitions.FirstOrDefault(t => t.Value.Type.Id == id, new KeyValuePair<string, Definition>());
+        return t.Value ?? ParentScope?.FindTypeDefinition(id);
     }
 
     public void RegisterInstanceType(string name, Type type)
@@ -100,6 +92,7 @@ public class Scope : Operation
     {
         type.ParentScope = this;
         Program.TypeDefinitions.Add(type.Name, new Definition
+        TypeDefinitions.Add(type.Name, new Definition (ParentScope, Program)
         {
             Name = type.Name,
             Type = type,
@@ -127,7 +120,6 @@ public class Scope : Operation
         FirstLocation ??= operation.SourceRange.Start;
         if (FirstLocation > operation.SourceRange.Start) FirstLocation = operation.SourceRange.Start;
     }
-
     public void InsertOperation(int index, Operation operation)
     {
         ScopeStates.Operations.Insert(index, operation);
@@ -214,11 +206,9 @@ public class Scope : Operation
         res = ChildScopes.Aggregate(res, (current, childScope) => current.Concat(childScope.GetAllDefinedVariables()));
         return res;
     }
-
     public Scope GetNearestStatementScopeBefore(SourceLocation sourceLocation)
     {
-        foreach (var scope in ChildScopes.Where(scope =>
-                     scope.AllowStatements && scope.SourceRange.Contains(sourceLocation)))
+        foreach (var scope in ChildScopes.Where(scope => scope.AllowStatements && scope.SourceRange.Contains(sourceLocation)))
         {
             return scope.GetNearestStatementScopeBefore(sourceLocation);
         }
@@ -261,7 +251,7 @@ public class Scope : Operation
 
     public IEnumerable<Definition> GetVariableCompletionBefore(SourceLocation location)
     {
-        var res = GetDefinitionsBefore(InstanceDefinitions.Values.Where(d => d.Type is not TypeType), location);
+        var res = GetDefinitionsBefore(InstanceDefinitions.Values, location);
 
         return ChildScopes.Where(s => s.SourceRange.Contains(location)).Aggregate(res,
             (current, childScope) =>
@@ -270,7 +260,7 @@ public class Scope : Operation
 
     public IEnumerable<Definition> GetTypeCompletionBefore(SourceLocation location)
     {
-        var res = GetDefinitionsBefore(InstanceDefinitions.Values.Where(d => d.Type is TypeType), location);
+        var res = GetDefinitionsBefore(TypeDefinitions.Values, location);
 
         return ChildScopes.Where(s => s.SourceRange.Contains(location)).Aggregate(res,
             (current, childScope) =>

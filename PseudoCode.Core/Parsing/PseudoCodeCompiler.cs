@@ -88,25 +88,34 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         return resType;
     }
 
+    public static Type.TypeDescriptor GetTypeDescriptor(PseudoCodeParser.DataTypeContext context)
+    {
+        var type = context.TypeName;
+        var dimensions = context.arrayRange().Length;
+        return dimensions != 0
+            ? new Type.TypeDescriptor("ARRAY", dimensions, new Type.TypeDescriptor(type))
+            : new Type.TypeDescriptor(type);
+    }
+
     public override void ExitDeclarationStatement(PseudoCodeParser.DeclarationStatementContext context)
     {
         base.ExitDeclarationStatement(context);
         // Console.WriteLine($"DECLARE {context.IDENTIFIER().GetText()} : {context.dataType().GetText()}");
         var name = context.Identifier().GetText();
         var sourceLocation = SourceLocationHelper.SourceLocation(context);
-        var resType = GetType(context.dataType());
+        var resType = GetTypeDescriptor(context.dataType());
 
         var sourceRange = SourceLocationHelper.SourceRange(context.Identifier().Symbol);
         var range = SourceLocationHelper.SourceRange(context);
         CurrentScope.AddOperation(new DeclareOperation(CurrentScope, Program)
         {
             Name = name,
-            DimensionCount = resType is ArrayType arrayType ? arrayType.DimensionCount : 0,
+            DimensionCount = resType.Dimensions,
             PoiLocation = sourceLocation,
             SourceRange = range,
-            Definition = new Definition
+            Definition = new Definition(CurrentScope, Program)
             {
-                Type = resType,
+                TypeDescriptor = resType,
                 Name = name,
                 SourceRange = sourceRange,
                 References = new List<SourceRange>
@@ -123,7 +132,7 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         {
             Name = declarationContext.Identifier().GetText(),
             IsReference = declarationContext.Byref() != null,
-            Definition = new Definition
+            Definition = new Definition(CurrentScope, Program)
             {
                 Type = GetType(declarationContext.dataType()),
                 Name = declarationContext.Identifier().GetText(),
@@ -141,18 +150,18 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         base.ExitFunctionDefinition(context);
         var sourceRange = SourceLocationHelper.SourceRange(context);
         var paramInfo = GetArgumentDeclarations(context.argumentsDeclaration());
-        var returnType = GetType(context.dataType());
+        var returnType = GetTypeDescriptor(context.dataType());
         var name = context.Identifier().GetText();
         var body = (Scope)CurrentScope.TakeLast();
         CurrentScope.AddOperation(new MakeFunctionOperation(CurrentScope, Program)
         {
             Name = name,
             FunctionBody = body,
-            Definition = new Definition
+            Definition = new Definition(CurrentScope, Program)
             {
                 Name = name,
                 SourceRange = SourceLocationHelper.SourceRange(context.Identifier().Symbol),
-                Type = new FunctionType(CurrentScope, Program)
+                TypeDescriptor = new Type.TypeDescriptor("FUNCTION")
                 {
                     ReturnType = returnType,
                     ParameterInfos = paramInfo
@@ -178,11 +187,11 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         {
             Name = name,
             FunctionBody = body,
-            Definition = new Definition
+            Definition = new Definition (CurrentScope, Program)
             {
                 Name = name,
                 SourceRange = SourceLocationHelper.SourceRange(context.identifierWithNew()),
-                Type = new FunctionType(CurrentScope, Program)
+                TypeDescriptor = new Type.TypeDescriptor("FUNCTION")
                 {
                     ReturnType = null,
                     ParameterInfos = paramInfo
@@ -496,7 +505,8 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
             {
                 defaultScope = body;
                 continue;
-            } 
+            }
+
             if (caseBranchContext.scopedExpression() != null)
             {
                 condition = (Scope)CurrentScope.TakeLast();
@@ -511,7 +521,8 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
                     PoiLocation = condition.PoiLocation,
                     SourceRange = condition.SourceRange
                 });
-            } else if (caseBranchContext.valueRange() != null)
+            }
+            else if (caseBranchContext.valueRange() != null)
             {
                 var to = (Scope)CurrentScope.TakeLast();
                 condition = (Scope)CurrentScope.TakeLast();
@@ -545,8 +556,10 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
                     SourceRange = sourceRange
                 });
             }
+
             list.Insert(0, (condition, body));
         }
+
         CurrentScope.AddOperation(new CaseOperation(CurrentScope, Program)
         {
             Cases = list,
@@ -620,6 +633,18 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         });
     }
 
+    public override void ExitTypeDefinition(PseudoCodeParser.TypeDefinitionContext context)
+    {
+        base.ExitTypeDefinition(context);
+        CurrentScope.AddOperation(new MakeTypeOperation(CurrentScope, Program)
+        {
+            TypeBody = CurrentScope.TakeLast() as Scope,
+            Name = context.Identifier().GetText(),
+            PoiLocation = SourceLocationHelper.SourceLocation(context),
+            SourceRange = SourceLocationHelper.SourceRange(context)
+        });
+    }
+
     #region ScopedExpressions
 
     public override void EnterIndentedBlock(PseudoCodeParser.IndentedBlockContext context)
@@ -639,6 +664,19 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
     {
         base.EnterAlignedBlock(context);
         EnterScope(context);
+    }
+
+    public override void EnterTypeBody(PseudoCodeParser.TypeBodyContext context)
+    {
+        base.EnterTypeBody(context);
+        EnterScope(context);
+        CurrentScope.AllowStatements = true;
+    }
+
+    public override void ExitTypeBody(PseudoCodeParser.TypeBodyContext context)
+    {
+        base.ExitTypeBody(context);
+        ExitScope(context);
     }
 
     public override void ExitAlignedBlock(PseudoCodeParser.AlignedBlockContext context)

@@ -272,5 +272,17 @@ namespace PseudoCode.Core {
                 return ResourceManager.GetString("ArrayInstance_ElementAt_OutOfBounds", resourceCulture);
             }
         }
+        
+        internal static string ArrayType_ToString {
+            get {
+                return ResourceManager.GetString("ArrayType_ToString", resourceCulture);
+            }
+        }
+        
+        internal static string FunctionType_ToString {
+            get {
+                return ResourceManager.GetString("FunctionType_ToString", resourceCulture);
+            }
+        }
     }
 }

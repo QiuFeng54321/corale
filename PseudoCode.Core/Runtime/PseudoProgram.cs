@@ -54,12 +54,10 @@ public class PseudoProgram
         return AllocateId(generator());
     }
 
-    public uint Allocate(int length, Func<Instance> generator)
+    public IEnumerable<uint> Allocate(int length, Func<Instance> generator)
     {
         var startAddress = CurrentInstanceAddress;
-        for (var i = 0; i < length; i++) AllocateId(generator);
-
-        return startAddress;
+        for (var i = 0; i < length; i++) yield return AllocateId(generator);
     }
 
     public void SetMemory(Range segment, Func<Instance> value)
@@ -89,6 +87,7 @@ public class PseudoProgram
         GlobalScope.AddType(new DateType(GlobalScope, this));
         GlobalScope.AddType(new NullType(GlobalScope, this));
         GlobalScope.AddType(new PlaceholderType(GlobalScope, this));
+        GlobalScope.AddType(new ModuleType(GlobalScope, this));
         Instance.Null = GlobalScope.FindTypeDefinition(Type.NullId).Type.Instance(scope: GlobalScope);
     }
 
@@ -97,7 +96,7 @@ public class PseudoProgram
         GlobalScope.AddOperation(new MakeBuiltinFunctionOperation(GlobalScope, this)
         {
             Name = "EOF",
-            Definition = new Definition
+            Definition = new Definition(GlobalScope, this)
             {
                 Name = "EOF",
                 References = new List<SourceRange>(),
@@ -124,7 +123,7 @@ public class PseudoProgram
         GlobalScope.AddOperation(new MakeBuiltinFunctionOperation(GlobalScope, this)
         {
             Name = "__in_range",
-            Definition = new Definition
+            Definition = new Definition(GlobalScope, this)
             {
                 Name = "__in_range",
                 References = new List<SourceRange>(),

@@ -21,8 +21,10 @@ public class MemberAccessOperation : Operation
     {
         base.MetaOperate();
         var accessed = Program.TypeCheckStack.Pop();
-        var resultType = accessed.Type.MemberAccessResultType(MemberName);
-        if (resultType is NullType)
+        var resultDefinition = accessed.Type.MemberAccessResultDefinition(MemberName);
+        
+        resultDefinition?.References?.Add(SourceRange);
+        if (resultDefinition is null)
         {
             Program.AnalyserFeedbacks.Add(new Feedback
             {
@@ -32,7 +34,7 @@ public class MemberAccessOperation : Operation
             });
         }
         Program.TypeCheckStack.Push(new TypeInfo {
-            Type = resultType,
+            Type = resultDefinition?.Type ?? new NullType(ParentScope, Program),
             IsReference = true,
             SourceRange = SourceRange
         });

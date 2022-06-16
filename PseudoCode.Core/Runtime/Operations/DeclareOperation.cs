@@ -9,6 +9,7 @@ public class DeclareOperation : Operation
     public Definition Definition;
     public int DimensionCount;
     public string Name;
+    public string TypeName;
 
     public DeclareOperation(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {
@@ -17,6 +18,7 @@ public class DeclareOperation : Operation
     public override void Operate()
     {
         base.Operate();
+        // TODO: Initializing array within a type does not work properly
         var instance = Definition.DefaultInstance != null ? Definition.Type.Clone(Definition.DefaultInstance) : Definition.Type.Instance();
         if (instance is ArrayInstance arrayInstance)
         {
@@ -59,7 +61,7 @@ public class DeclareOperation : Operation
 
     public override string ToPlainString()
     {
-        var typeStr = Definition.Type.ToString();
+        var typeStr = Definition.TypeDescriptor.ToString();
         return string.Format(strings.DeclareOperation_ToPlainString, Name, typeStr);
     }
 }
