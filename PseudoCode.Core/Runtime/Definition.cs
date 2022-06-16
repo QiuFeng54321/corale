@@ -19,6 +19,11 @@ public record Definition
     public Scope ParentScope;
     public PseudoProgram Program;
     public Attribute Attributes = Attribute.Variable;
+    public string TypeName => TypeDescriptor?.Name ?? Type.Name;
+    public override string ToString()
+    {
+        return TypeDescriptor?.ToString() ?? Type.ToString();
+    }
 
     [Flags]
     public enum Attribute

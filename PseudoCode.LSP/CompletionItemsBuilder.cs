@@ -32,30 +32,19 @@ public class CompletionItemsBuilder
         AddKeywords();
     }
 
-    public void AddTypes(Analysis analysis, SourceLocation cursor)
+    public void AddDefinitions(Analysis analysis, SourceLocation cursor)
     {
-        var typeInfos = analysis.Program.GlobalScope.GetTypeCompletionBefore(cursor);
-        foreach (var typeInfo in typeInfos)
-        {
-            Items.Add(MakeCompletionItem(CompletionItemKind.Class, typeInfo.Name, typeInfo.Name,
-                typeInfo.Type.ToString()));
-        }
-    }
-
-    public void AddVariables(Analysis analysis, SourceLocation cursor)
-    {
-        var variableInfos = analysis.Program.GlobalScope.GetVariableCompletionBefore(cursor);
+        var variableInfos = analysis.Program.GlobalScope.GetDefinitionCompletionBefore(cursor);
         foreach (var variableInfo in variableInfos)
         {
-            Items.Add(MakeCompletionItem(CompletionItemKind.Variable, variableInfo.Name, variableInfo.Name,
-                variableInfo.Type.ToString()));
+            Items.Add(MakeCompletionItem(
+                variableInfo.Attributes.HasFlag(Definition.Attribute.Type)
+                    ? CompletionItemKind.Class
+                    : CompletionItemKind.Variable,
+                variableInfo.Name,
+                variableInfo.Name,
+                variableInfo.ToString()));
         }
-    }
-
-    public void AddPrimitiveTypes(Analysis analysis, SourceLocation cursor)
-    {
-        // Items.AddRange(analysis.Program.TypeDefinitions.Values.Select(t =>
-        //     MakeCompletionItem(CompletionItemKind.Class, t.Name, t.Name, t.Type.ToString())));
     }
 
     public void AddBoolean()
