@@ -38,26 +38,36 @@ public class BinaryOperation : Operation
             });
 
         var isConstant = left.IsConstant && right.IsConstant;
-        var constantInstance = isConstant ? left.Type.BinaryOperators[OperatorMethod](left.ConstantInstance, right.ConstantInstance) : Instance.Null;
+        var constantInstance = isConstant
+            ? left.Type.BinaryOperators[OperatorMethod](left.ConstantInstance, right.ConstantInstance)
+            : Instance.Null;
         if (isConstant)
         {
             Program.AnalyserFeedbacks.Add(new Feedback
+            {
+                Message = $"Replace with constant {constantInstance}",
+                SourceRange = SourceRange,
+                Severity = Feedback.SeverityType.Hint,
+                CodeFixes = new List<CodeFix>
                 {
-                    Message = $"Replace with constant {constantInstance}",
-                    SourceRange = SourceRange,
-                    Severity = Feedback.SeverityType.Hint,
-                    Replacements = new List<Feedback.Replacement>
+                    new()
                     {
-                        new()
+                        Message = $"Replace with constant {constantInstance}",
+                        Replacements = new List<CodeFix.Replacement>
                         {
-                            SourceRange = SourceRange,
-                            Text = constantInstance.Represent()
+                            new()
+                            {
+                                SourceRange = SourceRange,
+                                Text = constantInstance.Represent()
+                            }
                         }
                     }
-                });
+                }
+            });
         }
 
-        Program.TypeCheckStack.Push(new TypeInfo {
+        Program.TypeCheckStack.Push(new TypeInfo
+        {
             Type = resType,
             IsConstant = isConstant,
             SourceRange = SourceRange,
