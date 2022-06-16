@@ -44,7 +44,7 @@ public class Type
                 {
                     ReturnType = ReturnType.GetType(scope, program), ParameterInfos = ParameterInfos
                 },
-                _ => scope.FindTypeDefinition(Name)?.Type
+                _ => scope.FindDefinition(Name)?.Type
             };
         }
 

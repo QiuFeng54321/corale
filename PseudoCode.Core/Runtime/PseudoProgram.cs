@@ -14,7 +14,6 @@ public class PseudoProgram
     public Scope GlobalScope;
     public Dictionary<uint, Instance> Memory = new();
     public Dictionary<string, PseudoFileStream> OpenFiles = new();
-    public Dictionary<string, Definition> TypeDefinitions = new();
     public Stack<Instance> RuntimeStack = new();
     public Stack<TypeInfo> TypeCheckStack = new();
 
@@ -33,13 +32,9 @@ public class PseudoProgram
     public bool AllowUndeclaredVariables { get; set; }
 
     
-    public Definition FindTypeDefinition(uint id)
+    public Definition FindDefinition(uint id)
     {
-        return TypeDefinitions.First(p => p.Value.Type.Id == id).Value;
-    }
-    public Definition FindTypeDefinition(string name)
-    {
-        return TypeDefinitions.GetValueOrDefault(name, null);
+        return GlobalScope.FindDefinition(id);
     }
     public uint AllocateId(Instance i)
     {
@@ -88,7 +83,7 @@ public class PseudoProgram
         GlobalScope.AddType(new NullType(GlobalScope, this));
         GlobalScope.AddType(new PlaceholderType(GlobalScope, this));
         GlobalScope.AddType(new ModuleType(GlobalScope, this));
-        Instance.Null = GlobalScope.FindTypeDefinition(Type.NullId).Type.Instance(scope: GlobalScope);
+        Instance.Null = GlobalScope.FindDefinition(Type.NullId).Type.Instance(scope: GlobalScope);
     }
 
     public void AddBuiltinFunctions()
@@ -108,16 +103,16 @@ public class PseudoProgram
                         new FunctionType.ParameterInfo
                         {
                             Name = "path",
-                            Definition = GlobalScope.FindTypeDefinition(Type.StringId)
+                            Definition = GlobalScope.FindDefinition(Type.StringId)
                         }
                     },
-                    ReturnType = GlobalScope.FindTypeDefinition(Type.BooleanId).Type
+                    ReturnType = GlobalScope.FindDefinition(Type.BooleanId).Type
                 }
             },
             Func = (scope, program, args) =>
             {
                 var path = args[0].Get<string>();
-                return scope.FindTypeDefinition(Type.BooleanId).Type.Instance(program.OpenFiles[path].Eof());
+                return scope.FindDefinition(Type.BooleanId).Type.Instance(program.OpenFiles[path].Eof());
             }
         });
         GlobalScope.AddOperation(new MakeBuiltinFunctionOperation(GlobalScope, this)
@@ -135,18 +130,18 @@ public class PseudoProgram
                         new FunctionType.ParameterInfo
                         {
                             Name = "target",
-                            Definition = GlobalScope.FindTypeDefinition(Type.RealId)
+                            Definition = GlobalScope.FindDefinition(Type.RealId)
                         },new FunctionType.ParameterInfo
                         {
                             Name = "from",
-                            Definition = GlobalScope.FindTypeDefinition(Type.RealId)
+                            Definition = GlobalScope.FindDefinition(Type.RealId)
                         },new FunctionType.ParameterInfo
                         {
                             Name = "to",
-                            Definition = GlobalScope.FindTypeDefinition(Type.RealId)
+                            Definition = GlobalScope.FindDefinition(Type.RealId)
                         },
                     },
-                    ReturnType = GlobalScope.FindTypeDefinition(Type.BooleanId).Type
+                    ReturnType = GlobalScope.FindDefinition(Type.BooleanId).Type
                 }
             },
             Func = (scope, program, args) =>
@@ -154,7 +149,7 @@ public class PseudoProgram
                 var target = args[0].Get<decimal>();
                 var from = args[1].Get<decimal>();
                 var to = args[2].Get<decimal>();
-                return scope.FindTypeDefinition(Type.BooleanId).Type.Instance(from <= target && target <= to);
+                return scope.FindDefinition(Type.BooleanId).Type.Instance(from <= target && target <= to);
             }
         });
     }

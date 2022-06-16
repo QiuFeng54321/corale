@@ -77,7 +77,7 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
     {
         var type = context.TypeName;
         var dimensions = context.arrayRange().Length;
-        var resType = CurrentScope.FindTypeDefinition(type).Type;
+        var resType = CurrentScope.FindDefinition(type).Type;
         if (dimensions != 0)
             resType = new ArrayType(CurrentScope, Program)
             {
@@ -121,7 +121,8 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
                 References = new List<SourceRange>
                 {
                     SourceLocationHelper.SourceRange(context.Identifier().Symbol)
-                }
+                },
+                Attributes = Definition.Attribute.Variable
             }
         });
     }
@@ -231,7 +232,7 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
 
         CurrentScope.AddOperation(new LoadImmediateOperation(CurrentScope, Program)
         {
-            Intermediate = CurrentScope.FindTypeDefinition(context.AtomType).Type.Instance(val, CurrentScope),
+            Intermediate = CurrentScope.FindDefinition(context.AtomType).Type.Instance(val, CurrentScope),
             PoiLocation = SourceLocationHelper.SourceLocation(context),
             SourceRange = SourceLocationHelper.SourceRange(context)
         });
@@ -612,7 +613,7 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
             ? CurrentScope.TakeLast()
             : new LoadImmediateOperation(CurrentScope, Program)
             {
-                Intermediate = CurrentScope.FindTypeDefinition(Type.IntegerId).Type.Instance(1, CurrentScope),
+                Intermediate = CurrentScope.FindDefinition(Type.IntegerId).Type.Instance(1, CurrentScope),
                 PoiLocation = SourceLocationHelper.SourceLocation(context.Next().Symbol),
                 SourceRange = SourceLocationHelper.SourceRange(context)
             };

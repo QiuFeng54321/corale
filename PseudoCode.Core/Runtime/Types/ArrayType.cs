@@ -58,7 +58,7 @@ public class ArrayType : Type
                 null);
         var indexList = indexInstance.Array.Select((index, i) =>
                 arrayInstance.Dimensions[i]
-                    .ToRealIndex(Program.FindTypeDefinition(IntegerId).Type.HandledCastFrom(index).Get<int>()))
+                    .ToRealIndex(Program.FindDefinition(IntegerId).Type.HandledCastFrom(index).Get<int>()))
             .ToList();
         return arrayInstance.ElementAt(indexList);
     }

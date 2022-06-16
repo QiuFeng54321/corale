@@ -18,6 +18,17 @@ public record Definition
     public SourceRange SourceRange;
     public Scope ParentScope;
     public PseudoProgram Program;
+    public Attribute Attributes = Attribute.Variable;
+
+    [Flags]
+    public enum Attribute
+    {
+        None,
+        Type,
+        Const,
+        Immutable,
+        Variable
+    }
 
     public Type Type
     {

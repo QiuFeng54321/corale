@@ -29,7 +29,7 @@ public class DateType : PrimitiveType<DateOnly>
             case PseudoCodeLexer.GreaterEqual:
             case PseudoCodeLexer.Smaller:
             case PseudoCodeLexer.SmallerEqual:
-                return Program.FindTypeDefinition(BooleanId).Type;
+                return Program.FindDefinition(BooleanId).Type;
             case PseudoCodeLexer.Add:
                 return this;
             default:

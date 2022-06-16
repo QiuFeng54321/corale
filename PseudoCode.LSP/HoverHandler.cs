@@ -36,7 +36,7 @@ class HoverHandler : HoverHandlerBase
     {
         _logger.LogWarning("hover");
         var (hoveredVar, range) =
-            Scope.GetHoveredVariable(_analysisService.GetAnalysis(request.TextDocument.Uri).AllVariableDefinitions,
+            Scope.GetHoveredVariable(_analysisService.GetAnalysis(request.TextDocument.Uri).AllDefinitions,
                 request.Position.ToLocation());
         if (hoveredVar == null) return null;
         return new Hover

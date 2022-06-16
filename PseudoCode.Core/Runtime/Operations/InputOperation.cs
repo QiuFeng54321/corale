@@ -15,14 +15,14 @@ public class InputOperation : Operation
         base.Operate();
         var instance = Program.RuntimeStack.Pop();
         var input = Console.ReadLine();
-        instance.Type.Assign(instance, Program.FindTypeDefinition(Type.StringId).Type.Instance(input, ParentScope));
+        instance.Type.Assign(instance, Program.FindDefinition(Type.StringId).Type.Instance(input, ParentScope));
     }
 
     public override void MetaOperate()
     {
         base.MetaOperate();
         var type = Program.TypeCheckStack.Pop();
-        var stringType = Program.FindTypeDefinition(Type.StringId).Type;
+        var stringType = Program.FindDefinition(Type.StringId).Type;
         if (type.Type is PlaceholderType placeholderType) placeholderType.MetaAssign(stringType);
 
         if (!type.Type.IsConvertableFrom(stringType))
