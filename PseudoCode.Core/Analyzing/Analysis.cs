@@ -51,12 +51,21 @@ public class Analysis
                 });
             }
 
-            else if (definition.References.Count <= 1 && definition.SourceRange != SourceRange.Identity)
+            else if (definition.References.Count <= 1 && definition.SourceRange != SourceRange.Identity && !definition.Name.StartsWith("_"))
                 Program.AnalyserFeedbacks.Add(new Feedback
                 {
                     Message = $"Variable {definition.Name} is not used at all",
+                    ReplacementMessage = "Add an underscore before identifier",
                     Severity = Feedback.SeverityType.Warning,
-                    SourceRange = definition.SourceRange
+                    SourceRange = definition.SourceRange,
+                    Replacements = new List<Feedback.Replacement>
+                    {
+                        new()
+                        {
+                            SourceRange = definition.SourceRange,
+                            Text = $"_{definition.Name}"
+                        }
+                    }
                 });
         }
     }
