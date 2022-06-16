@@ -44,8 +44,13 @@ public class Type
                 {
                     ReturnType = ReturnType.GetType(scope, program), ParameterInfos = ParameterInfos
                 },
-                _ => scope.FindDefinition(Name)?.Type
+                _ => GetDefinition(scope)?.Type
             };
+        }
+
+        public Definition GetDefinition(Scope scope)
+        {
+            return scope.FindDefinition(Name);
         }
 
         public override string ToString()
