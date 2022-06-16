@@ -52,6 +52,12 @@ public class CompletionItemsBuilder
         }
     }
 
+    public void AddPrimitiveTypes(Analysis analysis, SourceLocation cursor)
+    {
+        Items.AddRange(analysis.Program.TypeDefinitions.Values.Select(t =>
+            MakeCompletionItem(CompletionItemKind.Class, t.Name, t.Name, t.Type.ToString())));
+    }
+
     public void AddBoolean()
     {
         Items.Add(MakeCompletionItem(CompletionItemKind.Value, "TRUE", "TRUE", "BOOLEAN"));
