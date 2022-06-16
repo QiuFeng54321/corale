@@ -18,7 +18,7 @@ public class StringType : PrimitiveType<string>
         {
             case PseudoCodeLexer.Equal:
             case PseudoCodeLexer.NotEqual:
-                return ParentScope.FindTypeDefinition(BooleanId).Type;
+                return Program.FindTypeDefinition(BooleanId).Type;
             case PseudoCodeLexer.BitAnd:
                 return this;
             default:

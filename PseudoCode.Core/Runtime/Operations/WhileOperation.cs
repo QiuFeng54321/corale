@@ -16,14 +16,14 @@ public class WhileOperation : Operation
     {
         base.Operate();
         TestExpressionScope.HandledOperate();
-        var test = ParentScope.FindTypeDefinition(Type.BooleanId).Type.HandledCastFrom(Program.RuntimeStack.Pop())
+        var test = Program.FindTypeDefinition(Type.BooleanId).Type.HandledCastFrom(Program.RuntimeStack.Pop())
             .Get<bool>();
 
         while (test)
         {
             RepeatBlock.HandledOperate();
             TestExpressionScope.HandledOperate();
-            test = ParentScope.FindTypeDefinition(Type.BooleanId).Type.HandledCastFrom(Program.RuntimeStack.Pop())
+            test = Program.FindTypeDefinition(Type.BooleanId).Type.HandledCastFrom(Program.RuntimeStack.Pop())
                 .Get<bool>();
         }
     }
@@ -39,7 +39,7 @@ public class WhileOperation : Operation
     {
         TestExpressionScope.MetaOperate();
         var testType = Program.TypeCheckStack.Pop();
-        if (!ParentScope.FindTypeDefinition(Type.BooleanId).Type.IsConvertableFrom(testType.Type))
+        if (!Program.FindTypeDefinition(Type.BooleanId).Type.IsConvertableFrom(testType.Type))
             Program.AnalyserFeedbacks.Add(new Feedback
             {
                 Message = $"Test expression is of type {testType} and cannot be converted into BOOLEAN",
