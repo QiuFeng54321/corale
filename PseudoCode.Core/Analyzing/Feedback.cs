@@ -14,21 +14,9 @@ public class Feedback
 
     public string Message;
 
-    public string ReplacementMessage
-    {
-        get => _replacementMessage ??= Message;
-        set => _replacementMessage = value;
-    }
-    private string _replacementMessage;
     public SeverityType Severity;
     public SourceRange SourceRange;
-    public List<Replacement> Replacements = new();
-
-    public class Replacement
-    {
-        public SourceRange SourceRange;
-        public string Text;
-    }
+    public List<CodeFix> CodeFixes = new();
 
     public override string ToString()
     {

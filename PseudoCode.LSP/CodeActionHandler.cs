@@ -41,24 +41,26 @@ public class CodeActionHandler : CodeActionHandlerBase
         CancellationToken cancellationToken)
     {
         _logger.LogWarning("Codeactioning");
-        return new CommandOrCodeActionContainer(request.Context.Diagnostics.SelectMany(d => _analysisService.GetAnalysis(request.TextDocument.Uri).Program.AnalyserFeedbacks.Where(f => f.SourceRange == d.Range.ToRange())).Where(f => f.Replacements.Count != 0)
-            .Select(f => new CommandOrCodeAction(new CodeAction
+        return new CommandOrCodeActionContainer(request.Context.Diagnostics
+            .SelectMany(d =>
+                _analysisService.GetAnalysis(request.TextDocument.Uri).Program.AnalyserFeedbacks
+                    .Where(f => f.SourceRange == d.Range.ToRange())).Where(f => f.CodeFixes.Count != 0)
+            .SelectMany(f => f.CodeFixes.Select(c => new CommandOrCodeAction(new CodeAction
             {
                 Kind = CodeActionKind.QuickFix,
-                Title = f.ReplacementMessage,
+                Title = c.Message,
                 Edit = new WorkspaceEdit
                 {
                     Changes = new Dictionary<DocumentUri, IEnumerable<TextEdit>>
                     {
-                        [request.TextDocument.Uri] = f.Replacements.Select(replacement => new TextEdit
+                        [request.TextDocument.Uri] = c.Replacements.Select(replacement => new TextEdit
                         {
                             Range = replacement.SourceRange.ToRange(),
                             NewText = replacement.Text
                         })
                     }
-                },
-                
-            })));
+                }
+            }))));
     }
 
     public override Task<CodeAction> Handle(CodeAction request, CancellationToken cancellationToken)

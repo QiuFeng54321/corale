@@ -30,40 +30,57 @@ public class Analysis
     public void AnalyseUnusedVariables()
     {
         if (AllDefinitions == null) return;
-        foreach (var definition in AllDefinitions.Where(definition => !definition.Attributes.HasFlag(Definition.Attribute.Type)))
+        foreach (var definition in AllDefinitions.Where(definition =>
+                     !definition.Attributes.HasFlag(Definition.Attribute.Type)))
         {
             if (definition.Type is PlaceholderType)
             {
-                var scopeSourceLocation = Program.GlobalScope.GetNearestStatementScopeBefore(definition.SourceRange.Start).FirstLocation;
+                var scopeSourceLocation = Program.GlobalScope
+                    .GetNearestStatementScopeBefore(definition.SourceRange.Start).FirstLocation;
                 Program.AnalyserFeedbacks.Add(new Feedback
                 {
                     Message = $"Invalid variable {definition.Name}",
                     Severity = Feedback.SeverityType.Error,
                     SourceRange = definition.SourceRange,
-                    Replacements = new List<Feedback.Replacement>
+                    CodeFixes = new List<CodeFix>
                     {
                         new()
                         {
-                            SourceRange = new SourceRange(scopeSourceLocation, scopeSourceLocation),
-                            Text = $"DECLARE {definition.Name} : STRING\n"
+                            Message = $"Declare variable {definition.Name}",
+                            Replacements = new List<CodeFix.Replacement>
+                            {
+                                new()
+                                {
+                                    SourceRange = new SourceRange(scopeSourceLocation, scopeSourceLocation),
+                                    Text = $"DECLARE {definition.Name} : STRING\n"
+                                }
+                            }
                         }
                     }
                 });
             }
 
-            else if (definition.References.Count <= 1 && definition.SourceRange != SourceRange.Identity && !definition.Name.StartsWith("_"))
+            else if (definition.References.Count <= 1 && definition.SourceRange != SourceRange.Identity &&
+                     !definition.Name.StartsWith("_"))
                 Program.AnalyserFeedbacks.Add(new Feedback
                 {
                     Message = $"Variable {definition.Name} is not used at all",
-                    ReplacementMessage = "Add an underscore before identifier",
                     Severity = Feedback.SeverityType.Warning,
                     SourceRange = definition.SourceRange,
-                    Replacements = new List<Feedback.Replacement>
+                    CodeFixes = new List<CodeFix>
                     {
                         new()
                         {
-                            SourceRange = definition.SourceRange,
-                            Text = $"_{definition.Name}"
+                            Message = "Add an underscore before identifier",
+
+                            Replacements = new List<CodeFix.Replacement>
+                            {
+                                new()
+                                {
+                                    SourceRange = definition.SourceRange,
+                                    Text = $"_{definition.Name}"
+                                }
+                            }
                         }
                     }
                 });
