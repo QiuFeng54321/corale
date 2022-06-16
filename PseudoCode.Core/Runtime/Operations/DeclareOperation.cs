@@ -63,6 +63,13 @@ public class DeclareOperation : Operation
                 Severity = Feedback.SeverityType.Error,
                 SourceRange = SourceRange
             });
+        if (Definition.Type is null) 
+            Program.AnalyserFeedbacks.Add(new Feedback
+            {
+                Message = $"The specified type does not exist: '{Definition.TypeName}'",
+                Severity = Feedback.SeverityType.Error,
+                SourceRange = SourceRange
+            });
         ParentScope.AddVariableDefinition(Name, Definition, SourceRange);
     }
 

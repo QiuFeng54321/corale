@@ -1,6 +1,7 @@
 using PseudoCode.Core.Analyzing;
 using PseudoCode.Core.Runtime.Errors;
 using PseudoCode.Core.Runtime.Instances;
+using PseudoCode.Core.Runtime.Types;
 using Type = PseudoCode.Core.Runtime.Types.Type;
 
 namespace PseudoCode.Core.Runtime.Operations;
@@ -11,6 +12,8 @@ public class Scope : Operation
     ///     Instances are created from the type
     /// </summary>
     public Dictionary<string, Definition> InstanceDefinitions = new();
+
+    public ModuleType ModuleType;
 
     public Scope(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {
@@ -244,22 +247,13 @@ public class Scope : Operation
         return definitions.Where(x => x.SourceRange.End <= location);
     }
 
-    public IEnumerable<Definition> GetVariableCompletionBefore(SourceLocation location)
+    public IEnumerable<Definition> GetDefinitionCompletionBefore(SourceLocation location)
     {
         var res = GetDefinitionsBefore(InstanceDefinitions.Values, location);
 
         return ChildScopes.Where(s => s.SourceRange.Contains(location)).Aggregate(res,
             (current, childScope) =>
-                current.Concat(childScope.GetVariableCompletionBefore(location) ?? Array.Empty<Definition>()));
-    }
-
-    public IEnumerable<Definition> GetTypeCompletionBefore(SourceLocation location)
-    {
-        var res = GetDefinitionsBefore(InstanceDefinitions.Values, location);
-
-        return ChildScopes.Where(s => s.SourceRange.Contains(location)).Aggregate(res,
-            (current, childScope) =>
-                current.Concat(childScope.GetTypeCompletionBefore(location) ?? Array.Empty<Definition>()));
+                current.Concat(childScope.GetDefinitionCompletionBefore(location) ?? Array.Empty<Definition>()));
     }
 
     public override string ToPlainString()

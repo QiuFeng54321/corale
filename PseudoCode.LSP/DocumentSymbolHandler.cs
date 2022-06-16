@@ -45,16 +45,17 @@ public class DocumentSymbolHandler : DocumentSymbolHandlerBase
             SelectionRange = r.SourceRange.ToRange(),
             Kind = GetKind(r),
             Name = r.Name,
-            Detail = r.Type.ToString()
+            Detail = r.ToString()
         })));
     }
 
-    private static SymbolKind GetKind(Definition r) => r.Type switch
+    private static SymbolKind GetKind(Definition r) => r.TypeName switch
     {
-        ArrayType => SymbolKind.Array,
-        IntegerType or RealType => SymbolKind.Number,
-        StringType or CharacterType => SymbolKind.String,
-        FunctionType => SymbolKind.Function,
-        _ => SymbolKind.Null
+        "ARRAY" => SymbolKind.Array,
+        "INTEGER" or "REAL" => SymbolKind.Number,
+        "STRING" or "CHARACTER" => SymbolKind.String,
+        "FUNCTION" => SymbolKind.Function,
+        "NULL" => SymbolKind.Null,
+        _ => SymbolKind.Class
     };
 }
