@@ -13,6 +13,13 @@ public class Feedback
     }
 
     public string Message;
+
+    public string ReplacementMessage
+    {
+        get => _replacementMessage ??= Message;
+        set => _replacementMessage = value;
+    }
+    private string _replacementMessage;
     public SeverityType Severity;
     public SourceRange SourceRange;
     public List<Replacement> Replacements = new();

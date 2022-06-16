@@ -45,7 +45,7 @@ public class CodeActionHandler : CodeActionHandlerBase
             .Select(f => new CommandOrCodeAction(new CodeAction
             {
                 Kind = CodeActionKind.QuickFix,
-                Title = f.Message,
+                Title = f.ReplacementMessage,
                 Edit = new WorkspaceEdit
                 {
                     Changes = new Dictionary<DocumentUri, IEnumerable<TextEdit>>
