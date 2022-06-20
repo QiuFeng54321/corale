@@ -5,21 +5,18 @@ using Type = PseudoCode.Core.Runtime.Types.Type;
 
 namespace PseudoCode.Core.Runtime;
 
-public record Definition
+// TODO: Type representation is A MESS. Find a new way to represent them
+// instead of using Definition, TypeDescriptor, ParameterInfo, TypeInfo...
+public record Definition(Scope ParentScope, PseudoProgram Program)
 {
-    public Definition(Scope parentScope, PseudoProgram program)
-    {
-        ParentScope = parentScope;
-        Program = program;
-    }
+    public virtual string Name { get; set; }
+    public virtual List<SourceRange> References { get; set; } = new();
+    public virtual SourceRange SourceRange { get; set; }
+    public virtual Scope ParentScope { get; set; } = ParentScope;
+    public virtual PseudoProgram Program { get; set; } = Program;
+    public virtual Attribute Attributes { get; set; } = Attribute.Variable;
+    public virtual string TypeName => TypeDescriptor?.Name ?? Type.Name;
 
-    public string Name;
-    public List<SourceRange> References = new();
-    public SourceRange SourceRange;
-    public Scope ParentScope;
-    public PseudoProgram Program;
-    public Attribute Attributes = Attribute.Variable;
-    public string TypeName => TypeDescriptor?.Name ?? Type.Name;
     public override string ToString()
     {
         return TypeDescriptor?.ToString() ?? Type.ToString();
@@ -41,7 +38,7 @@ public record Definition
         set => _type = value;
     }
 
-    private Type _type;
-    public Type.TypeDescriptor TypeDescriptor;
-    public Instance DefaultInstance;
+    private Type _type { get; set; }
+    public virtual Type.TypeDescriptor TypeDescriptor { get; set; }
+    public virtual Instance DefaultInstance { get; set; }
 }

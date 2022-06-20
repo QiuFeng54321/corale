@@ -7,7 +7,7 @@ namespace PseudoCode.Core.Runtime.Types;
 public class FunctionType : Type
 {
     public ParameterInfo[] ParameterInfos;
-    public Type ReturnType;
+    public Definition ReturnType;
 
     public FunctionType(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {
@@ -79,5 +79,12 @@ public class FunctionType : Type
         public Definition Definition;
         public bool IsReference;
         public string Name;
+
+        public ParameterInfo(Definition definition, string name, bool isReference = false)
+        {
+            Definition = definition;
+            IsReference = isReference;
+            Name = name;
+        }
     }
 }

@@ -1,12 +1,13 @@
 using PseudoCode.Core.Runtime.Errors;
 using PseudoCode.Core.Runtime.Instances;
+using PseudoCode.Core.Runtime.Reflection;
 
 namespace PseudoCode.Core.Runtime.Operations;
 
 public class MakeBuiltinFunctionOperation : Operation
 {
     public Definition Definition;
-    public Func<Scope, PseudoProgram, Instance[], Instance> Func;
+    public FunctionBinder.BuiltinFunction Func;
     public string Name;
 
     public MakeBuiltinFunctionOperation(Scope parentScope, PseudoProgram program) : base(parentScope, program)

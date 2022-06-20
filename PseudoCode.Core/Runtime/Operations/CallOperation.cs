@@ -25,7 +25,7 @@ public class CallOperation : Operation
             throw new InvalidTypeError($"Cannot call {called.Type}", this);
         var ret = functionInstance.Type.Call(functionInstance, arguments.ToArray());
         if (functionInstance.FunctionType.ReturnType != null)
-            Program.RuntimeStack.Push(functionInstance.FunctionType.ReturnType.CastFrom(ret));
+            Program.RuntimeStack.Push(functionInstance.FunctionType.ReturnType.Type.CastFrom(ret));
     }
 
     public override void MetaOperate()
@@ -66,7 +66,7 @@ public class CallOperation : Operation
                     });
         }
 
-        var ret = functionType?.ReturnType ?? new NullType(ParentScope, Program);
+        var ret = functionType?.ReturnType?.Type ?? new NullType(ParentScope, Program);
         if (ret is not NullType) Program.TypeCheckStack.Push(new TypeInfo {
             Type = ret,
             SourceRange = SourceRange
