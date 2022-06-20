@@ -56,7 +56,7 @@ public class DeclareOperation : Operation
                 Severity = Feedback.SeverityType.Error,
                 SourceRange = SourceRange
             });
-        if (Definition.TypeDescriptor?.GetDefinition(ParentScope) is { } definition && !definition.Attributes.HasFlag(Definition.Attribute.Type))
+        if (Definition.TypeDescriptor?.GetDefinition(ParentScope, Program) is { } definition && !definition.Attributes.HasFlag(Definition.Attribute.Type))
             Program.AnalyserFeedbacks.Add(new Feedback
             {
                 Message = $"Declared type should be a type, not '{Definition.TypeDescriptor.Name}'",

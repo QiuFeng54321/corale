@@ -93,7 +93,7 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         var type = context.TypeName;
         var dimensions = context.arrayRange().Length;
         return dimensions != 0
-            ? new Type.TypeDescriptor("ARRAY", dimensions, new Type.TypeDescriptor(type))
+            ? new Type.TypeDescriptor("ARRAY", Dimensions: dimensions, ElementType: new Type.TypeDescriptor(type))
             : new Type.TypeDescriptor(type);
     }
 
@@ -129,11 +129,8 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
 
     public FunctionType.ParameterInfo[] GetArgumentDeclarations(PseudoCodeParser.ArgumentsDeclarationContext context)
     {
-        return context.argumentDeclaration().Select(declarationContext => new FunctionType.ParameterInfo
-        {
-            Name = declarationContext.Identifier().GetText(),
-            IsReference = declarationContext.Byref() != null,
-            Definition = new Definition(CurrentScope, Program)
+        return context.argumentDeclaration().Select(declarationContext => new FunctionType.ParameterInfo(
+            new Definition(CurrentScope, Program)
             {
                 Type = GetType(declarationContext.dataType()),
                 Name = declarationContext.Identifier().GetText(),
@@ -142,8 +139,10 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
                 {
                     SourceLocationHelper.SourceRange(declarationContext.Identifier().Symbol)
                 }
-            }
-        }).ToArray();
+            },
+            declarationContext.Identifier().GetText(),
+            declarationContext.Byref() != null
+        )).ToArray();
     }
 
     public override void ExitFunctionDefinition(PseudoCodeParser.FunctionDefinitionContext context)
@@ -188,7 +187,7 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         {
             Name = name,
             FunctionBody = body,
-            Definition = new Definition (CurrentScope, Program)
+            Definition = new Definition(CurrentScope, Program)
             {
                 Name = name,
                 SourceRange = SourceLocationHelper.SourceRange(context.identifierWithNew()),
