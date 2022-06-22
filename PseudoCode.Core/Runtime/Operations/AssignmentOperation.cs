@@ -25,7 +25,7 @@ public class AssignmentOperation : Operation
     {
         base.MetaOperate();
         var value = Program.TypeCheckStack.Pop();
-        TypeInfo to;
+        Definition to;
         try
         {
             to = Program.TypeCheckStack.Pop();
@@ -42,11 +42,11 @@ public class AssignmentOperation : Operation
             return;
         }
 
-        if (!to.IsReference)
+        if (!to.Attributes.HasFlag(Definition.Attribute.Reference))
         {
             Program.AnalyserFeedbacks.Add(new Feedback
             {
-                Message = $"The target instance is not a reference",
+                Message = $"The assignment target is not a reference",
                 Severity = Feedback.SeverityType.Error,
                 SourceRange = SourceRange
             });

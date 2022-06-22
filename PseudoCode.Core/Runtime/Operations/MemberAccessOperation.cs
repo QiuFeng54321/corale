@@ -33,11 +33,7 @@ public class MemberAccessOperation : Operation
                 SourceRange = SourceRange
             });
         }
-        Program.TypeCheckStack.Push(new TypeInfo {
-            Type = resultDefinition?.Type ?? new NullType(ParentScope, Program),
-            IsReference = true,
-            SourceRange = SourceRange
-        });
+        Program.TypeCheckStack.Push(resultDefinition);
     }
 
     public override string ToPlainString() => $"Access {MemberName}";

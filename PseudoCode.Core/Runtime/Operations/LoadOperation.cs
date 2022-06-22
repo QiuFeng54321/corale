@@ -47,11 +47,7 @@ public class LoadOperation : Operation
                 References = new List<SourceRange> { SourceRange }
             }, SourceRange);
 
-        Program.TypeCheckStack.Push(new TypeInfo {
-            Type = ParentScope.FindDefinition(LoadName).Type,
-            IsReference = true,
-            SourceRange = SourceRange
-        });
+        Program.TypeCheckStack.Push(ParentScope.FindDefinition(LoadName));
     }
 
     public override string ToPlainString()

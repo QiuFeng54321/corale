@@ -63,7 +63,7 @@ public class PseudoProgram
     /// Assign -> [] (Pops 2 values, check if value is assignable with/without implicit casting)
     /// </example>
     /// </summary>
-    public Stack<TypeInfo> TypeCheckStack = new();
+    public Stack<Definition> TypeCheckStack = new();
 
     public PseudoProgram()
     {
@@ -160,7 +160,7 @@ public class PseudoProgram
                 {
                     ParameterInfos = new[]
                     {
-                        new FunctionType.ParameterInfo(GlobalScope.FindDefinition(Type.StringId), "path")
+                        GlobalScope.FindDefinition(Type.StringId).Make("path", Definition.Attribute.Immutable)
                     },
                     ReturnType = GlobalScope.FindDefinition(Type.BooleanId)
                 }
@@ -183,9 +183,9 @@ public class PseudoProgram
                 {
                     ParameterInfos = new[]
                     {
-                        new FunctionType.ParameterInfo(GlobalScope.FindDefinition(Type.RealId), "target"),
-                        new FunctionType.ParameterInfo(GlobalScope.FindDefinition(Type.RealId), "from"),
-                        new FunctionType.ParameterInfo(GlobalScope.FindDefinition(Type.RealId), "to")
+                        GlobalScope.FindDefinition(Type.RealId).Make("target", Definition.Attribute.Immutable),
+                        GlobalScope.FindDefinition(Type.RealId).Make("from", Definition.Attribute.Immutable),
+                        GlobalScope.FindDefinition(Type.RealId).Make("to", Definition.Attribute.Immutable)
                     },
                     ReturnType = GlobalScope.FindDefinition(Type.BooleanId)
                 }

@@ -6,7 +6,7 @@ namespace PseudoCode.Core.Runtime.Types;
 
 public class FunctionType : Type
 {
-    public ParameterInfo[] ParameterInfos;
+    public Definition[] ParameterInfos;
     public Definition ReturnType;
 
     public FunctionType(Scope parentScope, PseudoProgram program) : base(parentScope, program)
@@ -27,15 +27,15 @@ public class FunctionType : Type
             {
                 s.ResetTemporaryContent();
                 foreach (var ((parameterInfo, passedInstance), i) in ParameterInfos.Zip(args).Select((v, i) => (v, i)))
-                    if (parameterInfo.IsReference)
+                    if (parameterInfo.Attributes.HasFlag(Definition.Attribute.Reference))
                     {
                         if (passedInstance is not ReferenceInstance referenceInstance)
                             throw new InvalidTypeError(
                                 $"Passed argument {i} of type {passedInstance.Type} is not reference", null);
 
-                        if (passedInstance.RealInstance.Type != parameterInfo.Definition.Type)
+                        if (passedInstance.RealInstance.Type != parameterInfo.Type)
                             throw new InvalidTypeError(
-                                $"Passed argument {i} of type {passedInstance.Type} should not undergo implicit cast to {parameterInfo.Definition.Type}",
+                                $"Passed argument {i} of type {passedInstance.Type} should not undergo implicit cast to {parameterInfo.TypeString()}",
                                 null);
 
                         s.InstanceAddresses.Add(parameterInfo.Name, referenceInstance.ReferenceAddress);
@@ -43,7 +43,7 @@ public class FunctionType : Type
                     else
                     {
                         s.InstanceAddresses.Add(parameterInfo.Name,
-                            Program.AllocateId(parameterInfo.Definition.Type.CastFrom(passedInstance)));
+                            Program.AllocateId(parameterInfo.Type.CastFrom(passedInstance)));
                     }
 
                 return s;
@@ -60,7 +60,7 @@ public class FunctionType : Type
     public void CheckArguments(Instance[] args)
     {
         if (args.Length != ParameterInfos.Length ||
-            args.Zip(ParameterInfos).Any(zip => !zip.Second.Definition.Type.IsConvertableFrom(zip.First.Type)))
+            args.Zip(ParameterInfos).Any(zip => !zip.Second.Type.IsConvertableFrom(zip.First.Type)))
             throw new InvalidArgumentsError(
                 $"Calling {this} with arguments ({string.Join(", ", args.Select(arg => arg.Type))})", null);
     }
@@ -70,21 +70,7 @@ public class FunctionType : Type
         return
             string.Format(strings.FunctionType_ToString,
                 string.Join(", ",
-                    ParameterInfos.Select(p => $"{(p.IsReference ? "BYREF " : "")}{p.Name}: {p.Definition.Type}")),
+                    ParameterInfos.Select(p => $"{(p.Attributes.HasFlag(Definition.Attribute.Reference) ? "BYREF " : "")}{p.Name}: {p.TypeString()}")),
                 ReturnType == null ? "" : $"RETURNS {ReturnType}");
-    }
-
-    public class ParameterInfo
-    {
-        public Definition Definition;
-        public bool IsReference;
-        public string Name;
-
-        public ParameterInfo(Definition definition, string name, bool isReference = false)
-        {
-            Definition = definition;
-            IsReference = isReference;
-            Name = name;
-        }
     }
 }
