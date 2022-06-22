@@ -9,8 +9,6 @@ public class DeclareOperation : Operation
 {
     public Definition Definition;
     public int DimensionCount;
-    public string Name;
-    public string TypeName;
 
     public DeclareOperation(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {
@@ -35,12 +33,18 @@ public class DeclareOperation : Operation
             arrayInstance.InitialiseInMemory();
         }
 
-        ParentScope.ScopeStates.InstanceAddresses.Add(Name, Program.AllocateId(instance));
+        ParentScope.ScopeStates.InstanceAddresses.Add(Definition.Name, Program.AllocateId(instance));
     }
 
     public override void MetaOperate()
     {
         base.MetaOperate();
+        TypeCheck();
+        ParentScope.AddVariableDefinition(Definition.Name, Definition, SourceRange);
+    }
+
+    protected void TypeCheck()
+    {
         var invalidType = false;
         for (var i = 0; i < DimensionCount; i++)
         {
@@ -57,7 +61,8 @@ public class DeclareOperation : Operation
                 Severity = Feedback.SeverityType.Error,
                 SourceRange = SourceRange
             });
-        if (Definition.TypeDescriptor?.GetDefinition(ParentScope, Program) is { } definition && !definition.Attributes.HasFlag(Definition.Attribute.Type))
+        if (Definition.TypeDescriptor?.GetDefinition(ParentScope, Program) is { } definition &&
+            !definition.Attributes.HasFlag(Definition.Attribute.Type))
             Program.AnalyserFeedbacks.Add(new Feedback
             {
                 Message = $"Declared type should be a type, not '{Definition.TypeDescriptor.Name}'",
@@ -77,19 +82,18 @@ public class DeclareOperation : Operation
             case ArrayType { ElementType: null or NullType }:
                 Program.AnalyserFeedbacks.Add(new Feedback
                 {
-                    Message = $"The specified type does not exist: '{Definition?.TypeDescriptor?.ElementType.ToString() ?? "NULL"}'",
+                    Message =
+                        $"The specified type does not exist: '{Definition?.TypeDescriptor?.ElementType.ToString() ?? "NULL"}'",
                     Severity = Feedback.SeverityType.Error,
                     SourceRange = SourceRange
                 });
                 break;
         }
-
-        ParentScope.AddVariableDefinition(Name, Definition, SourceRange);
     }
 
     public override string ToPlainString()
     {
-        var typeStr = Definition.TypeDescriptor.ToString();
-        return string.Format(strings.DeclareOperation_ToPlainString, Name, typeStr);
+        var typeStr = Definition.ToString();
+        return string.Format(strings.DeclareOperation_ToPlainString, Definition.Name, typeStr);
     }
 }

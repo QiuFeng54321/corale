@@ -27,10 +27,12 @@ public class BinaryOperation : Operation
         base.MetaOperate();
         var right = Program.TypeCheckStack.Pop();
         var left = Program.TypeCheckStack.Pop();
+        var isConstant = left.Attributes.HasFlag(Definition.Attribute.Const) && right.Attributes.HasFlag(Definition.Attribute.Const);
         var resType = left.Type.BinaryResultType(OperatorMethod, right.Type);
         if (resType is NullType && left.Type.IsConvertableFrom(right.Type))
             resType = left.Type.BinaryResultType(OperatorMethod, left.Type);
-        if (resType.Id == Type.NullId)
+        if (resType is NullType or null)
+        {
             Program.AnalyserFeedbacks.Add(new Feedback
             {
                 Message =
@@ -38,8 +40,9 @@ public class BinaryOperation : Operation
                 Severity = Feedback.SeverityType.Error,
                 SourceRange = SourceRange
             });
+            isConstant = false; // Turn off constant computing because errors happen
+        }
 
-        var isConstant = left.Attributes.HasFlag(Definition.Attribute.Const) && right.Attributes.HasFlag(Definition.Attribute.Const);
         var constantInstance = isConstant
             ? left.Type.BinaryOperators[OperatorMethod](left.ConstantInstance, right.ConstantInstance)
             : Instance.Null;
