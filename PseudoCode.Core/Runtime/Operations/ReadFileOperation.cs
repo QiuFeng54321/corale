@@ -24,15 +24,15 @@ public class ReadFileOperation : FileOperation
     public override void MetaOperate()
     {
         base.Operate();
-        var typeInfo = Program.TypeCheckStack.Pop();
+        var valDef = Program.TypeCheckStack.Pop();
         
-        var stringType = Program.FindDefinition(Type.StringId).Type;
-        if (typeInfo.Type is PlaceholderType placeholderType) placeholderType.MetaAssign(stringType);
+        var stringDef = Program.FindDefinition(Type.StringId);
+        if (valDef.Type is PlaceholderType placeholderType) placeholderType.MetaAssign(valDef, stringDef);
 
-        if (!typeInfo.Type.IsConvertableFrom(stringType))
+        if (!valDef.Type.IsConvertableFrom(stringDef.Type))
             Program.AnalyserFeedbacks.Add(new Feedback
             {
-                Message = $"READFILE variable is of type {typeInfo} and is not convertable from {stringType}",
+                Message = $"READFILE variable is of type {valDef} and is not convertable from {stringDef}",
                 Severity = Feedback.SeverityType.Error,
                 SourceRange = SourceRange
             });

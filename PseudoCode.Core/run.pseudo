@@ -78,6 +78,7 @@ FUNCTION fib(n: INTEGER) RETURNS INTEGER
     IF n = 2 OR n = 1 THEN
         RETURN 1
     ENDIF
+    fib(4)
     RETURN fib(n - 1) + fib(n - 2)
 ENDFUNCTION
 OUTPUT "Fib of:"
