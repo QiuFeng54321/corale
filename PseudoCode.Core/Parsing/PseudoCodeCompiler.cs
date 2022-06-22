@@ -109,7 +109,6 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         var range = SourceLocationHelper.SourceRange(context);
         CurrentScope.AddOperation(new DeclareOperation(CurrentScope, Program)
         {
-            Name = name,
             DimensionCount = resType.Dimensions,
             PoiLocation = sourceLocation,
             SourceRange = range,
@@ -123,6 +122,32 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
                     SourceLocationHelper.SourceRange(context.Identifier().Symbol)
                 },
                 Attributes = Definition.Attribute.Reference
+            }
+        });
+    }
+
+    public override void ExitConstantStatement(PseudoCodeParser.ConstantStatementContext context)
+    {
+        base.ExitConstantStatement(context);
+        // Console.WriteLine($"DECLARE {context.IDENTIFIER().GetText()} : {context.dataType().GetText()}");
+        var name = context.Identifier().GetText();
+        var sourceLocation = SourceLocationHelper.SourceLocation(context);
+
+        var sourceRange = SourceLocationHelper.SourceRange(context.Identifier().Symbol);
+        var range = SourceLocationHelper.SourceRange(context);
+        CurrentScope.AddOperation(new MakeConstOperation(CurrentScope, Program)
+        {
+            PoiLocation = sourceLocation,
+            SourceRange = range,
+            Definition = new Definition(CurrentScope, Program)
+            {
+                Name = name,
+                SourceRange = sourceRange,
+                References = new List<SourceRange>
+                {
+                    SourceLocationHelper.SourceRange(context.Identifier().Symbol)
+                },
+                Attributes = Definition.Attribute.Const | Definition.Attribute.Reference | Definition.Attribute.Immutable
             }
         });
     }

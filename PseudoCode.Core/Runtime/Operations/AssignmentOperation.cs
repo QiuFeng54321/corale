@@ -55,6 +55,16 @@ public class AssignmentOperation : Operation
             });
         }
 
+        if (to.Attributes.HasFlag(Definition.Attribute.Immutable))
+        {
+            Program.AnalyserFeedbacks.Add(new Feedback
+            {
+                Message = $"Cannot assign value to a constant: {to}",
+                Severity = Feedback.SeverityType.Error,
+                SourceRange = SourceRange
+            });
+        }
+
         if (to.Type is PlaceholderType placeholderType) to = placeholderType.MetaAssign(to, value);
         // TODO: Type check
         if (!to.Type.IsConvertableFrom(value.Type))

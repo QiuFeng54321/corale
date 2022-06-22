@@ -7,6 +7,9 @@ DECLARE c : BOOLEAN
 DECLARE Char : CHAR
 DECLARE Date : DATE
 DECLARE Date2 : DATE
+CONSTANT CONST = 498 + 35
+OUTPUT CONST + 4
+OUTPUT CONST + 5
 TYPE Student
     DECLARE Name : STRING
     DECLARE Id : INTEGER
@@ -16,7 +19,6 @@ FOR i <- 1 TO 10
     Students[i].Name <- "Student" & i
 NEXT i
 OUTPUT Students
-a <- assign(3)
 a <- -(a + a * -a POW 2 POW 3) DIV 100 MOD 100
 c <- a < 63 - 2.3 OR (a > 65 OR a > 63) AND NOT a < 65 AND TRUE
 Char <- '\n'
@@ -78,7 +80,6 @@ FUNCTION fib(n: INTEGER) RETURNS INTEGER
     IF n = 2 OR n = 1 THEN
         RETURN 1
     ENDIF
-    fib(4)
     RETURN fib(n - 1) + fib(n - 2)
 ENDFUNCTION
 OUTPUT "Fib of:"
