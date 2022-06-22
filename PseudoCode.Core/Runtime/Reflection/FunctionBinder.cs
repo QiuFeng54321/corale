@@ -11,7 +11,7 @@ public class FunctionBinder
     public static readonly Dictionary<System.Type, string> TypeMap = new()
     {
         [typeof(int)] = "INTEGER",
-        [typeof(decimal)] = "REAL",
+        [typeof(RealNumberType)] = "REAL",
         [typeof(string)] = "STRING",
         [typeof(char)] = "CHARACTER",
         [typeof(bool)] = "BOOLEAN",

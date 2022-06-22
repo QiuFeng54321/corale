@@ -1,9 +1,10 @@
+global using RealNumberType = System.Decimal;
+using System.Diagnostics.CodeAnalysis;
 using PseudoCode.Core.Runtime.Instances;
 using PseudoCode.Core.Runtime.Operations;
 
 namespace PseudoCode.Core.Runtime.Types;
-
-public class RealType : PrimitiveType<decimal>
+public class RealType : PrimitiveType<RealNumberType>
 {
     public RealType(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {
@@ -12,11 +13,11 @@ public class RealType : PrimitiveType<decimal>
     public override uint Id => RealId;
     public override string Name => "REAL";
 
-    // public Instance ArithmeticOperation(Instance i1, Instance i2 , Func<decimal, decimal, decimal> func)
+    // public Instance ArithmeticOperation(Instance i1, Instance i2 , Func<RealNumberType, RealNumberType, RealNumberType> func)
     // {
     //     if (i2.Type.Id is not (IntegerId or RealId))
     //         throw new InvalidOperationException($"Invalid right operand type {i2.Type}");
-    //     return Instance(func(i1.Get<decimal>(), i2.Get<decimal>()));
+    //     return Instance(func(i1.Get<RealNumberType>(), i2.Get<RealNumberType>()));
     // }
 
     public override Type BinaryResultType(int type, Type right)
@@ -62,7 +63,7 @@ public class RealType : PrimitiveType<decimal>
     {
         // if (i2.Type.Id is not (IntegerId or RealId))
         //     throw new InvalidOperationException($"Invalid right operand type {i2.Type}");
-        // return Instance(i1.Get<decimal>() - i2.Get<decimal>());
+        // return Instance(i1.Get<RealNumberType>() - i2.Get<RealNumberType>());
         return ArithmeticOperation(i1, i2, (arg1, arg2) => arg1 - arg2);
         // return Add(i1, Negative(i2));
     }
@@ -82,9 +83,10 @@ public class RealType : PrimitiveType<decimal>
         return ArithmeticOperation(i1, i2, (arg1, arg2) => arg1 % arg2);
     }
 
+    [SuppressMessage("ReSharper", "RedundantCast")]
     public override Instance Pow(Instance i1, Instance i2)
     {
-        return ArithmeticOperation(i1, i2, (arg1, arg2) => (decimal)Math.Pow((double)arg1, (double)arg2));
+        return ArithmeticOperation(i1, i2, (arg1, arg2) => (RealNumberType)Math.Pow((double)arg1, (double)arg2));
     }
 
     public override Instance IntDivide(Instance i1, Instance i2)
@@ -125,7 +127,7 @@ public class RealType : PrimitiveType<decimal>
 
     public override Instance CastFrom(Instance i)
     {
-        return Instance(Convert.ToDecimal(i.Value), ParentScope);
+        return Instance(Convert.ChangeType(i.Value, typeof(RealNumberType)), ParentScope);
     }
 
     public override bool IsConvertableFrom(Type type)

@@ -12,11 +12,11 @@ public class DateType : PrimitiveType<DateOnly>
     public override uint Id => DateId;
     public override string Name => "DATE";
 
-    // public Instance ArithmeticOperation(Instance i1, Instance i2 , Func<decimal, decimal, decimal> func)
+    // public Instance ArithmeticOperation(Instance i1, Instance i2 , Func<RealNumberType, RealNumberType, RealNumberType> func)
     // {
     //     if (i2.Type.Id is not (IntegerId or RealId))
     //         throw new InvalidOperationException($"Invalid right operand type {i2.Type}");
-    //     return Instance(func(i1.Get<decimal>(), i2.Get<decimal>()));
+    //     return Instance(func(i1.Get<RealNumberType>(), i2.Get<RealNumberType>()));
     // }
     public override Type BinaryResultType(int type, Type right)
     {
