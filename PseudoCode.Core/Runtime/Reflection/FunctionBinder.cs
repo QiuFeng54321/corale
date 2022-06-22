@@ -8,6 +8,23 @@ namespace PseudoCode.Core.Runtime.Reflection;
 
 public class FunctionBinder
 {
+    public static readonly Dictionary<System.Type, string> TypeMap = new()
+    {
+        [typeof(int)] = "INTEGER",
+        [typeof(decimal)] = "REAL",
+        [typeof(string)] = "STRING",
+        [typeof(char)] = "CHARACTER",
+        [typeof(bool)] = "BOOLEAN",
+        [typeof(DateOnly)] = "DATE",
+        [typeof(void)] = "NULL"
+    };
+
+    // Will be extended to support arrays
+    public static TypeDescriptor GetTypeDescriptorFromSystemType(System.Type type)
+    {
+        return new TypeDescriptor(TypeMap[type]);
+    }
+
     public delegate Instance BuiltinFunction(Scope parentScope, PseudoProgram program, Instance[] arguments);
 
     public static void AddBuiltinFunctionOperations(System.Type type, Scope parentScope, PseudoProgram program)
@@ -33,6 +50,14 @@ public class FunctionBinder
         {
             if (MakeDefinitionOfMethod(parentScope, program, methodInfo, out var definition))
                 yield return (definition, (BuiltinFunction)methodInfo.CreateDelegate(typeof(BuiltinFunction)));
+            else if (MakeDefinitionOfNativeMethod(parentScope, program, methodInfo, out var nativeDefinition))
+                yield return (nativeDefinition, (scope, pseudoProgram, arguments) =>
+                {
+                    var nativeDefinitionType = (BuiltinFunctionType)nativeDefinition.Type;
+                    var res = methodInfo.Invoke(null,
+                        arguments.Select(instance => instance.Get<object>()).ToArray());
+                    return res == null ? Instance.Null : nativeDefinitionType.ReturnType.Type.Instance(res);
+                });
         }
     }
 
@@ -64,12 +89,47 @@ public class FunctionBinder
         return true;
     }
 
+    private static bool MakeDefinitionOfNativeMethod(Scope parentScope, PseudoProgram program, MethodInfo methodInfo,
+        out Definition definition)
+    {
+        if (methodInfo.GetCustomAttributes(typeof(BuiltinNativeFunctionAttribute), true).Length == 0)
+        {
+            definition = null;
+            return false;
+        }
+
+        var functionName = GetFunctionName(methodInfo);
+
+        var paramList = GetNativeMethodParamList(parentScope, program, methodInfo);
+        var returnDef = GetNativeMethodReturnDefinition(parentScope, program, methodInfo);
+
+        definition = new Definition(parentScope, program)
+        {
+            Name = functionName,
+            References = new List<SourceRange>(),
+            SourceRange = SourceRange.Identity,
+            Type = new BuiltinFunctionType(parentScope, program)
+            {
+                ParameterInfos = paramList.ToArray(),
+                ReturnType = returnDef
+            }
+        };
+        return true;
+    }
+
     private static string GetFunctionName(MethodInfo methodInfo)
     {
         if (methodInfo.GetCustomAttributes(typeof(BuiltinFunctionAttribute)) is BuiltinFunctionAttribute[] nameAttrs &&
             nameAttrs.Length != 0)
         {
             return nameAttrs[0].Name;
+        }
+
+        if (methodInfo.GetCustomAttributes(typeof(BuiltinNativeFunctionAttribute)) is BuiltinNativeFunctionAttribute[]
+                nativeNameAttrs &&
+            nativeNameAttrs.Length != 0)
+        {
+            return nativeNameAttrs[0].Name;
         }
 
         return methodInfo.Name;
@@ -94,6 +154,31 @@ public class FunctionBinder
         if (methodInfo.GetCustomAttributes(typeof(ReturnTypeAttribute)) is not ReturnTypeAttribute[]
                 returnTypeAttributes || returnTypeAttributes.Length == 0) return null;
         var typeDescriptor = returnTypeAttributes[0].MakeTypeDescriptor();
+        return new Definition(parentScope, program)
+        {
+            Name = typeDescriptor.ToString(),
+            TypeDescriptor = typeDescriptor,
+            SourceRange = SourceRange.Identity,
+            Attributes = Definition.Attribute.Type | Definition.Attribute.Immutable
+        };
+    }
+
+    private static List<Definition> GetNativeMethodParamList(Scope parentScope, PseudoProgram program,
+        MethodInfo methodInfo)
+    {
+        return methodInfo.GetParameters().Select(info => new Definition(parentScope, program)
+        {
+            Name = info.Name,
+            TypeDescriptor = GetTypeDescriptorFromSystemType(info.ParameterType),
+            Attributes = Definition.Attribute.Immutable,
+            SourceRange = SourceRange.Identity
+        }).ToList();
+    }
+
+    private static Definition GetNativeMethodReturnDefinition(Scope parentScope, PseudoProgram program,
+        MethodInfo methodInfo)
+    {
+        var typeDescriptor = GetTypeDescriptorFromSystemType(methodInfo.ReturnType);
         return new Definition(parentScope, program)
         {
             Name = typeDescriptor.ToString(),
