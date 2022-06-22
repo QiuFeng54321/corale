@@ -26,7 +26,7 @@ public class MakeBuiltinFunctionOperation : Operation
     public override void MetaOperate()
     {
         base.MetaOperate();
-        ParentScope.AddVariableDefinition(Name, Definition);
+        ParentScope.AddVariableDefinition(Name, Definition, Definition.SourceRange);
     }
 
     public override string ToPlainString()

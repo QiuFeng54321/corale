@@ -28,9 +28,9 @@ public class MakeFunctionOperation : Operation
     public override void MetaOperate()
     {
         base.MetaOperate();
-        ParentScope.AddVariableDefinition(Name, Definition);
+        ParentScope.AddVariableDefinition(Name, Definition, SourceRange);
         foreach (var parameterInfo in ((FunctionType)Definition.Type).ParameterInfos)
-            FunctionBody.AddVariableDefinition(parameterInfo.Name, parameterInfo);
+            FunctionBody.AddVariableDefinition(parameterInfo.Name, parameterInfo, parameterInfo.SourceRange);
         FunctionBody.MetaOperate();
     }
 

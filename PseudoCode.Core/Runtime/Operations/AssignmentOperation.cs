@@ -46,7 +46,7 @@ public class AssignmentOperation : Operation
         {
             Program.AnalyserFeedbacks.Add(new Feedback
             {
-                Message = $"The assignment target is not a reference",
+                Message = $"The assignment target is not a reference: {to}",
                 Severity = Feedback.SeverityType.Error,
                 SourceRange = SourceRange
             });

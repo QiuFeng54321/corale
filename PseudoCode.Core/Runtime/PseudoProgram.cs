@@ -69,7 +69,7 @@ public class PseudoProgram
     {
         GlobalScope = new Scope(null, this)
         {
-            AllowStatements = true
+            AllowStatements = true,
         };
         AddPrimitiveTypes();
         AddBuiltinFunctions();

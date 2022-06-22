@@ -54,7 +54,7 @@ public record Definition(Scope ParentScope, PseudoProgram Program)
 
     public Type Type
     {
-        get => _type ??= TypeDescriptor.GetType(ParentScope, Program);
+        get => _type ??= TypeDescriptor?.GetType(ParentScope, Program) ?? new NullType(ParentScope, Program);
         set => _type = value;
     }
 

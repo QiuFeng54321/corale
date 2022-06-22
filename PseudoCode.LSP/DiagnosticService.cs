@@ -6,6 +6,7 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Document;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using PseudoCode.Core.Analyzing;
+using PseudoCode.Core.Runtime;
 using Range = System.Range;
 
 namespace PseudoCode.LSP;
@@ -41,7 +42,7 @@ public class DiagnosticService
                     _ => throw new ArgumentOutOfRangeException()
                 },
                 Source = "pseudocode",
-                Range = feedback.SourceRange.ToRange(),
+                Range = feedback.SourceRange?.ToRange() ?? SourceRange.Identity.ToRange(),
                 // Code = w.Kind.ToString(),
                 Message = feedback.Message
             })

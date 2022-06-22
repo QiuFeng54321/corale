@@ -1,5 +1,6 @@
 using PseudoCode.Core.Analyzing;
 using PseudoCode.Core.Runtime.Instances;
+using PseudoCode.Core.Runtime.Types;
 using Type = PseudoCode.Core.Runtime.Types.Type;
 
 namespace PseudoCode.Core.Runtime.Operations;
@@ -63,13 +64,26 @@ public class DeclareOperation : Operation
                 Severity = Feedback.SeverityType.Error,
                 SourceRange = SourceRange
             });
-        if (Definition.Type is null) 
-            Program.AnalyserFeedbacks.Add(new Feedback
-            {
-                Message = $"The specified type does not exist: '{Definition.TypeName}'",
-                Severity = Feedback.SeverityType.Error,
-                SourceRange = SourceRange
-            });
+        switch (Definition.Type)
+        {
+            case null or NullType:
+                Program.AnalyserFeedbacks.Add(new Feedback
+                {
+                    Message = $"The specified type does not exist: '{Definition.TypeName}'",
+                    Severity = Feedback.SeverityType.Error,
+                    SourceRange = SourceRange
+                });
+                break;
+            case ArrayType { ElementType: null or NullType }:
+                Program.AnalyserFeedbacks.Add(new Feedback
+                {
+                    Message = $"The specified type does not exist: '{Definition?.TypeDescriptor?.ElementType.ToString() ?? "NULL"}'",
+                    Severity = Feedback.SeverityType.Error,
+                    SourceRange = SourceRange
+                });
+                break;
+        }
+
         ParentScope.AddVariableDefinition(Name, Definition, SourceRange);
     }
 

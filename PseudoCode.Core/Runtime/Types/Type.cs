@@ -130,7 +130,12 @@ public class Type
 
     public virtual Definition MemberAccessResultDefinition(string member)
     {
-        return !Members.ContainsKey(member) ? null : Members[member];
+        return !Members.ContainsKey(member) ? new Definition(ParentScope, Program)
+        {
+            Name = member,
+            Type = new NullType(ParentScope, Program),
+            Attributes = Definition.Attribute.Reference
+        } : Members[member];
     }
 
     public virtual Instance Add(Instance i1, Instance i2)

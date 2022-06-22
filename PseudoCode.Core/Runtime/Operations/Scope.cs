@@ -82,7 +82,7 @@ public class Scope : Operation
         }, SourceRange.Identity);
     }
 
-    public void AddVariableDefinition(string name, Definition definition, SourceRange sourceRange = null)
+    public void AddVariableDefinition(string name, Definition definition, SourceRange sourceRange)
     {
         if (InstanceDefinitions.ContainsKey(name))
             Program.AnalyserFeedbacks.Add(new Feedback
@@ -95,7 +95,7 @@ public class Scope : Operation
             InstanceDefinitions.Add(name, definition);
     }
 
-    public void AddTypeDefinition(string name, Definition definition, SourceRange sourceRange = null)
+    public void AddTypeDefinition(string name, Definition definition, SourceRange sourceRange)
     {
         if (InstanceDefinitions.ContainsKey(name))
             Program.AnalyserFeedbacks.Add(new Feedback

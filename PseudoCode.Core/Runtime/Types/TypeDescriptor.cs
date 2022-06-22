@@ -7,7 +7,7 @@ public record TypeDescriptor(string Name, int TypeId = -1, int Dimensions = 0, T
 {
     public Type GetType(Scope scope, PseudoProgram program)
     {
-        return GetDefinition(scope, program)?.Type;
+        return GetDefinition(scope, program)?.Type ?? new NullType(scope, program);
     }
 
     public Definition GetDefinition(Scope scope, PseudoProgram program)

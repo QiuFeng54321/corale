@@ -28,12 +28,14 @@ public class BinaryOperation : Operation
         var right = Program.TypeCheckStack.Pop();
         var left = Program.TypeCheckStack.Pop();
         var resType = left.Type.BinaryResultType(OperatorMethod, right.Type);
+        if (resType is NullType && left.Type.IsConvertableFrom(right.Type))
+            resType = left.Type.BinaryResultType(OperatorMethod, left.Type);
         if (resType.Id == Type.NullId)
             Program.AnalyserFeedbacks.Add(new Feedback
             {
                 Message =
-                    $"This operation on {left} and {right} is either not supported or will be casted to another type at runtime",
-                Severity = Feedback.SeverityType.Warning,
+                    $"This operation between {left} and {right} is not supported",
+                Severity = Feedback.SeverityType.Error,
                 SourceRange = SourceRange
             });
 
