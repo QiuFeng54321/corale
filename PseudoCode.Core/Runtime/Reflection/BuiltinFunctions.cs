@@ -7,6 +7,7 @@ namespace PseudoCode.Core.Runtime.Reflection;
 
 public static class BuiltinFunctions
 {
+    public static Random Random = new Random();
     [BuiltinFunction("EOF")]
     [ParamType("path", "STRING")]
     [ReturnType("BOOLEAN")]
@@ -16,40 +17,47 @@ public static class BuiltinFunctions
         return parentScope.FindDefinition(Type.BooleanId).Type.Instance(program.OpenFiles[path].Eof());
     }
 
-    [BuiltinFunction("RIGHT")]
-    [ParamType("ThisString", "STRING")]
-    [ParamType("x", "INTEGER")]
-    [ReturnType("STRING")]
-    public static Instance Right(Scope parentScope, PseudoProgram program, Instance[] arguments)
+    [BuiltinNativeFunction("RIGHT")]
+    public static string Right(string thisString, int x)
     {
-        var thisString = arguments[0].Get<string>();
-        var x = arguments[1].Get<int>();
-        return parentScope.FindDefinition(Type.StringId).Type.Instance(thisString[^x..]);
-    }
-    [BuiltinFunction("LENGTH")]
-    [ParamType("ThisString", "STRING")]
-    [ReturnType("INTEGER")]
-    public static Instance Length(Scope parentScope, PseudoProgram program, Instance[] arguments)
-    {
-        var thisString = arguments[0].Get<string>();
-        return parentScope.FindDefinition(Type.IntegerId).Type.Instance(thisString.Length);
+        return thisString[^x..];
     }
 
-    [BuiltinFunction("__in_range")]
-    [ParamType("target", "INTEGER")]
-    [ParamType("from", "INTEGER")]
-    [ParamType("to", "INTEGER")]
-    [ReturnType("BOOLEAN")]
-    public static Instance InRange(Scope parentScope, PseudoProgram program, Instance[] arguments)
+    [BuiltinNativeFunction("LENGTH")]
+    public static int Length(string thisString)
     {
-        var target = arguments[0].Get<decimal>();
-        var from = arguments[1].Get<decimal>();
-        var to = arguments[2].Get<decimal>();
-        return parentScope.FindDefinition(Type.BooleanId).Type.Instance(from <= target && target <= to);
+        return thisString.Length;
     }
 
+    [BuiltinNativeFunction("__in_range")]
     public static bool InRange(decimal target, decimal from, decimal to)
     {
         return from <= target && target <= to;
+    }
+
+    [BuiltinNativeFunction("MID")]
+    public static string Mid(string thisString, int x, int y)
+    {
+        return thisString.Substring(x - 1, y);
+    }
+
+    [BuiltinNativeFunction("LCASE")]
+    public static char LowerCase(char thisChar)
+    {
+        return char.ToLower(thisChar);
+    }
+    [BuiltinNativeFunction("UCASE")]
+    public static char UpperCase(char thisChar)
+    {
+        return char.ToUpper(thisChar);
+    }
+
+    [BuiltinNativeFunction("INT")]
+    public static int Int(decimal x) => (int)x;
+
+    [BuiltinNativeFunction("RAND")]
+    public static decimal RandomReal(int x)
+    {
+        return (decimal)(Random.NextDouble() * x);
     }
 }
