@@ -25,12 +25,7 @@ public class AssignmentOperation : Operation
     {
         base.MetaOperate();
         var value = Program.TypeCheckStack.Pop();
-        Definition to;
-        try
-        {
-            to = Program.TypeCheckStack.Pop();
-        }
-        catch (InvalidOperationException e)
+        if (!Program.TypeCheckStack.TryPop(out var to))
         {
             // incomplete expressions recognised as assignment
             Program.AnalyserFeedbacks.Add(new Feedback
@@ -39,6 +34,14 @@ public class AssignmentOperation : Operation
                 Severity = Feedback.SeverityType.Error,
                 SourceRange = SourceRange
             });
+            to = new Definition(ParentScope, Program)
+            {
+                Type = new NullType(ParentScope, Program),
+                SourceRange = SourceRange,
+                Name = "NULL",
+                Attributes = Definition.Attribute.Reference
+            };
+            if (KeepVariableInStack) Program.TypeCheckStack.Push(to);
             return;
         }
 
@@ -51,7 +54,8 @@ public class AssignmentOperation : Operation
                 SourceRange = SourceRange
             });
         }
-        if (to.Type is PlaceholderType placeholderType) to.Type = placeholderType.MetaAssign(value.Type);
+
+        if (to.Type is PlaceholderType placeholderType) to = placeholderType.MetaAssign(to, value);
         // TODO: Type check
         if (!to.Type.IsConvertableFrom(value.Type))
             Program.AnalyserFeedbacks.Add(new Feedback

@@ -44,7 +44,7 @@ public record TypeDescriptor(string Name, int TypeId = -1, int Dimensions = 0, T
             "FUNCTION" => string.Format(strings.FunctionType_ToString,
                 string.Join(", ",
                     ParameterInfos.Select(p =>
-                        $"{(p.Attributes.HasFlag(Definition.Attribute.Reference) ? "BYREF " : "")}{p.Name}: {p.TypeDescriptor}")),
+                        p.ToString())),
                 ReturnType == null ? "" : $"RETURNS {ReturnType}"),
             _ => Name
         };

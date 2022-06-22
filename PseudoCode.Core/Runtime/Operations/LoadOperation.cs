@@ -36,7 +36,7 @@ public class LoadOperation : Operation
         var definition = ParentScope.FindDefinition(LoadName);
         definition?.References?.Add(SourceRange);
         if (definition == null)
-            ParentScope.AddVariableDefinition(LoadName, new Definition (ParentScope, Program)
+            Program.TypeCheckStack.Push(new Definition(ParentScope, Program)
             {
                 Name = LoadName,
                 Type = new PlaceholderType(ParentScope, Program)
@@ -44,10 +44,11 @@ public class LoadOperation : Operation
                     InstanceName = LoadName
                 },
                 SourceRange = SourceRange,
-                References = new List<SourceRange> { SourceRange }
-            }, SourceRange);
-
-        Program.TypeCheckStack.Push(ParentScope.FindDefinition(LoadName));
+                References = new List<SourceRange> { SourceRange },
+                Attributes = Definition.Attribute.Reference
+            });
+        else
+            Program.TypeCheckStack.Push(ParentScope.FindDefinition(LoadName));
     }
 
     public override string ToPlainString()

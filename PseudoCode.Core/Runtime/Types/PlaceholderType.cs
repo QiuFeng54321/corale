@@ -16,10 +16,15 @@ public class PlaceholderType : Type
     public override uint Id => PlaceholderId;
     public override string Name => "PLACEHOLDER";
 
-    public Type MetaAssign(Type type)
+    public Definition MetaAssign(Definition thisDef, Definition valDef)
     {
-        ParentScope.InstanceDefinitions[InstanceName].Type = type;
-        return type;
+        var resDef = thisDef with
+        {
+            Type = valDef.Type,
+            
+        };
+        ParentScope.InstanceDefinitions.Add(InstanceName, resDef);
+        return resDef;
     }
 
     public override bool IsConvertableFrom(Type type)

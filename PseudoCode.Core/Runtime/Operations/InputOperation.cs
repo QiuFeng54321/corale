@@ -21,14 +21,14 @@ public class InputOperation : Operation
     public override void MetaOperate()
     {
         base.MetaOperate();
-        var type = Program.TypeCheckStack.Pop();
-        var stringType = Program.FindDefinition(Type.StringId).Type;
-        if (type.Type is PlaceholderType placeholderType) placeholderType.MetaAssign(stringType);
+        var valDef = Program.TypeCheckStack.Pop();
+        var stringDef = Program.FindDefinition(Type.StringId);
+        if (valDef.Type is PlaceholderType placeholderType) placeholderType.MetaAssign(valDef, stringDef);
 
-        if (!type.Type.IsConvertableFrom(stringType))
+        if (!valDef.Type.IsConvertableFrom(stringDef.Type))
             Program.AnalyserFeedbacks.Add(new Feedback
             {
-                Message = $"INPUT variable is of type {type} and is not convertable from {stringType}",
+                Message = $"INPUT variable is of type {valDef} and is not convertable from {stringDef}",
                 Severity = Feedback.SeverityType.Error,
                 SourceRange = SourceRange
             });
