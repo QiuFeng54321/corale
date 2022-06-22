@@ -31,6 +31,6 @@ public class MakeTypeOperation : Operation
             SourceRange = SourceRange,
             References = new List<SourceRange> {SourceRange},
             Attributes = Definition.Attribute.Type
-        });
+        }, SourceRange);
     }
 }

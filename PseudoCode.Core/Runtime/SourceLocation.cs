@@ -2,7 +2,7 @@ namespace PseudoCode.Core.Runtime;
 
 public class SourceLocation
 {
-    public static SourceLocation Identity = new(-1, -1);
+    public static readonly SourceLocation Identity = new(-1, -1);
     public int Line, Column;
 
     public SourceLocation(int line, int column)

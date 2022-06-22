@@ -2,7 +2,7 @@ namespace PseudoCode.Core.Runtime;
 
 public class SourceRange
 {
-    public static SourceRange Identity = new(SourceLocation.Identity, SourceLocation.Identity);
+    public static readonly SourceRange Identity = new(SourceLocation.Identity, SourceLocation.Identity);
 
     public SourceRange(SourceLocation Start, SourceLocation End)
     {
