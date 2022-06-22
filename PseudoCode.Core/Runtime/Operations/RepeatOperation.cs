@@ -26,6 +26,7 @@ public class RepeatOperation : Operation
     {
         base.MetaOperate();
         RepeatBlock.MetaOperate();
+        Program.TypeCheckStack.Pop();
     }
 
     public override string ToPlainString()
