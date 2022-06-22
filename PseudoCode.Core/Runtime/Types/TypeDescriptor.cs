@@ -27,7 +27,7 @@ public record TypeDescriptor(string Name, int TypeId = -1, int Dimensions = 0, T
             {
                 Type = new FunctionType(scope, program)
                 {
-                    ReturnType = ReturnType.GetDefinition(scope, program),
+                    ReturnType = ReturnType?.GetDefinition(scope, program),
                     ParameterInfos = ParameterInfos
                 },
                 Attributes = Definition.Attribute.Type
