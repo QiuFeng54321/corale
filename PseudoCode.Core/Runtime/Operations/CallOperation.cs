@@ -56,20 +56,21 @@ public class CallOperation : Operation
 
             foreach (var ((parameterInfo, passedInstance), i) in functionType.ParameterInfos.Zip(arguments)
                          .Select((v, i) => (v, i)))
-                if (!parameterInfo.Definition.Type.IsConvertableFrom(passedInstance))
+                if (!parameterInfo.Type.IsConvertableFrom(passedInstance))
                     Program.AnalyserFeedbacks.Add(new Feedback
                     {
                         Message =
-                            $"Argument {i + 1} cannot be casted from {passedInstance} to {parameterInfo.Definition.Type}",
+                            $"Argument {i + 1} cannot be casted from {passedInstance} to {parameterInfo.TypeString()}",
                         Severity = Feedback.SeverityType.Error,
                         SourceRange = SourceRange
                     });
         }
 
         var ret = functionType?.ReturnType?.Type ?? new NullType(ParentScope, Program);
-        if (ret is not NullType) Program.TypeCheckStack.Push(new TypeInfo {
+        if (ret is not NullType) Program.TypeCheckStack.Push(new Definition(ParentScope, Program) {
             Type = ret,
-            SourceRange = SourceRange
+            SourceRange = SourceRange,
+            Attributes = Definition.Attribute.Immutable
         });
     }
 

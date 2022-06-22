@@ -45,14 +45,15 @@ public class FormImmediateArrayOperation : Operation
                 arrayElementType = type.Type;
         }
 
-        Program.TypeCheckStack.Push(new TypeInfo
+        Program.TypeCheckStack.Push(new Definition(ParentScope, Program)
         {
             Type = ArrayType = new ArrayType(ParentScope, Program)
             {
                 DimensionCount = 1,
                 ElementType = arrayElementType
             },
-            SourceRange = SourceRange
+            SourceRange = SourceRange,
+            Attributes = Definition.Attribute.Immutable
         });
     }
 

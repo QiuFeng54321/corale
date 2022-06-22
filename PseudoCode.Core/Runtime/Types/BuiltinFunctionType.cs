@@ -18,6 +18,6 @@ public class BuiltinFunctionType : FunctionType
     {
         CheckArguments(args);
         return ((BuiltinFunctionInstance)functionInstance).Func(ParentScope, Program,
-            args.Zip(ParameterInfos).Select((p, _) => p.Second.Definition.Type.CastFrom(p.First)).ToArray());
+            args.Zip(ParameterInfos).Select((p, _) => p.Second.Type.CastFrom(p.First)).ToArray());
     }
 }

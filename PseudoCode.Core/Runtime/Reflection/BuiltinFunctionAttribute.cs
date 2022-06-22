@@ -5,10 +5,10 @@ namespace PseudoCode.Core.Runtime.Reflection;
 [AttributeUsage(AttributeTargets.Method)]
 public class BuiltinFunctionAttribute : Attribute
 {
-    public FunctionType.ParameterInfo[] ParameterInfos;
+    public Definition[] ParameterInfos;
     public Definition ReturnType;
 
-    public BuiltinFunctionAttribute(FunctionType.ParameterInfo[] parameterInfos, Definition returnType)
+    public BuiltinFunctionAttribute(Definition[] parameterInfos, Definition returnType)
     {
         ParameterInfos = parameterInfos;
     }

@@ -88,13 +88,13 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         return resType;
     }
 
-    public static Type.TypeDescriptor GetTypeDescriptor(PseudoCodeParser.DataTypeContext context)
+    public static TypeDescriptor GetTypeDescriptor(PseudoCodeParser.DataTypeContext context)
     {
         var type = context.TypeName;
         var dimensions = context.arrayRange().Length;
         return dimensions != 0
-            ? new Type.TypeDescriptor("ARRAY", Dimensions: dimensions, ElementType: new Type.TypeDescriptor(type))
-            : new Type.TypeDescriptor(type);
+            ? new TypeDescriptor("ARRAY", Dimensions: dimensions, ElementType: new TypeDescriptor(type))
+            : new TypeDescriptor(type);
     }
 
     public override void ExitDeclarationStatement(PseudoCodeParser.DeclarationStatementContext context)
@@ -122,14 +122,14 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
                 {
                     SourceLocationHelper.SourceRange(context.Identifier().Symbol)
                 },
-                Attributes = Definition.Attribute.Variable
+                Attributes = Definition.Attribute.Reference
             }
         });
     }
 
-    public FunctionType.ParameterInfo[] GetArgumentDeclarations(PseudoCodeParser.ArgumentsDeclarationContext context)
+    public Definition[] GetArgumentDeclarations(PseudoCodeParser.ArgumentsDeclarationContext context)
     {
-        return context.argumentDeclaration().Select(declarationContext => new FunctionType.ParameterInfo(
+        return context.argumentDeclaration().Select(declarationContext => 
             new Definition(CurrentScope, Program)
             {
                 Type = GetType(declarationContext.dataType()),
@@ -138,11 +138,10 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
                 References = new List<SourceRange>
                 {
                     SourceLocationHelper.SourceRange(declarationContext.Identifier().Symbol)
-                }
-            },
-            declarationContext.Identifier().GetText(),
-            declarationContext.Byref() != null
-        )).ToArray();
+                },
+                Attributes = declarationContext.Byref() != null ? Definition.Attribute.Reference : Definition.Attribute.Immutable
+            }
+        ).ToArray();
     }
 
     public override void ExitFunctionDefinition(PseudoCodeParser.FunctionDefinitionContext context)
@@ -161,7 +160,7 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
             {
                 Name = name,
                 SourceRange = SourceLocationHelper.SourceRange(context.Identifier().Symbol),
-                TypeDescriptor = new Type.TypeDescriptor("FUNCTION")
+                TypeDescriptor = new TypeDescriptor("FUNCTION")
                 {
                     ReturnType = returnType,
                     ParameterInfos = paramInfo
@@ -191,7 +190,7 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
             {
                 Name = name,
                 SourceRange = SourceLocationHelper.SourceRange(context.identifierWithNew()),
-                TypeDescriptor = new Type.TypeDescriptor("FUNCTION")
+                TypeDescriptor = new TypeDescriptor("FUNCTION")
                 {
                     ReturnType = null,
                     ParameterInfos = paramInfo

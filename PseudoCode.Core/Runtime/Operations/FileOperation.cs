@@ -18,7 +18,7 @@ public class FileOperation : Operation
         return path;
     }
 
-    public TypeInfo PopAndCheckPath()
+    public Definition PopAndCheckPath()
     {
         var path = Program.TypeCheckStack.Pop();
         if (!Program.FindDefinition(Type.StringId).Type.IsConvertableFrom(path.Type))

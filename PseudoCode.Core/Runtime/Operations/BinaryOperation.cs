@@ -37,7 +37,7 @@ public class BinaryOperation : Operation
                 SourceRange = SourceRange
             });
 
-        var isConstant = left.IsConstant && right.IsConstant;
+        var isConstant = left.Attributes.HasFlag(Definition.Attribute.Const) && right.Attributes.HasFlag(Definition.Attribute.Const);
         var constantInstance = isConstant
             ? left.Type.BinaryOperators[OperatorMethod](left.ConstantInstance, right.ConstantInstance)
             : Instance.Null;
@@ -66,13 +66,12 @@ public class BinaryOperation : Operation
             });
         }
 
-        Program.TypeCheckStack.Push(new TypeInfo
+        Program.TypeCheckStack.Push(new Definition(ParentScope, Program)
         {
             Type = resType,
-            IsConstant = isConstant,
             SourceRange = SourceRange,
             ConstantInstance = constantInstance,
-            IsConstantEvaluated = true
+            Attributes = isConstant ? Definition.Attribute.Const : Definition.Attribute.Immutable
         });
     }
 

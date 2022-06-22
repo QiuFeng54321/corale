@@ -33,31 +33,36 @@ public class ArrayIndexOperation : Operation
                 Message = $"Invalid type of array access: {accessed}",
                 SourceRange = SourceRange
             });
-            Program.TypeCheckStack.Push(new TypeInfo
+            Program.TypeCheckStack.Push(new Definition(ParentScope, Program)
             {
                 Type = new NullType(ParentScope, Program),
-                IsReference = true,
+                Attributes = Definition.Attribute.Reference,
                 SourceRange = SourceRange
             });
         }
         else
         {
+            var attributes = accessed.Attributes.HasFlag(Definition.Attribute.Reference)
+                ? Definition.Attribute.Reference
+                : Definition.Attribute.Immutable;
             if (IndexLength < accessedArray.DimensionCount)
-                Program.TypeCheckStack.Push(new TypeInfo
+            {
+                Program.TypeCheckStack.Push(new Definition(ParentScope, Program)
                 {
                     Type = new ArrayType(ParentScope, Program)
                     {
                         DimensionCount = accessedArray.DimensionCount - IndexLength,
                         ElementType = accessedArray.ElementType
                     },
-                    IsReference = accessed.IsReference,
+                    Attributes = attributes,
                     SourceRange = SourceRange
                 });
+            }
             else
-                Program.TypeCheckStack.Push(new TypeInfo
+                Program.TypeCheckStack.Push(new Definition(ParentScope, Program)
                 {
                     Type = accessedArray.ElementType,
-                    IsReference = accessed.IsReference,
+                    Attributes = attributes,
                     SourceRange = SourceRange
                 });
         }

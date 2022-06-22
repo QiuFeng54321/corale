@@ -30,7 +30,7 @@ public class MakeFunctionOperation : Operation
         base.MetaOperate();
         ParentScope.AddVariableDefinition(Name, Definition);
         foreach (var parameterInfo in ((FunctionType)Definition.Type).ParameterInfos)
-            FunctionBody.AddVariableDefinition(parameterInfo.Name, parameterInfo.Definition);
+            FunctionBody.AddVariableDefinition(parameterInfo.Name, parameterInfo);
         FunctionBody.MetaOperate();
     }
 

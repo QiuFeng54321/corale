@@ -20,11 +20,11 @@ public class LoadImmediateOperation : Operation
     public override void MetaOperate()
     {
         base.MetaOperate();
-        Program.TypeCheckStack.Push(new TypeInfo {
+        Program.TypeCheckStack.Push(new Definition(ParentScope, Program) {
             Type = Intermediate.Type,
-            IsConstant = true,
             ConstantInstance = Intermediate,
-            SourceRange = SourceRange
+            SourceRange = SourceRange,
+            Attributes = Definition.Attribute.Const
         });
     }
 
