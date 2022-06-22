@@ -1,6 +1,7 @@
 using PseudoCode.Core.Analyzing;
 using PseudoCode.Core.Runtime.Instances;
 using PseudoCode.Core.Runtime.Operations;
+using PseudoCode.Core.Runtime.Reflection;
 using PseudoCode.Core.Runtime.Types;
 using Type = PseudoCode.Core.Runtime.Types.Type;
 
@@ -148,56 +149,7 @@ public class PseudoProgram
 
     public void AddBuiltinFunctions()
     {
-        GlobalScope.AddOperation(new MakeBuiltinFunctionOperation(GlobalScope, this)
-        {
-            Name = "EOF",
-            Definition = new Definition(GlobalScope, this)
-            {
-                Name = "EOF",
-                References = new List<SourceRange>(),
-                SourceRange = SourceRange.Identity,
-                Type = new BuiltinFunctionType(GlobalScope, this)
-                {
-                    ParameterInfos = new[]
-                    {
-                        GlobalScope.FindDefinition(Type.StringId).Make("path", Definition.Attribute.Immutable)
-                    },
-                    ReturnType = GlobalScope.FindDefinition(Type.BooleanId)
-                }
-            },
-            Func = (scope, program, args) =>
-            {
-                var path = args[0].Get<string>();
-                return scope.FindDefinition(Type.BooleanId).Type.Instance(program.OpenFiles[path].Eof());
-            }
-        });
-        GlobalScope.AddOperation(new MakeBuiltinFunctionOperation(GlobalScope, this)
-        {
-            Name = "__in_range",
-            Definition = new Definition(GlobalScope, this)
-            {
-                Name = "__in_range",
-                References = new List<SourceRange>(),
-                SourceRange = SourceRange.Identity,
-                Type = new BuiltinFunctionType(GlobalScope, this)
-                {
-                    ParameterInfos = new[]
-                    {
-                        GlobalScope.FindDefinition(Type.RealId).Make("target", Definition.Attribute.Immutable),
-                        GlobalScope.FindDefinition(Type.RealId).Make("from", Definition.Attribute.Immutable),
-                        GlobalScope.FindDefinition(Type.RealId).Make("to", Definition.Attribute.Immutable)
-                    },
-                    ReturnType = GlobalScope.FindDefinition(Type.BooleanId)
-                }
-            },
-            Func = (scope, program, args) =>
-            {
-                var target = args[0].Get<decimal>();
-                var from = args[1].Get<decimal>();
-                var to = args[2].Get<decimal>();
-                return scope.FindDefinition(Type.BooleanId).Type.Instance(from <= target && target <= to);
-            }
-        });
+        FunctionBinder.AddBuiltinFunctionOperations(typeof(BuiltinFunctions), GlobalScope, this);
     }
 
     public void PrintAnalyzerFeedbacks(TextWriter textWriter)

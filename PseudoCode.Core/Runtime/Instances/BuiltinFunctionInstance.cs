@@ -1,9 +1,9 @@
 using PseudoCode.Core.Runtime.Operations;
+using PseudoCode.Core.Runtime.Reflection;
 using PseudoCode.Core.Runtime.Types;
 
 namespace PseudoCode.Core.Runtime.Instances;
 
-using FuncType = Func<Scope, PseudoProgram, Instance[], Instance>;
 
 public class BuiltinFunctionInstance : FunctionInstance
 {
@@ -15,9 +15,9 @@ public class BuiltinFunctionInstance : FunctionInstance
     {
     }
 
-    public FuncType Func
+    public FunctionBinder.BuiltinFunction Func
     {
-        get => (FuncType)Value;
+        get => (FunctionBinder.BuiltinFunction)Value;
         set => Value = value;
     }
 
