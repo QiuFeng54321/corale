@@ -164,7 +164,10 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
                 {
                     SourceLocationHelper.SourceRange(declarationContext.Identifier().Symbol)
                 },
-                Attributes = declarationContext.Byref() != null ? Definition.Attribute.Reference : Definition.Attribute.Immutable
+                Attributes = declarationContext.Byref() != null 
+                    ? Definition.Attribute.Reference 
+                    // : Definition.Attribute.Immutable // CAIE guide actually allows param assignment (P20 8.3 Example)
+                    : Definition.Attribute.None
             }
         ).ToArray();
     }
