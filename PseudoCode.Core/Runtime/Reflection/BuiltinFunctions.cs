@@ -30,7 +30,7 @@ public static class BuiltinFunctions
     }
 
     [BuiltinNativeFunction("__in_range")]
-    public static bool InRange(decimal target, decimal from, decimal to)
+    public static bool InRange(RealNumberType target, RealNumberType from, RealNumberType to)
     {
         return from <= target && target <= to;
     }
@@ -53,11 +53,12 @@ public static class BuiltinFunctions
     }
 
     [BuiltinNativeFunction("INT")]
-    public static int Int(decimal x) => (int)x;
+    public static int Int(RealNumberType x) => (int)x;
 
     [BuiltinNativeFunction("RAND")]
-    public static decimal RandomReal(int x)
+    public static RealNumberType RandomReal(int x)
     {
-        return (decimal)(Random.NextDouble() * x);
+        // ReSharper disable once RedundantCast
+        return (RealNumberType)(Random.NextDouble() * x);
     }
 }

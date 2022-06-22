@@ -187,9 +187,10 @@ public class Scope : Operation
                 // e.Operation ??= operation;
                 e.OperationStackTrace.Add(this);
                 ScopeStates = scopeStates; // Reset
-                if (!IsRoot) throw;
-                Console.Error.WriteLine(e);
-                return;
+                // if (!IsRoot) throw;
+                // Console.Error.WriteLine(e);
+                // return;
+                throw;
             }
 
         ScopeStates = scopeStates;
