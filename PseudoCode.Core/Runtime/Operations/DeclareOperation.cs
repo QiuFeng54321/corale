@@ -18,7 +18,9 @@ public class DeclareOperation : Operation
     {
         base.Operate();
         // TODO: Initializing array within a type does not work properly
-        var instance = Definition.ConstantInstance != null ? Definition.Type.Clone(Definition.ConstantInstance) : Definition.Type.Instance();
+        var instance = Definition.ConstantInstance != null
+            ? Definition.Type.Clone(Definition.ConstantInstance)
+            : Definition.Type.Instance();
         if (instance is ArrayInstance arrayInstance)
         {
             for (var i = 0; i < DimensionCount; i++)

@@ -14,6 +14,7 @@ public class SwapOperation : Operation
         Program.RuntimeStack.Push(first);
         Program.RuntimeStack.Push(second);
     }
+
     public override void MetaOperate()
     {
         base.MetaOperate();
@@ -23,5 +24,8 @@ public class SwapOperation : Operation
         Program.TypeCheckStack.Push(second);
     }
 
-    public override string ToPlainString() => "Swap";
+    public override string ToPlainString()
+    {
+        return "Swap";
+    }
 }

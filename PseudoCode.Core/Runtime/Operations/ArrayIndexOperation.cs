@@ -46,7 +46,6 @@ public class ArrayIndexOperation : Operation
                 ? Definition.Attribute.Reference
                 : Definition.Attribute.Immutable;
             if (IndexLength < accessedArray.DimensionCount)
-            {
                 Program.TypeCheckStack.Push(new Definition(ParentScope, Program)
                 {
                     Type = new ArrayType(ParentScope, Program)
@@ -57,7 +56,6 @@ public class ArrayIndexOperation : Operation
                     Attributes = attributes,
                     SourceRange = SourceRange
                 });
-            }
             else
                 Program.TypeCheckStack.Push(new Definition(ParentScope, Program)
                 {

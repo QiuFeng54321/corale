@@ -4,8 +4,8 @@ namespace PseudoCode.Core.Runtime.Operations;
 
 public class MakeTypeOperation : Operation
 {
-    public Scope TypeBody;
     public string Name;
+    public Scope TypeBody;
 
     public MakeTypeOperation(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {
@@ -20,7 +20,7 @@ public class MakeTypeOperation : Operation
     {
         base.MetaOperate();
         TypeBody.MetaOperate();
-        ParentScope.AddTypeDefinition(Name, new Definition (ParentScope, Program)
+        ParentScope.AddTypeDefinition(Name, new Definition(ParentScope, Program)
         {
             Type = new TypeType(ParentScope, Program)
             {
@@ -29,7 +29,7 @@ public class MakeTypeOperation : Operation
             },
             Name = Name,
             SourceRange = SourceRange,
-            References = new List<SourceRange> {SourceRange},
+            References = new List<SourceRange> { SourceRange },
             Attributes = Definition.Attribute.Type
         }, SourceRange);
     }

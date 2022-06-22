@@ -24,15 +24,17 @@ public class GetRecordOperation : FileOperation
         base.Operate();
         var type = Program.TypeCheckStack.Pop();
         if (type.Type is PlaceholderType)
-        {
             Program.AnalyserFeedbacks.Add(new Feedback
             {
                 Message = "PUTRECORD must not read value to a variable whose type is not specified",
                 Severity = Feedback.SeverityType.Error,
                 SourceRange = SourceRange
             });
-        }
         PopAndCheckPath();
     }
-    public override string ToPlainString() => "Get record";
+
+    public override string ToPlainString()
+    {
+        return "Get record";
+    }
 }

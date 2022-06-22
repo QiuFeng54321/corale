@@ -4,7 +4,6 @@ using PseudoCode.Core.Runtime.Types;
 
 namespace PseudoCode.Core.Runtime.Instances;
 
-
 public class BuiltinFunctionInstance : FunctionInstance
 {
     public BuiltinFunctionInstance()

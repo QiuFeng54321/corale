@@ -1,5 +1,4 @@
 using PseudoCode.Core.Runtime.Instances;
-using PseudoCode.Core.Runtime.Types;
 
 namespace PseudoCode.Core.Runtime.Operations;
 
@@ -20,7 +19,8 @@ public class LoadImmediateOperation : Operation
     public override void MetaOperate()
     {
         base.MetaOperate();
-        Program.TypeCheckStack.Push(new Definition(ParentScope, Program) {
+        Program.TypeCheckStack.Push(new Definition(ParentScope, Program)
+        {
             Type = Intermediate.Type,
             ConstantInstance = Intermediate,
             SourceRange = SourceRange,

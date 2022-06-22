@@ -12,11 +12,12 @@ public class Feedback
         Hint
     }
 
+    public List<CodeFix> CodeFixes = new();
+
     public string Message;
 
     public SeverityType Severity;
     public SourceRange SourceRange;
-    public List<CodeFix> CodeFixes = new();
 
     public override string ToString()
     {

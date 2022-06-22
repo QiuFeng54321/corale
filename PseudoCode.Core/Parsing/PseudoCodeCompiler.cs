@@ -147,14 +147,15 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
                 {
                     SourceLocationHelper.SourceRange(context.Identifier().Symbol)
                 },
-                Attributes = Definition.Attribute.Const | Definition.Attribute.Reference | Definition.Attribute.Immutable
+                Attributes = Definition.Attribute.Const | Definition.Attribute.Reference |
+                             Definition.Attribute.Immutable
             }
         });
     }
 
     public Definition[] GetArgumentDeclarations(PseudoCodeParser.ArgumentsDeclarationContext context)
     {
-        return context.argumentDeclaration().Select(declarationContext => 
+        return context.argumentDeclaration().Select(declarationContext =>
             new Definition(CurrentScope, Program)
             {
                 Type = GetType(declarationContext.dataType()),
@@ -164,8 +165,8 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
                 {
                     SourceLocationHelper.SourceRange(declarationContext.Identifier().Symbol)
                 },
-                Attributes = declarationContext.Byref() != null 
-                    ? Definition.Attribute.Reference 
+                Attributes = declarationContext.Byref() != null
+                    ? Definition.Attribute.Reference
                     // : Definition.Attribute.Immutable // CAIE guide actually allows param assignment (P20 8.3 Example)
                     : Definition.Attribute.None
             }

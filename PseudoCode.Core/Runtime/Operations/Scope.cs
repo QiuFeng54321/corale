@@ -1,6 +1,5 @@
 using PseudoCode.Core.Analyzing;
 using PseudoCode.Core.Runtime.Errors;
-using PseudoCode.Core.Runtime.Instances;
 using PseudoCode.Core.Runtime.Types;
 using Type = PseudoCode.Core.Runtime.Types.Type;
 
@@ -8,6 +7,9 @@ namespace PseudoCode.Core.Runtime.Operations;
 
 public class Scope : Operation
 {
+    public bool AllowStatements;
+    public SourceLocation FirstLocation;
+
     /// <summary>
     ///     Instances are created from the type
     /// </summary>
@@ -24,8 +26,6 @@ public class Scope : Operation
 
     public ScopeStates ScopeStates { get; set; }
     public List<Scope> ChildScopes { get; set; } = new();
-    public bool AllowStatements;
-    public SourceLocation FirstLocation;
 
     public Definition FindDefinition(string name)
     {
@@ -200,7 +200,8 @@ public class Scope : Operation
     {
         var res = InstanceDefinitions
             .Select(x => x.Value);
-        res = ChildScopes.Aggregate(res, (current, childScope) => current.Concat(childScope.GetAllDefinedDefinitions()));
+        res = ChildScopes.Aggregate(res,
+            (current, childScope) => current.Concat(childScope.GetAllDefinedDefinitions()));
         return res;
     }
 
@@ -208,9 +209,7 @@ public class Scope : Operation
     {
         foreach (var scope in ChildScopes.Where(scope =>
                      scope.AllowStatements && scope.SourceRange.Contains(sourceLocation)))
-        {
             return scope.GetNearestStatementScopeBefore(sourceLocation);
-        }
 
         return AllowStatements && SourceRange.Contains(sourceLocation) ? this : null;
     }

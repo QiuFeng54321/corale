@@ -7,9 +7,9 @@ namespace PseudoCode.Core.Runtime.Instances;
 
 public class ArrayInstance : Instance
 {
+    public uint[] Addresses = System.Array.Empty<uint>();
     public Instance[] Array;
     public List<Range> Dimensions = new();
-    public uint StartAddress => Addresses[0];
 
     public ArrayInstance(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {
@@ -19,9 +19,10 @@ public class ArrayInstance : Instance
     {
     }
 
+    public uint StartAddress => Addresses[0];
+
     public ArrayType ArrayType => (ArrayType)Type;
     public int TotalElements => Dimensions.Select(d => d.Length).Aggregate((prev, next) => prev * next);
-    public uint[] Addresses = System.Array.Empty<uint>();
 
     [JsonIgnore]
     public override object Value
@@ -45,7 +46,8 @@ public class ArrayInstance : Instance
     public void InitialiseAsReferenceElements()
     {
         for (var i = 0u; i < Array.Length; i++)
-            Array[i] = new ReferenceInstance(ParentScope, Program) { ReferenceAddress = Addresses == null ? i : Addresses[i]};
+            Array[i] = new ReferenceInstance(ParentScope, Program)
+                { ReferenceAddress = Addresses == null ? i : Addresses[i] };
     }
 
     public void InitialiseNonReference()

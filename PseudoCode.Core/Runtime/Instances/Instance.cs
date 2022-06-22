@@ -10,10 +10,9 @@ public class Instance
 {
     public static Instance Null;
     public uint InstanceAddress;
-    public virtual Instance ParentInstance { get; set; } = null;
     [JsonIgnore] public Scope ParentScope;
     [JsonIgnore] public PseudoProgram Program;
-    
+
 
     public Instance()
     {
@@ -24,6 +23,8 @@ public class Instance
         ParentScope = parentScope;
         Program = program;
     }
+
+    public virtual Instance ParentInstance { get; set; } = null;
 
     public virtual Type Type { get; set; }
     public virtual Dictionary<string, Instance> Members { get; init; } = new();
@@ -54,7 +55,7 @@ public class Instance
     {
         return $"{{{(Members == null ? "" : string.Join(", ", Members.Select(m => $"{m.Key} = {m.Value}")))}}}";
     }
-    
+
 
     public virtual string DebugRepresent()
     {

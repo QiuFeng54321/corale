@@ -1,7 +1,6 @@
 using PseudoCode.Core.Runtime.Instances;
 using PseudoCode.Core.Runtime.Operations;
 using PseudoCode.Core.Runtime.Types;
-using Type = PseudoCode.Core.Runtime.Types.Type;
 
 namespace PseudoCode.Core.Runtime;
 
@@ -9,7 +8,10 @@ public record DefinitionReference(Scope ParentScope, PseudoProgram Program) : De
 {
     private Definition _definition;
     public int TypeId = -1;
-    public Definition RealDefinition => _definition ??= Name == null ? ParentScope.FindDefinition((uint)TypeId) : ParentScope.FindDefinition(Name);
+
+    public Definition RealDefinition => _definition ??=
+        Name == null ? ParentScope.FindDefinition((uint)TypeId) : ParentScope.FindDefinition(Name);
+
     public override Attribute Attributes => RealDefinition.Attributes;
     public override List<SourceRange> References => RealDefinition.References;
     public override Instance ConstantInstance => RealDefinition.ConstantInstance;

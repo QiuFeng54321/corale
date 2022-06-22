@@ -67,11 +67,13 @@ public class CallOperation : Operation
         }
 
         var ret = functionType is null ? null : functionType.ReturnType?.Type ?? new NullType(ParentScope, Program);
-        if (ret is not NullType) Program.TypeCheckStack.Push(new Definition(ParentScope, Program) {
-            Type = ret,
-            SourceRange = SourceRange,
-            Attributes = Definition.Attribute.Immutable
-        });
+        if (ret is not NullType)
+            Program.TypeCheckStack.Push(new Definition(ParentScope, Program)
+            {
+                Type = ret,
+                SourceRange = SourceRange,
+                Attributes = Definition.Attribute.Immutable
+            });
     }
 
     public override string ToPlainString()

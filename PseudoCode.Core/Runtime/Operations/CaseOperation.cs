@@ -26,10 +26,7 @@ public class CaseOperation : Operation
             break;
         }
 
-        if (fallback)
-        {
-            DefaultCase.Operate();
-        }
+        if (fallback) DefaultCase.Operate();
 
         Program.RuntimeStack.Pop();
     }
@@ -48,11 +45,14 @@ public class CaseOperation : Operation
         Program.TypeCheckStack.Pop();
     }
 
-    public override string ToPlainString() => "Case";
+    public override string ToPlainString()
+    {
+        return "Case";
+    }
 
     public override string ToString(int depth)
     {
         return
-            $"{Indent(depth)}Case:{string.Join($"\n", Cases.Select(c => $"{c.Condition.ToString(depth)}\n{Indent(depth)}THEN:\n{c.Operation.ToString(depth)}"))}{(DefaultCase == null ? "" : $"\n{Indent(depth)}OTHERWISE: {DefaultCase.ToString(depth)}")}";
+            $"{Indent(depth)}Case:{string.Join("\n", Cases.Select(c => $"{c.Condition.ToString(depth)}\n{Indent(depth)}THEN:\n{c.Operation.ToString(depth)}"))}{(DefaultCase == null ? "" : $"\n{Indent(depth)}OTHERWISE: {DefaultCase.ToString(depth)}")}";
     }
 }

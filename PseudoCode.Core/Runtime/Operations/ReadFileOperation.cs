@@ -25,7 +25,7 @@ public class ReadFileOperation : FileOperation
     {
         base.Operate();
         var valDef = Program.TypeCheckStack.Pop();
-        
+
         var stringDef = Program.FindDefinition(Type.StringId);
         if (valDef.Type is PlaceholderType placeholderType) placeholderType.MetaAssign(valDef, stringDef);
 
@@ -38,5 +38,9 @@ public class ReadFileOperation : FileOperation
             });
         PopAndCheckPath();
     }
-    public override string ToPlainString() => "Read line";
+
+    public override string ToPlainString()
+    {
+        return "Read line";
+    }
 }

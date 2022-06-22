@@ -1,7 +1,6 @@
 using PseudoCode.Core.Analyzing;
 using PseudoCode.Core.Runtime.Instances;
 using PseudoCode.Core.Runtime.Types;
-using Type = PseudoCode.Core.Runtime.Types.Type;
 
 namespace PseudoCode.Core.Runtime.Operations;
 
@@ -27,7 +26,8 @@ public class BinaryOperation : Operation
         base.MetaOperate();
         var right = Program.TypeCheckStack.Pop();
         var left = Program.TypeCheckStack.Pop();
-        var isConstant = left.Attributes.HasFlag(Definition.Attribute.Const) && right.Attributes.HasFlag(Definition.Attribute.Const);
+        var isConstant = left.Attributes.HasFlag(Definition.Attribute.Const) &&
+                         right.Attributes.HasFlag(Definition.Attribute.Const);
         var resType = left.Type.BinaryResultType(OperatorMethod, right.Type);
         if (resType is NullType && left.Type.IsConvertableFrom(right.Type))
             resType = left.Type.BinaryResultType(OperatorMethod, left.Type);
@@ -47,7 +47,6 @@ public class BinaryOperation : Operation
             ? left.Type.BinaryOperators[OperatorMethod](left.ConstantInstance, right.ConstantInstance)
             : Instance.Null;
         if (isConstant)
-        {
             Program.AnalyserFeedbacks.Add(new Feedback
             {
                 Message = $"Replace with constant {constantInstance}",
@@ -69,7 +68,6 @@ public class BinaryOperation : Operation
                     }
                 }
             });
-        }
 
         Program.TypeCheckStack.Push(new Definition(ParentScope, Program)
         {
