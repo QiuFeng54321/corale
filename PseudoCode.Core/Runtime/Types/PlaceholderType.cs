@@ -20,8 +20,7 @@ public class PlaceholderType : Type
     {
         var resDef = thisDef with
         {
-            Type = valDef.Type,
-            
+            Type = valDef.Type
         };
         ParentScope.InstanceDefinitions.Add(InstanceName, resDef);
         return resDef;

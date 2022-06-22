@@ -1,6 +1,5 @@
 using PseudoCode.Core.Analyzing;
 using PseudoCode.Core.Runtime.Types;
-using Type = PseudoCode.Core.Runtime.Types.Type;
 
 namespace PseudoCode.Core.Runtime.Operations;
 
@@ -46,24 +45,20 @@ public class AssignmentOperation : Operation
         }
 
         if (!to.Attributes.HasFlag(Definition.Attribute.Reference))
-        {
             Program.AnalyserFeedbacks.Add(new Feedback
             {
                 Message = $"The assignment target is not a reference: {to}",
                 Severity = Feedback.SeverityType.Error,
                 SourceRange = SourceRange
             });
-        }
 
         if (to.Attributes.HasFlag(Definition.Attribute.Immutable))
-        {
             Program.AnalyserFeedbacks.Add(new Feedback
             {
                 Message = $"Cannot assign value to a constant: {to}",
                 Severity = Feedback.SeverityType.Error,
                 SourceRange = SourceRange
             });
-        }
 
         if (to.Type is PlaceholderType placeholderType) to = placeholderType.MetaAssign(to, value);
         // TODO: Type check

@@ -1,13 +1,13 @@
 using PseudoCode.Core.Runtime.Instances;
 using PseudoCode.Core.Runtime.Operations;
-using PseudoCode.Core.Runtime.Types;
 using Type = PseudoCode.Core.Runtime.Types.Type;
 
 namespace PseudoCode.Core.Runtime.Reflection;
 
 public static class BuiltinFunctions
 {
-    public static Random Random = new Random();
+    public static Random Random = new();
+
     [BuiltinFunction("EOF")]
     [ParamType("path", "STRING")]
     [ReturnType("BOOLEAN")]
@@ -46,6 +46,7 @@ public static class BuiltinFunctions
     {
         return char.ToLower(thisChar);
     }
+
     [BuiltinNativeFunction("UCASE")]
     public static char UpperCase(char thisChar)
     {
@@ -53,7 +54,10 @@ public static class BuiltinFunctions
     }
 
     [BuiltinNativeFunction("INT")]
-    public static int Int(RealNumberType x) => (int)x;
+    public static int Int(RealNumberType x)
+    {
+        return (int)x;
+    }
 
     [BuiltinNativeFunction("RAND")]
     public static RealNumberType RandomReal(int x)

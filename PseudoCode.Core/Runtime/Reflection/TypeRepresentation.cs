@@ -4,8 +4,8 @@ namespace PseudoCode.Core.Runtime.Reflection;
 
 public class TypeRepresentation : Attribute
 {
-    public string ElementTypeName;
     public int DimensionCount;
+    public string ElementTypeName;
     public bool IsReference;
 
     public TypeRepresentation(string elementTypeName, int dimensionCount = 0, bool isReference = false)

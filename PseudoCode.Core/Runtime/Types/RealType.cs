@@ -4,6 +4,7 @@ using PseudoCode.Core.Runtime.Instances;
 using PseudoCode.Core.Runtime.Operations;
 
 namespace PseudoCode.Core.Runtime.Types;
+
 public class RealType : PrimitiveType<RealNumberType>
 {
     public RealType(Scope parentScope, PseudoProgram program) : base(parentScope, program)

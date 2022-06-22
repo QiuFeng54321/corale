@@ -70,7 +70,8 @@ public class FunctionType : Type
         return
             string.Format(strings.FunctionType_ToString,
                 string.Join(", ",
-                    ParameterInfos.Select(p => $"{(p.Attributes.HasFlag(Definition.Attribute.Reference) ? "BYREF " : "")}{p.Name}: {p.TypeString()}")),
+                    ParameterInfos.Select(p =>
+                        $"{(p.Attributes.HasFlag(Definition.Attribute.Reference) ? "BYREF " : "")}{p.Name}: {p.TypeString()}")),
                 ReturnType == null ? "" : $"RETURNS {ReturnType}");
     }
 }

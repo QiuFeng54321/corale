@@ -18,5 +18,8 @@ public class DuplicateOperation : Operation
         Program.TypeCheckStack.Push(Program.TypeCheckStack.Peek());
     }
 
-    public override string ToPlainString() => "Duplicate";
+    public override string ToPlainString()
+    {
+        return "Duplicate";
+    }
 }

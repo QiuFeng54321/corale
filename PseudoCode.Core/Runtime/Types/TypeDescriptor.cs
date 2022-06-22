@@ -49,4 +49,4 @@ public record TypeDescriptor(string Name, int TypeId = -1, int Dimensions = 0, T
             _ => Name
         };
     }
-};
+}

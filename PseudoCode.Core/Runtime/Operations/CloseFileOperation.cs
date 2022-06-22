@@ -19,6 +19,8 @@ public class CloseFileOperation : FileOperation
         PopAndCheckPath();
     }
 
-    public override string ToPlainString() => "Close file";
-
+    public override string ToPlainString()
+    {
+        return "Close file";
+    }
 }

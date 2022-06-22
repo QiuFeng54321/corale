@@ -1,5 +1,4 @@
 using PseudoCode.Core.Analyzing;
-using PseudoCode.Core.Runtime.Types;
 
 namespace PseudoCode.Core.Runtime.Operations;
 
@@ -17,7 +16,7 @@ public class MakeConstOperation : DeclareOperation
         {
             Program.AnalyserFeedbacks.Add(new Feedback
             {
-                Message = $"Value is not a constant",
+                Message = "Value is not a constant",
                 Severity = Feedback.SeverityType.Error,
                 SourceRange = SourceRange
             });

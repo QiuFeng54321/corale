@@ -130,12 +130,14 @@ public class Type
 
     public virtual Definition MemberAccessResultDefinition(string member)
     {
-        return !Members.ContainsKey(member) ? new Definition(ParentScope, Program)
-        {
-            Name = member,
-            Type = new NullType(ParentScope, Program),
-            Attributes = Definition.Attribute.Reference
-        } : Members[member];
+        return !Members.ContainsKey(member)
+            ? new Definition(ParentScope, Program)
+            {
+                Name = member,
+                Type = new NullType(ParentScope, Program),
+                Attributes = Definition.Attribute.Reference
+            }
+            : Members[member];
     }
 
     public virtual Instance Add(Instance i1, Instance i2)
@@ -236,9 +238,7 @@ public class Type
     public virtual Instance MemberAccess(Instance i1, string member)
     {
         if (!i1.Members.ContainsKey(member))
-        {
             throw new InvalidAccessError($"Accessing non-existent member {member} on {i1.Type}", null);
-        }
 
         return i1.Members[member];
     }

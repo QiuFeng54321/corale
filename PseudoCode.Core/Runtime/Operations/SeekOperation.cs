@@ -23,5 +23,9 @@ public class SeekOperation : FileOperation
         var instance = Program.TypeCheckStack.Pop();
         PopAndCheckPath();
     }
-    public override string ToPlainString() => "Seek";
+
+    public override string ToPlainString()
+    {
+        return "Seek";
+    }
 }

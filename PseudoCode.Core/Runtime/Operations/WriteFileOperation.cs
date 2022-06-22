@@ -24,5 +24,9 @@ public class WriteFileOperation : FileOperation
         var instance = Program.TypeCheckStack.Pop();
         PopAndCheckPath();
     }
-    public override string ToPlainString() => "Write file";
+
+    public override string ToPlainString()
+    {
+        return "Write file";
+    }
 }

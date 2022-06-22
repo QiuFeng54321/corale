@@ -2,13 +2,15 @@ using System.Reflection;
 using PseudoCode.Core.Runtime.Instances;
 using PseudoCode.Core.Runtime.Operations;
 using PseudoCode.Core.Runtime.Types;
-using Type = PseudoCode.Core.Runtime.Types.Type;
+using Type = System.Type;
 
 namespace PseudoCode.Core.Runtime.Reflection;
 
 public class FunctionBinder
 {
-    public static readonly Dictionary<System.Type, string> TypeMap = new()
+    public delegate Instance BuiltinFunction(Scope parentScope, PseudoProgram program, Instance[] arguments);
+
+    public static readonly Dictionary<Type, string> TypeMap = new()
     {
         [typeof(int)] = "INTEGER",
         [typeof(RealNumberType)] = "REAL",
@@ -20,17 +22,14 @@ public class FunctionBinder
     };
 
     // Will be extended to support arrays
-    public static TypeDescriptor GetTypeDescriptorFromSystemType(System.Type type)
+    public static TypeDescriptor GetTypeDescriptorFromSystemType(Type type)
     {
         return new TypeDescriptor(TypeMap[type]);
     }
 
-    public delegate Instance BuiltinFunction(Scope parentScope, PseudoProgram program, Instance[] arguments);
-
-    public static void AddBuiltinFunctionOperations(System.Type type, Scope parentScope, PseudoProgram program)
+    public static void AddBuiltinFunctionOperations(Type type, Scope parentScope, PseudoProgram program)
     {
         foreach (var (definition, func) in MakeDefinition(type, parentScope, program))
-        {
             parentScope.AddOperation(new MakeBuiltinFunctionOperation(parentScope, program)
             {
                 Name = definition.Name,
@@ -39,15 +38,13 @@ public class FunctionBinder
                 PoiLocation = SourceLocation.Identity,
                 SourceRange = SourceRange.Identity
             });
-        }
     }
 
-    public static IEnumerable<(Definition, BuiltinFunction)> MakeDefinition(System.Type type, Scope parentScope,
+    public static IEnumerable<(Definition, BuiltinFunction)> MakeDefinition(Type type, Scope parentScope,
         PseudoProgram program)
     {
         var methods = type.GetMethods();
         foreach (var methodInfo in methods)
-        {
             if (MakeDefinitionOfMethod(parentScope, program, methodInfo, out var definition))
                 yield return (definition, (BuiltinFunction)methodInfo.CreateDelegate(typeof(BuiltinFunction)));
             else if (MakeDefinitionOfNativeMethod(parentScope, program, methodInfo, out var nativeDefinition))
@@ -58,7 +55,6 @@ public class FunctionBinder
                         arguments.Select(instance => instance.Get<object>()).ToArray());
                     return res == null ? Instance.Null : nativeDefinitionType.ReturnType.Type.Instance(res);
                 });
-        }
     }
 
     private static bool MakeDefinitionOfMethod(Scope parentScope, PseudoProgram program, MethodInfo methodInfo,
@@ -121,16 +117,12 @@ public class FunctionBinder
     {
         if (methodInfo.GetCustomAttributes(typeof(BuiltinFunctionAttribute)) is BuiltinFunctionAttribute[] nameAttrs &&
             nameAttrs.Length != 0)
-        {
             return nameAttrs[0].Name;
-        }
 
         if (methodInfo.GetCustomAttributes(typeof(BuiltinNativeFunctionAttribute)) is BuiltinNativeFunctionAttribute[]
                 nativeNameAttrs &&
             nativeNameAttrs.Length != 0)
-        {
             return nativeNameAttrs[0].Name;
-        }
 
         return methodInfo.Name;
     }
