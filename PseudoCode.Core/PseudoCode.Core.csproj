@@ -7,21 +7,21 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Antlr4.Runtime.Standard" Version="4.10.1"/>
-        <PackageReference Include="CommandLineParser" Version="2.9.1"/>
-        <PackageReference Include="Newtonsoft.Json.Bson" Version="1.0.2"/>
-        <PackageReference Include="OmniSharp.Extensions.LanguageServer" Version="0.19.5"/>
-        <PackageReference Include="Serilog" Version="2.11.1-dev-01397"/>
-        <PackageReference Include="Serilog.Extensions.Logging" Version="3.1.1-dev-10301"/>
-        <PackageReference Include="Serilog.Sinks.File" Version="5.0.1-dev-00947"/>
+        <PackageReference Include="Antlr4.Runtime.Standard" Version="4.10.1" />
+        <PackageReference Include="CommandLineParser" Version="2.9.1" />
+        <PackageReference Include="Newtonsoft.Json.Bson" Version="1.0.2" />
+        <PackageReference Include="OmniSharp.Extensions.LanguageServer" Version="0.19.5" />
+        <PackageReference Include="Serilog" Version="2.11.1-dev-01397" />
+        <PackageReference Include="Serilog.Extensions.Logging" Version="3.1.1-dev-10301" />
+        <PackageReference Include="Serilog.Sinks.File" Version="5.0.1-dev-00947" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\antlr-denter\CSharp\AntlrDenter\AntlrDenter.csproj"/>
+        <ProjectReference Include="..\antlr-denter\CSharp\AntlrDenter\AntlrDenter.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <None Remove="ConsoleApplication"/>
+        <None Remove="ConsoleApplication" />
     </ItemGroup>
 
     <ItemGroup>

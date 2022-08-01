@@ -140,7 +140,8 @@ argumentsDeclaration: OpenParen (argumentDeclaration (Comma argumentDeclaration)
 argumentDeclaration: (Byval | Byref)? Identifier Colon dataType;
 tuple: expression (Comma expression)*;
 
-enumDefinition: Type Identifier Equal OpenParen Identifier (Comma Identifier)* CloseParen;
+enumDefinition: Type name=Identifier Equal OpenParen enumBody CloseParen;
+enumBody: Identifier (Comma Identifier)*;
 pointerDefinition: Type Identifier Equal Caret dataType;
 typeDefinition: Type Identifier typeBody Endtype;
 typeBody: INDENT typeChild+ DEDENT;

@@ -673,6 +673,18 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         });
     }
 
+    public override void ExitEnumDefinition(PseudoCodeParser.EnumDefinitionContext context)
+    {
+        base.ExitEnumDefinition(context);
+        CurrentScope.AddOperation(new MakeEnumOperation(CurrentScope, Program)
+        {
+            Name = context.name.Text,
+            Names = context.enumBody().Identifier().Select(i => i.GetText()).ToList(),
+            PoiLocation = SourceLocationHelper.SourceLocation(context),
+            SourceRange = SourceLocationHelper.SourceRange(context)
+        });
+    }
+
     #region ScopedExpressions
 
     public override void EnterIndentedBlock(PseudoCodeParser.IndentedBlockContext context)

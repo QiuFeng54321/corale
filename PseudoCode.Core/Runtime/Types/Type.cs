@@ -245,7 +245,7 @@ public class Type
 
     public virtual bool IsConvertableFrom(Type type)
     {
-        return false;
+        return type == this;
     }
 
     public virtual Instance Call(FunctionInstance function, Instance[] args)
