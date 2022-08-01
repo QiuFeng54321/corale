@@ -20,7 +20,8 @@ public class Type
         DateId = 5,
         NullId = 6,
         PlaceholderId = 7,
-        ArrayId = 8;
+        EnumId = 8,
+        ArrayId = 9;
 
     private static uint _incrementId = ArrayId;
 

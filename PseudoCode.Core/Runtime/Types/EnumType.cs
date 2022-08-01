@@ -6,6 +6,8 @@ namespace PseudoCode.Core.Runtime.Types;
 
 public class EnumType : PrimitiveType<int>
 {
+    public override string Name => "ENUM";
+    public override uint Id => EnumId;
     public List<string> Names = new();
     public EnumType(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {

@@ -26,7 +26,6 @@ public class MakeEnumOperation : Operation
         base.MetaOperate();
         var enumType = new EnumType(ParentScope, Program)
         {
-            Name = Name,
             Names = Names
         };
         ParentScope.AddTypeDefinition(Name, new Definition(ParentScope, Program)
