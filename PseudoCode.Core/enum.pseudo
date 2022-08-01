@@ -1,0 +1,8 @@
+TYPE Animal = (Cat, Dog, Fox)
+TYPE Plant = (Flower, Tree, Grass)
+DECLARE animal : Animal
+DECLARE plant : Plant
+animal <- Cat
+animal <- animal + 1
+plant <- animal
+OUTPUT animal, plant

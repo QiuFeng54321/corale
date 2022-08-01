@@ -401,6 +401,18 @@ public partial class PseudoCodeBaseListener : IPseudoCodeListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitEnumDefinition([NotNull] PseudoCodeParser.EnumDefinitionContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="PseudoCodeParser.enumBody"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterEnumBody([NotNull] PseudoCodeParser.EnumBodyContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="PseudoCodeParser.enumBody"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitEnumBody([NotNull] PseudoCodeParser.EnumBodyContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="PseudoCodeParser.pointerDefinition"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

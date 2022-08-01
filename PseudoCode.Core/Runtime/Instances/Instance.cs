@@ -46,6 +46,7 @@ public class Instance
             BooleanType => Value?.ToString()?.ToUpper(),
             NullType => "NULL",
             TypeType => $"{Type.Name} {MembersString()}",
+            EnumType enumType => (int)Value >= 0 && (int)Value < enumType.Names.Count ? $"{enumType.Names[(int)Value]}" : "UNKNOWN",
             // Type.StringId or Type.CharId or Type.IntegerId or Type.RealId => Value?.ToString(),
             _ => Value?.ToString()
         } ?? "NULL";

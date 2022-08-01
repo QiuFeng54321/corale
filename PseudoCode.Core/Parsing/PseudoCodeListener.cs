@@ -336,6 +336,16 @@ public interface IPseudoCodeListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitEnumDefinition([NotNull] PseudoCodeParser.EnumDefinitionContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="PseudoCodeParser.enumBody"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterEnumBody([NotNull] PseudoCodeParser.EnumBodyContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="PseudoCodeParser.enumBody"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitEnumBody([NotNull] PseudoCodeParser.EnumBodyContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="PseudoCodeParser.pointerDefinition"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

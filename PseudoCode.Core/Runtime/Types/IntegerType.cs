@@ -130,13 +130,14 @@ public class IntegerType : PrimitiveType<int>
 
     public override bool IsConvertableFrom(Type type)
     {
-        switch (type.Id)
+        switch (type)
         {
-            case IntegerId:
-            case BooleanId:
-            case StringId:
-            case CharId:
-            case RealId:
+            case IntegerType:
+            case BooleanType:
+            case StringType:
+            case CharacterType:
+            case RealType:
+            case EnumType:
                 return true;
             default:
                 return false;

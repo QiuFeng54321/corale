@@ -60,7 +60,7 @@ public class Analysis
             }
 
             else if (definition.References.Count <= 1 && definition.SourceRange != SourceRange.Identity &&
-                     !definition.Name.StartsWith("_"))
+                     !definition.Name.StartsWith("_") && definition.Type is not EnumType)
             {
                 Program.AnalyserFeedbacks.Add(new Feedback
                 {
@@ -71,7 +71,7 @@ public class Analysis
                     {
                         new()
                         {
-                            Message = "Add an underscore before identifier",
+                            Message = "Add an underscore before identifier to discard",
 
                             Replacements = new List<CodeFix.Replacement>
                             {
