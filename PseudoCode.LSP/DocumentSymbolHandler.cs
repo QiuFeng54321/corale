@@ -56,6 +56,7 @@ public class DocumentSymbolHandler : DocumentSymbolHandlerBase
         "STRING" or "CHARACTER" => SymbolKind.String,
         "FUNCTION" => SymbolKind.Function,
         "NULL" => SymbolKind.Null,
+        "ENUM" when r.Attributes.HasFlag(Definition.Attribute.Immutable) => SymbolKind.EnumMember,
         _ => SymbolKind.Class
     };
 }
