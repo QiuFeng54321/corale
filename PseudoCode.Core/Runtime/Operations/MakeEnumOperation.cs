@@ -52,4 +52,6 @@ public class MakeEnumOperation : Operation
             ParentScope.AddVariableDefinition(elementName, definition, SourceRange);
         }
     }
+
+    public override string ToPlainString() => $"Enum {Name} = ({string.Join(", ", Names)})";
 }

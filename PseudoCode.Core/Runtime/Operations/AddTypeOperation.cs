@@ -22,4 +22,6 @@ public class AddTypeOperation : Operation
             Attributes = Definition.Attribute.Type
         }, SourceRange);
     }
+
+    public override string ToPlainString() => $"Type alias {Name} = {TypeDescriptor}";
 }

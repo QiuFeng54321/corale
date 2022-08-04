@@ -33,4 +33,6 @@ public class MakeTypeOperation : Operation
             Attributes = Definition.Attribute.Type
         }, SourceRange);
     }
+
+    public override string ToPlainString() => $"Make Type {Name}";
 }

@@ -27,4 +27,6 @@ public class MakeConstOperation : DeclareOperation
         Definition.ConstantInstance = constDef.ConstantInstance;
         base.MetaOperate();
     }
+
+    public override string ToPlainString() => $"Const {Definition.Name}";
 }
