@@ -65,6 +65,7 @@ using PseudoCode.Core.Runtime;
 using Range = PseudoCode.Core.Runtime.Range;
 using System.Globalization;
 using PseudoCode.Core.Runtime.Types.Descriptor;
+using PseudoCode.Core.Runtime.Types;
 }
 
 
@@ -161,15 +162,19 @@ expression
  : logicExpression
  ;
 
-logicExpression locals [bool IsUnary]
- : logicExpression comp=comparisonOp logicExpression
- | op=Not logicExpression {$IsUnary = true;}
- | logicExpression op=And logicExpression
- | logicExpression op=Or logicExpression
+logicExpression locals [bool IsUnary, PseudoOperator Operator]
+ : logicExpression op=Smaller logicExpression {$Operator = PseudoOperator.Smaller;}
+ | logicExpression op=SmallerEqual logicExpression {$Operator = PseudoOperator.SmallerEqual;}
+ | logicExpression op=Greater logicExpression {$Operator = PseudoOperator.Greater;}
+ | logicExpression op=GreaterEqual logicExpression {$Operator = PseudoOperator.GreaterEqual;}
+ | logicExpression op=Equal logicExpression {$Operator = PseudoOperator.Equal;}
+ | logicExpression op=NotEqual logicExpression {$Operator = PseudoOperator.NotEqual;}
+ | op=Not logicExpression {$IsUnary = true; $Operator = PseudoOperator.Not;}
+ | logicExpression op=And logicExpression {$Operator = PseudoOperator.And;}
+ | logicExpression op=Or logicExpression {$Operator = PseudoOperator.Or;}
  | arithmeticExpression {$IsUnary = true;}
  | '(' logicExpression ')' {$IsUnary = true;}
  ;
-comparisonOp: Smaller | Greater | Equal | GreaterEqual | SmallerEqual | NotEqual;
 
 //expr: xorExpression ('|' xorExpression)*;
 //xorExpression: andExpression ('^' andExpression)*;
@@ -181,24 +186,24 @@ comparisonOp: Smaller | Greater | Equal | GreaterEqual | SmallerEqual | NotEqual
 //power
 // : rvalue ('**' factor)?
 // ;
-arithmeticExpression locals [bool IsUnary]
+arithmeticExpression locals [bool IsUnary, PseudoOperator Operator]
  : New Identifier arguments
  | Identifier {$IsUnary = true;}
  | atom {$IsUnary = true;}
  | arithmeticExpression Dot Identifier
  | arithmeticExpression array
  | arithmeticExpression arguments
- | op=Caret operand=arithmeticExpression {$IsUnary = true;}
- | operand=arithmeticExpression op=Caret {$IsUnary = true;}
- | <assoc=right> operand1=arithmeticExpression op=Pow operand2=arithmeticExpression
- | op=Subtract operand=arithmeticExpression {$IsUnary = true;}
- | operand1=arithmeticExpression op=Divide operand2=arithmeticExpression
- | operand1=arithmeticExpression op=IntDivide operand2=arithmeticExpression
- | operand1=arithmeticExpression op=Multiply operand2=arithmeticExpression
- | operand1=arithmeticExpression op=Mod operand2=arithmeticExpression
- | operand1=arithmeticExpression op=Subtract operand2=arithmeticExpression
- | operand1=arithmeticExpression op=Add operand2=arithmeticExpression
- | operand1=arithmeticExpression op=BitAnd operand2=arithmeticExpression
+ | op=Caret operand=arithmeticExpression {$IsUnary = true; $Operator = PseudoOperator.GetPointer;}
+ | operand=arithmeticExpression op=Caret {$IsUnary = true; $Operator = PseudoOperator.GetPointed;}
+ | <assoc=right> operand1=arithmeticExpression op=Pow operand2=arithmeticExpression {$Operator = PseudoOperator.Pow;}
+ | op=Subtract operand=arithmeticExpression {$IsUnary = true; $Operator = PseudoOperator.Subtract;}
+ | operand1=arithmeticExpression op=Divide operand2=arithmeticExpression {$Operator = PseudoOperator.Divide;}
+ | operand1=arithmeticExpression op=IntDivide operand2=arithmeticExpression {$Operator = PseudoOperator.IntDivide;}
+ | operand1=arithmeticExpression op=Multiply operand2=arithmeticExpression {$Operator = PseudoOperator.Multiply;}
+ | operand1=arithmeticExpression op=Mod operand2=arithmeticExpression {$Operator = PseudoOperator.Mod;}
+ | operand1=arithmeticExpression op=Subtract operand2=arithmeticExpression {$Operator = PseudoOperator.Subtract;}
+ | operand1=arithmeticExpression op=Add operand2=arithmeticExpression {$Operator = PseudoOperator.Add;}
+ | operand1=arithmeticExpression op=BitAnd operand2=arithmeticExpression {$Operator = PseudoOperator.BitAnd;}
  | '(' arithmeticExpression ')' {$IsUnary = true;}
  ;
 

@@ -103,7 +103,7 @@ public class ArrayInstance : Instance
 
     public override string Represent()
     {
-        return $"[{string.Join<Instance>(", ", Array)}]";
+        return Array != null ? $"[{string.Join<Instance>(", ", Array)}]" : "[]";
     }
 
     public override string DebugRepresent()

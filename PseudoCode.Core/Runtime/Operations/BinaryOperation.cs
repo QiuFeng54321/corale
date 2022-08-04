@@ -6,7 +6,7 @@ namespace PseudoCode.Core.Runtime.Operations;
 
 public class BinaryOperation : Operation
 {
-    public int OperatorMethod;
+    public PseudoOperator OperatorMethod;
 
     public BinaryOperation(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {

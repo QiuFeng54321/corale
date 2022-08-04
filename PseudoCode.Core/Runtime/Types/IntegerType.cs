@@ -12,32 +12,32 @@ public class IntegerType : PrimitiveType<int>
     public override uint Id => IntegerId;
     public override string Name => "INTEGER";
 
-    public override Type BinaryResultType(int type, Type right)
+    public override Type BinaryResultType(PseudoOperator type, Type right)
     {
         if (right is not (IntegerType or RealType)) return new NullType(ParentScope, Program);
         switch (type)
         {
-            case PseudoCodeLexer.Equal:
-            case PseudoCodeLexer.NotEqual:
-            case PseudoCodeLexer.Greater:
-            case PseudoCodeLexer.GreaterEqual:
-            case PseudoCodeLexer.Smaller:
-            case PseudoCodeLexer.SmallerEqual:
+            case PseudoOperator.Equal:
+            case PseudoOperator.NotEqual:
+            case PseudoOperator.Greater:
+            case PseudoOperator.GreaterEqual:
+            case PseudoOperator.Smaller:
+            case PseudoOperator.SmallerEqual:
                 return Program.FindDefinition(BooleanId).Type;
-            case PseudoCodeLexer.IntDivide:
+            case PseudoOperator.IntDivide:
                 return Program.FindDefinition(IntegerId).Type;
-            case PseudoCodeLexer.And:
-            case PseudoCodeLexer.BitAnd:
-            case PseudoCodeLexer.Or:
+            case PseudoOperator.And:
+            case PseudoOperator.BitAnd:
+            case PseudoOperator.Or:
                 return new NullType(ParentScope, Program);
             default:
                 return right;
         }
     }
 
-    public override Type UnaryResultType(int type)
+    public override Type UnaryResultType(PseudoOperator type)
     {
-        return type == PseudoCodeLexer.Not ? Program.FindDefinition(BooleanId).Type : this;
+        return type == PseudoOperator.Not ? Program.FindDefinition(BooleanId).Type : this;
     }
 
     public override Instance Add(Instance i1, Instance i2)

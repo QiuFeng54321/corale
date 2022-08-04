@@ -25,38 +25,38 @@ public class Type
 
     private static uint _incrementId = ArrayId;
 
-    [JsonIgnore] public Dictionary<int, BinaryOperator> BinaryOperators;
+    [JsonIgnore] public Dictionary<PseudoOperator, BinaryOperator> BinaryOperators;
     [JsonIgnore] public Scope ParentScope;
     [JsonIgnore] public PseudoProgram Program;
-    [JsonIgnore] public Dictionary<int, UnaryOperator> UnaryOperators;
+    [JsonIgnore] public Dictionary<PseudoOperator, UnaryOperator> UnaryOperators;
 
     public Type(Scope parentScope, PseudoProgram program)
     {
         Program = program;
         ParentScope = parentScope;
-        BinaryOperators = new Dictionary<int, BinaryOperator>
+        BinaryOperators = new Dictionary<PseudoOperator, BinaryOperator>
         {
-            { PseudoCodeLexer.Add, Add },
-            { PseudoCodeLexer.Multiply, Multiply },
-            { PseudoCodeLexer.Divide, Divide },
-            { PseudoCodeLexer.Subtract, Subtract },
-            { PseudoCodeLexer.Pow, Pow },
-            { PseudoCodeLexer.IntDivide, IntDivide },
-            { PseudoCodeLexer.Mod, Mod },
-            { PseudoCodeLexer.Greater, Greater },
-            { PseudoCodeLexer.GreaterEqual, GreaterEqual },
-            { PseudoCodeLexer.SmallerEqual, SmallerEqual },
-            { PseudoCodeLexer.Smaller, Smaller },
-            { PseudoCodeLexer.Equal, Equal },
-            { PseudoCodeLexer.NotEqual, NotEqual },
-            { PseudoCodeLexer.And, And },
-            { PseudoCodeLexer.BitAnd, BitAnd },
-            { PseudoCodeLexer.Or, Or }
+            { PseudoOperator.Add, Add },
+            { PseudoOperator.Multiply, Multiply },
+            { PseudoOperator.Divide, Divide },
+            { PseudoOperator.Subtract, Subtract },
+            { PseudoOperator.Pow, Pow },
+            { PseudoOperator.IntDivide, IntDivide },
+            { PseudoOperator.Mod, Mod },
+            { PseudoOperator.Greater, Greater },
+            { PseudoOperator.GreaterEqual, GreaterEqual },
+            { PseudoOperator.SmallerEqual, SmallerEqual },
+            { PseudoOperator.Smaller, Smaller },
+            { PseudoOperator.Equal, Equal },
+            { PseudoOperator.NotEqual, NotEqual },
+            { PseudoOperator.And, And },
+            { PseudoOperator.BitAnd, BitAnd },
+            { PseudoOperator.Or, Or }
         };
-        UnaryOperators = new Dictionary<int, UnaryOperator>
+        UnaryOperators = new Dictionary<PseudoOperator, UnaryOperator>
         {
-            { PseudoCodeLexer.Subtract, Negative },
-            { PseudoCodeLexer.Not, Not }
+            { PseudoOperator.Subtract, Negative },
+            { PseudoOperator.Not, Not }
         };
     }
 
@@ -114,12 +114,12 @@ public class Type
             string.Format(strings.Type_ThrowUnsupported, caller, i1, i2 != null ? strings.and + i2 : ""), null);
     }
 
-    public virtual Type BinaryResultType(int type, Type right)
+    public virtual Type BinaryResultType(PseudoOperator type, Type right)
     {
         return new NullType(ParentScope, Program);
     }
 
-    public virtual Type UnaryResultType(int type)
+    public virtual Type UnaryResultType(PseudoOperator type)
     {
         return new NullType(ParentScope, Program);
     }

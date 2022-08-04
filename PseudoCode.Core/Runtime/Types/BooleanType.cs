@@ -12,15 +12,15 @@ public class BooleanType : PrimitiveType<bool>
     public override uint Id => BooleanId;
     public override string Name => "BOOLEAN";
 
-    public override Type BinaryResultType(int type, Type right)
+    public override Type BinaryResultType(PseudoOperator type, Type right)
     {
         if (right is not BooleanType) return new NullType(ParentScope, Program);
         switch (type)
         {
-            case PseudoCodeLexer.And:
-            case PseudoCodeLexer.Or:
-            case PseudoCodeLexer.Equal:
-            case PseudoCodeLexer.NotEqual:
+            case PseudoOperator.And:
+            case PseudoOperator.Or:
+            case PseudoOperator.Equal:
+            case PseudoOperator.NotEqual:
                 return this;
             default:
                 return new NullType(ParentScope, Program);
@@ -42,9 +42,9 @@ public class BooleanType : PrimitiveType<bool>
         }
     }
 
-    public override Type UnaryResultType(int type)
+    public override Type UnaryResultType(PseudoOperator type)
     {
-        return type == PseudoCodeLexer.Not ? this : null;
+        return type == PseudoOperator.Not ? this : null;
     }
 
     public override Instance And(Instance i1, Instance i2)

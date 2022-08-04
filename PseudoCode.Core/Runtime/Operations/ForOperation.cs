@@ -1,3 +1,5 @@
+using PseudoCode.Core.Runtime.Types;
+
 namespace PseudoCode.Core.Runtime.Operations;
 
 public class ForOperation : Operation
@@ -28,7 +30,7 @@ public class ForOperation : Operation
 
             new BinaryOperation(ParentScope, Program)
             {
-                OperatorMethod = PseudoCodeLexer.Add,
+                OperatorMethod = PseudoOperator.Add,
                 PoiLocation = Step.PoiLocation,
                 SourceRange = Step.SourceRange
             }.HandledOperate(); // [ref instance next, instance next+step]
@@ -53,7 +55,7 @@ public class ForOperation : Operation
         Step.MetaOperate();
         new BinaryOperation(ParentScope, Program)
         {
-            OperatorMethod = PseudoCodeLexer.Add,
+            OperatorMethod = PseudoOperator.Add,
             PoiLocation = Step.PoiLocation,
             SourceRange = Step.SourceRange
         }.MetaOperate(); // [ref instance next, instance next+step]

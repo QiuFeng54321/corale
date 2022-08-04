@@ -5,9 +5,9 @@ namespace PseudoCode.Core.Runtime.Reflection;
 
 public class TypeRepresentation : Attribute
 {
-    public int DimensionCount;
-    public string ElementTypeName;
-    public bool IsReference;
+    public readonly int DimensionCount;
+    public readonly string ElementTypeName;
+    public readonly bool IsReference;
 
     public TypeRepresentation(string elementTypeName, int dimensionCount = 0, bool isReference = false)
     {

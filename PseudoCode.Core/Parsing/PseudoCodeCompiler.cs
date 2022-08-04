@@ -88,6 +88,15 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         {
             context.TypeDescriptor = new PointerDescriptor(context.dataType().TypeDescriptor);
         }
+        else
+        {
+            Program.AnalyserFeedbacks.Add(new Feedback()
+            {
+                Message = $"Data type is not properly specified: {context.GetText()}",
+                Severity = Feedback.SeverityType.Error,
+                SourceRange = SourceLocationHelper.SourceRange(context)
+            });
+        }
     }
 
     public override void ExitDeclarationStatement(PseudoCodeParser.DeclarationStatementContext context)
@@ -326,9 +335,8 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         if (context.op != null)
         {
             var sourceLocation = SourceLocationHelper.SourceLocation(context.op);
-            var operatorMethod = context.op.Type;
+            var operatorMethod = context.Operator;
             if (context.IsUnary)
-                // TODO ambiguous operator with Caret
                 CurrentScope.AddOperation(new UnaryOperation(CurrentScope, Program)
                 {
                     OperatorMethod = operatorMethod,
@@ -374,19 +382,19 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
     public override void ExitLogicExpression(PseudoCodeParser.LogicExpressionContext context)
     {
         base.ExitLogicExpression(context);
-        var op = context.op ?? context.comp?.Start;
+        var op = context.op;
         if (op != null)
             if (context.IsUnary)
                 CurrentScope.AddOperation(new UnaryOperation(CurrentScope, Program)
                 {
-                    OperatorMethod = op.Type,
+                    OperatorMethod = context.Operator,
                     PoiLocation = SourceLocationHelper.SourceLocation(context.op),
                     SourceRange = SourceLocationHelper.SourceRange(context)
                 });
             else
                 CurrentScope.AddOperation(new BinaryOperation(CurrentScope, Program)
                 {
-                    OperatorMethod = op.Type,
+                    OperatorMethod = context.Operator,
                     PoiLocation = SourceLocationHelper.SourceLocation(context.op),
                     SourceRange = SourceLocationHelper.SourceRange(context)
                 });
@@ -529,7 +537,7 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
                 });
                 condition.AddOperation(new BinaryOperation(condition.ParentScope, Program)
                 {
-                    OperatorMethod = PseudoCodeLexer.Equal,
+                    OperatorMethod = PseudoOperator.Equal,
                     PoiLocation = condition.PoiLocation,
                     SourceRange = condition.SourceRange
                 });
@@ -601,7 +609,7 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         // We negate the result of test since the test is in UNTIL, not WHILE
         testScope.AddOperation(new UnaryOperation(testScope, Program)
         {
-            OperatorMethod = PseudoCodeParser.Not,
+            OperatorMethod = PseudoOperator.Not,
             PoiLocation = SourceLocationHelper.SourceLocation(context.scopedExpression().Stop),
             SourceRange = SourceLocationHelper.SourceRange(context)
         });

@@ -18,19 +18,19 @@ public class DateType : PrimitiveType<DateOnly>
     //         throw new InvalidOperationException($"Invalid right operand type {i2.Type}");
     //     return Instance(func(i1.Get<RealNumberType>(), i2.Get<RealNumberType>()));
     // }
-    public override Type BinaryResultType(int type, Type right)
+    public override Type BinaryResultType(PseudoOperator type, Type right)
     {
         if (right is not DateType) return new NullType(ParentScope, Program);
         switch (type)
         {
-            case PseudoCodeLexer.Equal:
-            case PseudoCodeLexer.NotEqual:
-            case PseudoCodeLexer.Greater:
-            case PseudoCodeLexer.GreaterEqual:
-            case PseudoCodeLexer.Smaller:
-            case PseudoCodeLexer.SmallerEqual:
+            case PseudoOperator.Equal:
+            case PseudoOperator.NotEqual:
+            case PseudoOperator.Greater:
+            case PseudoOperator.GreaterEqual:
+            case PseudoOperator.Smaller:
+            case PseudoOperator.SmallerEqual:
                 return Program.FindDefinition(BooleanId).Type;
-            case PseudoCodeLexer.Add:
+            case PseudoOperator.Add:
                 return this;
             default:
                 return new NullType(ParentScope, Program);

@@ -12,14 +12,14 @@ public class StringType : PrimitiveType<string>
     public override uint Id => StringId;
     public override string Name => "STRING";
 
-    public override Type BinaryResultType(int type, Type right)
+    public override Type BinaryResultType(PseudoOperator type, Type right)
     {
         switch (type)
         {
-            case PseudoCodeLexer.Equal:
-            case PseudoCodeLexer.NotEqual:
+            case PseudoOperator.Equal:
+            case PseudoOperator.NotEqual:
                 return Program.FindDefinition(BooleanId).Type;
-            case PseudoCodeLexer.BitAnd:
+            case PseudoOperator.BitAnd:
                 return this;
             default:
                 return null;

@@ -12,17 +12,17 @@ public class CharacterType : PrimitiveType<char>
     public override uint Id => CharId;
     public override string Name => "CHAR";
 
-    public override Type BinaryResultType(int type, Type right)
+    public override Type BinaryResultType(PseudoOperator type, Type right)
     {
         if (right is not (IntegerType or RealType or CharacterType)) return new NullType(ParentScope, Program);
         switch (type)
         {
-            case PseudoCodeLexer.Equal:
-            case PseudoCodeLexer.NotEqual:
-            case PseudoCodeLexer.Greater:
-            case PseudoCodeLexer.GreaterEqual:
-            case PseudoCodeLexer.Smaller:
-            case PseudoCodeLexer.SmallerEqual:
+            case PseudoOperator.Equal:
+            case PseudoOperator.NotEqual:
+            case PseudoOperator.Greater:
+            case PseudoOperator.GreaterEqual:
+            case PseudoOperator.Smaller:
+            case PseudoOperator.SmallerEqual:
                 return Program.FindDefinition(BooleanId).Type;
             default:
                 return new NullType(ParentScope, Program);

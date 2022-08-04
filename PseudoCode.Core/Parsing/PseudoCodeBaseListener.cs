@@ -24,6 +24,7 @@ using PseudoCode.Core.Runtime;
 using Range = PseudoCode.Core.Runtime.Range;
 using System.Globalization;
 using PseudoCode.Core.Runtime.Types.Descriptor;
+using PseudoCode.Core.Runtime.Types;
 
 
 using Antlr4.Runtime.Misc;
@@ -545,18 +546,6 @@ public partial class PseudoCodeBaseListener : IPseudoCodeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitLogicExpression([NotNull] PseudoCodeParser.LogicExpressionContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="PseudoCodeParser.comparisonOp"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterComparisonOp([NotNull] PseudoCodeParser.ComparisonOpContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="PseudoCodeParser.comparisonOp"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitComparisonOp([NotNull] PseudoCodeParser.ComparisonOpContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="PseudoCodeParser.arithmeticExpression"/>.
 	/// <para>The default implementation does nothing.</para>
