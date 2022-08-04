@@ -1,4 +1,5 @@
 using PseudoCode.Core.Runtime.Types;
+using PseudoCode.Core.Runtime.Types.Descriptor;
 
 namespace PseudoCode.Core.Runtime.Reflection;
 
@@ -15,11 +16,10 @@ public class TypeRepresentation : Attribute
         IsReference = isReference;
     }
 
-    public TypeDescriptor MakeTypeDescriptor()
+    public ITypeDescriptor MakeTypeDescriptor()
     {
         if (DimensionCount > 0)
-            return new TypeDescriptor("ARRAY", Dimensions: DimensionCount,
-                ElementType: new TypeDescriptor(ElementTypeName));
-        return new TypeDescriptor(ElementTypeName);
+            return new ArrayDescriptor(new PlainTypeDescriptor(ElementTypeName), DimensionCount);
+        return new PlainTypeDescriptor(ElementTypeName);
     }
 }

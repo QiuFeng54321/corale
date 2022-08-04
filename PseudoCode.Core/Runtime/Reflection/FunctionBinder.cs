@@ -2,6 +2,7 @@ using System.Reflection;
 using PseudoCode.Core.Runtime.Instances;
 using PseudoCode.Core.Runtime.Operations;
 using PseudoCode.Core.Runtime.Types;
+using PseudoCode.Core.Runtime.Types.Descriptor;
 using Type = System.Type;
 
 namespace PseudoCode.Core.Runtime.Reflection;
@@ -22,9 +23,9 @@ public class FunctionBinder
     };
 
     // Will be extended to support arrays
-    public static TypeDescriptor GetTypeDescriptorFromSystemType(Type type)
+    public static ITypeDescriptor GetTypeDescriptorFromSystemType(Type type)
     {
-        return new TypeDescriptor(TypeMap[type]);
+        return new PlainTypeDescriptor(TypeMap[type]);
     }
 
     public static void AddBuiltinFunctionOperations(Type type, Scope parentScope, PseudoProgram program)

@@ -1,6 +1,7 @@
 using PseudoCode.Core.Runtime.Instances;
 using PseudoCode.Core.Runtime.Operations;
 using PseudoCode.Core.Runtime.Types;
+using PseudoCode.Core.Runtime.Types.Descriptor;
 
 namespace PseudoCode.Core.Runtime;
 
@@ -16,6 +17,6 @@ public record DefinitionReference(Scope ParentScope, PseudoProgram Program) : De
     public override List<SourceRange> References => RealDefinition.References;
     public override Instance ConstantInstance => RealDefinition.ConstantInstance;
     public override SourceRange SourceRange => RealDefinition.SourceRange;
-    public override TypeDescriptor TypeDescriptor => RealDefinition.TypeDescriptor;
+    public override ITypeDescriptor TypeDescriptor => RealDefinition.TypeDescriptor;
     public override string TypeName => RealDefinition.TypeName;
 }

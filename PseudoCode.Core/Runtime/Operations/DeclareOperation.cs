@@ -1,6 +1,7 @@
 using PseudoCode.Core.Analyzing;
 using PseudoCode.Core.Runtime.Instances;
 using PseudoCode.Core.Runtime.Types;
+using PseudoCode.Core.Runtime.Types.Descriptor;
 using Type = PseudoCode.Core.Runtime.Types.Type;
 
 namespace PseudoCode.Core.Runtime.Operations;
@@ -8,7 +9,6 @@ namespace PseudoCode.Core.Runtime.Operations;
 public class DeclareOperation : Operation
 {
     public Definition Definition;
-    public int DimensionCount;
 
     public DeclareOperation(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {
@@ -23,7 +23,8 @@ public class DeclareOperation : Operation
             : Definition.Type.Instance();
         if (instance is ArrayInstance arrayInstance)
         {
-            for (var i = 0; i < DimensionCount; i++)
+            var dimensionCount = ((ArrayDescriptor)Definition.TypeDescriptor).Dimensions;
+            for (var i = 0; i < dimensionCount; i++)
             {
                 var intType = Program.FindDefinition(Type.IntegerId).Type;
                 var end = intType.CastFrom(Program.RuntimeStack.Pop());
@@ -48,12 +49,16 @@ public class DeclareOperation : Operation
     protected void TypeCheck()
     {
         var invalidType = false;
-        for (var i = 0; i < DimensionCount; i++)
+        if (Definition.TypeDescriptor is ArrayDescriptor descriptor)
         {
-            var intType = Program.FindDefinition(Type.IntegerId).Type;
-            var invalidEnd = !intType.IsConvertableFrom(Program.TypeCheckStack.Pop().Type);
-            var invalidStart = !intType.IsConvertableFrom(Program.TypeCheckStack.Pop().Type);
-            invalidType |= invalidStart || invalidEnd;
+            var dimensionCount = descriptor.Dimensions;
+            for (var i = 0; i < dimensionCount; i++)
+            {
+                var intType = Program.FindDefinition(Type.IntegerId).Type;
+                var invalidEnd = !intType.IsConvertableFrom(Program.TypeCheckStack.Pop().Type);
+                var invalidStart = !intType.IsConvertableFrom(Program.TypeCheckStack.Pop().Type);
+                invalidType |= invalidStart || invalidEnd;
+            }
         }
 
         if (invalidType)
@@ -67,7 +72,7 @@ public class DeclareOperation : Operation
             !definition.Attributes.HasFlag(Definition.Attribute.Type))
             Program.AnalyserFeedbacks.Add(new Feedback
             {
-                Message = $"Declared type should be a type, not '{Definition.TypeDescriptor.Name}'",
+                Message = $"Declared type should be a type, not '{Definition.TypeDescriptor.SelfName}'",
                 Severity = Feedback.SeverityType.Error,
                 SourceRange = SourceRange
             });
@@ -85,7 +90,7 @@ public class DeclareOperation : Operation
                 Program.AnalyserFeedbacks.Add(new Feedback
                 {
                     Message =
-                        $"The specified type does not exist: '{Definition?.TypeDescriptor?.ElementType.ToString() ?? "NULL"}'",
+                        $"The specified type does not exist: '{Definition?.TypeDescriptor?.ToString() ?? "NULL"}'",
                     Severity = Feedback.SeverityType.Error,
                     SourceRange = SourceRange
                 });

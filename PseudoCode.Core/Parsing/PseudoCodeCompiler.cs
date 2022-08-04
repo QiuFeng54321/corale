@@ -4,6 +4,7 @@ using PseudoCode.Core.Analyzing;
 using PseudoCode.Core.Runtime;
 using PseudoCode.Core.Runtime.Operations;
 using PseudoCode.Core.Runtime.Types;
+using PseudoCode.Core.Runtime.Types.Descriptor;
 using Type = PseudoCode.Core.Runtime.Types.Type;
 
 namespace PseudoCode.Core.Parsing;
@@ -73,28 +74,20 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         CurrentScope = CurrentScope.ParentScope;
     }
 
-    public Type GetType(PseudoCodeParser.DataTypeContext context)
-    {
-        var type = context.TypeName;
-        var dimensions = context.arrayRange().Length;
-        var resType = CurrentScope.FindDefinition(type).Type;
-        if (dimensions != 0)
-            resType = new ArrayType(CurrentScope, Program)
-            {
-                DimensionCount = dimensions,
-                ElementType = resType
-            };
 
-        return resType;
-    }
-
-    public static TypeDescriptor GetTypeDescriptor(PseudoCodeParser.DataTypeContext context)
+    public override void ExitDataType(PseudoCodeParser.DataTypeContext context)
     {
-        var type = context.TypeName;
-        var dimensions = context.arrayRange().Length;
-        return dimensions != 0
-            ? new TypeDescriptor("ARRAY", Dimensions: dimensions, ElementType: new TypeDescriptor(type))
-            : new TypeDescriptor(type);
+        base.ExitDataType(context);
+        if (context.basicDataType() != null)
+        {
+            context.TypeDescriptor = new PlainTypeDescriptor(context.basicDataType().GetText());
+        } else if (context.Array() != null)
+        {
+            context.TypeDescriptor = new ArrayDescriptor(context.dataType().TypeDescriptor, context.arrayRange().Length);
+        } else if (context.Caret() != null)
+        {
+            context.TypeDescriptor = new PointerDescriptor(context.dataType().TypeDescriptor);
+        }
     }
 
     public override void ExitDeclarationStatement(PseudoCodeParser.DeclarationStatementContext context)
@@ -103,13 +96,12 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         // Console.WriteLine($"DECLARE {context.IDENTIFIER().GetText()} : {context.dataType().GetText()}");
         var name = context.Identifier().GetText();
         var sourceLocation = SourceLocationHelper.SourceLocation(context);
-        var resType = GetTypeDescriptor(context.dataType());
+        var resType = context.dataType().TypeDescriptor;
 
         var sourceRange = SourceLocationHelper.SourceRange(context.Identifier().Symbol);
         var range = SourceLocationHelper.SourceRange(context);
         CurrentScope.AddOperation(new DeclareOperation(CurrentScope, Program)
         {
-            DimensionCount = resType.Dimensions,
             PoiLocation = sourceLocation,
             SourceRange = range,
             Definition = new Definition(CurrentScope, Program)
@@ -158,7 +150,7 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         return context.argumentDeclaration().Select(declarationContext =>
             new Definition(CurrentScope, Program)
             {
-                Type = GetType(declarationContext.dataType()),
+                TypeDescriptor = declarationContext.dataType().TypeDescriptor,
                 Name = declarationContext.Identifier().GetText(),
                 SourceRange = SourceLocationHelper.SourceRange(declarationContext.Identifier().Symbol),
                 References = new List<SourceRange>
@@ -178,7 +170,7 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         base.ExitFunctionDefinition(context);
         var sourceRange = SourceLocationHelper.SourceRange(context);
         var paramInfo = GetArgumentDeclarations(context.argumentsDeclaration());
-        var returnType = GetTypeDescriptor(context.dataType());
+        var returnType = context.dataType().TypeDescriptor;
         var name = context.Identifier().GetText();
         var body = (Scope)CurrentScope.TakeLast();
         CurrentScope.AddOperation(new MakeFunctionOperation(CurrentScope, Program)
@@ -189,11 +181,7 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
             {
                 Name = name,
                 SourceRange = SourceLocationHelper.SourceRange(context.Identifier().Symbol),
-                TypeDescriptor = new TypeDescriptor("FUNCTION")
-                {
-                    ReturnType = returnType,
-                    ParameterInfos = paramInfo
-                },
+                TypeDescriptor = new FunctionDescriptor(returnType, paramInfo),
                 References = new List<SourceRange>
                 {
                     SourceLocationHelper.SourceRange(context.Identifier().Symbol)
@@ -219,11 +207,7 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
             {
                 Name = name,
                 SourceRange = SourceLocationHelper.SourceRange(context.identifierWithNew()),
-                TypeDescriptor = new TypeDescriptor("FUNCTION")
-                {
-                    ReturnType = null,
-                    ParameterInfos = paramInfo
-                },
+                TypeDescriptor = new FunctionDescriptor(null, paramInfo),
                 References = new List<SourceRange>
                 {
                     SourceLocationHelper.SourceRange(context.identifierWithNew())
