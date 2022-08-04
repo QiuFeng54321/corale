@@ -10,7 +10,7 @@ public record ArrayDescriptor(ITypeDescriptor ElementDescriptor, int Dimensions)
         {
             Type = new ArrayType(scope, program)
             {
-                ElementType = ElementDescriptor.GetDefinition(scope, program).Type,
+                ElementType = ElementDescriptor.GetType(scope, program),
                 DimensionCount = Dimensions
             },
             Attributes = Definition.Attribute.Type

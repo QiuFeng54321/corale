@@ -38,7 +38,7 @@ public class EnumType : PrimitiveType<int>
 
     public override Type UnaryResultType(PseudoOperator type)
     {
-        return type == PseudoOperator.Not ? Program.FindDefinition(BooleanId).Type : this;
+        return type == PseudoOperator.Not ? Program.FindDefinition(BooleanId).Type : base.UnaryResultType(type);
     }
 
     public override Instance Add(Instance i1, Instance i2)

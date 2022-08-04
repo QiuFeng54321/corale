@@ -44,7 +44,7 @@ public class BooleanType : PrimitiveType<bool>
 
     public override Type UnaryResultType(PseudoOperator type)
     {
-        return type == PseudoOperator.Not ? this : null;
+        return type == PseudoOperator.Not ? this : base.UnaryResultType(type);
     }
 
     public override Instance And(Instance i1, Instance i2)

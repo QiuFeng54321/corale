@@ -7,7 +7,9 @@ DECLARE c : BOOLEAN
 DECLARE Char : CHAR
 DECLARE Date : DATE
 DECLARE Date2 : DATE
+DECLARE IntPtr : ^INTEGER
 CONSTANT CONST = 498 + 35
+IntPtr <- ^Char
 OUTPUT CONST + 4
 OUTPUT CONST + 5
 OUTPUT "Right: " & RIGHT("ABCDEFGH", 3) & " " & MID("ABCDEFGH", 2, 3)
@@ -27,6 +29,7 @@ a <- 0
 a <- -(a + a * -a POW 2 POW 3) DIV 100 MOD 100
 c <- a < 63 - 2.3 OR (a > 65 OR a > 63) AND NOT a < 65 AND TRUE
 Char <- '\n'
+OUTPUT ^Char, IntPtr, ^Char^
 Date <- 28/02/2008 + 10/03/0010
 OUTPUT a + 2 + a, c, Char, Date
 IF a <> 64 THEN

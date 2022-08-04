@@ -6,8 +6,16 @@ public record PointerDescriptor(ITypeDescriptor TypeDescriptor) : ITypeDescripto
 {
     public Definition GetDefinition(Scope scope, PseudoProgram program)
     {
-        throw new NotImplementedException();
+        return new Definition(scope, program)
+        {
+            Type = new PointerType(scope, program)
+            {
+                PointedType = TypeDescriptor.GetType(scope, program)
+            },
+            Attributes = Definition.Attribute.Type
+        };
     }
 
     public string SelfName => "POINTER";
+    public override string ToString() => $"^{TypeDescriptor}";
 }

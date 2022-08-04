@@ -21,7 +21,8 @@ public class Type
         NullId = 6,
         PlaceholderId = 7,
         EnumId = 8,
-        ArrayId = 9;
+        PointerId = 9,
+        ArrayId = 10;
 
     private static uint _incrementId = ArrayId;
 
@@ -56,7 +57,9 @@ public class Type
         UnaryOperators = new Dictionary<PseudoOperator, UnaryOperator>
         {
             { PseudoOperator.Subtract, Negative },
-            { PseudoOperator.Not, Not }
+            { PseudoOperator.Not, Not },
+            { PseudoOperator.GetPointer , GetPointer},
+            { PseudoOperator.GetPointed , GetPointed}
         };
     }
 
@@ -121,6 +124,7 @@ public class Type
 
     public virtual Type UnaryResultType(PseudoOperator type)
     {
+        if (type == PseudoOperator.GetPointer) return new PointerType(ParentScope, Program) { PointedType = this };
         return new NullType(ParentScope, Program);
     }
 
@@ -139,6 +143,19 @@ public class Type
                 Attributes = Definition.Attribute.Reference
             }
             : Members[member];
+    }
+
+    public virtual Instance GetPointer(Instance i)
+    {
+        return new PointerType(i.ParentScope, i.Program)
+        {
+            PointedType = i.Type
+        }.Instance(i.RealInstance.InstanceAddress);
+    }
+
+    public virtual Instance GetPointed(Instance i)
+    {
+        throw MakeUnsupported(i);
     }
 
     public virtual Instance Add(Instance i1, Instance i2)

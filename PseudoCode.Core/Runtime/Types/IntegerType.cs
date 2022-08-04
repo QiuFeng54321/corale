@@ -37,7 +37,12 @@ public class IntegerType : PrimitiveType<int>
 
     public override Type UnaryResultType(PseudoOperator type)
     {
-        return type == PseudoOperator.Not ? Program.FindDefinition(BooleanId).Type : this;
+        return type switch
+        {
+            PseudoOperator.Not => Program.FindDefinition(BooleanId).Type,
+            PseudoOperator.Subtract => this,
+            _ => base.UnaryResultType(type)
+        };
     }
 
     public override Instance Add(Instance i1, Instance i2)
