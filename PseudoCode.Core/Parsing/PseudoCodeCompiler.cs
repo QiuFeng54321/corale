@@ -665,6 +665,18 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         });
     }
 
+    public override void ExitTypeAliasDefinition(PseudoCodeParser.TypeAliasDefinitionContext context)
+    {
+        base.ExitTypeAliasDefinition(context);
+        CurrentScope.AddOperation(new AddTypeOperation(CurrentScope, Program)
+        {
+            Name = context.Identifier().GetText(),
+            TypeDescriptor = context.dataType().TypeDescriptor,
+            PoiLocation = SourceLocationHelper.SourceLocation(context),
+            SourceRange = SourceLocationHelper.SourceRange(context)
+        });
+    }
+
     public override void ExitEnumDefinition(PseudoCodeParser.EnumDefinitionContext context)
     {
         base.ExitEnumDefinition(context);

@@ -415,17 +415,17 @@ public partial class PseudoCodeBaseListener : IPseudoCodeListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitEnumBody([NotNull] PseudoCodeParser.EnumBodyContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="PseudoCodeParser.pointerDefinition"/>.
+	/// Enter a parse tree produced by <see cref="PseudoCodeParser.typeAliasDefinition"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterPointerDefinition([NotNull] PseudoCodeParser.PointerDefinitionContext context) { }
+	public virtual void EnterTypeAliasDefinition([NotNull] PseudoCodeParser.TypeAliasDefinitionContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="PseudoCodeParser.pointerDefinition"/>.
+	/// Exit a parse tree produced by <see cref="PseudoCodeParser.typeAliasDefinition"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitPointerDefinition([NotNull] PseudoCodeParser.PointerDefinitionContext context) { }
+	public virtual void ExitTypeAliasDefinition([NotNull] PseudoCodeParser.TypeAliasDefinitionContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="PseudoCodeParser.typeDefinition"/>.
 	/// <para>The default implementation does nothing.</para>

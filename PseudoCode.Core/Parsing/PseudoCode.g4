@@ -115,7 +115,7 @@ compoundStatement
  | functionDefinition
  | typeDefinition
  | enumDefinition
- | pointerDefinition
+ | typeAliasDefinition
  | classDefinition
  ;
 // This expression will be scoped.
@@ -144,7 +144,7 @@ tuple: expression (Comma expression)*;
 
 enumDefinition: Type name=Identifier Equal OpenParen enumBody CloseParen;
 enumBody: Identifier (Comma Identifier)*;
-pointerDefinition: Type Identifier Equal Caret dataType;
+typeAliasDefinition: Type Identifier Equal dataType;
 typeDefinition: Type Identifier typeBody Endtype;
 typeBody: INDENT typeChild+ DEDENT;
 typeChild
