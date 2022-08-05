@@ -42,7 +42,7 @@ class HoverHandler : HoverHandlerBase
         return new Hover
         {
             Range = range.ToRange(),
-            Contents = new MarkedStringsOrMarkupContent(new MarkedString("pseudocode", $"{hoveredVar.Name}: {hoveredVar.Type}"))
+            Contents = new MarkedStringsOrMarkupContent(new MarkedString("pseudocode", $"{hoveredVar.Name}: {hoveredVar.TypeString()}"))
         };
     }
 }
