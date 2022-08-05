@@ -30,7 +30,7 @@ public class UnaryOperation : Operation
             Program.AnalyserFeedbacks.Add(new Feedback
             {
                 Message =
-                    $"This operation on {to} is either not supported or will be casted to another type at runtime",
+                    $"{OperatorMethod} operation on {to} is either not supported or will be casted to another type at runtime",
                 Severity = Feedback.SeverityType.Warning,
                 SourceRange = SourceRange
             });

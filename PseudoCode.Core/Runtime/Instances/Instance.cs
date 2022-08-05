@@ -40,6 +40,7 @@ public class Instance
 
     public virtual string Represent()
     {
+        if (Value == null) return "NULL";
         return Type switch
         {
             DateType => Get<DateOnly>().ToString("dd/MM/yyyy"),
