@@ -13,6 +13,8 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
 {
     public Scope CurrentScope;
     public PseudoProgram Program = new();
+    public TypeType CurrentType;
+    public ObjectType CurrentObjectType;
 
     public PseudoProgram Compile(IParseTree tree)
     {
@@ -81,10 +83,13 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         if (context.basicDataType() != null)
         {
             context.TypeDescriptor = new PlainTypeDescriptor(context.basicDataType().GetText());
-        } else if (context.Array() != null)
+        }
+        else if (context.Array() != null)
         {
-            context.TypeDescriptor = new ArrayDescriptor(context.dataType().TypeDescriptor, context.arrayRange().Length);
-        } else if (context.Caret() != null)
+            context.TypeDescriptor =
+                new ArrayDescriptor(context.dataType().TypeDescriptor, context.arrayRange().Length);
+        }
+        else if (context.Caret() != null)
         {
             context.TypeDescriptor = new PointerDescriptor(context.dataType().TypeDescriptor);
         }
@@ -109,22 +114,30 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
 
         var sourceRange = SourceLocationHelper.SourceRange(context.Identifier().Symbol);
         var range = SourceLocationHelper.SourceRange(context);
-        CurrentScope.AddOperation(new DeclareOperation(CurrentScope, Program)
+        var definition = new Definition(CurrentScope, Program)
         {
-            PoiLocation = sourceLocation,
-            SourceRange = range,
-            Definition = new Definition(CurrentScope, Program)
+            TypeDescriptor = resType,
+            Name = name,
+            SourceRange = sourceRange,
+            References = new List<SourceRange>
             {
-                TypeDescriptor = resType,
-                Name = name,
-                SourceRange = sourceRange,
-                References = new List<SourceRange>
-                {
-                    SourceLocationHelper.SourceRange(context.Identifier().Symbol)
-                },
-                Attributes = Definition.Attribute.Reference
-            }
-        });
+                SourceLocationHelper.SourceRange(context.Identifier().Symbol)
+            },
+            Attributes = Definition.Attribute.Reference
+        };
+        if (CurrentType != null)
+        {
+            CurrentType.Members.Add(name, definition);
+        }
+        else
+        {
+            CurrentScope.AddOperation(new DeclareOperation(CurrentScope, Program)
+            {
+                PoiLocation = sourceLocation,
+                SourceRange = range,
+                Definition = definition
+            });
+        }
     }
 
     public override void ExitConstantStatement(PseudoCodeParser.ConstantStatementContext context)
@@ -653,16 +666,29 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         });
     }
 
+    public override void EnterTypeDefinition(PseudoCodeParser.TypeDefinitionContext context)
+    {
+        base.EnterTypeDefinition(context);
+        CurrentType = new TypeType(CurrentScope, Program)
+        {
+            Name = context.Identifier().GetText()
+        };
+    }
+
     public override void ExitTypeDefinition(PseudoCodeParser.TypeDefinitionContext context)
     {
         base.ExitTypeDefinition(context);
-        CurrentScope.AddOperation(new MakeTypeOperation(CurrentScope, Program)
+        var sourceRange = SourceLocationHelper.SourceRange(context);
+        var name = context.Identifier().GetText();
+        CurrentScope.AddTypeDefinition(name, new Definition(CurrentScope, Program)
         {
-            TypeBody = CurrentScope.TakeLast() as Scope,
-            Name = context.Identifier().GetText(),
-            PoiLocation = SourceLocationHelper.SourceLocation(context),
-            SourceRange = SourceLocationHelper.SourceRange(context)
-        });
+            Type = CurrentType,
+            Name = name,
+            SourceRange = sourceRange,
+            References = new List<SourceRange> { sourceRange },
+            Attributes = Definition.Attribute.Type
+        }, sourceRange);
+        CurrentType = null;
     }
 
     public override void ExitTypeAliasDefinition(PseudoCodeParser.TypeAliasDefinitionContext context)
@@ -708,19 +734,6 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
     {
         base.EnterAlignedBlock(context);
         EnterScope(context);
-    }
-
-    public override void EnterTypeBody(PseudoCodeParser.TypeBodyContext context)
-    {
-        base.EnterTypeBody(context);
-        EnterScope(context);
-        CurrentScope.AllowStatements = true;
-    }
-
-    public override void ExitTypeBody(PseudoCodeParser.TypeBodyContext context)
-    {
-        base.ExitTypeBody(context);
-        ExitScope(context);
     }
 
     public override void ExitAlignedBlock(PseudoCodeParser.AlignedBlockContext context)

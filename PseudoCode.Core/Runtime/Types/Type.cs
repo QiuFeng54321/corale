@@ -58,8 +58,8 @@ public class Type
         {
             { PseudoOperator.Subtract, Negative },
             { PseudoOperator.Not, Not },
-            { PseudoOperator.GetPointer , GetPointer},
-            { PseudoOperator.GetPointed , GetPointed}
+            { PseudoOperator.GetPointer, GetPointer },
+            { PseudoOperator.GetPointed, GetPointed }
         };
     }
 
@@ -87,10 +87,15 @@ public class Type
             ParentScope = scope ?? ParentScope
         };
         foreach (var member in Members)
+        {
+            var memberInstance = member.Value.ConstantInstance?.Type?.Clone(member.Value.ConstantInstance) ??
+                                 member.Value.Type.Instance(scope: ParentScope);
+            memberInstance.ParentInstance = instance;
             instance.Members[member.Key] = new ReferenceInstance(ParentScope, Program)
             {
-                ReferenceAddress = Program.AllocateId(member.Value.Type.Instance(scope: ParentScope))
+                ReferenceAddress = Program.AllocateId(memberInstance)
             };
+        }
 
         return instance;
     }
@@ -316,17 +321,6 @@ public class Type
         to.Members.Clear();
         foreach (var p in value.Members) to.Members.Add(p.Key, p.Value);
         return to;
-    }
-
-
-    public virtual void WriteBinary(Instance i, BinaryWriter writer)
-    {
-        throw new FileError($"Cannot write {this}", null);
-    }
-
-    public virtual Instance ReadBinary(BinaryReader reader)
-    {
-        throw new FileError($"Cannot read {this}", null);
     }
 
     public override string ToString()

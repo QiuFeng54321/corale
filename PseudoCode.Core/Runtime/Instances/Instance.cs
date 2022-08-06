@@ -40,14 +40,15 @@ public class Instance
 
     public virtual string Represent()
     {
-        if (Value == null) return "NULL";
         return Type switch
         {
-            DateType => Get<DateOnly>().ToString("dd/MM/yyyy"),
+            DateType when Value != null => Get<DateOnly>().ToString("dd/MM/yyyy"),
             BooleanType => Value?.ToString()?.ToUpper(),
             NullType => "NULL",
             TypeType => $"{Type.Name} {MembersString()}",
-            EnumType enumType => (int)Value >= 0 && (int)Value < enumType.Names.Count ? $"{enumType.Names[(int)Value]}" : "UNKNOWN",
+            EnumType enumType => (int)Value >= 0 && (int)Value < enumType.Names.Count
+                ? $"{enumType.Names[(int)Value]}"
+                : "UNKNOWN",
             // Type.StringId or Type.CharId or Type.IntegerId or Type.RealId => Value?.ToString(),
             _ => Value?.ToString()
         } ?? "NULL";
