@@ -19,7 +19,7 @@ public class ArrayType : Type
 
     public override Instance Instance(object value = null, Scope scope = null)
     {
-        return DefaultInstance<ArrayInstance>(value, scope);
+        return DefaultInstance<ArrayInstance>(value ?? Array.Empty<Instance>(), scope);
     }
 
     public override Instance Clone(Instance instance)
