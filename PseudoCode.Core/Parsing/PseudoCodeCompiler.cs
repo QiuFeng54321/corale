@@ -13,8 +13,7 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
 {
     public Scope CurrentScope;
     public PseudoProgram Program = new();
-    public TypeType CurrentType;
-    public ObjectType CurrentObjectType;
+    public Type CurrentType;
 
     public PseudoProgram Compile(IParseTree tree)
     {
@@ -679,11 +678,35 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
     {
         base.ExitTypeDefinition(context);
         var sourceRange = SourceLocationHelper.SourceRange(context);
-        var name = context.Identifier().GetText();
-        CurrentScope.AddTypeDefinition(name, new Definition(CurrentScope, Program)
+        CurrentScope.AddTypeDefinition(CurrentType.Name, new Definition(CurrentScope, Program)
         {
             Type = CurrentType,
-            Name = name,
+            Name = CurrentType.Name,
+            SourceRange = sourceRange,
+            References = new List<SourceRange> { sourceRange },
+            Attributes = Definition.Attribute.Type
+        }, sourceRange);
+        CurrentType = null;
+    }
+
+    public override void EnterClassDefinition(PseudoCodeParser.ClassDefinitionContext context)
+    {
+        base.EnterClassDefinition(context);
+        CurrentType = new ObjectType(CurrentScope, Program)
+        {
+            Name = context.className.Text,
+            InheritTypeDef = CurrentScope.FindDefinition(context.inheritClass.Text)
+        };
+    }
+
+    public override void ExitClassDefinition(PseudoCodeParser.ClassDefinitionContext context)
+    {
+        base.ExitClassDefinition(context);
+        var sourceRange = SourceLocationHelper.SourceRange(context);
+        CurrentScope.AddTypeDefinition(CurrentType.Name, new Definition(CurrentScope, Program)
+        {
+            Type = CurrentType,
+            Name = CurrentType.Name,
             SourceRange = sourceRange,
             References = new List<SourceRange> { sourceRange },
             Attributes = Definition.Attribute.Type

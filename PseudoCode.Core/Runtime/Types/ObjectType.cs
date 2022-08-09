@@ -5,7 +5,7 @@ namespace PseudoCode.Core.Runtime.Types;
 
 public class ObjectType : Type
 {
-    public ObjectType InheritType;
+    public Definition InheritTypeDef;
 
     public ObjectType(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {
