@@ -12,7 +12,7 @@ public class MakeConstOperation : DeclareOperation
     {
         var constDef = Program.TypeCheckStack.Pop();
         var type = constDef.Type;
-        if (!constDef.Attributes.HasFlag(Definition.Attribute.Const))
+        if (!constDef.Attributes.HasFlag(DefinitionAttribute.Const))
         {
             Program.AnalyserFeedbacks.Add(new Feedback
             {
@@ -20,7 +20,7 @@ public class MakeConstOperation : DeclareOperation
                 Severity = Feedback.SeverityType.Error,
                 SourceRange = SourceRange
             });
-            Definition.Attributes = Definition.Attribute.Reference;
+            Definition.Attributes = DefinitionAttribute.Reference;
         }
 
         Definition.Type = type;

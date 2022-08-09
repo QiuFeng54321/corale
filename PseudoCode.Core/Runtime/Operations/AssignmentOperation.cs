@@ -38,13 +38,13 @@ public class AssignmentOperation : Operation
                 Type = new NullType(ParentScope, Program),
                 SourceRange = SourceRange,
                 Name = "NULL",
-                Attributes = Definition.Attribute.Reference
+                Attributes = DefinitionAttribute.Reference
             };
             if (KeepVariableInStack) Program.TypeCheckStack.Push(to);
             return;
         }
 
-        if (!to.Attributes.HasFlag(Definition.Attribute.Reference))
+        if (!to.Attributes.HasFlag(DefinitionAttribute.Reference))
             Program.AnalyserFeedbacks.Add(new Feedback
             {
                 Message = $"The assignment target is not a reference: {to}",
@@ -52,7 +52,7 @@ public class AssignmentOperation : Operation
                 SourceRange = SourceRange
             });
 
-        if (to.Attributes.HasFlag(Definition.Attribute.Immutable))
+        if (to.Attributes.HasFlag(DefinitionAttribute.Immutable))
             Program.AnalyserFeedbacks.Add(new Feedback
             {
                 Message = $"Cannot assign value to a constant: {to}",

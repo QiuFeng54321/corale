@@ -12,7 +12,7 @@ public record PointerDescriptor(ITypeDescriptor TypeDescriptor) : ITypeDescripto
             {
                 PointedType = TypeDescriptor.GetType(scope, program)
             },
-            Attributes = Definition.Attribute.Type
+            Attributes = DefinitionAttribute.Type
         };
     }
 

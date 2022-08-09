@@ -13,7 +13,7 @@ public record ArrayDescriptor(ITypeDescriptor ElementDescriptor, int Dimensions)
                 ElementType = ElementDescriptor.GetType(scope, program),
                 DimensionCount = Dimensions
             },
-            Attributes = Definition.Attribute.Type
+            Attributes = DefinitionAttribute.Type
         };
     }
 

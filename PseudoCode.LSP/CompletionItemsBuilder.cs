@@ -39,7 +39,7 @@ public class CompletionItemsBuilder
         foreach (var variableInfo in variableInfos)
         {
             Items.Add(MakeCompletionItem(
-                variableInfo.Attributes.HasFlag(Definition.Attribute.Type)
+                variableInfo.Attributes.HasFlag(DefinitionAttribute.Type)
                     ? CompletionItemKind.Class
                     : variableInfo.Type is EnumType ? CompletionItemKind.EnumMember : CompletionItemKind.Variable,
                 variableInfo.Name,

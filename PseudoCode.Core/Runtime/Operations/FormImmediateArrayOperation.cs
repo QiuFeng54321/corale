@@ -53,7 +53,7 @@ public class FormImmediateArrayOperation : Operation
                 ElementType = arrayElementType
             },
             SourceRange = SourceRange,
-            Attributes = Definition.Attribute.Immutable
+            Attributes = DefinitionAttribute.Immutable
         });
     }
 

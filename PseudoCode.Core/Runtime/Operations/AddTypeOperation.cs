@@ -19,7 +19,7 @@ public class AddTypeOperation : Operation
             Name = Name,
             SourceRange = SourceRange,
             References = new List<SourceRange> { SourceRange },
-            Attributes = Definition.Attribute.Type
+            Attributes = DefinitionAttribute.Type
         }, SourceRange);
     }
 

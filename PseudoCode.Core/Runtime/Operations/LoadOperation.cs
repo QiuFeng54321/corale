@@ -45,7 +45,7 @@ public class LoadOperation : Operation
                 },
                 SourceRange = SourceRange,
                 References = new List<SourceRange> { SourceRange },
-                Attributes = Definition.Attribute.Reference
+                Attributes = DefinitionAttribute.Reference
             });
         else
             Program.TypeCheckStack.Push(ParentScope.FindDefinition(LoadName));

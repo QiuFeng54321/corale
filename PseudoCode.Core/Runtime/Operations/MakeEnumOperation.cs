@@ -34,7 +34,7 @@ public class MakeEnumOperation : Operation
             Name = Name,
             SourceRange = SourceRange,
             References = new List<SourceRange> { SourceRange },
-            Attributes = Definition.Attribute.Type
+            Attributes = DefinitionAttribute.Type
         }, SourceRange);
         for (var index = 0; index < Names.Count; index++)
         {
@@ -44,7 +44,7 @@ public class MakeEnumOperation : Operation
                 Name = elementName,
                 Type = enumType,
                 SourceRange = SourceRange,
-                Attributes = Definition.Attribute.Immutable | Definition.Attribute.Const,
+                Attributes = DefinitionAttribute.Immutable | DefinitionAttribute.Const,
                 References = new List<SourceRange> { SourceRange },
                 ConstantInstance = enumType.Instance(index, ParentScope)
             };

@@ -43,6 +43,31 @@ void RunProgram(CommandLines.Options opts)
         program.GlobalScope.HandledOperate();
 }
 
+void RunNewProgram(CommandLines.Options opts)
+{
+    Thread.CurrentThread.CurrentCulture = new CultureInfo(opts.Locale, false);
+    Thread.CurrentThread.CurrentUICulture = new CultureInfo(opts.Locale, false);
+    var stream = CharStreams.fromPath(opts.FilePath);
+    var parser = PseudoCodeDocument.GetParser(stream);
+    var interpreter = new NewCompiler
+    {
+    };
+    // PseudoCodeDocument.AddErrorListener(parser, interpreter);
+    IParseTree parseTree = parser.fileInput();
+    var program = interpreter.Compile(parseTree);
+    Console.WriteLine(string.Join(", ", program.Opcodes.AsEnumerable()));
+    // var analysis = new Analysis();
+    // analysis.SetProgram(program);
+    // analysis.AnalyseUnusedVariables();
+    // program.PrintAnalyzerFeedbacks(Console.Out);
+    // if (program.AnalyserFeedbacks.Any(f => f.Severity == Feedback.SeverityType.Error))
+    // {
+    //     Console.WriteLine("Program will not start because there's an error");
+    // }
+    // else
+    //     program.GlobalScope.HandledOperate();
+}
+
 void HandleParseError(IEnumerable<Error> errs)
 {
     //
@@ -50,5 +75,5 @@ void HandleParseError(IEnumerable<Error> errs)
 }
 
 CommandLine.Parser.Default.ParseArguments<CommandLines.Options>(args)
-    .WithParsed(RunProgram)
+    .WithParsed(RunNewProgram)
     .WithNotParsed(HandleParseError);

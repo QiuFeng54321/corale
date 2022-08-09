@@ -14,7 +14,7 @@ public record FunctionDescriptor
                 ReturnType = ReturnType?.GetDefinition(scope, program),
                 ParameterInfos = ParameterInfos
             },
-            Attributes = Definition.Attribute.Type
+            Attributes = DefinitionAttribute.Type
         };
     }
 

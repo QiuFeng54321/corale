@@ -69,7 +69,7 @@ public class DeclareOperation : Operation
                 SourceRange = SourceRange
             });
         if (Definition.TypeDescriptor?.GetDefinition(ParentScope, Program) is { } definition &&
-            !definition.Attributes.HasFlag(Definition.Attribute.Type))
+            !definition.Attributes.HasFlag(DefinitionAttribute.Type))
             Program.AnalyserFeedbacks.Add(new Feedback
             {
                 Message = $"Declared type should be a type, not '{Definition.TypeDescriptor.SelfName}'",

@@ -122,7 +122,7 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
                 {
                     SourceLocationHelper.SourceRange(context.Identifier().Symbol)
                 },
-                Attributes = Definition.Attribute.Reference
+                Attributes = DefinitionAttribute.Reference
             }
         });
     }
@@ -148,8 +148,8 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
                 {
                     SourceLocationHelper.SourceRange(context.Identifier().Symbol)
                 },
-                Attributes = Definition.Attribute.Const | Definition.Attribute.Reference |
-                             Definition.Attribute.Immutable
+                Attributes = DefinitionAttribute.Const | DefinitionAttribute.Reference |
+                             DefinitionAttribute.Immutable
             }
         });
     }
@@ -167,9 +167,9 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
                     SourceLocationHelper.SourceRange(declarationContext.Identifier().Symbol)
                 },
                 Attributes = declarationContext.Byref() != null
-                    ? Definition.Attribute.Reference
+                    ? DefinitionAttribute.Reference
                     // : Definition.Attribute.Immutable // CAIE guide actually allows param assignment (P20 8.3 Example)
-                    : Definition.Attribute.None
+                    : DefinitionAttribute.None
             }
         ).ToArray();
     }

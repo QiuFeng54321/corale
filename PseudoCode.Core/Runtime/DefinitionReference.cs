@@ -13,7 +13,7 @@ public record DefinitionReference(Scope ParentScope, PseudoProgram Program) : De
     public Definition RealDefinition => _definition ??=
         Name == null ? ParentScope.FindDefinition((uint)TypeId) : ParentScope.FindDefinition(Name);
 
-    public override Attribute Attributes => RealDefinition.Attributes;
+    public override DefinitionAttribute Attributes => RealDefinition.Attributes;
     public override List<SourceRange> References => RealDefinition.References;
     public override Instance ConstantInstance => RealDefinition.ConstantInstance;
     public override SourceRange SourceRange => RealDefinition.SourceRange;

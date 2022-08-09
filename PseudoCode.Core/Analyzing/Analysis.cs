@@ -31,7 +31,7 @@ public class Analysis
     {
         if (AllDefinitions == null) return;
         foreach (var definition in AllDefinitions.Where(definition =>
-                     !definition.Attributes.HasFlag(Definition.Attribute.Type)))
+                     !definition.Attributes.HasFlag(DefinitionAttribute.Type)))
             if (definition.Type is PlaceholderType)
             {
                 var scopeSourceLocation = Program.GlobalScope

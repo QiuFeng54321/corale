@@ -27,7 +27,7 @@ public class FunctionType : Type
             {
                 s.ResetTemporaryContent();
                 foreach (var ((parameterInfo, passedInstance), i) in ParameterInfos.Zip(args).Select((v, i) => (v, i)))
-                    if (parameterInfo.Attributes.HasFlag(Definition.Attribute.Reference))
+                    if (parameterInfo.Attributes.HasFlag(DefinitionAttribute.Reference))
                     {
                         if (passedInstance is not ReferenceInstance referenceInstance)
                             throw new InvalidTypeError(
@@ -71,7 +71,7 @@ public class FunctionType : Type
             string.Format(strings.FunctionType_ToString,
                 string.Join(", ",
                     ParameterInfos.Select(p =>
-                        $"{(p.Attributes.HasFlag(Definition.Attribute.Reference) ? "BYREF " : "")}{p.Name}: {p.TypeString()}")),
+                        $"{(p.Attributes.HasFlag(DefinitionAttribute.Reference) ? "BYREF " : "")}{p.Name}: {p.TypeString()}")),
                 ReturnType == null ? "" : $"RETURNS {ReturnType}");
     }
 }

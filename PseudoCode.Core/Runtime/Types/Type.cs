@@ -145,7 +145,7 @@ public class Type
             {
                 Name = member,
                 Type = new NullType(ParentScope, Program),
-                Attributes = Definition.Attribute.Reference
+                Attributes = DefinitionAttribute.Reference
             }
             : Members[member];
     }

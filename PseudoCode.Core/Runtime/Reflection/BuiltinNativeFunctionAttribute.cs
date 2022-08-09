@@ -1,7 +1,7 @@
 namespace PseudoCode.Core.Runtime.Reflection;
 
 [AttributeUsage(AttributeTargets.Method)]
-public class BuiltinNativeFunctionAttribute : Attribute
+public class BuiltinNativeFunctionAttribute : System.Attribute
 {
     public string Name;
 

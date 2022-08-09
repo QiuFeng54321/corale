@@ -36,15 +36,15 @@ public class ArrayIndexOperation : Operation
             Program.TypeCheckStack.Push(new Definition(ParentScope, Program)
             {
                 Type = new NullType(ParentScope, Program),
-                Attributes = Definition.Attribute.Reference,
+                Attributes = DefinitionAttribute.Reference,
                 SourceRange = SourceRange
             });
         }
         else
         {
-            var attributes = accessed.Attributes.HasFlag(Definition.Attribute.Reference)
-                ? Definition.Attribute.Reference
-                : Definition.Attribute.Immutable;
+            var attributes = accessed.Attributes.HasFlag(DefinitionAttribute.Reference)
+                ? DefinitionAttribute.Reference
+                : DefinitionAttribute.Immutable;
             if (IndexLength < accessedArray.DimensionCount)
                 Program.TypeCheckStack.Push(new Definition(ParentScope, Program)
                 {

@@ -3,7 +3,7 @@ using PseudoCode.Core.Runtime.Types.Descriptor;
 
 namespace PseudoCode.Core.Runtime.Reflection;
 
-public class TypeRepresentation : Attribute
+public class TypeRepresentation : System.Attribute
 {
     public readonly int DimensionCount;
     public readonly string ElementTypeName;

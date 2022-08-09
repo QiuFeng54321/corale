@@ -72,7 +72,7 @@ public class CallOperation : Operation
             {
                 Type = ret,
                 SourceRange = SourceRange,
-                Attributes = Definition.Attribute.Immutable
+                Attributes = DefinitionAttribute.Immutable
             });
     }
 

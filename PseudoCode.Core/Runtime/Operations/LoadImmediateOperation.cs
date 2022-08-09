@@ -24,7 +24,7 @@ public class LoadImmediateOperation : Operation
             Type = Intermediate.Type,
             ConstantInstance = Intermediate,
             SourceRange = SourceRange,
-            Attributes = Definition.Attribute.Const
+            Attributes = DefinitionAttribute.Const
         });
     }
 

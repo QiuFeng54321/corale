@@ -34,11 +34,11 @@ public class UnaryOperation : Operation
                 Severity = Feedback.SeverityType.Warning,
                 SourceRange = SourceRange
             });
-        var isConstant = to.Attributes.HasFlag(Definition.Attribute.Const);
+        var isConstant = to.Attributes.HasFlag(DefinitionAttribute.Const);
         Program.TypeCheckStack.Push(new Definition(ParentScope, Program)
         {
             Type = resType,
-            Attributes = isConstant ? Definition.Attribute.Const : Definition.Attribute.Immutable,
+            Attributes = isConstant ? DefinitionAttribute.Const : DefinitionAttribute.Immutable,
             ConstantInstance = isConstant ? to.Type.UnaryOperators[OperatorMethod](to.ConstantInstance) : Instance.Null
         });
     }

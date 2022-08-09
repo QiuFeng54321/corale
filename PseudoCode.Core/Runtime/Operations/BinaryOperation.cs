@@ -26,8 +26,8 @@ public class BinaryOperation : Operation
         base.MetaOperate();
         var right = Program.TypeCheckStack.Pop();
         var left = Program.TypeCheckStack.Pop();
-        var isConstant = left.Attributes.HasFlag(Definition.Attribute.Const) &&
-                         right.Attributes.HasFlag(Definition.Attribute.Const);
+        var isConstant = left.Attributes.HasFlag(DefinitionAttribute.Const) &&
+                         right.Attributes.HasFlag(DefinitionAttribute.Const);
         var resType = left.Type.BinaryResultType(OperatorMethod, right.Type);
         if (resType is NullType && left.Type.IsConvertableFrom(right.Type))
             resType = left.Type.BinaryResultType(OperatorMethod, left.Type);
@@ -74,7 +74,7 @@ public class BinaryOperation : Operation
             Type = resType,
             SourceRange = SourceRange,
             ConstantInstance = constantInstance,
-            Attributes = isConstant ? Definition.Attribute.Const : Definition.Attribute.Immutable
+            Attributes = isConstant ? DefinitionAttribute.Const : DefinitionAttribute.Immutable
         });
     }
 

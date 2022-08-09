@@ -136,7 +136,7 @@ public class FunctionBinder
             {
                 Name = param.Name,
                 Attributes =
-                    param.IsReference ? Definition.Attribute.Reference : Definition.Attribute.Immutable,
+                    param.IsReference ? DefinitionAttribute.Reference : DefinitionAttribute.Immutable,
                 SourceRange = SourceRange.Identity,
                 TypeDescriptor = param.MakeTypeDescriptor()
             }).ToList();
@@ -152,7 +152,7 @@ public class FunctionBinder
             Name = typeDescriptor.ToString(),
             TypeDescriptor = typeDescriptor,
             SourceRange = SourceRange.Identity,
-            Attributes = Definition.Attribute.Type | Definition.Attribute.Immutable
+            Attributes = DefinitionAttribute.Type | DefinitionAttribute.Immutable
         };
     }
 
@@ -163,7 +163,7 @@ public class FunctionBinder
         {
             Name = info.Name,
             TypeDescriptor = GetTypeDescriptorFromSystemType(info.ParameterType),
-            Attributes = Definition.Attribute.Immutable,
+            Attributes = DefinitionAttribute.Immutable,
             SourceRange = SourceRange.Identity
         }).ToList();
     }
@@ -177,7 +177,7 @@ public class FunctionBinder
             Name = typeDescriptor.ToString(),
             TypeDescriptor = typeDescriptor,
             SourceRange = SourceRange.Identity,
-            Attributes = Definition.Attribute.Type | Definition.Attribute.Immutable
+            Attributes = DefinitionAttribute.Type | DefinitionAttribute.Immutable
         };
     }
 }

@@ -76,7 +76,7 @@ public class Scope : Operation
         {
             Name = type.Name,
             Type = type,
-            Attributes = Definition.Attribute.Type,
+            Attributes = DefinitionAttribute.Type,
             SourceRange = SourceRange.Identity,
             References = new List<SourceRange> { SourceRange.Identity }
         }, SourceRange.Identity);
