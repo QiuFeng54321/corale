@@ -20,16 +20,11 @@ NEXT ri
 TYPE Student
     DECLARE Name : STRING
     DECLARE Id : INTEGER
-    DECLARE Classes : ARRAY[1:4] OF INTEGER
 ENDTYPE
 DECLARE Students : ARRAY[1:10] OF Student
 FOR i <- 1 TO 10
     Students[i].Name <- "Student" & i
     Students[i].Id <- i
-    Students[i].Classes <- [0, 0, 0 ,0]
-    FOR j <- 1 TO 4
-        Students[i].Classes[j] <- RAND(10)
-    NEXT j
 NEXT i
 OUTPUT Students
 a <- 0
