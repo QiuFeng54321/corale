@@ -10,6 +10,7 @@ public class ProgramBuilder
     public MemoryAddress CurrentMemoryAddress = 0;
     public Stack<Identifier> GenerationStack = new();
     public Dictionary<TypeDefinition, Identifier> ConstantMap = new();
+    public Dictionary<string, TypeDefinition> TypeDefinitions = new();
 
     public ProgramBuilder()
     {

@@ -4,6 +4,7 @@ public enum PseudoOperator
 {
     Add,
     Subtract,
+    Negative,
     Multiply,
     BitAnd,
     IntDivide,
