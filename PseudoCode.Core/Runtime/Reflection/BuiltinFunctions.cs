@@ -59,6 +59,18 @@ public static class BuiltinFunctions
         return (int)x;
     }
 
+    [BuiltinNativeFunction("FIND")]
+    public static int Find(string str, char chr)
+    {
+        return str.IndexOf(chr) + 1;
+    }
+
+    [BuiltinNativeFunction("LEFT")]
+    public static char Left(string str, int index)
+    {
+        return str[index];
+    }
+
     [BuiltinNativeFunction("RAND")]
     public static RealNumberType RandomReal(int x)
     {

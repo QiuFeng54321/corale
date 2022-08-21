@@ -124,7 +124,7 @@ indentedBlock: INDENT statement+ DEDENT;
 alignedBlock: statement (INDENT statement+ DEDENT)?;
 ifStatement locals [bool HasElse]: If scopedExpression Then indentedBlock (Else indentedBlock {$HasElse = true;})? Endif;
 forStatement locals [bool HasStep]: For expression AssignmentNotation expression To scopedExpression (Step scopedExpression {$HasStep = true;})? indentedBlock Next scopedExpression;
-whileStatement: While scopedExpression Do indentedBlock Endwhile;
+whileStatement: While scopedExpression indentedBlock Endwhile;
 repeatStatement: Repeat indentedBlock Until scopedExpression;
 
 caseStatement: Case expression Of caseBody Endcase;
