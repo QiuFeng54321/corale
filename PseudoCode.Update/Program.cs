@@ -20,7 +20,7 @@ public class Program
     };
 
     public const string PackageName = "PseudoCodePackage.pkg";
-    public const string VsixName = "pseudocode.vsix";
+    public const string VsixName = "caie-pseudocode.vsix";
 
     public static async Task<bool> DownloadAssetAsync(ReleaseObject obj, string s)
     {
@@ -65,6 +65,7 @@ public class Program
                 }
             };
             p.Start();
+            await p.WaitForExitAsync();
         }
 
         if (await DownloadAssetAsync(resultObj, VsixName))
@@ -79,6 +80,7 @@ public class Program
                 }
             };
             p.Start();
+            await p.WaitForExitAsync();
         }
 
 
