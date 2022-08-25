@@ -54,13 +54,13 @@ public class Program
 
     public static async Task Main()
     {
+        Console.WriteLine("Fetching latest version of PseudoCode...");
         var resultStr =
             await HttpClient.GetStringAsync(
                 "https://gitee.com/api/v5/repos/williamcraft/pseudocode-releases/releases?page=1&per_page=20&direction=desc");
-        Console.WriteLine(resultStr);
+        // Console.WriteLine(resultStr);
         var resultObjs = JsonSerializer.Deserialize<ReleaseObject[]>(new JsonTextReader(new StringReader(resultStr)));
-
-
+        
         if (await DownloadAssetAsync(resultObjs, PackageName))
         {
             var p = new Process
@@ -81,7 +81,7 @@ public class Program
             {
                 FileName = "code",
                 WorkingDirectory = Environment.CurrentDirectory,
-                Arguments = $"--install-extension {VsixName}"
+                Arguments = $"--install-extension {VsixName} --force"
             }
         };
         vsixProcess.Start();
