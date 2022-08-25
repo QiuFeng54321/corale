@@ -13,7 +13,7 @@ CONSTANT CONST = 498 + 35
 iptr <- ^Char
 OUTPUT CONST + 4
 OUTPUT CONST + 5
-OUTPUT "Right: " & RIGHT("ABCDEFGH", 3) & " " & MID("ABCDEFGH", 2, 3)
+OUTPUT "Right: " & LEFT("ABCDEFGH", 3) & " " & MID("ABCDEFGH", 2, 3)
 FOR ri <- 1 TO 10
     OUTPUT "The " & ri & "th random number [1..10]: " & RAND(10)
 NEXT ri

@@ -168,6 +168,7 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
 
     public Definition[] GetArgumentDeclarations(PseudoCodeParser.ArgumentsDeclarationContext context)
     {
+        if (context?.argumentDeclaration() == null) return Array.Empty<Definition>();
         return context.argumentDeclaration().Select(declarationContext =>
             new Definition(CurrentScope, Program)
             {

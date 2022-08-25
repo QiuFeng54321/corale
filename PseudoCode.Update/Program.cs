@@ -20,10 +20,24 @@ public class Program
     };
 
     public const string PackageName = "PseudoCodePackage.pkg";
-    public const string VsixName = "caie-pseudocode.vsix";
+    public const string VsixName = "williamqiufeng.caie-pseudocode";
 
-    public static async Task<bool> DownloadAssetAsync(ReleaseObject obj, string s)
+    public static async Task<bool> DownloadAssetAsync(IEnumerable<ReleaseObject> objs, string s)
     {
+        var obj = objs.FirstOrDefault(o => o.Assets.Any(a => a.Name == s));
+        if (obj == null)
+        {
+            return false;
+        }
+
+        var latestVersion = Version.Parse(obj.TagName);
+        Console.WriteLine($"Current version of {s} is {PseudoProgram.Version}, Latest version is {latestVersion}");
+        if (latestVersion <= PseudoProgram.Version)
+        {
+            Console.WriteLine("Current version is already the latest!");
+            return false;
+        }
+
         var asset = obj.Assets.FirstOrDefault(a => a.Name == s);
         if (asset == null)
         {
@@ -31,7 +45,7 @@ public class Program
             // Environment.Exit(-1);
             return false;
         }
-
+        
         Console.WriteLine($"Downloading from url \"{asset.BrowserDownloadUrl}\"");
         var response = await HttpClient.GetStreamAsync(asset.BrowserDownloadUrl);
         await response.CopyToAsync(File.Create(s));
@@ -42,18 +56,12 @@ public class Program
     {
         var resultStr =
             await HttpClient.GetStringAsync(
-                "https://gitee.com/api/v5/repos/williamcraft/pseudocode-releases/releases/latest");
+                "https://gitee.com/api/v5/repos/williamcraft/pseudocode-releases/releases?page=1&per_page=20&direction=desc");
         Console.WriteLine(resultStr);
-        var resultObj = JsonSerializer.Deserialize<ReleaseObject>(new JsonTextReader(new StringReader(resultStr)));
-        var latestVersion = Version.Parse(resultObj.TagName);
-        Console.WriteLine($"Current version is {PseudoProgram.Version}, Latest version is {latestVersion}");
-        if (latestVersion <= PseudoProgram.Version)
-        {
-            Console.WriteLine("Current version is already the latest!");
-            Environment.Exit(0);
-        }
+        var resultObjs = JsonSerializer.Deserialize<ReleaseObject[]>(new JsonTextReader(new StringReader(resultStr)));
 
-        if (await DownloadAssetAsync(resultObj, PackageName))
+
+        if (await DownloadAssetAsync(resultObjs, PackageName))
         {
             var p = new Process
             {
@@ -67,24 +75,19 @@ public class Program
             p.Start();
             await p.WaitForExitAsync();
         }
-
-        if (await DownloadAssetAsync(resultObj, VsixName))
+        var vsixProcess = new Process
         {
-            var p = new Process
+            StartInfo = new ProcessStartInfo
             {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = "code",
-                    WorkingDirectory = Environment.CurrentDirectory,
-                    Arguments = $"--install-extension {VsixName}"
-                }
-            };
-            p.Start();
-            await p.WaitForExitAsync();
-        }
+                FileName = "code",
+                WorkingDirectory = Environment.CurrentDirectory,
+                Arguments = $"--install-extension {VsixName}"
+            }
+        };
+        vsixProcess.Start();
+        await vsixProcess.WaitForExitAsync();
 
 
-        
         Console.WriteLine("Process ended");
     }
 }
