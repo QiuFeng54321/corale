@@ -16,7 +16,7 @@ public class FunctionBinder
         [typeof(int)] = "INTEGER",
         [typeof(RealNumberType)] = "REAL",
         [typeof(string)] = "STRING",
-        [typeof(char)] = "CHARACTER",
+        [typeof(char)] = "CHAR",
         [typeof(bool)] = "BOOLEAN",
         [typeof(DateOnly)] = "DATE",
         [typeof(void)] = "NULL"
