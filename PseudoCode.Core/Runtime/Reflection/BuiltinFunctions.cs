@@ -1,3 +1,4 @@
+using PseudoCode.Core.Runtime.Errors;
 using PseudoCode.Core.Runtime.Instances;
 using PseudoCode.Core.Runtime.Operations;
 using Type = PseudoCode.Core.Runtime.Types.Type;
@@ -20,12 +21,20 @@ public static class BuiltinFunctions
     [BuiltinNativeFunction("RIGHT")]
     public static string Right(string thisString, int x)
     {
+        if (x < 0 || x > thisString.Length)
+            throw new OutOfBoundsError($"Cannot take substring [^{x}..] of \"{thisString}\": Length of string is {thisString.Length}", null);
+
         return thisString[^x..];
     }
 
     [BuiltinNativeFunction("LEFT")]
     public static string Left(string str, int index)
     {
+        if (index < 0 || index > str.Length)
+            throw new OutOfBoundsError(
+                $"Cannot take substring [..{index}] of \"{str}\": Length of string is {str.Length}",
+                null);
+
         return str[..index];
     }
 
@@ -45,6 +54,10 @@ public static class BuiltinFunctions
     [BuiltinNativeFunction("MID")]
     public static string Mid(string thisString, int x, int y)
     {
+        if (x < 0 || x >= thisString.Length || y < 0 || x + y >= thisString.Length)
+            throw new OutOfBoundsError(
+                $"Cannot take substring [{x}..{x + y}] of \"{thisString}\": Length of string is {thisString.Length}",
+                null);
         return thisString.Substring(x - 1, y);
     }
 

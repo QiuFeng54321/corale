@@ -37,6 +37,10 @@ public class Operation
             // e.OperationStackTrace.Add(this);
             throw;
         }
+        catch (Exception e)
+        {
+            throw new UnhandledError(e, this);
+        }
     }
 
     public static string Indent(int depth)

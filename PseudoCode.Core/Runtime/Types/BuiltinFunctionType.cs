@@ -1,3 +1,4 @@
+using System.Reflection;
 using PseudoCode.Core.Runtime.Instances;
 using PseudoCode.Core.Runtime.Operations;
 
@@ -17,7 +18,15 @@ public class BuiltinFunctionType : FunctionType
     public override Instance Call(FunctionInstance functionInstance, Instance[] args)
     {
         CheckArguments(args);
-        return ((BuiltinFunctionInstance)functionInstance).Func(ParentScope, Program,
-            args.Zip(ParameterInfos).Select((p, _) => p.Second.Type.CastFrom(p.First)).ToArray());
+        try
+        {
+            return ((BuiltinFunctionInstance)functionInstance).Func(ParentScope, Program,
+                args.Zip(ParameterInfos).Select((p, _) => p.Second.Type.CastFrom(p.First)).ToArray());
+        }
+        catch (TargetInvocationException e)
+        {
+            if (e.InnerException != null) throw e.InnerException;
+            throw;
+        }
     }
 }
