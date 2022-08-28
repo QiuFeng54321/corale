@@ -1,6 +1,6 @@
 a <- 7
 
-CASE a OF
+CASE OF a
     6: OUTPUT 6
     1 TO 7: OUTPUT "1 to 7"
             OUTPUT "Yay"

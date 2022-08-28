@@ -127,7 +127,7 @@ forStatement locals [bool HasStep]: For expression AssignmentNotation expression
 whileStatement: While scopedExpression indentedBlock Endwhile;
 repeatStatement: Repeat indentedBlock Until scopedExpression;
 
-caseStatement: Case expression Of caseBody Endcase;
+caseStatement: Case Of expression caseBody Endcase;
 caseBranch
  : (Otherwise | scopedExpression | valueRange) Colon alignedBlock
  | NL

@@ -1631,10 +1631,10 @@ public partial class PseudoCodeParser : Parser {
 
 	public partial class CaseStatementContext : ParserRuleContext {
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Case() { return GetToken(PseudoCodeParser.Case, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Of() { return GetToken(PseudoCodeParser.Of, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
 			return GetRuleContext<ExpressionContext>(0);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Of() { return GetToken(PseudoCodeParser.Of, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public CaseBodyContext caseBody() {
 			return GetRuleContext<CaseBodyContext>(0);
 		}
@@ -1666,9 +1666,9 @@ public partial class PseudoCodeParser : Parser {
 			State = 264;
 			Match(Case);
 			State = 265;
-			expression();
-			State = 266;
 			Match(Of);
+			State = 266;
+			expression();
 			State = 267;
 			caseBody();
 			State = 268;
@@ -4434,8 +4434,8 @@ public partial class PseudoCodeParser : Parser {
 		249,250,1,0,0,0,250,251,3,28,14,0,251,252,5,20,0,0,252,253,3,26,13,0,253,
 		35,1,0,0,0,254,255,5,21,0,0,255,256,3,26,13,0,256,257,3,28,14,0,257,258,
 		5,23,0,0,258,37,1,0,0,0,259,260,5,24,0,0,260,261,3,28,14,0,261,262,5,25,
-		0,0,262,263,3,26,13,0,263,39,1,0,0,0,264,265,5,13,0,0,265,266,3,80,40,
-		0,266,267,5,14,0,0,267,268,3,44,22,0,268,269,5,16,0,0,269,41,1,0,0,0,270,
+		0,0,262,263,3,26,13,0,263,39,1,0,0,0,264,265,5,13,0,0,265,266,5,14,0,0,
+		266,267,3,80,40,0,267,268,3,44,22,0,268,269,5,16,0,0,269,41,1,0,0,0,270,
 		274,5,15,0,0,271,274,3,26,13,0,272,274,3,46,23,0,273,270,1,0,0,0,273,271,
 		1,0,0,0,273,272,1,0,0,0,274,275,1,0,0,0,275,276,5,67,0,0,276,279,3,30,
 		15,0,277,279,5,6,0,0,278,273,1,0,0,0,278,277,1,0,0,0,279,43,1,0,0,0,280,
