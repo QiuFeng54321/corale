@@ -18,6 +18,6 @@ public record ArrayDescriptor(ITypeDescriptor ElementDescriptor, int Dimensions)
     }
 
     public string SelfName => "ARRAY";
-
+    public string ToMarkupString() => $"{ElementDescriptor.ToMarkupString()}[{Dimensions}]";
     public override string ToString() => string.Format(strings.ArrayType_ToString, Dimensions, ElementDescriptor);
 }

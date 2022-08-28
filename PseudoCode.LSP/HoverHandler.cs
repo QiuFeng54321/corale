@@ -39,10 +39,18 @@ class HoverHandler : HoverHandlerBase
             Scope.GetHoveredVariable(_analysisService.GetAnalysis(request.TextDocument.Uri).AllDefinitions,
                 request.Position.ToLocation());
         if (hoveredVar == null) return null;
+        var strings = new List<MarkedString>
+        {
+            new("pseudocode", $"{hoveredVar.Name}: {hoveredVar.TypeString()}")
+        };
+        if (!string.IsNullOrEmpty(hoveredVar.Documentation))
+        {
+            strings.Add(new MarkedString(hoveredVar.Documentation));
+        }
         return new Hover
         {
             Range = range.ToRange(),
-            Contents = new MarkedStringsOrMarkupContent(new MarkedString("pseudocode", $"{hoveredVar.Name}: {hoveredVar.TypeString()}"))
+            Contents = new MarkedStringsOrMarkupContent(strings)
         };
     }
 }

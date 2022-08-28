@@ -26,6 +26,7 @@ public record Definition(Scope ParentScope, PseudoProgram Program)
     public virtual PseudoProgram Program { get; set; } = Program;
     public virtual Attribute Attributes { get; set; } = Attribute.Reference;
     public virtual string TypeName => TypeDescriptor?.SelfName ?? Type.Name;
+    public virtual string Documentation { get; set; }
 
     public virtual Instance ConstantInstance { get; set; }
 
@@ -42,12 +43,27 @@ public record Definition(Scope ParentScope, PseudoProgram Program)
         return TypeDescriptor?.ToString() ?? Type.ToString();
     }
 
+    public string TypeMarkupString() => TypeDescriptor?.ToMarkupString() ?? Type.ToString();
+
     public override string ToString()
     {
-        return $"{GetAttributesString()}{TypeString()}";
+        return $"{GetAttributesStringIndented()}{TypeString()}";
+    }
+
+    public string ToMarkupString()
+    {
+        return $"*{GetAttributesString()}* {TypeMarkupString()}";
     }
 
     public string GetAttributesString()
+    {
+        var res = (from Attribute flagToCheck in Enum.GetValues(typeof(Attribute))
+            where Attributes.HasFlag(flagToCheck) && flagToCheck != Attribute.None
+            select flagToCheck.ToString().ToUpper()).ToList();
+
+        return string.Join(" ", res);
+    }
+    public string GetAttributesStringIndented()
     {
         var res = (from Attribute flagToCheck in Enum.GetValues(typeof(Attribute))
             where Attributes.HasFlag(flagToCheck) && flagToCheck != Attribute.None

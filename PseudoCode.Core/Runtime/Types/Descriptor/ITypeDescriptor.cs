@@ -11,4 +11,5 @@ public interface ITypeDescriptor
         return GetDefinition(scope, program)?.Type ?? new NullType(scope, program);
     }
     public string SelfName { get; }
+    public string ToMarkupString();
 }

@@ -17,5 +17,7 @@ public record PointerDescriptor(ITypeDescriptor TypeDescriptor) : ITypeDescripto
     }
 
     public string SelfName => "POINTER";
-    public override string ToString() => $"^{TypeDescriptor}";
+    public string ToMarkupString() => ToString();
+
+    public override string ToString() => $"^{TypeDescriptor.ToMarkupString()}";
 }

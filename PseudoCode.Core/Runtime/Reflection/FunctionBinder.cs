@@ -68,6 +68,7 @@ public class FunctionBinder
         }
 
         var functionName = GetFunctionName(methodInfo);
+        var documentation = GetFunctionDocumentation(methodInfo);
 
         var paramList = GetMethodParamList(parentScope, program, methodInfo);
         var returnDef = GetMethodReturnDefinition(parentScope, program, methodInfo);
@@ -81,7 +82,8 @@ public class FunctionBinder
             {
                 ParameterInfos = paramList.ToArray(),
                 ReturnType = returnDef
-            }
+            },
+            Documentation = documentation
         };
         return true;
     }
@@ -96,6 +98,7 @@ public class FunctionBinder
         }
 
         var functionName = GetFunctionName(methodInfo);
+        var documentation = GetFunctionDocumentation(methodInfo);
 
         var paramList = GetNativeMethodParamList(parentScope, program, methodInfo);
         var returnDef = GetNativeMethodReturnDefinition(parentScope, program, methodInfo);
@@ -109,9 +112,20 @@ public class FunctionBinder
             {
                 ParameterInfos = paramList.ToArray(),
                 ReturnType = returnDef
-            }
+            },
+            Documentation = documentation
         };
         return true;
+    }
+
+    private static string GetFunctionDocumentation(MethodInfo methodInfo)
+    {
+        if (methodInfo.GetCustomAttribute(typeof(DocumentationAttribute)) is DocumentationAttribute attribute)
+        {
+            return attribute.Documentation;
+        }
+
+        return "";
     }
 
     private static string GetFunctionName(MethodInfo methodInfo)

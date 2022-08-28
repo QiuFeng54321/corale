@@ -38,13 +38,24 @@ public class CompletionItemsBuilder
         var variableInfos = analysis.Program.GlobalScope.GetDefinitionCompletionBefore(cursor);
         foreach (var variableInfo in variableInfos)
         {
+            var completionItemKind = variableInfo.Attributes.HasFlag(Definition.Attribute.Type)
+                ? CompletionItemKind.Class
+                : variableInfo.Type switch
+                {
+                    EnumType => CompletionItemKind.EnumMember,
+                    FunctionType or BuiltinFunctionType => CompletionItemKind.Function,
+                    _ => CompletionItemKind.Variable
+                };
+            var documentation = variableInfo.ToMarkupString();
+            if (!string.IsNullOrEmpty(variableInfo.Documentation))
+            {
+                documentation = $"{documentation}\n\n{variableInfo.Documentation}";
+            }
             Items.Add(MakeCompletionItem(
-                variableInfo.Attributes.HasFlag(Definition.Attribute.Type)
-                    ? CompletionItemKind.Class
-                    : variableInfo.Type is EnumType ? CompletionItemKind.EnumMember : CompletionItemKind.Variable,
+                completionItemKind,
                 variableInfo.Name,
                 variableInfo.Name,
-                variableInfo.ToString()));
+                documentation));
         }
     }
 

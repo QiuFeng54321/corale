@@ -12,4 +12,5 @@ public record PlainTypeDescriptor(string Name) : ITypeDescriptor
     public string SelfName => Name;
 
     public override string ToString() => SelfName;
+    public string ToMarkupString() => $"**{ToString()}**";
 }
