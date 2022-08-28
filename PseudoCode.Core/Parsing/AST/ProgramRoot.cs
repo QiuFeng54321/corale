@@ -1,6 +1,5 @@
 namespace PseudoCode.Core.Parsing.AST;
 
-public class ProgramRoot : AstNode
+public class ProgramRoot : ScopeAst
 {
-    public List<Statement> Statements = new();
 }

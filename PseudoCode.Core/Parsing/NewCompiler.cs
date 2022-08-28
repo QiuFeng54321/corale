@@ -1,4 +1,5 @@
 using Antlr4.Runtime.Tree;
+using PseudoCode.Core.Parsing.AST;
 using PseudoCode.Core.Runtime.Emit;
 
 namespace PseudoCode.Core.Parsing;
@@ -6,6 +7,7 @@ namespace PseudoCode.Core.Parsing;
 public class NewCompiler : PseudoCodeBaseListener
 {
     public ProgramBuilder ProgramBuilder = new();
+    public ProgramRoot Root;
     
     public PseudoAssembly Compile(IParseTree tree)
     {
