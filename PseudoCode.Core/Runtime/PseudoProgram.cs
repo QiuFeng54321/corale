@@ -12,7 +12,7 @@ namespace PseudoCode.Core.Runtime;
 /// </summary>
 public class PseudoProgram
 {
-    public static readonly Version Version = new(1, 3, 0);
+    public static readonly Version Version = new(1, 3, 1);
 
     /// <summary>
     ///     Stores feedbacks during parsing and typechecking (metaoperation)
