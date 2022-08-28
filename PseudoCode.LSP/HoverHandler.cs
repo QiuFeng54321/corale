@@ -41,7 +41,7 @@ class HoverHandler : HoverHandlerBase
         if (hoveredVar == null) return null;
         var strings = new List<MarkedString>
         {
-            new("pseudocode", $"{hoveredVar.Name}: {hoveredVar.TypeString()}")
+            new("pseudocode", $"{hoveredVar.Name}: {hoveredVar}")
         };
         if (!string.IsNullOrEmpty(hoveredVar.Documentation))
         {

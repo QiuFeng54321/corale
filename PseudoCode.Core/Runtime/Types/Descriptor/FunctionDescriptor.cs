@@ -22,12 +22,12 @@ public record FunctionDescriptor
 
     public string ToMarkupString() => string.Format("**FUNCTION** ({0}){1}", string.Join(", ",
         ParameterInfos.Select(p =>
-            p.ToMarkupString())),
+            $"{p.Name}: {p.ToMarkupString()}")),
         ReturnType == null ? "" : $" -> {ReturnType.ToMarkupString()}");
 
     public override string ToString() => string.Format(strings.FunctionType_ToString,
         string.Join(", ",
             ParameterInfos.Select(p =>
-                p.ToString())),
+                $"{p.Name}: {p}")),
         ReturnType == null ? "" : $"RETURNS {ReturnType}");
 }
