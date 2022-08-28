@@ -70,7 +70,7 @@ public class FunctionBinder
         var functionName = GetFunctionName(methodInfo);
         var documentation = GetFunctionDocumentation(methodInfo);
 
-        var paramList = GetMethodParamList(parentScope, program, methodInfo);
+        var paramList = GetMethodParamList(parentScope, program, methodInfo).ToArray();
         var returnDef = GetMethodReturnDefinition(parentScope, program, methodInfo);
 
         definition = new Definition(parentScope, program)
@@ -80,9 +80,10 @@ public class FunctionBinder
             SourceRange = SourceRange.Identity,
             Type = new BuiltinFunctionType(parentScope, program)
             {
-                ParameterInfos = paramList.ToArray(),
+                ParameterInfos = paramList,
                 ReturnType = returnDef
             },
+            TypeDescriptor = new FunctionDescriptor(returnDef.TypeDescriptor, paramList),
             Documentation = documentation
         };
         return true;
@@ -100,7 +101,7 @@ public class FunctionBinder
         var functionName = GetFunctionName(methodInfo);
         var documentation = GetFunctionDocumentation(methodInfo);
 
-        var paramList = GetNativeMethodParamList(parentScope, program, methodInfo);
+        var paramList = GetNativeMethodParamList(parentScope, program, methodInfo).ToArray();
         var returnDef = GetNativeMethodReturnDefinition(parentScope, program, methodInfo);
 
         definition = new Definition(parentScope, program)
@@ -110,9 +111,10 @@ public class FunctionBinder
             SourceRange = SourceRange.Identity,
             Type = new BuiltinFunctionType(parentScope, program)
             {
-                ParameterInfos = paramList.ToArray(),
+                ParameterInfos = paramList,
                 ReturnType = returnDef
             },
+            TypeDescriptor = new FunctionDescriptor(returnDef.TypeDescriptor, paramList),
             Documentation = documentation
         };
         return true;
@@ -141,7 +143,6 @@ public class FunctionBinder
 
         return methodInfo.Name;
     }
-
     private static List<Definition> GetMethodParamList(Scope parentScope, PseudoProgram program, MethodInfo methodInfo)
     {
         return methodInfo.GetCustomAttributes(typeof(ParamTypeAttribute))
