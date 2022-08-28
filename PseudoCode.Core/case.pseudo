@@ -1,8 +1,12 @@
 a <- 7
-
+FUNCTION abc() RETURNS STRING
+    OUTPUT "Hi"
+    RETURN "abc"
+ENDFUNCTION
 CASE OF a
     6: OUTPUT 6
     1 TO 7: OUTPUT "1 to 7"
             OUTPUT "Yay"
+            CALL abc()
     OTHERWISE: OUTPUT "No"
 ENDCASE

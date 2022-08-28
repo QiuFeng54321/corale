@@ -8,6 +8,7 @@ namespace PseudoCode.Core.Runtime.Operations;
 
 public class CallOperation : Operation
 {
+    public bool IsStatement;
     public int ArgumentCount;
 
     public CallOperation(Scope parentScope, PseudoProgram program) : base(parentScope, program)
@@ -24,7 +25,7 @@ public class CallOperation : Operation
         if (called is not FunctionInstance functionInstance)
             throw new InvalidTypeError($"Cannot call {called.Type}", this);
         var ret = functionInstance.Type.Call(functionInstance, arguments.ToArray());
-        if (functionInstance.FunctionType.ReturnType != null)
+        if (functionInstance.FunctionType.ReturnType != null && !IsStatement)
             Program.RuntimeStack.Push(functionInstance.FunctionType.ReturnType.Type.CastFrom(ret));
     }
 
@@ -67,7 +68,7 @@ public class CallOperation : Operation
         }
 
         var ret = functionType is null ? null : functionType.ReturnType?.Type ?? new NullType(ParentScope, Program);
-        if (ret is not NullType)
+        if (ret is not NullType && !IsStatement)
             Program.TypeCheckStack.Push(new Definition(ParentScope, Program)
             {
                 Type = ret,

@@ -367,16 +367,18 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         }
     }
 
-    private void MakeCall(ParserRuleContext context, PseudoCodeParser.ArgumentsContext argContext)
+    private CallOperation MakeCall(ParserRuleContext context, PseudoCodeParser.ArgumentsContext argContext)
     {
-        var argumentCount = argContext.tuple()?.expression()?.Length ?? 0;
-        var sourceLocation = SourceLocationHelper.SourceLocation(argContext.OpenParen().Symbol);
-        CurrentScope.AddOperation(new CallOperation(CurrentScope, Program)
+        var argumentCount = argContext?.tuple()?.expression()?.Length ?? 0;
+        var sourceLocation = SourceLocationHelper.SourceLocation(argContext?.OpenParen()?.Symbol ?? context.Stop);
+        var callOperation = new CallOperation(CurrentScope, Program)
         {
             PoiLocation = sourceLocation,
             SourceRange = SourceLocationHelper.SourceRange(context),
             ArgumentCount = argumentCount
-        });
+        };
+        CurrentScope.AddOperation(callOperation);
+        return callOperation;
     }
 
     public override void ExitCallStatement(PseudoCodeParser.CallStatementContext context)
@@ -384,12 +386,11 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         base.ExitCallStatement(context);
         var lastOperation = CurrentScope.ScopeStates.Operations.Last();
         if (lastOperation is not CallOperation)
-            Program.AnalyserFeedbacks.Add(new Feedback
-            {
-                Message = "A call statement must be followed by a valid procedure call!",
-                Severity = Feedback.SeverityType.Error,
-                SourceRange = SourceLocationHelper.SourceRange(context)
-            });
+        {
+            lastOperation = MakeCall(context, null);
+        }
+
+        ((CallOperation)lastOperation).IsStatement = true;
     }
 
     public override void ExitLogicExpression(PseudoCodeParser.LogicExpressionContext context)
