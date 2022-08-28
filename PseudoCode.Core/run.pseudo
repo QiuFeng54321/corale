@@ -13,7 +13,7 @@ CONSTANT CONST = 498 + 35
 iptr <- ^Char
 OUTPUT CONST + 4
 OUTPUT CONST + 5
-OUTPUT "Right: " & RIGHT("ABCDEFGH", 3) & " " & MID("ABCDEFGH", 2, 3)
+OUTPUT "Right: " & LEFT("ABCDEFGH", 3) & " " & MID("ABCDEFGH", 2, 3)
 FOR ri <- 1 TO 10
     OUTPUT "The " & ri & "th random number [1..10]: " & RAND(10)
 NEXT ri
@@ -24,6 +24,7 @@ ENDTYPE
 DECLARE Students : ARRAY[1:10] OF Student
 FOR i <- 1 TO 10
     Students[i].Name <- "Student" & i
+    Students[i].Id <- i
 NEXT i
 OUTPUT Students
 a <- 0
@@ -72,13 +73,13 @@ FibSeq[1] <- 1
 FibSeq[2] <- 1
 TopCalculated <- 2
 ContinueFib <- TRUE
-WHILE ContinueFib DO
+WHILE ContinueFib
     k <- 1
     REPEAT
         OUTPUT "Input Fib Count (1 to", MaxLength, "):"
         INPUT FibCount
     UNTIL FibCount <= MaxLength AND FibCount >= 1
-    WHILE TopCalculated < FibCount DO
+    WHILE TopCalculated < FibCount
         TopCalculated <- TopCalculated + 1
         FibSeq[TopCalculated] <- FibSeq[TopCalculated - 2] + FibSeq[TopCalculated - 1]
     ENDWHILE

@@ -1,23 +1,15 @@
-// Fibonacci sequence
-DECLARE FibCount : INTEGER
-DECLARE FibSeq : ARRAY[1:100] OF INTEGER
-// FibSeq[1] <- 1
-// FibSeq[2] <- 1
-TopCalculated <- 2
-ContinueFib <- TRUE
-FibSeq[TopCalculated] <- FibSeq[TopCalculated - 2] + FibSeq[TopCalculated - 1]
-WHILE ContinueFib DO
-    k <- 1
-    REPEAT
-        OUTPUT "Input Fib Count (1 to 100):"
-        INPUT FibCount
-    UNTIL FibCount <= 100 AND FibCount >= 1
-    WHILE TopCalculated < FibCount DO
-        TopCalculated <- TopCalculated + 1
-        FibSeq[TopCalculated] <- FibSeq[TopCalculated - 2] + FibSeq[TopCalculated - 1]
-    ENDWHILE
-    OUTPUT "The", FibCount, "th fibonacci number is:", FibSeq[FibCount]
-    OUTPUT "The whole array is:", FibSeq
-    OUTPUT "Continue?"
-    INPUT ContinueFib
-ENDWHILE
+DECLARE RecordStr : STRING
+DECLARE StudentID : STRING
+DECLARE FirstName : STRING
+DECLARE SurName : STRING
+DECLARE FirstSpaceLocation : INTEGER
+DECLARE SecondSpaceLocation : INTEGER
+OUTPUT "<StudentID> <space> <FirstName> <space> <SurName> :"
+INPUT RecordStr
+FirstSpaceLocation <- FIND(RecordStr, ' ')
+SecondSpaceLocation <- FIND(RIGHT(RecordStr, LENGTH(RecordStr) - FirstSpaceLocation), ' ') + FirstSpaceLocation
+OUTPUT FirstSpaceLocation, SecondSpaceLocation
+StudentID <- LEFT(RecordStr, FirstSpaceLocation)
+FirstName <- MID(RecordStr, FirstSpaceLocation, SecondSpaceLocation - FirstSpaceLocation)
+SurName <- RIGHT(RecordStr, LENGTH(RecordStr) - SecondSpaceLocation)
+OUTPUT StudentID, SurName, FirstName

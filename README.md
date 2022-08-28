@@ -46,8 +46,8 @@ PseudoCode -SvcC run.pseudo
 - [x] Function / Procedure
 - [x] Case
 - [x] Struct
-- [ ] Enum
-- [ ] Pointer
+- [x] Enum
+- [x] Pointer
 - [ ] Class
 - [x] Built-in functions
 

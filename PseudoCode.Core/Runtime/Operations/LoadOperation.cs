@@ -1,3 +1,4 @@
+using PseudoCode.Core.Analyzing;
 using PseudoCode.Core.Runtime.Errors;
 using PseudoCode.Core.Runtime.Instances;
 using PseudoCode.Core.Runtime.Types;
@@ -36,6 +37,16 @@ public class LoadOperation : Operation
         var definition = ParentScope.FindDefinition(LoadName);
         definition?.References?.Add(SourceRange);
         if (definition == null)
+        {
+            if (!Program.AllowUndeclaredVariables)
+            {
+                Program.AnalyserFeedbacks.Add(new Feedback
+                {
+                    Message = $"Variable {LoadName} is not defined before use!",
+                    Severity = Feedback.SeverityType.Error,
+                    SourceRange = SourceRange
+                });
+            }
             Program.TypeCheckStack.Push(new Definition(ParentScope, Program)
             {
                 Name = LoadName,
@@ -47,6 +58,7 @@ public class LoadOperation : Operation
                 References = new List<SourceRange> { SourceRange },
                 Attributes = DefinitionAttribute.Reference
             });
+        }
         else
             Program.TypeCheckStack.Push(ParentScope.FindDefinition(LoadName));
     }

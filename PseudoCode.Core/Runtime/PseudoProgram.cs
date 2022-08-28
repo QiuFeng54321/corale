@@ -12,13 +12,15 @@ namespace PseudoCode.Core.Runtime;
 /// </summary>
 public class PseudoProgram
 {
+    public static readonly Version Version = new(1, 1, 6);
+
     /// <summary>
     ///     Stores feedbacks during parsing and typechecking (metaoperation)
     /// </summary>
     public List<Feedback> AnalyserFeedbacks = new();
 
     /// <summary>
-    ///     Front address uninitialiized
+    ///     Front address uninitialized
     /// </summary>
     public uint CurrentInstanceAddress;
 
