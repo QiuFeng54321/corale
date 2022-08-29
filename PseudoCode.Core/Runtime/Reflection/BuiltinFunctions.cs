@@ -150,7 +150,14 @@ public static class BuiltinFunctions
         return str.IndexOf(chr) + 1;
     }
 
-    [Documentation("Returns a random number [0..`x`)")]
+    [Documentation("Returns the index of the first occasion of the character in the string starting from `index`")]
+    [BuiltinNativeFunction("INSTR")]
+    public static int InString(int index, string str, char chr)
+    {
+        return Find(str[(index - 1)..], chr);
+    }
+
+    [Documentation("Returns a random number [0..x)")]
     [BuiltinNativeFunction("RAND")]
     public static RealNumberType RandomReal(int x)
     {
