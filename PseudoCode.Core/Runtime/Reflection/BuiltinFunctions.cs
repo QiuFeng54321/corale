@@ -154,7 +154,7 @@ public static class BuiltinFunctions
     [BuiltinNativeFunction("INSTR")]
     public static int InString(int index, string str, char chr)
     {
-        return Find(str[(index - 1)..], chr);
+        return Find(str[(index - 1)..], chr) + index - 1;
     }
 
     [Documentation("Returns a random number [0..x)")]

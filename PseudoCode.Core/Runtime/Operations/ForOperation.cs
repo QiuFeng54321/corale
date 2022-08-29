@@ -1,3 +1,4 @@
+using PseudoCode.Core.Runtime.Instances;
 using PseudoCode.Core.Runtime.Types;
 
 namespace PseudoCode.Core.Runtime.Operations;
@@ -13,6 +14,7 @@ public class ForOperation : Operation
     {
     }
 
+    public delegate Instance CompareFunc(Instance i1, Instance i2);
     public override void Operate()
     {
         base.Operate();
@@ -20,8 +22,10 @@ public class ForOperation : Operation
         TargetValue.HandledOperate(); // [ref instance id, ref instance targ_val]
         var targetValue = Program.RuntimeStack.Pop();
         var incrementValue = Program.RuntimeStack.Pop();
+        var smaller = incrementValue.Type.SmallerEqual(incrementValue, targetValue).Get<bool>();
+        CompareFunc func = smaller ? incrementValue.Type.SmallerEqual : incrementValue.Type.GreaterEqual;
         // Stack empty
-        while (incrementValue.Type.SmallerEqual(incrementValue, targetValue).Get<bool>())
+        while (func(incrementValue, targetValue).Get<bool>())
         {
             ForBody.HandledOperate();
             Next.HandledOperate(); // [ref instance next]
