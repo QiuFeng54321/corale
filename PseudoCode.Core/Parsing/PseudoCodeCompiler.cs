@@ -12,8 +12,8 @@ namespace PseudoCode.Core.Parsing;
 public class PseudoCodeCompiler : PseudoCodeBaseListener
 {
     public Scope CurrentScope;
-    public PseudoProgram Program = new();
     public Type CurrentType;
+    public PseudoProgram Program = new();
 
     public PseudoProgram Compile(IParseTree tree)
     {
@@ -169,8 +169,13 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
     public Definition[] GetArgumentDeclarations(PseudoCodeParser.ArgumentsDeclarationContext context)
     {
         if (context?.argumentDeclaration() == null) return Array.Empty<Definition>();
-        return context.argumentDeclaration().Select(declarationContext =>
-            new Definition(CurrentScope, Program)
+        var passByRef = false;
+        List<Definition> res = new();
+        foreach (var declarationContext in context.argumentDeclaration())
+        {
+            if (declarationContext.Byref() != null) passByRef = true;
+            if (declarationContext.Byval() != null) passByRef = false;
+            res.Add(new Definition(CurrentScope, Program)
             {
                 TypeDescriptor = declarationContext.dataType().TypeDescriptor,
                 Name = declarationContext.Identifier().GetText(),
@@ -179,12 +184,14 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
                 {
                     SourceLocationHelper.SourceRange(declarationContext.Identifier().Symbol)
                 },
-                Attributes = declarationContext.Byref() != null
+                Attributes = passByRef
                     ? Definition.Attribute.Reference
                     // : Definition.Attribute.Immutable // CAIE guide actually allows param assignment (P20 8.3 Example)
                     : Definition.Attribute.None
-            }
-        ).ToArray();
+            });
+        }
+
+        return res.ToArray();
     }
 
     public override void ExitFunctionDefinition(PseudoCodeParser.FunctionDefinitionContext context)

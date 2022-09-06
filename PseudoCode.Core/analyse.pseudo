@@ -13,3 +13,17 @@ StudentID <- LEFT(RecordStr, FirstSpaceLocation)
 FirstName <- MID(RecordStr, FirstSpaceLocation, SecondSpaceLocation - FirstSpaceLocation)
 SurName <- RIGHT(RecordStr, LENGTH(RecordStr) - SecondSpaceLocation)
 OUTPUT StudentID, SurName, FirstName
+
+PROCEDURE SWAP(BYREF a : INTEGER, b : INTEGER)
+    DECLARE temp : INTEGER
+    temp <- a
+    a <- b
+    b <- temp
+ENDPROCEDURE
+
+DECLARE a : INTEGER
+DECLARE b : INTEGER
+a <- 2
+b <- 3
+CALL SWAP(a, b)
+OUTPUT a, b

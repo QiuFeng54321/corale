@@ -52,7 +52,9 @@ public record Definition(Scope ParentScope, PseudoProgram Program)
 
     public string ToMarkupString()
     {
-        return $"*{GetAttributesString()}* {TypeMarkupString()}";
+        var attrStr = GetAttributesString();
+        attrStr = string.IsNullOrEmpty(attrStr) ? "" : $"*{attrStr}* ";
+        return $"{attrStr}{TypeMarkupString()}";
     }
 
     public string GetAttributesString()
@@ -63,6 +65,7 @@ public record Definition(Scope ParentScope, PseudoProgram Program)
 
         return string.Join(" ", res);
     }
+
     public string GetAttributesStringIndented()
     {
         var res = (from Attribute flagToCheck in Enum.GetValues(typeof(Attribute))
