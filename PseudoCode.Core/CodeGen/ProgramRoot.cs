@@ -1,4 +1,4 @@
-namespace PseudoCode.Core.Parsing.AST;
+namespace PseudoCode.Core.CodeGen;
 
 public class ProgramRoot : ScopeAst
 {

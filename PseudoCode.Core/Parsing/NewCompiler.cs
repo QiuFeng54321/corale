@@ -1,26 +1,25 @@
-using Antlr4.Runtime.Tree;
-using PseudoCode.Core.Parsing.AST;
-using PseudoCode.Core.Runtime.Emit;
+global using RealNumberType = System.Double;
+using LLVMSharp.Interop;
+using PseudoCode.Core.Analyzing;
+using PseudoCode.Core.CodeGen;
 
 namespace PseudoCode.Core.Parsing;
 
 public class NewCompiler : PseudoCodeBaseListener
 {
-    public ProgramBuilder ProgramBuilder = new();
+    public Analysis Analysis;
+    public LLVMBuilderRef IRBuilder;
+    public LLVMModuleRef Module;
     public ProgramRoot Root;
-    
-    public PseudoAssembly Compile(IParseTree tree)
+
+    public void Initialize()
     {
-        ParseTreeWalker.Default.Walk(this, tree);
-        return ProgramBuilder.Build();
+        Root = new ProgramRoot();
+        Analysis = new Analysis();
+        Module = LLVMModuleRef.CreateWithName("Module");
+        IRBuilder = Module.Context.CreateBuilder();
     }
 
-    public PseudoAssembly Test()
-    {
-        var mainBlock = ProgramBuilder.MakeBlock(ProgramBuilder.LabelManager.MakeLabel("Start"));
-        mainBlock.
-        return ProgramBuilder.Build();
-    }
 
     // public override void ExitAtom(PseudoCodeParser.AtomContext context)
     // {

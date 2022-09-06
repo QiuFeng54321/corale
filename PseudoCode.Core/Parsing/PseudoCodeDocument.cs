@@ -15,7 +15,7 @@ public static class PseudoCodeDocument
         return parser;
     }
 
-    public static void AddErrorListener(PseudoCodeParser parser, PseudoCodeCompiler compiler)
+    public static void AddErrorListener(PseudoCodeParser parser, NewCompiler compiler)
     {
         parser.RemoveErrorListeners();
         parser.AddErrorListener(new PseudoCodeErrorListener(compiler));
