@@ -4,6 +4,7 @@ DECLARE FirstName : STRING
 DECLARE SurName : STRING
 DECLARE FirstSpaceLocation : INTEGER
 DECLARE SecondSpaceLocation : INTEGER
+OUTPUT RIGHT("Hello", 5)
 OUTPUT "<StudentID> <space> <FirstName> <space> <SurName> :"
 INPUT RecordStr
 FirstSpaceLocation <- FIND(RecordStr, ' ')

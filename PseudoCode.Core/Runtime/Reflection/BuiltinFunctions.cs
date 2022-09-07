@@ -23,22 +23,23 @@ public static class BuiltinFunctions
     [BuiltinNativeFunction("RIGHT")]
     public static string Right(string thisString, int x)
     {
-        if (x < 0 || x > thisString.Length)
-            throw new OutOfBoundsError($"Cannot take substring [^{x}..] of \"{thisString}\": Length of string is {thisString.Length}", null);
+        if (x < 1 || x > thisString.Length)
+            throw new OutOfBoundsError(
+                $"Cannot take substring [^{x}..] of \"{thisString}\": Length of string is {thisString.Length}", null);
 
         return thisString[^x..];
     }
 
     [Documentation("Returns a string containing `x` characters from the start of the source string")]
     [BuiltinNativeFunction("LEFT")]
-    public static string Left(string str, int x)
+    public static string Left(string thisString, int x)
     {
-        if (x < 0 || x > str.Length)
+        if (x < 1 || x > thisString.Length)
             throw new OutOfBoundsError(
-                $"Cannot take substring [..{x}] of \"{str}\": Length of string is {str.Length}",
+                $"Cannot take substring [..{x}] of \"{thisString}\": Length of string is {thisString.Length}",
                 null);
 
-        return str[..x];
+        return thisString[..x];
     }
 
     [Documentation("Returns the length of the string")]
@@ -59,7 +60,7 @@ public static class BuiltinFunctions
     [BuiltinNativeFunction("MID")]
     public static string Mid(string thisString, int index, int length)
     {
-        if (index < 0 || index >= thisString.Length || length < 0 || index + length >= thisString.Length)
+        if (index < 1 || index > thisString.Length || length < 1 || index + length - 1 > thisString.Length)
             throw new OutOfBoundsError(
                 $"Cannot take substring [{index}..{index + length}] of \"{thisString}\": Length of string is {thisString.Length}",
                 null);
@@ -84,7 +85,7 @@ public static class BuiltinFunctions
     [BuiltinNativeFunction("TO_UPPER")]
     public static string ToUpper(string str) => str.ToUpper();
 
-    
+
     [Documentation("Turns all the characters in the string into lower case.\n`\"aBcD\" -> \"abcd\"`")]
     [BuiltinNativeFunction("TO_LOWER")]
     public static string ToLower(string str) => str.ToLower();

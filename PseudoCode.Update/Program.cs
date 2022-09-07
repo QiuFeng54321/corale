@@ -9,6 +9,8 @@ namespace PseudoCode.Update;
 
 public class Program
 {
+    public const string PackageName = "PseudoCodePackage.pkg";
+    public const string VsixName = "williamqiufeng.caie-pseudocode";
     public static readonly HttpClient HttpClient = new();
 
     public static readonly JsonSerializer JsonSerializer = new()
@@ -19,8 +21,7 @@ public class Program
         }
     };
 
-    public const string PackageName = "PseudoCodePackage.pkg";
-    public const string VsixName = "williamqiufeng.caie-pseudocode";
+    public static Version CurrentVersion = typeof(PseudoProgram).Assembly.GetName().Version;
 
     public static async Task<bool> DownloadAssetAsync(IEnumerable<ReleaseObject> objs, string s)
     {
@@ -31,8 +32,8 @@ public class Program
         }
 
         var latestVersion = Version.Parse(obj.TagName);
-        Console.WriteLine($"Current version of {s} is {PseudoProgram.Version}, Latest version is {latestVersion}");
-        if (latestVersion <= PseudoProgram.Version)
+        Console.WriteLine($"Current version of {s} is {CurrentVersion}, Latest version is {latestVersion}");
+        if (latestVersion <= CurrentVersion)
         {
             Console.WriteLine("Current version is already the latest!");
             return false;
@@ -45,7 +46,7 @@ public class Program
             // Environment.Exit(-1);
             return false;
         }
-        
+
         Console.WriteLine($"Downloading from url \"{asset.BrowserDownloadUrl}\"");
         var response = await HttpClient.GetStreamAsync(asset.BrowserDownloadUrl);
         await response.CopyToAsync(File.Create(s));
@@ -60,7 +61,7 @@ public class Program
                 "https://gitee.com/api/v5/repos/williamcraft/pseudocode-releases/releases?page=1&per_page=20&direction=desc");
         // Console.WriteLine(resultStr);
         var resultObjs = JsonSerializer.Deserialize<ReleaseObject[]>(new JsonTextReader(new StringReader(resultStr)));
-        
+
         if (await DownloadAssetAsync(resultObjs, PackageName))
         {
             var p = new Process
@@ -75,6 +76,7 @@ public class Program
             p.Start();
             await p.WaitForExitAsync();
         }
+
         var vsixProcess = new Process
         {
             StartInfo = new ProcessStartInfo
