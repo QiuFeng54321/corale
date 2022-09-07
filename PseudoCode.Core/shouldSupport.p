@@ -11,7 +11,7 @@ ENDCLASS
 
 // Actual array
 // Uses Generic (Actually template), Extern functions, pointers, Custom operators
-CLASS ARRAY<T>
+CLASS __ARRAY<T>
     Internal : ^T
     Dimensions : ^RANGE
     Length : INTEGER
@@ -25,9 +25,7 @@ CLASS ARRAY<T>
         Internal <- __malloc<T>(Total)
     ENDPROCEDURE
     PUBLIC FUNCTION OperatorArrayAccess(indices : ^RANGE, dimCount : INTEGER) RETURNS T
-        DECLARE resIndex : INTEGER
-        DECLARE i : INTEGER
-        DECLARE size : INTEGER
+        DECLARE resIndex, i, size : INTEGER
         resIndex <- 0
         size <- 1
         FOR i <- dimCount - 1 TO 0 STEP -1

@@ -90,7 +90,7 @@ smallStatement
  | callStatement
  ;
 assignmentStatement: expression AssignmentNotation expression;
-declarationStatement: Declare Identifier Colon dataType;
+declarationStatement: Declare identifierList Colon dataType;
 constantStatement: Constant Identifier Equal expression;
 ioStatement: IoKeyword tuple;
 returnStatement: Return expression;
@@ -111,6 +111,7 @@ compoundStatement
  | whileStatement
  | forStatement
  | repeatStatement
+ | externFunctionDefinition
  | procedureDefinition
  | functionDefinition
  | typeDefinition
@@ -136,25 +137,30 @@ caseBody: INDENT caseBranch+ DEDENT;
 
 valueRange: from=scopedExpression To to=scopedExpression;
 
-procedureDefinition: Procedure identifierWithNew argumentsDeclaration? indentedBlock Endprocedure;
-functionDefinition: Function Identifier argumentsDeclaration? Returns dataType indentedBlock Endfunction;
+externFunctionDefinition: Extern Function Identifier genericDeclaration? argumentsDeclaration? (Returns dataType);
+procedureDefinition: Procedure identifierWithNew genericDeclaration? argumentsDeclaration? indentedBlock Endprocedure;
+functionDefinition: Function Identifier genericDeclaration? argumentsDeclaration? Returns dataType indentedBlock Endfunction;
 argumentsDeclaration: OpenParen (argumentDeclaration (Comma argumentDeclaration)*)? CloseParen;
 argumentDeclaration: (Byval | Byref)? Identifier Colon dataType;
+genericUtilisation: Smaller dataTypeList Greater;
+genericDeclaration: Smaller identifierList Greater;
 tuple: expression (Comma expression)*;
+dataTypeList: dataType (Comma dataType)*;
+identifierList: Identifier (Comma Identifier)*;
 
 enumDefinition: Type name=Identifier Equal OpenParen enumBody CloseParen;
 enumBody: Identifier (Comma Identifier)*;
 typeAliasDefinition: Type Identifier Equal dataType;
-typeDefinition: Type Identifier typeBody Endtype;
+typeDefinition: Type Identifier genericDeclaration? typeBody Endtype;
 typeBody: INDENT typeChild+ DEDENT;
 typeChild
  : declarationStatement
  | NL
  ;
  
-classDefinition: Class className=Identifier (Inherits inheritClass=Identifier)? classBody Endclass;
+classDefinition: Class className=Identifier genericDeclaration? (Inherits modularDataType)? classBody Endclass;
 classBody: INDENT (classDataMember | classMethod | assignmentStatement | NL)+ DEDENT;
-classDataMember: accessLevel? Identifier Colon dataType;
+classDataMember: accessLevel? identifierList Colon dataType;
 classMethod: accessLevel? (procedureDefinition | functionDefinition);
 accessLevel: Public | Private;
 
@@ -187,7 +193,7 @@ logicExpression locals [bool IsUnary, PseudoOperator Operator]
 // : rvalue ('**' factor)?
 // ;
 arithmeticExpression locals [bool IsUnary, PseudoOperator Operator]
- : New Identifier arguments
+ : New modularDataType arguments
  | Identifier {$IsUnary = true;}
  | atom {$IsUnary = true;}
  | arithmeticExpression Dot Identifier
@@ -248,7 +254,12 @@ dataType locals [ITypeDescriptor TypeDescriptor]
  | Caret dataType
  | basicDataType
  ;
-basicDataType : Typename | Identifier;
+basicDataType : Typename | modularDataType;
+modularDataType
+ : modularDataType genericUtilisation
+ | modularDataType Dot Identifier
+ | Identifier
+ ;
  
 arrayRange
  : s=expression Colon e=expression
@@ -333,6 +344,7 @@ Procedure : 'PROCEDURE';
 Endprocedure : 'ENDPROCEDURE';
 
 Call : 'CALL';
+Extern : 'EXTERN';
 Function : 'FUNCTION';
 Endfunction : 'ENDFUNCTION';
 Byval : 'BYVAL';
