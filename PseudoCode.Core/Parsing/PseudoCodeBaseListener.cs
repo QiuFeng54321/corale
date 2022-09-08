@@ -23,7 +23,6 @@
 using PseudoCode.Core.Runtime;
 using Range = PseudoCode.Core.Runtime.Range;
 using System.Globalization;
-using PseudoCode.Core.Runtime.Types.Descriptor;
 using PseudoCode.Core.Runtime.Types;
 
 
@@ -331,6 +330,18 @@ public partial class PseudoCodeBaseListener : IPseudoCodeListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitValueRange([NotNull] PseudoCodeParser.ValueRangeContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="PseudoCodeParser.externFunctionDefinition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterExternFunctionDefinition([NotNull] PseudoCodeParser.ExternFunctionDefinitionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="PseudoCodeParser.externFunctionDefinition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitExternFunctionDefinition([NotNull] PseudoCodeParser.ExternFunctionDefinitionContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="PseudoCodeParser.procedureDefinition"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -379,6 +390,30 @@ public partial class PseudoCodeBaseListener : IPseudoCodeListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitArgumentDeclaration([NotNull] PseudoCodeParser.ArgumentDeclarationContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="PseudoCodeParser.genericUtilisation"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterGenericUtilisation([NotNull] PseudoCodeParser.GenericUtilisationContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="PseudoCodeParser.genericUtilisation"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitGenericUtilisation([NotNull] PseudoCodeParser.GenericUtilisationContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="PseudoCodeParser.genericDeclaration"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterGenericDeclaration([NotNull] PseudoCodeParser.GenericDeclarationContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="PseudoCodeParser.genericDeclaration"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitGenericDeclaration([NotNull] PseudoCodeParser.GenericDeclarationContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="PseudoCodeParser.tuple"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -390,6 +425,30 @@ public partial class PseudoCodeBaseListener : IPseudoCodeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitTuple([NotNull] PseudoCodeParser.TupleContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="PseudoCodeParser.dataTypeList"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterDataTypeList([NotNull] PseudoCodeParser.DataTypeListContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="PseudoCodeParser.dataTypeList"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitDataTypeList([NotNull] PseudoCodeParser.DataTypeListContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="PseudoCodeParser.identifierList"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterIdentifierList([NotNull] PseudoCodeParser.IdentifierListContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="PseudoCodeParser.identifierList"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitIdentifierList([NotNull] PseudoCodeParser.IdentifierListContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="PseudoCodeParser.enumDefinition"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -606,6 +665,18 @@ public partial class PseudoCodeBaseListener : IPseudoCodeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitBasicDataType([NotNull] PseudoCodeParser.BasicDataTypeContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="PseudoCodeParser.modularDataType"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterModularDataType([NotNull] PseudoCodeParser.ModularDataTypeContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="PseudoCodeParser.modularDataType"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitModularDataType([NotNull] PseudoCodeParser.ModularDataTypeContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="PseudoCodeParser.arrayRange"/>.
 	/// <para>The default implementation does nothing.</para>

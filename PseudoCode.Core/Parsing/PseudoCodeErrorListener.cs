@@ -18,7 +18,7 @@ public class PseudoCodeErrorListener : BaseErrorListener
     {
         // base.SyntaxError(output, recognizer, offendingSymbol, line, charPositionInLine, msg, e);
         output.WriteLine($"Syntax error: {msg} {offendingSymbol} {line}:{charPositionInLine} {e}");
-        PseudoCodeCompiler.Analysis.Feedbacks.Add(new Feedback
+        PseudoCodeCompiler.Context.Analysis.Feedbacks.Add(new Feedback
         {
             Message = $"Syntax error: {msg}",
             Severity = Feedback.SeverityType.Error,

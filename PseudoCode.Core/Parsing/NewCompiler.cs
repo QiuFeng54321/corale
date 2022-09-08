@@ -1,26 +1,22 @@
 global using RealNumberType = System.Double;
-using LLVMSharp.Interop;
-using PseudoCode.Core.Analyzing;
-using PseudoCode.Core.CodeGen;
+using Antlr4.Runtime.Tree;
 
 namespace PseudoCode.Core.Parsing;
 
 public class NewCompiler : PseudoCodeBaseListener
 {
-    public Analysis Analysis;
-    public LLVMBuilderRef IRBuilder;
-    public LLVMModuleRef Module;
-    public ProgramRoot Root;
+    public CodeGenContext Context;
 
     public void Initialize()
     {
-        Root = new ProgramRoot();
-        Analysis = new Analysis();
-        Module = LLVMModuleRef.CreateWithName("Module");
-        IRBuilder = Module.Context.CreateBuilder();
+        Context = new CodeGenContext();
     }
 
 
+    public void Compile(IParseTree tree)
+    {
+        ParseTreeWalker.Default.Walk(this, tree);
+    }
     // public override void ExitAtom(PseudoCodeParser.AtomContext context)
     // {
     //     base.ExitAtom(context);

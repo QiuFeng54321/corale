@@ -1,7 +1,4 @@
 using PseudoCode.Core.Runtime.Errors;
-using PseudoCode.Core.Runtime.Instances;
-using PseudoCode.Core.Runtime.Operations;
-using Type = PseudoCode.Core.Runtime.Types.Type;
 
 namespace PseudoCode.Core.Runtime.Reflection;
 
@@ -9,20 +6,21 @@ public static class BuiltinFunctions
 {
     public static Random Random = new();
 
-    [BuiltinFunction("EOF")]
-    [ParamType("path", "STRING")]
-    [ReturnType("BOOLEAN")]
-    public static Instance Eof(Scope parentScope, PseudoProgram program, Instance[] arguments)
-    {
-        var path = arguments[0].Get<string>();
-        return parentScope.FindDefinition(Type.BooleanId).Type.Instance(program.OpenFiles[path].Eof());
-    }
+    // [BuiltinFunction("EOF")]
+    // [ParamType("path", "STRING")]
+    // [ReturnType("BOOLEAN")]
+    // public static Instance Eof(Scope parentScope, PseudoProgram program, Instance[] arguments)
+    // {
+    //     var path = arguments[0].Get<string>();
+    //     return parentScope.FindDefinition(Type.BooleanId).Type.Instance(program.OpenFiles[path].Eof());
+    // }
 
     [BuiltinNativeFunction("RIGHT")]
     public static string Right(string thisString, int x)
     {
         if (x < 0 || x > thisString.Length)
-            throw new OutOfBoundsError($"Cannot take substring [^{x}..] of \"{thisString}\": Length of string is {thisString.Length}", null);
+            throw new OutOfBoundsError(
+                $"Cannot take substring [^{x}..] of \"{thisString}\": Length of string is {thisString.Length}");
 
         return thisString[^x..];
     }
@@ -32,8 +30,8 @@ public static class BuiltinFunctions
     {
         if (index < 0 || index > str.Length)
             throw new OutOfBoundsError(
-                $"Cannot take substring [..{index}] of \"{str}\": Length of string is {str.Length}",
-                null);
+                $"Cannot take substring [..{index}] of \"{str}\": Length of string is {str.Length}"
+            );
 
         return str[..index];
     }

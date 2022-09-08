@@ -64,7 +64,6 @@ public override IToken NextToken()
 using PseudoCode.Core.Runtime;
 using Range = PseudoCode.Core.Runtime.Range;
 using System.Globalization;
-using PseudoCode.Core.Runtime.Types.Descriptor;
 using PseudoCode.Core.Runtime.Types;
 }
 
@@ -249,7 +248,7 @@ atom locals [string AtomType, object Value]
  | array {$AtomType = "ARRAY";}
  ;
 
-dataType locals [ITypeDescriptor TypeDescriptor]
+dataType
  : Array OpenBrack arrayRange (Comma arrayRange)* CloseBrack Of dataType
  | Caret dataType
  | basicDataType
