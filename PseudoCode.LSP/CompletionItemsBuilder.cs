@@ -1,8 +1,7 @@
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
-using OmniSharp.Extensions.LanguageServer.Protocol.Serialization.Converters;
 using PseudoCode.Core.Analyzing;
+using PseudoCode.Core.CodeGen;
 using PseudoCode.Core.Runtime;
-using PseudoCode.Core.Runtime.Types;
 
 namespace PseudoCode.LSP;
 
@@ -41,7 +40,9 @@ public class CompletionItemsBuilder
             Items.Add(MakeCompletionItem(
                 variableInfo.Attributes.HasFlag(DefinitionAttribute.Type)
                     ? CompletionItemKind.Class
-                    : variableInfo.Type is EnumType ? CompletionItemKind.EnumMember : CompletionItemKind.Variable,
+                    : variableInfo.Type is EnumType
+                        ? CompletionItemKind.EnumMember
+                        : CompletionItemKind.Variable,
                 variableInfo.Name,
                 variableInfo.Name,
                 variableInfo.ToString()));

@@ -30,7 +30,7 @@ public class Type
     ///     The generic type will be copied, and this field will be filled with actual type specified (in that case
     ///     Types.Integer)
     /// </summary>
-    public Dictionary<string, Type> GenericArguments;
+    public List<Symbol> GenericArguments;
 
     /// <summary>
     ///     If the type is being made from a generic type, this field stores which generic type it is made from
@@ -111,18 +111,29 @@ public class Type
     /// <summary>
     ///     Fill the generic arguments (kinda like making types from template)
     /// </summary>
+    /// <param name="target">Type to fill (cloned)</param>
+    /// <param name="genericParent">Type to fill from</param>
     /// <param name="genericArguments">The arguments to fill</param>
     /// <returns>The cloned type with generic types and fields filled in</returns>
-    public Type FillGeneric(Dictionary<string, Type> genericArguments)
+    public static void FillGeneric(Type target, Type genericParent, List<Symbol> genericArguments)
     {
-        var res = Clone();
-        if (GenericMembers == null) return res; // Nothing to fill
-        foreach (var member in GenericMembers) member.Type = genericArguments[member.Type.TypeName];
+        foreach (var member in genericParent.GenericMembers)
+            member.Type = genericArguments.FirstOrDefault(g => g.Name == member.Type.TypeName)?.Type;
 
-        res.IsGeneric = false;
-        res.GenericArguments = null;
-        res.GenericMembers = null;
-        res.GenericFrom = this;
-        return res;
+        target.IsGeneric = false;
+        target.GenericArguments = null;
+        target.GenericMembers = null;
+        target.GenericFrom = genericParent;
+    }
+
+    public static string GenerateFilledGenericTypeName(Type type, IEnumerable<Symbol> genericArguments)
+    {
+        return $"{type.TypeName}<{string.Join(",", genericArguments.Select(a => a.Type.TypeName))}>";
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (obj is not Type t) return false;
+        return t.TypeName == TypeName && t.Kind == Kind;
     }
 }

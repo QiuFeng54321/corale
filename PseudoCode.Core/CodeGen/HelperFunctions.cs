@@ -11,4 +11,9 @@ public static class HelperFunctions
     {
         return source.ToDictionary(p => p.Key, p => p.Value.Clone());
     }
+
+    public static List<Symbol> Clone(this IEnumerable<Symbol> source)
+    {
+        return source.Select(s => s.Clone()).ToList();
+    }
 }

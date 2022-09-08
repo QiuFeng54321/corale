@@ -1,11 +1,10 @@
-namespace PseudoCode.Core.Runtime;
+namespace PseudoCode.Core.CodeGen;
 
 [Flags]
 public enum DefinitionAttribute
 {
     None,
-    Type = 1, // Type definition
-    Const = 1 << 1, // Immediate value
-    Immutable = 1 << 2, // Constant
-    Reference = 1 << 3 // Variable
+    Const = 1 << 0, // Immediate value
+    Immutable = 1 << 1, // Constant
+    Reference = 1 << 2 // Variable
 }
