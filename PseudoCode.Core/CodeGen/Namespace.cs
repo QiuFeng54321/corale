@@ -32,6 +32,17 @@ public class Namespace
         Symbols.Add(name, symbol);
     }
 
+    public Namespace AddNamespace(string name)
+    {
+        var ns = new Namespace
+        {
+            Name = name,
+            Parent = this
+        };
+        ChildrenNamespaces.Add(name, ns);
+        return ns;
+    }
+
     public override string ToString()
     {
         return Parent == null ? "" : $"{Parent}.{Name}";

@@ -87,6 +87,8 @@ smallStatement
  | fileStatement
  | returnStatement
  | callStatement
+ | namespaceStatement
+ | useNamespaceStatement
  ;
 assignmentStatement: expression AssignmentNotation expression;
 declarationStatement: Declare identifierList Colon dataType;
@@ -126,6 +128,8 @@ ifStatement locals [bool HasElse]: If scopedExpression Then indentedBlock (Else 
 forStatement locals [bool HasStep]: For expression AssignmentNotation expression To scopedExpression (Step scopedExpression {$HasStep = true;})? indentedBlock Next scopedExpression;
 whileStatement: While scopedExpression indentedBlock Endwhile;
 repeatStatement: Repeat indentedBlock Until scopedExpression;
+namespaceStatement: Namespace typeLookup (indentedBlock EndNamespace)?;
+useNamespaceStatement: Use Namespace typeLookup;
 
 caseStatement: Case expression Of caseBody Endcase;
 caseBranch
@@ -201,7 +205,7 @@ arithmeticExpression locals [bool IsUnary, PseudoOperator Operator]
  | op=Caret operand=arithmeticExpression {$IsUnary = true; $Operator = PseudoOperator.GetPointer;}
  | operand=arithmeticExpression op=Caret {$IsUnary = true; $Operator = PseudoOperator.GetPointed;}
  | <assoc=right> operand1=arithmeticExpression op=Pow operand2=arithmeticExpression {$Operator = PseudoOperator.Pow;}
- | op=Subtract operand=arithmeticExpression {$IsUnary = true; $Operator = PseudoOperator.Subtract;}
+ | op=Subtract operand=arithmeticExpression {$IsUnary = true; $Operator = PseudoOperator.Negative;}
  | operand1=arithmeticExpression op=Divide operand2=arithmeticExpression {$Operator = PseudoOperator.Divide;}
  | operand1=arithmeticExpression op=IntDivide operand2=arithmeticExpression {$Operator = PseudoOperator.IntDivide;}
  | operand1=arithmeticExpression op=Multiply operand2=arithmeticExpression {$Operator = PseudoOperator.Multiply;}
@@ -254,9 +258,9 @@ dataType
  | basicDataType
  ;
 basicDataType : Typename | modularDataType;
-modularDataType
- : modularDataType genericUtilisation
- | modularDataType Dot Identifier
+modularDataType : typeLookup genericUtilisation?;
+ typeLookup
+ : typeLookup Dot Identifier
  | Identifier
  ;
  
@@ -372,6 +376,10 @@ Inherits : 'INHERITS';
 Private : 'PRIVATE';
 Public : 'PUBLIC';
 New : 'NEW';
+
+Namespace : 'NAMESPACE';
+EndNamespace : 'ENDNAMESPACE';
+Use : 'USE';
 
 // Logic
 And : 'AND';

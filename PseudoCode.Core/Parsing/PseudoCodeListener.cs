@@ -237,6 +237,26 @@ public interface IPseudoCodeListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitRepeatStatement([NotNull] PseudoCodeParser.RepeatStatementContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="PseudoCodeParser.namespaceStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterNamespaceStatement([NotNull] PseudoCodeParser.NamespaceStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="PseudoCodeParser.namespaceStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitNamespaceStatement([NotNull] PseudoCodeParser.NamespaceStatementContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="PseudoCodeParser.useNamespaceStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterUseNamespaceStatement([NotNull] PseudoCodeParser.UseNamespaceStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="PseudoCodeParser.useNamespaceStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitUseNamespaceStatement([NotNull] PseudoCodeParser.UseNamespaceStatementContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="PseudoCodeParser.caseStatement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -566,6 +586,16 @@ public interface IPseudoCodeListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitModularDataType([NotNull] PseudoCodeParser.ModularDataTypeContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="PseudoCodeParser.typeLookup"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterTypeLookup([NotNull] PseudoCodeParser.TypeLookupContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="PseudoCodeParser.typeLookup"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitTypeLookup([NotNull] PseudoCodeParser.TypeLookupContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="PseudoCodeParser.arrayRange"/>.
 	/// </summary>
