@@ -1,3 +1,5 @@
+using LLVMSharp.Interop;
+
 namespace PseudoCode.Core.CodeGen;
 
 public class Symbol
@@ -7,6 +9,7 @@ public class Symbol
     public string Name;
     public Namespace Namespace;
     public Type Type;
+    public LLVMValueRef ValueRef;
 
     public Symbol(string name, bool isType, Type type, Namespace ns = default,
         DefinitionAttribute definitionAttribute = DefinitionAttribute.None)

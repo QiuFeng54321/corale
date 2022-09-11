@@ -1,8 +1,7 @@
 using LLVMSharp.Interop;
 using PseudoCode.Core.Analyzing;
-using PseudoCode.Core.CodeGen;
 
-namespace PseudoCode.Core.Parsing;
+namespace PseudoCode.Core.CodeGen;
 
 /// <summary>
 /// </summary>

@@ -1,5 +1,6 @@
 global using RealNumberType = System.Double;
 using Antlr4.Runtime.Tree;
+using PseudoCode.Core.CodeGen;
 
 namespace PseudoCode.Core.Parsing;
 
