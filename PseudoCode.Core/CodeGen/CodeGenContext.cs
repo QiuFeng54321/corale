@@ -8,17 +8,20 @@ namespace PseudoCode.Core.CodeGen;
 public class CodeGenContext
 {
     public Analysis Analysis;
-    public LLVMBuilderRef IRBuilder;
+    public LLVMBuilderRef Builder;
     public LLVMModuleRef Module;
     public NameGenerator NameGenerator;
     public ProgramRoot Root;
 
     public CodeGenContext(string moduleName = "Module")
     {
-        Root = new ProgramRoot();
+        Root = new ProgramRoot
+        {
+            Namespace = new Namespace("global", null)
+        };
         Analysis = new Analysis();
         Module = LLVMModuleRef.CreateWithName(moduleName);
-        IRBuilder = Module.Context.CreateBuilder();
+        Builder = Module.Context.CreateBuilder();
         NameGenerator = new NameGenerator();
     }
 }

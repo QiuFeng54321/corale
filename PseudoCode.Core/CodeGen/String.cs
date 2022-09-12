@@ -1,6 +1,5 @@
 using System.Runtime.InteropServices;
 using LLVMSharp.Interop;
-using PseudoCode.Core.Parsing;
 
 namespace PseudoCode.Core.CodeGen;
 
@@ -13,7 +12,7 @@ public class String : Expression
         var name = ctx.NameGenerator.Request(ReservedNames.String);
         unsafe
         {
-            return LLVM.BuildGlobalStringPtr(ctx.IRBuilder, ToSByte(Value), ToSByte(name));
+            return LLVM.BuildGlobalStringPtr(ctx.Builder, ToSByte(Value), ToSByte(name));
         }
     }
 

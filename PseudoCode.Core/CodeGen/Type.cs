@@ -82,6 +82,18 @@ public class Type
         throw new NotImplementedException();
     }
 
+    public static Type MakePrimitiveType(string name, System.Type type)
+    {
+        LLVMTypeRef typeRef = null;
+        if (type == typeof(int)) typeRef = LLVMTypeRef.Int32;
+
+        return new Type
+        {
+            _llvmTypeRef = typeRef,
+            TypeName = name
+        };
+    }
+
     public static Type MakeGenericPlaceholder(string name)
     {
         return new Type

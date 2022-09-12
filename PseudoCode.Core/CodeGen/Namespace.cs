@@ -22,23 +22,25 @@ public class Namespace
     /// </summary>
     public Dictionary<string, Symbol> Symbols = new();
 
+    public Namespace(string name, Namespace parent)
+    {
+        Name = name;
+        Parent = parent;
+    }
+
     public bool TryGetSymbol(string name, out Symbol result)
     {
         return Symbols.TryGetValue(name, out result);
     }
 
-    public void AddSymbol(string name, Symbol symbol)
+    public void AddSymbol(Symbol symbol)
     {
-        Symbols.Add(name, symbol);
+        Symbols.Add(symbol.Name, symbol);
     }
 
     public Namespace AddNamespace(string name)
     {
-        var ns = new Namespace
-        {
-            Name = name,
-            Parent = this
-        };
+        var ns = new Namespace(name, this);
         ChildrenNamespaces.Add(name, ns);
         return ns;
     }

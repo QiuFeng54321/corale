@@ -255,11 +255,10 @@ atom locals [string AtomType, object Value]
 dataType
  : Array OpenBrack arrayRange (Comma arrayRange)* CloseBrack Of dataType
  | Caret dataType
- | basicDataType
+ | modularDataType
  ;
-basicDataType : Typename | modularDataType;
 modularDataType : typeLookup genericUtilisation?;
- typeLookup
+typeLookup
  : typeLookup Dot Identifier
  | Identifier
  ;
@@ -320,7 +319,6 @@ Newline
 Declare : 'DECLARE';
 Constant : 'CONSTANT';
 IoKeyword : 'OUTPUT' | 'INPUT';
-Typename : 'INTEGER' | 'STRING' | 'REAL' | 'CHAR' | 'BOOLEAN' | 'DATE';
 Array : 'ARRAY';
 Case : 'CASE';
 Of : 'OF';

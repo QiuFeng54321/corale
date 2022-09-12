@@ -35,7 +35,7 @@ public class Symbol
         var res = Clone();
         Type.FillGeneric(res.Type, Type, genericArguments);
         res.Type.TypeName = typeName;
-        Namespace.AddSymbol(typeName, res);
+        Namespace.AddSymbol(res);
         return res;
     }
 

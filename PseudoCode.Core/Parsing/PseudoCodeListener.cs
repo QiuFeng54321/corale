@@ -567,16 +567,6 @@ public interface IPseudoCodeListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitDataType([NotNull] PseudoCodeParser.DataTypeContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="PseudoCodeParser.basicDataType"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterBasicDataType([NotNull] PseudoCodeParser.BasicDataTypeContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="PseudoCodeParser.basicDataType"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitBasicDataType([NotNull] PseudoCodeParser.BasicDataTypeContext context);
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="PseudoCodeParser.modularDataType"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

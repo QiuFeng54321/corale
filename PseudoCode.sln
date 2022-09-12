@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PseudoCode.DAP", "PseudoCod
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PseudoCode.Update", "PseudoCode.Update\PseudoCode.Update.csproj", "{7497C7DB-A02F-476E-B8B1-524E4220A3E9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PseudoCode.TestLLVM", "PseudoCode.TestLLVM\PseudoCode.TestLLVM.csproj", "{8C88D9D6-24CC-49FC-9FA1-2924E13EA748}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +44,9 @@ Global
 		{7497C7DB-A02F-476E-B8B1-524E4220A3E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7497C7DB-A02F-476E-B8B1-524E4220A3E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7497C7DB-A02F-476E-B8B1-524E4220A3E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C88D9D6-24CC-49FC-9FA1-2924E13EA748}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C88D9D6-24CC-49FC-9FA1-2924E13EA748}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C88D9D6-24CC-49FC-9FA1-2924E13EA748}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C88D9D6-24CC-49FC-9FA1-2924E13EA748}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
