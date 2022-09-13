@@ -6,6 +6,6 @@ public class AssignmentStatement : Statement
 
     public override void CodeGen(CodeGenContext ctx, Block block)
     {
-        ctx.Builder.BuildStore(Value.CodeGen(ctx), Target.CodeGen(ctx));
+        ctx.Builder.BuildStore(Value.CodeGen(ctx, block).ValueRef, Target.CodeGen(ctx, block).ValueRef);
     }
 }

@@ -86,6 +86,7 @@ public class Type
     {
         LLVMTypeRef typeRef = null;
         if (type == typeof(int)) typeRef = LLVMTypeRef.Int32;
+        if (type == typeof(string)) typeRef = LLVMTypeRef.CreatePointer(LLVMTypeRef.Int8, 0);
 
         return new Type
         {

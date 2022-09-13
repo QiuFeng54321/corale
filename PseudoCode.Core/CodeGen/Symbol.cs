@@ -1,4 +1,5 @@
 using LLVMSharp.Interop;
+using PseudoCode.Core.Runtime.Errors;
 
 namespace PseudoCode.Core.CodeGen;
 
@@ -21,6 +22,26 @@ public class Symbol
         Namespace = ns;
     }
 
+    public static Symbol MakeTemp(string nameTemplate, Type type, CodeGenContext ctx, LLVMValueRef value)
+    {
+        var sym = new Symbol(ctx.NameGenerator.Request(nameTemplate), false, type)
+        {
+            ValueRef = value
+        };
+        return sym;
+    }
+
+    public static Symbol MakeTemp(string nameTemplate, string typeName, CodeGenContext ctx, LLVMValueRef value)
+    {
+        if (!ctx.Root.Namespace.TryGetSymbol(typeName, out var sym)) throw new InvalidTypeError(typeName);
+
+        return MakeTemp(nameTemplate, sym.Type, ctx, value);
+    }
+
+    public static Symbol MakePrimitiveType(string typeName, System.Type type)
+    {
+        return new Symbol(typeName, true, Type.MakePrimitiveType(typeName, type));
+    }
 
     /// <summary>
     ///     Fill the generic arguments (kinda like making types from template)

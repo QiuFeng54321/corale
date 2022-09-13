@@ -1,8 +1,8 @@
 global using RealNumberType = System.Double;
 using Antlr4.Runtime.Tree;
+using PseudoCode.Core.Analyzing;
 using PseudoCode.Core.CodeGen;
 using PseudoCode.Core.Runtime.Errors;
-using Type = PseudoCode.Core.CodeGen.Type;
 
 namespace PseudoCode.Core.Parsing;
 
@@ -15,8 +15,8 @@ public class NewCompiler : PseudoCodeBaseListener
     {
         Context = new CodeGenContext();
         CurrentBlock = Context.Root;
-        CurrentBlock.Namespace.AddSymbol(new Symbol("STRING", true, Type.MakePrimitiveType("STRING", typeof(string))));
-        CurrentBlock.Namespace.AddSymbol(new Symbol("INTEGER", true, Type.MakePrimitiveType("INTEGER", typeof(int))));
+        CurrentBlock.Namespace.AddSymbol(Symbol.MakePrimitiveType("__CSTRING", typeof(string)));
+        CurrentBlock.Namespace.AddSymbol(Symbol.MakePrimitiveType("INTEGER", typeof(int)));
     }
 
 
@@ -59,34 +59,77 @@ public class NewCompiler : PseudoCodeBaseListener
             });
         }
     }
-    // public override void ExitAtom(PseudoCodeParser.AtomContext context)
-    // {
-    //     base.ExitAtom(context);
-    //     if (context.AtomType == "ARRAY") return; // Let array handle on its own
-    //     var val = context.Value;
-    //     if (context.AtomType == "DATE")
-    //     {
-    //         if (DateOnly.TryParseExact(context.Date().GetText(), "dd/MM/yyyy", out var date))
-    //         {
-    //             val = date;
-    //         }
-    //         else
-    //         {
-    //             Program.AnalyserFeedbacks.Add(new Feedback
-    //             {
-    //                 Message = $"{context.Date().GetText()} cannot be converted into a date",
-    //                 Severity = Feedback.SeverityType.Error,
-    //                 SourceRange = SourceLocationHelper.SourceRange(context)
-    //             });
-    //             val = DateOnly.MinValue;
-    //         }
-    //     }
-    //
-    //     CurrentScope.AddOperation(new LoadImmediateOperation(CurrentScope, Program)
-    //     {
-    //         Intermediate = CurrentScope.FindDefinition(context.AtomType).Type.Instance(val, CurrentScope),
-    //         PoiLocation = SourceLocationHelper.SourceLocation(context),
-    //         SourceRange = SourceLocationHelper.SourceRange(context)
-    //     });
-    // }
+
+    public override void ExitArithmeticExpression(PseudoCodeParser.ArithmeticExpressionContext context)
+    {
+        base.ExitArithmeticExpression(context);
+        if (context.IsUnary)
+            if (context.Identifier() is { } id)
+                Context.ExpressionStack.Push(new LoadExpr
+                {
+                    Name = id.GetText()
+                });
+    }
+
+    public override void ExitAssignmentStatement(PseudoCodeParser.AssignmentStatementContext context)
+    {
+        base.ExitAssignmentStatement(context);
+        CurrentBlock.Statements.Add(new AssignmentStatement
+        {
+            Value = Context.ExpressionStack.Pop(),
+            Target = Context.ExpressionStack.Pop()
+        });
+    }
+
+    public override void ExitAtom(PseudoCodeParser.AtomContext context)
+    {
+        base.ExitAtom(context);
+        if (context.AtomType == "ARRAY") return; // Let array handle on its own
+        var val = context.Value;
+        if (context.AtomType == "DATE")
+        {
+            if (DateOnly.TryParseExact(context.Date().GetText(), "dd/MM/yyyy", out var date))
+            {
+                val = date;
+            }
+            else
+            {
+                Context.Analysis.Feedbacks.Add(new Feedback
+                {
+                    Message = $"{context.Date().GetText()} cannot be converted into a date",
+                    Severity = Feedback.SeverityType.Error,
+                    SourceRange = SourceLocationHelper.SourceRange(context)
+                });
+                val = DateOnly.MinValue;
+            }
+        }
+
+        switch (context.AtomType)
+        {
+            case "STRING":
+            {
+                Context.ExpressionStack.Push(new PseudoString
+                {
+                    Value = (string)val
+                });
+                break;
+            }
+            case "INTEGER":
+            {
+                Context.ExpressionStack.Push(new PseudoInteger
+                {
+                    Value = (int)val
+                });
+                break;
+            }
+            case "REAL":
+            {
+                Context.ExpressionStack.Push(new PseudoReal
+                {
+                    Value = (double)val
+                });
+                break;
+            }
+        }
+    }
 }

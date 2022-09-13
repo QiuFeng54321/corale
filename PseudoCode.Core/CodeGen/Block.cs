@@ -15,7 +15,7 @@ public class Block : AstNode
         // if (BlockRef != null) return BlockRef;
         unsafe
         {
-            BlockRef = LLVM.AppendBasicBlock(parent.BlockRef, String.ToSByte(Name));
+            BlockRef = LLVM.AppendBasicBlock(parent.BlockRef, PseudoString.ToSByte(Name));
         }
 
         ctx.Builder.PositionAtEnd(BlockRef);

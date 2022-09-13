@@ -9,6 +9,7 @@ public class CodeGenContext
 {
     public Analysis Analysis;
     public LLVMBuilderRef Builder;
+    public Stack<Expression> ExpressionStack = new();
     public LLVMModuleRef Module;
     public NameGenerator NameGenerator;
     public ProgramRoot Root;

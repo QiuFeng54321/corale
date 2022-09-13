@@ -606,13 +606,15 @@ public partial class PseudoCodeParser : Parser {
 	}
 
 	public partial class AssignmentStatementContext : ParserRuleContext {
+		public ExpressionContext l;
+		public ExpressionContext r;
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode AssignmentNotation() { return GetToken(PseudoCodeParser.AssignmentNotation, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext[] expression() {
 			return GetRuleContexts<ExpressionContext>();
 		}
 		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression(int i) {
 			return GetRuleContext<ExpressionContext>(i);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode AssignmentNotation() { return GetToken(PseudoCodeParser.AssignmentNotation, 0); }
 		public AssignmentStatementContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -638,11 +640,11 @@ public partial class PseudoCodeParser : Parser {
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 153;
-			expression();
+			_localctx.l = expression();
 			State = 154;
 			Match(AssignmentNotation);
 			State = 155;
-			expression();
+			_localctx.r = expression();
 			}
 		}
 		catch (RecognitionException re) {

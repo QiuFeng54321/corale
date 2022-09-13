@@ -36,6 +36,7 @@ public class Namespace
     public void AddSymbol(Symbol symbol)
     {
         Symbols.Add(symbol.Name, symbol);
+        symbol.Namespace = this;
     }
 
     public Namespace AddNamespace(string name)

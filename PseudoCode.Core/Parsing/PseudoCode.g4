@@ -90,7 +90,7 @@ smallStatement
  | namespaceStatement
  | useNamespaceStatement
  ;
-assignmentStatement: expression AssignmentNotation expression;
+assignmentStatement: l=expression AssignmentNotation r=expression;
 declarationStatement: Declare identifierList Colon dataType;
 constantStatement: Constant Identifier Equal expression;
 ioStatement: IoKeyword tuple;
