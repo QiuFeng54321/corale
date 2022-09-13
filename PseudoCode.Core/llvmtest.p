@@ -7,4 +7,5 @@ r1 <- 2.3
 r2 <- r1 + a
 r1 <- r2 + r1
 r2 <- b + r1
+b <- r2 DIV 4
 c <- "hello world"
