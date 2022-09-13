@@ -28,7 +28,7 @@ public class BinaryExpression : Expression
                 _ => throw new NotImplementedException()
             };
             var res = func(leftLLVMValue, rightLLVMValue, ctx.NameGenerator.Request(ReservedNames.Temp));
-            return Symbol.MakeTemp(ReservedNames.Integer, "INTEGER", ctx, res);
+            return Symbol.MakeTemp(ReservedNames.Integer, BuiltinTypes.Integer.Type, ctx, res);
         }
 
         if (Equals(left.Type, BuiltinTypes.Real.Type) || Equals(right.Type, BuiltinTypes.Real.Type))
@@ -49,7 +49,7 @@ public class BinaryExpression : Expression
                 _ => throw new NotImplementedException()
             };
             var res = func(leftLLVMValue, rightLLVMValue, ctx.NameGenerator.Request(ReservedNames.Temp));
-            return Symbol.MakeTemp(ReservedNames.Real, "REAL", ctx, res);
+            return Symbol.MakeTemp(ReservedNames.Real, BuiltinTypes.Real.Type, ctx, res);
         }
 
         throw new NotImplementedException();

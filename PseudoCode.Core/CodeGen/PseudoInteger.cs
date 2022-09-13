@@ -9,6 +9,6 @@ public class PseudoInteger : Expression
     public override Symbol CodeGen(CodeGenContext ctx, Block block)
     {
         var val = LLVMValueRef.CreateConstInt(LLVMTypeRef.Int32, (ulong)Value);
-        return Symbol.MakeTemp(ReservedNames.Integer, "INTEGER", ctx, val);
+        return Symbol.MakeTemp(ReservedNames.Integer, BuiltinTypes.Integer.Type, ctx, val);
     }
 }

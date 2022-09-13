@@ -9,6 +9,6 @@ public class PseudoReal : Expression
     public override Symbol CodeGen(CodeGenContext ctx, Block block)
     {
         var val = LLVMValueRef.CreateConstReal(LLVMTypeRef.Double, Value);
-        return Symbol.MakeTemp(ReservedNames.Real, "REAL", ctx, val);
+        return Symbol.MakeTemp(ReservedNames.Real, BuiltinTypes.Real.Type, ctx, val);
     }
 }
