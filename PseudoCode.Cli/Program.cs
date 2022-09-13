@@ -4,7 +4,9 @@ using System.Globalization;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using CommandLine;
+using LLVMSharp.Interop;
 using PseudoCode.Cli;
+using PseudoCode.Core.CodeGen;
 using PseudoCode.Core.Parsing;
 using Parser = CommandLine.Parser;
 
@@ -13,24 +15,30 @@ using Parser = CommandLine.Parser;
 
 void RunProgram(CommandLines.Options opts)
 {
-    Thread.CurrentThread.CurrentCulture = new CultureInfo(opts.Locale, false);
-    Thread.CurrentThread.CurrentUICulture = new CultureInfo(opts.Locale, false);
-    var stream = CharStreams.fromPath(opts.FilePath);
-    var parser = PseudoCodeDocument.GetParser(stream);
-    var interpreter = new NewCompiler();
-    PseudoCodeDocument.AddErrorListener(parser, interpreter);
-    IParseTree parseTree = parser.fileInput();
-    interpreter.Compile(parseTree);
-    // var analysis = new Analysis();
-    // analysis.SetProgram(program);
-    // analysis.AnalyseUnusedVariables();
-    // program.PrintAnalyzerFeedbacks(Console.Out);
-    // if (program.AnalyserFeedbacks.Any(f => f.Severity == Feedback.SeverityType.Error))
-    // {
-    //     Console.WriteLine("Program will not start because there's an error");
-    // }
-    // else
-    //     program.GlobalScope.HandledOperate();
+    unsafe
+    {
+        Thread.CurrentThread.CurrentCulture = new CultureInfo(opts.Locale, false);
+        Thread.CurrentThread.CurrentUICulture = new CultureInfo(opts.Locale, false);
+        var stream = CharStreams.fromPath(opts.FilePath);
+        var parser = PseudoCodeDocument.GetParser(stream);
+        var interpreter = new NewCompiler();
+        PseudoCodeDocument.AddErrorListener(parser, interpreter);
+        IParseTree parseTree = parser.fileInput();
+        var ctx = interpreter.Compile(parseTree);
+        var func = ctx.Module.GetNamedFunction(ReservedNames.Main);
+        var res = LLVM.VerifyFunction(func, LLVMVerifierFailureAction.LLVMPrintMessageAction);
+        ctx.Engine.RunFunction(func, Array.Empty<LLVMGenericValueRef>());
+        // var analysis = new Analysis();
+        // analysis.SetProgram(program);
+        // analysis.AnalyseUnusedVariables();
+        // program.PrintAnalyzerFeedbacks(Console.Out);
+        // if (program.AnalyserFeedbacks.Any(f => f.Severity == Feedback.SeverityType.Error))
+        // {
+        //     Console.WriteLine("Program will not start because there's an error");
+        // }
+        // else
+        //     program.GlobalScope.HandledOperate();
+    }
 }
 
 

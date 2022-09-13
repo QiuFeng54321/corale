@@ -6,6 +6,6 @@ public class DeclarationStatement : Statement
 
     public override void CodeGen(CodeGenContext ctx, Block block)
     {
-        Symbol.ValueRef = ctx.Builder.BuildAlloca(Symbol.Type.GetLLVMType(), Symbol.Name);
+        Symbol.Alloca = ctx.Builder.BuildAlloca(Symbol.Type.GetLLVMType(), Symbol.Name);
     }
 }

@@ -16,7 +16,7 @@ public class PseudoString : Expression
             val = LLVM.BuildGlobalStringPtr(ctx.Builder, ToSByte(Value), ToSByte(name));
         }
 
-        return Symbol.MakeTemp(ReservedNames.String, "__CSTRING", ctx, val);
+        return Symbol.MakeTemp(ReservedNames.String, "__CHARPTR", ctx, val);
     }
 
     public static unsafe sbyte* ToSByte(string str)

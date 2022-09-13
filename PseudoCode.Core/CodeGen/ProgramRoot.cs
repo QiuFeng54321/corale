@@ -6,6 +6,7 @@ public class ProgramRoot : Block
 {
     public LLVMBasicBlockRef GetBlock(CodeGenContext ctx)
     {
+        if (BlockRef != null) return BlockRef;
         var mainFunctionType = LLVMTypeRef.CreateFunction(LLVMTypeRef.Void, Array.Empty<LLVMTypeRef>());
         var mainFunction = ctx.Module.AddFunction(ReservedNames.Main, mainFunctionType);
         mainFunction.Linkage = LLVMLinkage.LLVMExternalLinkage;

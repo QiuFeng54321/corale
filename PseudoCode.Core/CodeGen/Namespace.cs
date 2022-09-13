@@ -5,7 +5,12 @@ public class Namespace
     /// <summary>
     ///     Member namespaces.
     /// </summary>
-    public Dictionary<string, Namespace> ChildrenNamespaces = new();
+    public readonly Dictionary<string, Namespace> ChildrenNamespaces = new();
+
+    /// <summary>
+    ///     Stores the symbols defined under this namespace
+    /// </summary>
+    public readonly Dictionary<string, Symbol> Symbols = new();
 
     /// <summary>
     ///     The name of this namespace
@@ -17,11 +22,6 @@ public class Namespace
     /// </summary>
     public Namespace Parent;
 
-    /// <summary>
-    ///     Stores the symbols defined under this namespace
-    /// </summary>
-    public Dictionary<string, Symbol> Symbols = new();
-
     public Namespace(string name, Namespace parent)
     {
         Name = name;
@@ -31,6 +31,11 @@ public class Namespace
     public bool TryGetSymbol(string name, out Symbol result)
     {
         return Symbols.TryGetValue(name, out result);
+    }
+
+    public bool TryGetNamespace(string name, out Namespace result)
+    {
+        return ChildrenNamespaces.TryGetValue(name, out result);
     }
 
     public void AddSymbol(Symbol symbol)

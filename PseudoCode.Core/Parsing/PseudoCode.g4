@@ -195,7 +195,7 @@ logicExpression locals [bool IsUnary, PseudoOperator Operator]
 //power
 // : rvalue ('**' factor)?
 // ;
-arithmeticExpression locals [bool IsUnary, PseudoOperator Operator]
+arithmeticExpression locals [bool IsUnary, PseudoOperator Operator = PseudoOperator.None]
  : New modularDataType arguments
  | Identifier {$IsUnary = true;}
  | atom {$IsUnary = true;}

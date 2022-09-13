@@ -3,6 +3,7 @@ using Antlr4.Runtime.Tree;
 using PseudoCode.Core.Analyzing;
 using PseudoCode.Core.CodeGen;
 using PseudoCode.Core.Runtime.Errors;
+using PseudoCode.Core.Runtime.Types;
 
 namespace PseudoCode.Core.Parsing;
 
@@ -15,17 +16,18 @@ public class NewCompiler : PseudoCodeBaseListener
     {
         Context = new CodeGenContext();
         CurrentBlock = Context.Root;
-        CurrentBlock.Namespace.AddSymbol(Symbol.MakePrimitiveType("__CSTRING", typeof(string)));
-        CurrentBlock.Namespace.AddSymbol(Symbol.MakePrimitiveType("INTEGER", typeof(int)));
+        BuiltinTypes.Initialize();
+        BuiltinTypes.AddBuiltinTypes(CurrentBlock);
     }
 
 
-    public void Compile(IParseTree tree)
+    public CodeGenContext Compile(IParseTree tree)
     {
         Initialize();
         ParseTreeWalker.Default.Walk(this, tree);
         var block = Context.Root.GetBlock(Context);
         Context.Module.Dump();
+        return Context;
         // var func = Context.Module.GetNamedFunction(ReservedNames.Main);
     }
 
@@ -36,14 +38,27 @@ public class NewCompiler : PseudoCodeBaseListener
 
     public Symbol GetType(PseudoCodeParser.ModularDataTypeContext context)
     {
-        return GetType(context.typeLookup());
+        var symbol = GetType(context.typeLookup()).Symbol;
+        if (context.genericUtilisation() is { } genericUtilisation)
+            symbol = symbol.FillGeneric(GetGenericParameters(genericUtilisation).ToList());
+
+        return symbol;
     }
 
-    public Symbol GetType(PseudoCodeParser.TypeLookupContext context)
+    public IEnumerable<Symbol> GetGenericParameters(PseudoCodeParser.GenericUtilisationContext context)
     {
-        if (!CurrentBlock.Namespace.TryGetSymbol(context.Identifier().GetText(), out var sym))
-            throw new InvalidAccessError($"{context.Identifier().GetText()}");
-        return sym;
+        return context.dataTypeList().dataType().Select(GetType);
+    }
+
+    public SymbolOrNamespace GetType(PseudoCodeParser.TypeLookupContext context)
+    {
+        var parentNs = CurrentBlock.Namespace;
+        if (context.typeLookup() != null) parentNs = GetType(context.typeLookup()).Ns;
+        if (parentNs.TryGetNamespace(context.Identifier().GetText(), out var ns)) return new SymbolOrNamespace(Ns: ns);
+
+        if (parentNs.TryGetSymbol(context.Identifier().GetText(), out var sym)) return new SymbolOrNamespace(sym);
+
+        throw new InvalidAccessError($"{context.Identifier().GetText()}");
     }
 
     public override void ExitDeclarationStatement(PseudoCodeParser.DeclarationStatementContext context)
@@ -63,6 +78,21 @@ public class NewCompiler : PseudoCodeBaseListener
     public override void ExitArithmeticExpression(PseudoCodeParser.ArithmeticExpressionContext context)
     {
         base.ExitArithmeticExpression(context);
+        if (context.Operator != PseudoOperator.None)
+        {
+            Expression right = null;
+            var left = Context.ExpressionStack.Pop();
+            if (!context.IsUnary)
+                right = Context.ExpressionStack.Pop();
+            Context.ExpressionStack.Push(new BinaryExpression
+            {
+                Left = left,
+                Operator = context.Operator,
+                Right = right
+            });
+            return;
+        }
+
         if (context.IsUnary)
             if (context.Identifier() is { } id)
                 Context.ExpressionStack.Push(new LoadExpr
@@ -132,4 +162,6 @@ public class NewCompiler : PseudoCodeBaseListener
             }
         }
     }
+
+    public record SymbolOrNamespace(Symbol Symbol = default, Namespace Ns = default);
 }

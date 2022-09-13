@@ -3780,7 +3780,7 @@ public partial class PseudoCodeParser : Parser {
 
 	public partial class ArithmeticExpressionContext : ParserRuleContext {
 		public bool IsUnary;
-		public PseudoOperator Operator;
+		public PseudoOperator Operator = PseudoOperator.None;
 		public ArithmeticExpressionContext operand;
 		public ArithmeticExpressionContext operand1;
 		public IToken op;

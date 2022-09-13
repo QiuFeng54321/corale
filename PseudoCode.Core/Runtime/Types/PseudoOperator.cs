@@ -2,6 +2,7 @@ namespace PseudoCode.Core.Runtime.Types;
 
 public enum PseudoOperator
 {
+    None,
     Add,
     Subtract,
     Negative,
