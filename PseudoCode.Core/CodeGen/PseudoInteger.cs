@@ -11,4 +11,9 @@ public class PseudoInteger : Expression
         var val = LLVMValueRef.CreateConstInt(LLVMTypeRef.Int32, (ulong)Value);
         return Symbol.MakeTemp(ReservedNames.Integer, BuiltinTypes.Integer.Type, ctx, val);
     }
+
+    public override string Format()
+    {
+        return Value.ToString();
+    }
 }

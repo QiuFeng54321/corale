@@ -26,6 +26,8 @@ void RunProgram(CommandLines.Options opts)
         PseudoCodeDocument.AddErrorListener(parser, interpreter);
         IParseTree parseTree = parser.fileInput();
         var ctx = interpreter.Compile(parseTree);
+        ctx.Analysis.PrintFeedbacks();
+        Console.WriteLine(ctx.Root);
         var func = ctx.Module.GetNamedFunction(ReservedNames.Main);
         var res = LLVM.VerifyFunction(func, LLVMVerifierFailureAction.LLVMPrintMessageAction);
         Debug.WriteLine(res);

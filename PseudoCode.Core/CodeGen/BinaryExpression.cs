@@ -13,4 +13,11 @@ public class BinaryExpression : Expression
         var right = Right?.CodeGen(ctx, block);
         return ctx.OperatorResolverMap.Resolve(left, right, Operator, ctx);
     }
+
+    public override string Format()
+    {
+        if (Right == null)
+            return $"{Operator} {Left}";
+        return $"{Left} {Operator} {Right}";
+    }
 }

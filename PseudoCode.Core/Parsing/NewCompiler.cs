@@ -80,9 +80,9 @@ public class NewCompiler : PseudoCodeBaseListener
         base.ExitLogicExpression(context);
         if (context.Operator == PseudoOperator.None) return;
         Expression right = null;
-        var left = Context.ExpressionStack.Pop();
         if (!context.IsUnary)
             right = Context.ExpressionStack.Pop();
+        var left = Context.ExpressionStack.Pop();
         Context.ExpressionStack.Push(new BinaryExpression
         {
             Left = left,
@@ -97,9 +97,9 @@ public class NewCompiler : PseudoCodeBaseListener
         if (context.Operator != PseudoOperator.None)
         {
             Expression right = null;
-            var left = Context.ExpressionStack.Pop();
             if (!context.IsUnary)
                 right = Context.ExpressionStack.Pop();
+            var left = Context.ExpressionStack.Pop();
             Context.ExpressionStack.Push(new BinaryExpression
             {
                 Left = left,

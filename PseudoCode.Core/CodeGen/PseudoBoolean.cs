@@ -11,4 +11,9 @@ public class PseudoBoolean : Expression
         var val = LLVMValueRef.CreateConstInt(LLVMTypeRef.Int1, Value ? 1ul : 0);
         return Symbol.MakeTemp(ReservedNames.Integer, BuiltinTypes.Integer.Type, ctx, val);
     }
+
+    public override string Format()
+    {
+        return Value ? "TRUE" : "FALSE";
+    }
 }

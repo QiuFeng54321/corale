@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using LLVMSharp.Interop;
 
 namespace PseudoCode.Core.CodeGen;
@@ -22,5 +23,10 @@ public class PseudoString : Expression
     public static unsafe sbyte* ToSByte(string str)
     {
         return (sbyte*)Marshal.StringToHGlobalAuto(str);
+    }
+
+    public override string Format()
+    {
+        return $"\"{Regex.Escape(Value)}\"";
     }
 }

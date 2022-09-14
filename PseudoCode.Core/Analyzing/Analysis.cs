@@ -19,4 +19,9 @@ public class Analysis
     public void AnalyseUnusedVariables()
     {
     }
+
+    public void PrintFeedbacks()
+    {
+        Feedbacks.ForEach(Console.WriteLine);
+    }
 }

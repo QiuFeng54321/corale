@@ -8,4 +8,9 @@ public class DeclarationStatement : Statement
     {
         Symbol.MemoryPointer = ctx.Builder.BuildAlloca(Symbol.Type.GetLLVMType(), Symbol.Name);
     }
+
+    public override string Format()
+    {
+        return $"DECLARE {Symbol.Name} : {Symbol.Type.GetLLVMType().ToString()}";
+    }
 }

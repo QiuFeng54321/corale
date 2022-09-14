@@ -11,4 +11,9 @@ public class LoadExpr : Expression
         if (block.Namespace.TryGetSymbol(Name, out var sym)) return sym;
         throw new InvalidAccessError(Name);
     }
+
+    public override string Format()
+    {
+        return Name;
+    }
 }

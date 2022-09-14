@@ -1,3 +1,4 @@
+using System.Globalization;
 using LLVMSharp.Interop;
 
 namespace PseudoCode.Core.CodeGen;
@@ -10,5 +11,10 @@ public class PseudoReal : Expression
     {
         var val = LLVMValueRef.CreateConstReal(LLVMTypeRef.Double, Value);
         return Symbol.MakeTemp(ReservedNames.Real, BuiltinTypes.Real.Type, ctx, val);
+    }
+
+    public override string Format()
+    {
+        return Value.ToString(CultureInfo.CurrentCulture);
     }
 }

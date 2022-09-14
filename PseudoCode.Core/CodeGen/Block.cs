@@ -22,4 +22,9 @@ public class Block : AstNode
         Statements.ForEach(s => s.CodeGen(ctx, this));
         return BlockRef;
     }
+
+    public override string Format()
+    {
+        return $"{{\n{string.Join("\n", Statements)}\n}}";
+    }
 }
