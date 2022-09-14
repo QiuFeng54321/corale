@@ -13,3 +13,4 @@ r1 <- r2 + r1
 r2 <- i2 + r1
 i2 <- r2 DIV 4
 c <- "hello world"
+c <- "abc"
