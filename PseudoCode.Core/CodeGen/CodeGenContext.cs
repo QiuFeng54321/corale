@@ -1,5 +1,6 @@
 using LLVMSharp.Interop;
 using PseudoCode.Core.Analyzing;
+using PseudoCode.Core.CodeGen.Operator;
 
 namespace PseudoCode.Core.CodeGen;
 
@@ -14,6 +15,7 @@ public class CodeGenContext
     public LLVMExecutionEngineRef Engine;
     public LLVMModuleRef Module;
     public NameGenerator NameGenerator;
+    public OperatorResolverMap OperatorResolverMap;
     public ProgramRoot Root;
 
     public CodeGenContext(string moduleName = "Module")
@@ -33,5 +35,7 @@ public class CodeGenContext
         Builder = Module.Context.CreateBuilder();
         NameGenerator = new NameGenerator();
         Engine = Module.CreateMCJITCompiler();
+        OperatorResolverMap = new OperatorResolverMap();
+        OperatorResolverMap.Initialize();
     }
 }

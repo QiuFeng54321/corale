@@ -84,18 +84,42 @@ public class Type
 
     public static Type MakePrimitiveType(string name, System.Type type)
     {
-        LLVMTypeRef typeRef = null;
-        if (type == typeof(int)) typeRef = LLVMTypeRef.Int32;
-        if (type == typeof(string)) typeRef = LLVMTypeRef.CreatePointer(LLVMTypeRef.Int8, 0);
-        if (type == typeof(double)) typeRef = LLVMTypeRef.Double;
-        if (type == typeof(bool)) typeRef = LLVMTypeRef.Int1;
-        if (type == typeof(char)) typeRef = LLVMTypeRef.Int8;
-
-        return new Type
+        var resType = new Type
         {
-            _llvmTypeRef = typeRef,
             TypeName = name
         };
+        if (type == typeof(int))
+        {
+            resType._llvmTypeRef = LLVMTypeRef.Int32;
+            resType.Kind = Types.Integer;
+        }
+
+        if (type == typeof(string))
+        {
+            resType._llvmTypeRef = LLVMTypeRef.CreatePointer(LLVMTypeRef.Int8, 0);
+            resType.Kind = Types.Pointer;
+            resType.ElementType = BuiltinTypes.Char.Type;
+        }
+
+        if (type == typeof(double))
+        {
+            resType._llvmTypeRef = LLVMTypeRef.Double;
+            resType.Kind = Types.Real;
+        }
+
+        if (type == typeof(bool))
+        {
+            resType._llvmTypeRef = LLVMTypeRef.Int1;
+            resType.Kind = Types.Boolean;
+        }
+
+        if (type == typeof(char))
+        {
+            resType._llvmTypeRef = LLVMTypeRef.Int8;
+            resType.Kind = Types.Character;
+        }
+
+        return resType;
     }
 
     public static Type MakeGenericPlaceholder(string name)
@@ -151,5 +175,10 @@ public class Type
     {
         if (obj is not Type t) return false;
         return t.TypeName == TypeName && t.Kind == Kind;
+    }
+
+    public static implicit operator LLVMTypeRef(Type type)
+    {
+        return type.GetLLVMType();
     }
 }

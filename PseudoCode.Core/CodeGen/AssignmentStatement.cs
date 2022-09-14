@@ -6,8 +6,8 @@ public class AssignmentStatement : Statement
 
     public override void CodeGen(CodeGenContext ctx, Block block)
     {
-        var val = Value.CodeGen(ctx, block).GetRealValue(ctx).ValueRef;
-        var target = Target.CodeGen(ctx, block).Alloca;
+        var val = Value.CodeGen(ctx, block).GetRealValueRef(ctx);
+        var target = Target.CodeGen(ctx, block).MemoryPointer;
         ctx.Builder.BuildStore(val, target);
     }
 }

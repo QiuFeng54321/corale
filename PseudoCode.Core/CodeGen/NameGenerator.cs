@@ -15,4 +15,9 @@ public class NameGenerator
 
         return Name(str, _counter[str]++);
     }
+
+    public string RequestTemp(string str)
+    {
+        return Request($"{ReservedNames.Temp}{str}");
+    }
 }

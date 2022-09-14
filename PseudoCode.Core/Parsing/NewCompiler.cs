@@ -75,6 +75,22 @@ public class NewCompiler : PseudoCodeBaseListener
         }
     }
 
+    public override void ExitLogicExpression(PseudoCodeParser.LogicExpressionContext context)
+    {
+        base.ExitLogicExpression(context);
+        if (context.Operator == PseudoOperator.None) return;
+        Expression right = null;
+        var left = Context.ExpressionStack.Pop();
+        if (!context.IsUnary)
+            right = Context.ExpressionStack.Pop();
+        Context.ExpressionStack.Push(new BinaryExpression
+        {
+            Left = left,
+            Operator = context.Operator,
+            Right = right
+        });
+    }
+
     public override void ExitArithmeticExpression(PseudoCodeParser.ArithmeticExpressionContext context)
     {
         base.ExitArithmeticExpression(context);
@@ -157,6 +173,14 @@ public class NewCompiler : PseudoCodeBaseListener
                 Context.ExpressionStack.Push(new PseudoReal
                 {
                     Value = (double)val
+                });
+                break;
+            }
+            case "BOOLEAN":
+            {
+                Context.ExpressionStack.Push(new PseudoBoolean
+                {
+                    Value = (bool)val
                 });
                 break;
             }

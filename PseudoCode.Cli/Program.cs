@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using System.Diagnostics;
 using System.Globalization;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
@@ -27,6 +28,7 @@ void RunProgram(CommandLines.Options opts)
         var ctx = interpreter.Compile(parseTree);
         var func = ctx.Module.GetNamedFunction(ReservedNames.Main);
         var res = LLVM.VerifyFunction(func, LLVMVerifierFailureAction.LLVMPrintMessageAction);
+        Debug.WriteLine(res);
         ctx.Engine.RunFunction(func, Array.Empty<LLVMGenericValueRef>());
         // var analysis = new Analysis();
         // analysis.SetProgram(program);

@@ -5,11 +5,6 @@ namespace PseudoCode.Core.CodeGen;
 
 public class Symbol
 {
-    /// <summary>
-    ///     Variable value
-    /// </summary>
-    public LLVMValueRef Alloca;
-
     public DefinitionAttribute DefinitionAttribute;
 
     /// <summary>
@@ -21,6 +16,11 @@ public class Symbol
     ///     Indicates whether the symbol is type-only
     /// </summary>
     public bool IsType;
+
+    /// <summary>
+    ///     Pointer to the variable in memory
+    /// </summary>
+    public LLVMValueRef MemoryPointer;
 
     /// <summary>
     ///     The name of the symbol
@@ -54,8 +54,16 @@ public class Symbol
 
     public Symbol GetRealValue(CodeGenContext ctx)
     {
-        if (ValueRef != null) return this;
-        return MakeTemp(Type, ctx.Builder.BuildLoad(Alloca, ctx.NameGenerator.Request(ReservedNames.Temp)));
+        return ValueRef != null
+            ? this
+            : MakeTemp(Type, GetRealValueRef(ctx));
+    }
+
+    public LLVMValueRef GetRealValueRef(CodeGenContext ctx)
+    {
+        return ValueRef != null
+            ? ValueRef
+            : ctx.Builder.BuildLoad(MemoryPointer, ctx.NameGenerator.RequestTemp(ReservedNames.Load));
     }
 
     /// <summary>
