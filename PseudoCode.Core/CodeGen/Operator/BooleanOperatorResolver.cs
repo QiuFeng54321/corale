@@ -14,7 +14,7 @@ public class BooleanOperatorResolver : OperatorResolver
         if (right == null)
         {
             if (op != PseudoOperator.Not) return null;
-            res = ctx.Builder.BuildNot(leftLLVMValue, ctx.NameGenerator.RequestTemp(ReservedNames.Boolean));
+            res = ctx.Builder.BuildNot(leftLLVMValue, resType.Kind.RequestTemp(ctx));
             return Symbol.MakeTemp(resType, res);
         }
 
@@ -36,7 +36,7 @@ public class BooleanOperatorResolver : OperatorResolver
                 return null;
         }
 
-        res = func(leftLLVMValue, rightLLVMValue, ctx.NameGenerator.RequestTemp(ReservedNames.Boolean));
+        res = func(leftLLVMValue, rightLLVMValue, resType.Kind.RequestTemp(ctx));
 
         return Symbol.MakeTemp(resType, res);
     }

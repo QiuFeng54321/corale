@@ -15,15 +15,15 @@ public class RealOperatorResolver : OperatorResolver
         if (right == null)
         {
             if (op != PseudoOperator.Negative) return null;
-            res = ctx.Builder.BuildFNeg(leftLLVMValue, ctx.NameGenerator.RequestTemp(ReservedNames.Real));
+            res = ctx.Builder.BuildFNeg(leftLLVMValue, resType.Kind.RequestTemp(ctx));
             return Symbol.MakeTemp(resType, res);
         }
 
         var rightLLVMValue = right.GetRealValue(ctx).ValueRef;
 
         if (right.Type.Kind == Types.Integer)
-            rightLLVMValue = ctx.Builder.BuildSIToFP(rightLLVMValue, BuiltinTypes.Real.Type,
-                ctx.NameGenerator.RequestTemp(ReservedNames.Real));
+            rightLLVMValue =
+                ctx.Builder.BuildSIToFP(rightLLVMValue, BuiltinTypes.Real.Type, resType.Kind.RequestTemp(ctx));
         if (right.Type.Kind is not (Types.Integer or Types.Real)) return null;
 
         Instruction func;
@@ -69,8 +69,10 @@ public class RealOperatorResolver : OperatorResolver
 
         res = func(leftLLVMValue, rightLLVMValue, ctx.NameGenerator.RequestTemp(tempName));
         if (op == PseudoOperator.IntDivide)
-            res = ctx.Builder.BuildFPToSI(res, BuiltinTypes.Integer.Type.GetLLVMType(),
-                ctx.NameGenerator.RequestTemp(ReservedNames.Integer));
+        {
+            resType = BuiltinTypes.Integer.Type;
+            res = ctx.Builder.BuildFPToSI(res, BuiltinTypes.Integer.Type.GetLLVMType(), resType.Kind.RequestTemp(ctx));
+        }
 
         return Symbol.MakeTemp(resType, res);
     }
