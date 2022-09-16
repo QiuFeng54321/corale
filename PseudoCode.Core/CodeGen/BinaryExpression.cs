@@ -17,7 +17,7 @@ public class BinaryExpression : Expression
     public override string Format()
     {
         if (Right == null)
-            return $"{Operator} {Left}";
+            return $"{Operator}{Left}";
         return $"{Left} {Operator} {Right}";
     }
 }

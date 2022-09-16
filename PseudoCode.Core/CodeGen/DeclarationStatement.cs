@@ -1,16 +1,21 @@
+using PseudoCode.Core.CodeGen.TypeLookups;
+
 namespace PseudoCode.Core.CodeGen;
 
 public class DeclarationStatement : Statement
 {
-    public Symbol Symbol;
+    public DataType DataType;
+    public string Name;
 
     public override void CodeGen(CodeGenContext ctx, Block block)
     {
-        Symbol.MemoryPointer = ctx.Builder.BuildAlloca(Symbol.Type.GetLLVMType(), Symbol.Name);
+        var symbol = new Symbol(Name, false, DataType.Lookup(ctx, block).Type);
+        block.Namespace.AddSymbol(symbol);
+        symbol.MemoryPointer = ctx.Builder.BuildAlloca(symbol.Type.GetLLVMType(), symbol.Name);
     }
 
     public override string Format()
     {
-        return $"DECLARE {Symbol.Name} : {Symbol.Type.GetLLVMType().ToString()}";
+        return $"DECLARE {Name} : {DataType}";
     }
 }
