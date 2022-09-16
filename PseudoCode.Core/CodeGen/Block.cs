@@ -3,18 +3,32 @@ using PseudoCode.Core.Formatting;
 
 namespace PseudoCode.Core.CodeGen;
 
-public class Block : AstNode, IPseudoFormattable
+public class Block : Statement
 {
     public LLVMBasicBlockRef BlockRef;
     public string Name;
     public Namespace Namespace;
+    public Block ParentBlock;
     public List<Statement> Statements = new();
 
-    public virtual void Format(PseudoFormatter formatter)
+    public override void Format(PseudoFormatter formatter)
     {
         formatter.Indent();
         WriteStatements(formatter);
         formatter.Dedent();
+    }
+
+    public Block EnterBlock()
+    {
+        var block = new Block();
+        Statements.Add(block);
+        block.ParentBlock = this;
+        return block;
+    }
+
+    public override void CodeGen(CodeGenContext ctx, Block block)
+    {
+        GetBlock(ctx, block);
     }
 
 

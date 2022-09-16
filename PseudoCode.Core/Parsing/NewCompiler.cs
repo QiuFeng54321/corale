@@ -93,6 +93,25 @@ public class NewCompiler : PseudoCodeBaseListener
         });
     }
 
+    public override void EnterTypeDefinition(PseudoCodeParser.TypeDefinitionContext context)
+    {
+        base.EnterTypeDefinition(context);
+        CurrentBlock = CurrentBlock.EnterBlock();
+    }
+
+    public override void ExitTypeDefinition(PseudoCodeParser.TypeDefinitionContext context)
+    {
+        base.ExitTypeDefinition(context);
+        var name = context.Identifier().GetText();
+        var genericParams = context.genericDeclaration()?.identifierList()?.Identifier().Select(s => s.GetText())
+            .ToList();
+        var block = CurrentBlock.Statements.OfType<DeclarationStatement>().ToList();
+        CurrentBlock = CurrentBlock.ParentBlock;
+        CurrentBlock.Statements.RemoveAt(CurrentBlock.Statements.Count - 1);
+        CurrentBlock.Statements.Add(new TypeDeclaration(name,
+            genericParams == null ? null : new GenericDeclaration(genericParams), block));
+    }
+
     public override void ExitArithmeticExpression(PseudoCodeParser.ArithmeticExpressionContext context)
     {
         base.ExitArithmeticExpression(context);
