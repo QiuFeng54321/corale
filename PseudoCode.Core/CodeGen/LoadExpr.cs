@@ -12,7 +12,7 @@ public class LoadExpr : Expression
         throw new InvalidAccessError(Name);
     }
 
-    public override string Format()
+    public override string ToFormatString()
     {
         return Name;
     }

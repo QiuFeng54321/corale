@@ -1,4 +1,5 @@
 using PseudoCode.Core.CodeGen.TypeLookups;
+using PseudoCode.Core.Formatting;
 
 namespace PseudoCode.Core.CodeGen;
 
@@ -14,8 +15,8 @@ public class DeclarationStatement : Statement
         symbol.MemoryPointer = ctx.Builder.BuildAlloca(symbol.Type.GetLLVMType(), symbol.Name);
     }
 
-    public override string Format()
+    public override void Format(PseudoFormatter formatter)
     {
-        return $"DECLARE {Name} : {DataType}";
+        formatter.WriteStatement($"DECLARE {Name} : {DataType}");
     }
 }

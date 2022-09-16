@@ -25,7 +25,7 @@ public class PseudoString : Expression
         return (sbyte*)Marshal.StringToHGlobalAuto(str);
     }
 
-    public override string Format()
+    public override string ToFormatString()
     {
         return $"\"{Regex.Escape(Value)}\"";
     }

@@ -182,7 +182,7 @@ logicExpression locals [bool IsUnary, PseudoOperator Operator]
  | logicExpression op=And logicExpression {$Operator = PseudoOperator.And;}
  | logicExpression op=Or logicExpression {$Operator = PseudoOperator.Or;}
  | arithmeticExpression {$IsUnary = true;}
- | '(' logicExpression ')' {$IsUnary = true;}
+ | OpenParen logicExpression CloseParen {$IsUnary = true;}
  ;
 
 //expr: xorExpression ('|' xorExpression)*;
@@ -213,7 +213,7 @@ arithmeticExpression locals [bool IsUnary, PseudoOperator Operator = PseudoOpera
  | operand1=arithmeticExpression op=Subtract operand2=arithmeticExpression {$Operator = PseudoOperator.Subtract;}
  | operand1=arithmeticExpression op=Add operand2=arithmeticExpression {$Operator = PseudoOperator.Add;}
  | operand1=arithmeticExpression op=BitAnd operand2=arithmeticExpression {$Operator = PseudoOperator.BitAnd;}
- | '(' arithmeticExpression ')' {$IsUnary = true;}
+ | OpenParen arithmeticExpression CloseParen {$IsUnary = true;}
  ;
 
  

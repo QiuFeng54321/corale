@@ -1,4 +1,5 @@
 using PseudoCode.Core.Analyzing;
+using PseudoCode.Core.Formatting;
 
 namespace PseudoCode.Core.CodeGen;
 
@@ -19,8 +20,8 @@ public class AssignmentStatement : Statement
         ctx.Builder.BuildStore(val, target);
     }
 
-    public override string Format()
+    public override void Format(PseudoFormatter formatter)
     {
-        return $"{Target} <- {Value}";
+        formatter.WriteStatement($"{Target.ToFormatString()} <- {Value.ToFormatString()}");
     }
 }

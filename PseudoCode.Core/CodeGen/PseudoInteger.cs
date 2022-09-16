@@ -12,7 +12,7 @@ public class PseudoInteger : Expression
         return Symbol.MakeTemp(ReservedNames.Integer, BuiltinTypes.Integer.Type, ctx, val);
     }
 
-    public override string Format()
+    public override string ToFormatString()
     {
         return Value.ToString();
     }

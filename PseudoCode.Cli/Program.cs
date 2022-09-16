@@ -27,10 +27,10 @@ void RunProgram(CommandLines.Options opts)
         IParseTree parseTree = parser.fileInput();
         var ctx = interpreter.Compile(parseTree);
         ctx.Analysis.PrintFeedbacks();
-        Console.WriteLine(ctx.Root);
+        Console.WriteLine(ctx.Root.ToString());
         var func = ctx.Module.GetNamedFunction(ReservedNames.Main);
         var res = LLVM.VerifyFunction(func, LLVMVerifierFailureAction.LLVMPrintMessageAction);
-        Debug.WriteLine(res);
+        Debug.WriteLine(res.ToString());
         ctx.Engine.RunFunction(func, Array.Empty<LLVMGenericValueRef>());
         // var analysis = new Analysis();
         // analysis.SetProgram(program);

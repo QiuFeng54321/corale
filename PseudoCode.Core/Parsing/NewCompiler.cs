@@ -74,6 +74,12 @@ public class NewCompiler : PseudoCodeBaseListener
     public override void ExitLogicExpression(PseudoCodeParser.LogicExpressionContext context)
     {
         base.ExitLogicExpression(context);
+        if (context.OpenParen() != null)
+        {
+            Context.ExpressionStack.Push(new ParenthesisExpression(Context.ExpressionStack.Pop()));
+            return;
+        }
+
         if (context.Operator == PseudoOperator.None) return;
         Expression right = null;
         if (!context.IsUnary)
@@ -106,11 +112,15 @@ public class NewCompiler : PseudoCodeBaseListener
         }
 
         if (context.IsUnary)
+        {
             if (context.Identifier() is { } id)
                 Context.ExpressionStack.Push(new LoadExpr
                 {
                     Name = id.GetText()
                 });
+            else if (context.OpenParen() != null)
+                Context.ExpressionStack.Push(new ParenthesisExpression(Context.ExpressionStack.Pop()));
+        }
     }
 
     public override void ExitAssignmentStatement(PseudoCodeParser.AssignmentStatementContext context)

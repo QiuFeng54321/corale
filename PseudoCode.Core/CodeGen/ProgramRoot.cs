@@ -1,4 +1,5 @@
 using LLVMSharp.Interop;
+using PseudoCode.Core.Formatting;
 
 namespace PseudoCode.Core.CodeGen;
 
@@ -16,5 +17,10 @@ public class ProgramRoot : Block
         ctx.Builder.BuildRetVoid();
         BlockRef = bb;
         return bb;
+    }
+
+    public override void Format(PseudoFormatter formatter)
+    {
+        WriteStatements(formatter);
     }
 }

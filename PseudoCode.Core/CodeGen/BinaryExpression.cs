@@ -14,10 +14,10 @@ public class BinaryExpression : Expression
         return ctx.OperatorResolverMap.Resolve(left, right, Operator, ctx);
     }
 
-    public override string Format()
+    public override string ToFormatString()
     {
         if (Right == null)
-            return $"{Operator}{Left}";
-        return $"{Left} {Operator} {Right}";
+            return $"{Operator.ToFormattedString()}{Left.ToFormatString()}";
+        return $"{Left.ToFormatString()} {Operator.ToFormattedString()} {Right.ToFormatString()}";
     }
 }

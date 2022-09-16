@@ -13,7 +13,7 @@ public class PseudoReal : Expression
         return Symbol.MakeTemp(ReservedNames.Real, BuiltinTypes.Real.Type, ctx, val);
     }
 
-    public override string Format()
+    public override string ToFormatString()
     {
         return Value.ToString(CultureInfo.CurrentCulture);
     }
