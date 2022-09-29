@@ -13,9 +13,11 @@ public class TypeLookup
         _parent = parent;
     }
 
-    public SymbolOrNamespace Lookup(Block block)
+    public SymbolOrNamespace Lookup(Block block, Type parentType = default)
     {
-        var ns = _parent?.Lookup(block).Ns ?? block.Namespace;
+        if (parentType?.GenericArguments != null && parentType.GenericArguments.Any(s => s.Name == _name))
+            return new SymbolOrNamespace(Symbol.MakeTypeSymbol(Type.MakeGenericPlaceholder(_name)));
+        var ns = _parent?.Lookup(block, parentType).Ns ?? block.Namespace;
         if (ns.TryGetNamespace(_name, out var nsFound)) return new SymbolOrNamespace(Ns: nsFound);
 
         if (ns.TryGetSymbol(_name, out var sym)) return new SymbolOrNamespace(sym);

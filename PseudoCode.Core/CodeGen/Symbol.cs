@@ -38,6 +38,11 @@ public class Symbol
     public Type Type;
 
     /// <summary>
+    ///     Indicates the index of this symbol in a type, if it is in a type
+    /// </summary>
+    public int TypeMemberIndex;
+
+    /// <summary>
     ///     The LLVM value reference of the symbol.
     /// </summary>
     public LLVMValueRef ValueRef;
@@ -127,6 +132,16 @@ public class Symbol
         return new Symbol(typeName, true, Type.MakePrimitiveType(typeName, type));
     }
 
+    public static Symbol MakeTypeSymbol(Type type)
+    {
+        return new Symbol(type.TypeName, true, type);
+    }
+
+    public static Symbol MakeGenericPlaceholderSymbol(string name)
+    {
+        return new Symbol(name, false, Type.MakeGenericPlaceholder(name));
+    }
+
     /// <summary>
     ///     Fill the generic arguments (kinda like making types from template)
     /// </summary>
@@ -140,6 +155,7 @@ public class Symbol
         var res = Clone();
         Type.FillGeneric(res.Type, Type, genericArguments);
         res.Type.TypeName = typeName;
+        res.Name = typeName;
         Namespace.AddSymbol(res);
         return res;
     }

@@ -1,4 +1,5 @@
 using LLVMSharp.Interop;
+using PseudoCode.Core.Runtime.Errors;
 
 namespace PseudoCode.Core.CodeGen;
 
@@ -79,6 +80,22 @@ public class Type
     public LLVMTypeRef GetLLVMType()
     {
         if (_llvmTypeRef != null) return _llvmTypeRef;
+        if (Kind == Types.Type)
+        {
+            var i = 0;
+            List<LLVMTypeRef> llvmTypeMembers = new();
+            foreach (var (key, sym) in Members)
+            {
+                sym.TypeMemberIndex = i++;
+                llvmTypeMembers.Add(sym.Type.GetLLVMType());
+            }
+
+            _llvmTypeRef = LLVMTypeRef.CreateStruct(llvmTypeMembers.ToArray(), true);
+            return _llvmTypeRef;
+        }
+
+        if (Kind == Types.GenericPlaceholder) throw new InvalidAccessError($"Generic placeholder for {TypeName}");
+
         throw new NotImplementedException();
     }
 
@@ -157,13 +174,44 @@ public class Type
     /// <returns>The cloned type with generic types and fields filled in</returns>
     public static void FillGeneric(Type target, Type genericParent, List<Symbol> genericArguments)
     {
-        foreach (var member in genericParent.GenericMembers)
-            member.Type = genericArguments.FirstOrDefault(g => g.Name == member.Type.TypeName)?.Type;
+        FillGeneric(ref target, genericArguments);
 
         target.IsGeneric = false;
         target.GenericArguments = null;
         target.GenericMembers = null;
         target.GenericFrom = genericParent;
+    }
+
+    public static void FillGeneric(ref Type fillIn, List<Symbol> genericArguments)
+    {
+        if (fillIn.Arguments != null)
+            foreach (var (key, sym) in fillIn.Arguments)
+                FillSelfGeneric(ref sym.Type, genericArguments);
+
+        if (fillIn.Members != null)
+            foreach (var (key, sym) in fillIn.Members)
+                FillSelfGeneric(ref sym.Type, genericArguments);
+
+        if (fillIn.ElementType != null)
+            FillSelfGeneric(ref fillIn.ElementType, genericArguments);
+        if (fillIn.ReturnType != null)
+            FillSelfGeneric(ref fillIn.ReturnType, genericArguments);
+    }
+
+    private static void FillSelfGeneric(ref Type fillIn, List<Symbol> genericArguments)
+    {
+        if (fillIn.Kind == Types.GenericPlaceholder)
+        {
+            var fillInTypeName = fillIn.TypeName;
+            var typeFound = fillIn.GenericArguments.FindIndex(arg => arg.Type.TypeName == fillInTypeName);
+            if (typeFound != -1)
+                fillIn = genericArguments[typeFound].Type;
+        }
+    }
+
+    public static void FillGeneric(out Type genericPlaceholder, ref Type targetType)
+    {
+        genericPlaceholder = targetType;
     }
 
     public static string GenerateFilledGenericTypeName(Type type, IEnumerable<Symbol> genericArguments)

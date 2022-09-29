@@ -18,6 +18,28 @@ public class TypeDeclaration : Statement
 
     public override void CodeGen(CodeGenContext ctx, Block block)
     {
+        var resType = new Type
+        {
+            TypeName = Name,
+            Kind = Types.Type,
+            IsGeneric = GenericDeclaration != null && GenericDeclaration.Identifiers.Count != 0,
+            GenericArguments = GenericDeclaration?.Identifiers.Select(Symbol.MakeGenericPlaceholderSymbol).ToList(),
+            GenericMembers = new List<Symbol>()
+        };
+        block.Namespace.AddSymbol(Symbol.MakeTypeSymbol(resType));
+        Dictionary<string, Symbol> typeMembers = new();
+        foreach (var declarationStatement in DeclarationStatements)
+        {
+            var typeSym = declarationStatement.GetTypeSymbol(ctx, block, resType);
+            var sym = declarationStatement.MakeSymbol(typeSym);
+            typeMembers.Add(declarationStatement.Name, sym);
+            resType.GenericMembers.Add(sym);
+        }
+
+        resType.Members = typeMembers;
+
+        // resType.GetLLVMType().Dump();
+
         // throw new NotImplementedException();
     }
 
