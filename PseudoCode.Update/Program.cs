@@ -1,9 +1,10 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using System.Diagnostics;
+using System.IO.Compression;
+using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using PseudoCode.Core.Parsing;
 
 namespace PseudoCode.Update;
 
@@ -11,6 +12,7 @@ public class Program
 {
     public const string PackageName = "PseudoCodePackage.pkg";
     public const string VsixName = "williamqiufeng.caie-pseudocode";
+    public const string WinZipName = "pseudocode.zip";
     public static readonly HttpClient HttpClient = new();
 
     public static readonly JsonSerializer JsonSerializer = new()
@@ -21,6 +23,14 @@ public class Program
         }
     };
 
+    public static Version CurrentVersion = typeof(PseudoProgram).Assembly.GetName().Version;
+
+    public static async Task RunProcessAsync(Process p)
+    {
+        p.Start();
+        await p.WaitForExitAsync();
+    }
+
     public static async Task<bool> DownloadAssetAsync(IEnumerable<ReleaseObject> objs, string s)
     {
         var obj = objs.FirstOrDefault(o => o.Assets.Any(a => a.Name == s));
@@ -30,9 +40,8 @@ public class Program
         }
 
         var latestVersion = Version.Parse(obj.TagName);
-        var currentVersion = typeof(NewCompiler).Assembly.GetName().Version;
-        Console.WriteLine($"Current version of {s} is {currentVersion}, Latest version is {latestVersion}");
-        if (latestVersion <= currentVersion)
+        Console.WriteLine($"Current version of {s} is {CurrentVersion}, Latest version is {latestVersion}");
+        if (latestVersion <= CurrentVersion)
         {
             Console.WriteLine("Current version is already the latest!");
             return false;
@@ -61,22 +70,31 @@ public class Program
         // Console.WriteLine(resultStr);
         var resultObjs = JsonSerializer.Deserialize<ReleaseObject[]>(new JsonTextReader(new StringReader(resultStr)));
 
-        if (await DownloadAssetAsync(resultObjs, PackageName))
+        if (OperatingSystem.IsWindows())
         {
-            var p = new Process
+            var selfExe = Assembly.GetExecutingAssembly().Location;
+            if (await DownloadAssetAsync(resultObjs, WinZipName))
             {
-                StartInfo = new ProcessStartInfo
+                File.Move(selfExe, $"{selfExe}.bak");
+                ZipFile.ExtractToDirectory(WinZipName,
+                    Path.GetDirectoryName(selfExe) ?? throw new InvalidOperationException(), true);
+            }
+        }
+        else
+        {
+            if (await DownloadAssetAsync(resultObjs, PackageName))
+                await RunProcessAsync(new Process
                 {
-                    FileName = "open",
-                    WorkingDirectory = Environment.CurrentDirectory,
-                    Arguments = PackageName
-                }
-            };
-            p.Start();
-            await p.WaitForExitAsync();
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = "open",
+                        WorkingDirectory = Environment.CurrentDirectory,
+                        Arguments = PackageName
+                    }
+                });
         }
 
-        var vsixProcess = new Process
+        await RunProcessAsync(new Process
         {
             StartInfo = new ProcessStartInfo
             {
@@ -84,10 +102,7 @@ public class Program
                 WorkingDirectory = Environment.CurrentDirectory,
                 Arguments = $"--install-extension {VsixName} --force"
             }
-        };
-        vsixProcess.Start();
-        await vsixProcess.WaitForExitAsync();
-
+        });
 
         Console.WriteLine("Process ended");
     }
