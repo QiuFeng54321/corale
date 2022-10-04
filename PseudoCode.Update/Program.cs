@@ -5,6 +5,7 @@ using System.IO.Compression;
 using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using PseudoCode.Core.Parsing;
 
 namespace PseudoCode.Update;
 
@@ -23,7 +24,7 @@ public class Program
         }
     };
 
-    public static readonly Version CurrentVersion = typeof(PseudoProgram).Assembly.GetName().Version;
+    public static readonly Version CurrentVersion = typeof(NewCompiler).Assembly.GetName().Version;
 
     private static async Task RunProcessAsync(Process p)
     {
