@@ -23,15 +23,15 @@ public class Program
         }
     };
 
-    public static Version CurrentVersion = typeof(PseudoProgram).Assembly.GetName().Version;
+    public static readonly Version CurrentVersion = typeof(PseudoProgram).Assembly.GetName().Version;
 
-    public static async Task RunProcessAsync(Process p)
+    private static async Task RunProcessAsync(Process p)
     {
         p.Start();
         await p.WaitForExitAsync();
     }
 
-    public static async Task<bool> DownloadAssetAsync(IEnumerable<ReleaseObject> objs, string s)
+    private static async Task<bool> DownloadAssetAsync(IEnumerable<ReleaseObject> objs, string s)
     {
         var obj = objs.FirstOrDefault(o => o.Assets.Any(a => a.Name == s));
         if (obj == null)
@@ -69,10 +69,11 @@ public class Program
                 "https://gitee.com/api/v5/repos/williamcraft/pseudocode-releases/releases?page=1&per_page=20&direction=desc");
         // Console.WriteLine(resultStr);
         var resultObjs = JsonSerializer.Deserialize<ReleaseObject[]>(new JsonTextReader(new StringReader(resultStr)));
+        var selfExe = Assembly.GetExecutingAssembly().Location;
+        Console.WriteLine(selfExe);
 
         if (OperatingSystem.IsWindows())
         {
-            var selfExe = Assembly.GetExecutingAssembly().Location;
             if (await DownloadAssetAsync(resultObjs, WinZipName))
             {
                 File.Move(selfExe, $"{selfExe}.bak");
