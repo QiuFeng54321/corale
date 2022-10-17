@@ -38,6 +38,11 @@ public class Symbol
     public Type Type;
 
     /// <summary>
+    ///     It might be a template type
+    /// </summary>
+    public TypeDeclaration TypeDeclaration;
+
+    /// <summary>
     ///     Indicates the index of this symbol in a type, if it is in a type
     /// </summary>
     public int TypeMemberIndex;
@@ -137,6 +142,14 @@ public class Symbol
         return new Symbol(type.TypeName, true, type);
     }
 
+    public static Symbol MakeTypeDeclSymbol(TypeDeclaration typeDeclaration)
+    {
+        return new Symbol(typeDeclaration.TypeName, true, null)
+        {
+            TypeDeclaration = typeDeclaration
+        };
+    }
+
     public static Symbol MakeGenericPlaceholderSymbol(string name)
     {
         return new Symbol(name, false, Type.MakeGenericPlaceholder(name));
@@ -147,17 +160,10 @@ public class Symbol
     /// </summary>
     /// <param name="genericArguments">The arguments to fill</param>
     /// <returns>The cloned type with generic types and fields filled in</returns>
-    public Symbol FillGeneric(List<Symbol> genericArguments)
+    public Symbol FillGeneric(CodeGenContext ctx, Block block, List<Symbol> genericArguments)
     {
-        if (Type.GenericMembers == null) return this; // Nothing to fill
-        var typeName = Type.GenerateFilledGenericTypeName(Type, genericArguments);
-        if (Namespace.TryGetSymbol(typeName, out var existingSymbol)) return existingSymbol;
-        var res = Clone();
-        Type.FillGeneric(res.Type, Type, genericArguments);
-        res.Type.TypeName = typeName;
-        res.Name = typeName;
-        Namespace.AddSymbol(res);
-        return res;
+        if (TypeDeclaration == null) return this; // Nothing to fill
+        return TypeDeclaration.GenerateType(ctx, block, genericArguments);
     }
 
     public Symbol Clone()

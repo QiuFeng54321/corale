@@ -11,12 +11,13 @@ public class ProgramRoot : Block
         var mainFunctionType = LLVMTypeRef.CreateFunction(LLVMTypeRef.Void, Array.Empty<LLVMTypeRef>());
         var mainFunction = ctx.Module.AddFunction(ReservedNames.Main, mainFunctionType);
         mainFunction.Linkage = LLVMLinkage.LLVMExternalLinkage;
-        var bb = mainFunction.AppendBasicBlock("entry");
-        ctx.Builder.PositionAtEnd(bb);
-        Statements.ForEach(s => s.CodeGen(ctx, this));
+        BlockRef = mainFunction.AppendBasicBlock("entry");
+        ctx.Builder.PositionAtEnd(BlockRef);
+        foreach (var s in Statements) s.CodeGen(ctx, this);
+
+
         ctx.Builder.BuildRetVoid();
-        BlockRef = bb;
-        return bb;
+        return BlockRef;
     }
 
     public override void Format(PseudoFormatter formatter)

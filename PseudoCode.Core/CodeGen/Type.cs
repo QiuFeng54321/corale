@@ -24,38 +24,6 @@ public class Type
     public Type ElementType;
 
     /// <summary>
-    ///     If the type is a function FUNCTION <![CDATA[<A, B, C>]]> or type TYPE<![CDATA[<A, B, C>]]>
-    ///     , then this stores the generic arguments.
-    ///     The key is the name ("A", "B", "C"), each corresponding to a placeholder type (Types.GenericPlaceholder).
-    ///     When a generic type is being un-generalized (e.g. using DECLARE abc : Type<![CDATA[<INTEGER>]]>),
-    ///     The generic type will be copied, and this field will be filled with actual type specified (in that case
-    ///     Types.Integer)
-    /// </summary>
-    public List<Symbol> GenericArguments;
-
-    /// <summary>
-    ///     If the type is being made from a generic type, this field stores which generic type it is made from
-    /// </summary>
-    public Type GenericFrom;
-
-    /// <summary>
-    ///     Lists of variables that relies on the generic arguments of this type
-    /// </summary>
-    public List<Symbol> GenericMembers;
-
-    /// <summary>
-    ///     When generating a type from template Type<![CDATA[<T>]]>
-    ///     with a member of type T,
-    ///     the member uses GenericParent.GenericArguments to search for type
-    /// </summary>
-    public Type GenericParent;
-
-    /// <summary>
-    ///     Specifies if the type is generic
-    /// </summary>
-    public bool IsGeneric;
-
-    /// <summary>
     ///     Specifies what kind of type this is.
     ///     <seealso cref="Types" />
     /// </summary>
@@ -156,8 +124,6 @@ public class Type
             Arguments = Arguments?.Clone(),
             DebugInformation = DebugInformation,
             ElementType = ElementType?.Clone(),
-            GenericArguments = GenericArguments?.Clone(),
-            GenericParent = GenericParent?.Clone(),
             Kind = Kind,
             Members = Members?.Clone(),
             ReturnType = ReturnType?.Clone(),
@@ -165,58 +131,16 @@ public class Type
         };
     }
 
-    /// <summary>
-    ///     Fill the generic arguments (kinda like making types from template)
-    /// </summary>
-    /// <param name="target">Type to fill (cloned)</param>
-    /// <param name="genericParent">Type to fill from</param>
-    /// <param name="genericArguments">The arguments to fill</param>
-    /// <returns>The cloned type with generic types and fields filled in</returns>
-    public static void FillGeneric(Type target, Type genericParent, List<Symbol> genericArguments)
-    {
-        FillGeneric(ref target, genericArguments);
-
-        target.IsGeneric = false;
-        target.GenericArguments = null;
-        target.GenericMembers = null;
-        target.GenericFrom = genericParent;
-    }
-
-    public static void FillGeneric(ref Type fillIn, List<Symbol> genericArguments)
-    {
-        if (fillIn.Arguments != null)
-            foreach (var (key, sym) in fillIn.Arguments)
-                FillSelfGeneric(ref sym.Type, genericArguments);
-
-        if (fillIn.Members != null)
-            foreach (var (key, sym) in fillIn.Members)
-                FillSelfGeneric(ref sym.Type, genericArguments);
-
-        if (fillIn.ElementType != null)
-            FillSelfGeneric(ref fillIn.ElementType, genericArguments);
-        if (fillIn.ReturnType != null)
-            FillSelfGeneric(ref fillIn.ReturnType, genericArguments);
-    }
-
-    private static void FillSelfGeneric(ref Type fillIn, List<Symbol> genericArguments)
-    {
-        if (fillIn.Kind == Types.GenericPlaceholder)
-        {
-            var fillInTypeName = fillIn.TypeName;
-            var typeFound = fillIn.GenericArguments.FindIndex(arg => arg.Type.TypeName == fillInTypeName);
-            if (typeFound != -1)
-                fillIn = genericArguments[typeFound].Type;
-        }
-    }
 
     public static void FillGeneric(out Type genericPlaceholder, ref Type targetType)
     {
         genericPlaceholder = targetType;
     }
 
-    public static string GenerateFilledGenericTypeName(Type type, IEnumerable<Symbol> genericArguments)
+    public static string GenerateFilledGenericTypeName(string typeName, List<Symbol> genericArguments)
     {
-        return $"{type.TypeName}<{string.Join(",", genericArguments.Select(a => a.Type.TypeName))}>";
+        if (genericArguments == null || genericArguments.Count == 0) return typeName;
+        return $"{typeName}<{string.Join(",", genericArguments.Select(a => a.Type.TypeName))}>";
     }
 
     public override bool Equals(object obj)

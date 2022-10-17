@@ -13,14 +13,17 @@ public class TypeLookup
         _parent = parent;
     }
 
-    public SymbolOrNamespace Lookup(Block block, Type parentType = default)
+    public SymbolOrNamespace Lookup(Block block)
     {
-        if (parentType?.GenericArguments != null && parentType.GenericArguments.Any(s => s.Name == _name))
-            return new SymbolOrNamespace(Symbol.MakeTypeSymbol(Type.MakeGenericPlaceholder(_name)));
-        var ns = _parent?.Lookup(block, parentType).Ns ?? block.Namespace;
-        if (ns.TryGetNamespace(_name, out var nsFound)) return new SymbolOrNamespace(Ns: nsFound);
+        // 找到
+        var ns = _parent?.Lookup(block).Ns ?? block.Namespace;
+        while (ns != null)
+        {
+            if (ns.TryGetSymbol(_name, out var sym)) return new SymbolOrNamespace(sym);
+            if (ns.TryGetNamespace(_name, out var nsFound)) return new SymbolOrNamespace(Ns: nsFound);
+            ns = ns.Parent;
+        }
 
-        if (ns.TryGetSymbol(_name, out var sym)) return new SymbolOrNamespace(sym);
         throw new InvalidAccessError($"Unknown namespace or symbol: {_name}");
     }
 

@@ -38,10 +38,10 @@ public class Namespace
         return ChildrenNamespaces.TryGetValue(name, out result);
     }
 
-    public void AddSymbol(Symbol symbol)
+    public void AddSymbol(Symbol symbol, bool setNs = true, string name = default)
     {
-        Symbols.Add(symbol.Name, symbol);
-        symbol.Namespace = this;
+        Symbols.Add(name ?? symbol.Name, symbol);
+        if (setNs) symbol.Namespace = this;
     }
 
     public Namespace AddNamespace(string name)

@@ -108,8 +108,11 @@ public class NewCompiler : PseudoCodeBaseListener
         var block = CurrentBlock.Statements.OfType<DeclarationStatement>().ToList();
         CurrentBlock = CurrentBlock.ParentBlock;
         CurrentBlock.Statements.RemoveAt(CurrentBlock.Statements.Count - 1);
-        CurrentBlock.Statements.Add(new TypeDeclaration(name,
-            genericParams == null ? null : new GenericDeclaration(genericParams), block));
+        if (genericParams == null)
+            CurrentBlock.Statements.Add(new TypeDeclaration(name, null, block));
+        else
+            CurrentBlock.Namespace.AddSymbol(
+                Symbol.MakeTypeDeclSymbol(new TypeDeclaration(name, new GenericDeclaration(genericParams), block)));
     }
 
     public override void ExitArithmeticExpression(PseudoCodeParser.ArithmeticExpressionContext context)

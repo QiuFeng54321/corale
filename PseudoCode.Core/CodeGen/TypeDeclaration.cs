@@ -2,50 +2,63 @@ using PseudoCode.Core.Formatting;
 
 namespace PseudoCode.Core.CodeGen;
 
+/// <summary>
+///     This is for type declaration, but will be used to make classes too
+/// </summary>
 public class TypeDeclaration : Statement
 {
     public readonly List<DeclarationStatement> DeclarationStatements;
     public readonly GenericDeclaration GenericDeclaration;
-    public readonly string Name;
+    public readonly string TypeName;
 
-    public TypeDeclaration(string name, GenericDeclaration genericDeclaration = default,
+    public TypeDeclaration(string typeName, GenericDeclaration genericDeclaration = default,
         List<DeclarationStatement> declarationStatements = default)
     {
-        Name = name;
+        TypeName = typeName;
         GenericDeclaration = genericDeclaration;
         DeclarationStatements = declarationStatements;
     }
 
-    public override void CodeGen(CodeGenContext ctx, Block block)
+    public Symbol GenerateType(CodeGenContext ctx, Block block, List<Symbol> genericFill = default)
     {
+        var typeName = Type.GenerateFilledGenericTypeName(TypeName, genericFill);
+        if (block.Namespace.TryGetSymbol(typeName, out var existingSymbol)) return existingSymbol;
+        // 创建一个悬挂块，不会改动Statements但是能达到独立查找的效果
+        var subNs = block.Namespace.AddNamespace(typeName);
+        var subBlock = block.EnterBlock(subNs, true);
+        if (genericFill != null)
+            for (var i = 0; i < genericFill.Count; i++)
+                subNs.AddSymbol(genericFill[i], false, GenericDeclaration.Identifiers[i]);
+
         var resType = new Type
         {
-            TypeName = Name,
-            Kind = Types.Type,
-            IsGeneric = GenericDeclaration != null && GenericDeclaration.Identifiers.Count != 0,
-            GenericArguments = GenericDeclaration?.Identifiers.Select(Symbol.MakeGenericPlaceholderSymbol).ToList(),
-            GenericMembers = new List<Symbol>()
+            TypeName = typeName,
+            Kind = Types.Type
         };
-        block.Namespace.AddSymbol(Symbol.MakeTypeSymbol(resType));
+        var typeSymbol = Symbol.MakeTypeSymbol(resType);
+        block.Namespace.AddSymbol(typeSymbol);
         Dictionary<string, Symbol> typeMembers = new();
-        foreach (var declarationStatement in DeclarationStatements)
+        for (var index = 0; index < DeclarationStatements.Count; index++)
         {
-            var typeSym = declarationStatement.GetTypeSymbol(ctx, block, resType);
+            var declarationStatement = DeclarationStatements[index];
+            var typeSym = declarationStatement.GetTypeSymbol(ctx, subBlock, resType);
             var sym = declarationStatement.MakeSymbol(typeSym);
             typeMembers.Add(declarationStatement.Name, sym);
-            resType.GenericMembers.Add(sym);
+            sym.TypeMemberIndex = index;
         }
 
         resType.Members = typeMembers;
+        return typeSymbol;
+    }
 
-        // resType.GetLLVMType().Dump();
-
-        // throw new NotImplementedException();
+    public override void CodeGen(CodeGenContext ctx, Block block)
+    {
+        GenerateType(ctx, block);
     }
 
     public override void Format(PseudoFormatter formatter)
     {
-        formatter.WriteStatement($"TYPE {Name}{GenericDeclaration}");
+        formatter.WriteStatement($"TYPE {TypeName}{GenericDeclaration}");
         if (DeclarationStatements != null)
         {
             formatter.Indent();

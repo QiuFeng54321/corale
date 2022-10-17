@@ -10,7 +10,7 @@ public class DeclarationStatement : Statement
 
     public Symbol GetTypeSymbol(CodeGenContext ctx, Block block, Type parentType = default)
     {
-        return DataType.Lookup(ctx, block, parentType);
+        return DataType.Lookup(ctx, block);
     }
 
     public override void CodeGen(CodeGenContext ctx, Block block)

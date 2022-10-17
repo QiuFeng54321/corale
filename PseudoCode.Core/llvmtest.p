@@ -8,11 +8,18 @@ r1 <- 2.3
 r2 <- r1 + i1
 b1 <- TRUE + 2
 b2 <- FALSE
-TYPE t1<T>
+TYPE t1<T, S>
     DECLARE t1t : T
     DECLARE s : INTEGER
+    DECLARE t1s : S
 ENDTYPE
-DECLARE t11 : t1<INTEGER>
+TYPE t2<T, S>
+    DECLARE t2t1 : t1<S, T>
+    DECLARE t2t2 : t1<T, S>
+ENDTYPE
+DECLARE t11 : t1<INTEGER, BOOLEAN>
+DECLARE t12 : t1<__CHARPTR, t1<INTEGER, REAL>>
+DECLARE t21 : t2<INTEGER, __CHARPTR>
 b1 <- b2 AND(NOT(b1 OR b2)) OR i1= - i2 // Testing unformatted string
 r1 <- r2 + r1
 r2 <- i2 + r1

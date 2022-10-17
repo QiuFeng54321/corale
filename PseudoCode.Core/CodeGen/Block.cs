@@ -18,11 +18,18 @@ public class Block : Statement
         formatter.Dedent();
     }
 
-    public Block EnterBlock()
+    /// <summary>
+    ///     Creates a child block.
+    /// </summary>
+    /// <param name="ns">The namespace of the sub-block</param>
+    /// <param name="dangling">If the sub-block will be added to Statements</param>
+    /// <returns>The created block</returns>
+    public Block EnterBlock(Namespace ns = null, bool dangling = false)
     {
         var block = new Block();
-        Statements.Add(block);
+        if (!dangling) Statements.Add(block);
         block.ParentBlock = this;
+        block.Namespace = ns;
         return block;
     }
 
@@ -41,7 +48,7 @@ public class Block : Statement
         }
 
         ctx.Builder.PositionAtEnd(BlockRef);
-        Statements.ForEach(s => s.CodeGen(ctx, this));
+        foreach (var s in Statements) s.CodeGen(ctx, this);
         return BlockRef;
     }
 

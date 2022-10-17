@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Statistic">
+    <option name="excludedDirectories">
+      <list>
+        <option value="$PROJECT_DIR$/build" />
+        <option value="$PROJECT_DIR$/PseudoCode.Cli/obj" />
+        <option value="$PROJECT_DIR$/PseudoCode.Core/obj" />
+        <option value="$PROJECT_DIR$/PseudoCode.LSP/obj" />
+        <option value="$PROJECT_DIR$/PseudoCode.Update/obj" />
+        <option value="$PROJECT_DIR$/antlr-denter" />
+        <option value="$PROJECT_DIR$/PseudoCode.DAP/obj" />
+        <option value="$PROJECT_DIR$/PseudoCode.TestLLVM/obj" />
+        <option value="$PROJECT_DIR$/PseudoCode.Debugging/obj" />
+      </list>
+    </option>
+  </component>
+</project>

@@ -9,9 +9,9 @@ public class DataType
         _modularType = modularType;
     }
 
-    public Symbol Lookup(CodeGenContext ctx, Block block, Type parentType = default)
+    public Symbol Lookup(CodeGenContext ctx, Block block)
     {
-        return _modularType.Lookup(ctx, block, parentType);
+        return _modularType.Lookup(ctx, block);
     }
 
     public override string ToString()
