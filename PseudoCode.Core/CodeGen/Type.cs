@@ -45,6 +45,11 @@ public class Type
     /// </summary>
     public string TypeName;
 
+    public void SetLLVMType(LLVMTypeRef type)
+    {
+        _llvmTypeRef = type;
+    }
+
     public LLVMTypeRef GetLLVMType()
     {
         if (_llvmTypeRef != null) return _llvmTypeRef;
@@ -141,6 +146,11 @@ public class Type
     {
         if (genericArguments == null || genericArguments.Count == 0) return typeName;
         return $"{typeName}<{string.Join(",", genericArguments.Select(a => a.Type.TypeName))}>";
+    }
+
+    public static string GenerateFunctionTypeName(List<Symbol> arguments, Type returnType)
+    {
+        return $"{returnType.TypeName}({string.Join(",", arguments.Select(a => a.Type.TypeName))})";
     }
 
     public override bool Equals(object obj)

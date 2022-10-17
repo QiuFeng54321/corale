@@ -1,184 +1,92 @@
-// using System.Reflection;
-// using PseudoCode.Core.Runtime.Instances;
-// using PseudoCode.Core.Runtime.Operations;
-// using PseudoCode.Core.Runtime.Types;
-// using PseudoCode.Core.Runtime.Types.Descriptor;
-// using Type = System.Type;
-//
-// namespace PseudoCode.Core.Runtime.Reflection;
-//
-// public class FunctionBinder
-// {
-//     public delegate Instance BuiltinFunction(Scope parentScope, PseudoProgram program, Instance[] arguments);
-//
-//     public static readonly Dictionary<Type, string> TypeMap = new()
-//     {
-//         [typeof(int)] = "INTEGER",
-//         [typeof(RealNumberType)] = "REAL",
-//         [typeof(string)] = "STRING",
-//         [typeof(char)] = "CHAR",
-//         [typeof(bool)] = "BOOLEAN",
-//         [typeof(DateOnly)] = "DATE",
-//         [typeof(void)] = "NULL"
-//     };
-//
-//     // Will be extended to support arrays
-//     public static ITypeDescriptor GetTypeDescriptorFromSystemType(Type type)
-//     {
-//         return new PlainTypeDescriptor(TypeMap[type]);
-//     }
-//
-//     public static void AddBuiltinFunctionOperations(Type type, Scope parentScope, PseudoProgram program)
-//     {
-//         foreach (var (definition, func) in MakeDefinition(type, parentScope, program))
-//             parentScope.AddOperation(new MakeBuiltinFunctionOperation(parentScope, program)
-//             {
-//                 Name = definition.Name,
-//                 Definition = definition,
-//                 Func = func,
-//                 PoiLocation = SourceLocation.Identity,
-//                 SourceRange = SourceRange.Identity
-//             });
-//     }
-//
-//     public static IEnumerable<(Definition, BuiltinFunction)> MakeDefinition(Type type, Scope parentScope,
-//         PseudoProgram program)
-//     {
-//         var methods = type.GetMethods();
-//         foreach (var methodInfo in methods)
-//             if (MakeDefinitionOfMethod(parentScope, program, methodInfo, out var definition))
-//                 yield return (definition, (BuiltinFunction)methodInfo.CreateDelegate(typeof(BuiltinFunction)));
-//             else if (MakeDefinitionOfNativeMethod(parentScope, program, methodInfo, out var nativeDefinition))
-//                 yield return (nativeDefinition, (scope, pseudoProgram, arguments) =>
-//                 {
-//                     var nativeDefinitionType = (BuiltinFunctionType)nativeDefinition.Type;
-//                     var res = methodInfo.Invoke(null,
-//                         arguments.Select(instance => instance.Get<object>()).ToArray());
-//                     return res == null ? Instance.Null : nativeDefinitionType.ReturnType.Type.Instance(res);
-//                 });
-//     }
-//
-//     private static bool MakeDefinitionOfMethod(Scope parentScope, PseudoProgram program, MethodInfo methodInfo,
-//         out Definition definition)
-//     {
-//         if (methodInfo.GetCustomAttributes(typeof(BuiltinFunctionAttribute), true).Length == 0)
-//         {
-//             definition = null;
-//             return false;
-//         }
-//
-//         var functionName = GetFunctionName(methodInfo);
-//
-//         var paramList = GetMethodParamList(parentScope, program, methodInfo);
-//         var returnDef = GetMethodReturnDefinition(parentScope, program, methodInfo);
-//
-//         definition = new Definition(parentScope, program)
-//         {
-//             Name = functionName,
-//             References = new List<SourceRange>(),
-//             SourceRange = SourceRange.Identity,
-//             Type = new BuiltinFunctionType(parentScope, program)
-//             {
-//                 ParameterInfos = paramList.ToArray(),
-//                 ReturnType = returnDef
-//             }
-//         };
-//         return true;
-//     }
-//
-//     private static bool MakeDefinitionOfNativeMethod(Scope parentScope, PseudoProgram program, MethodInfo methodInfo,
-//         out Definition definition)
-//     {
-//         if (methodInfo.GetCustomAttributes(typeof(BuiltinNativeFunctionAttribute), true).Length == 0)
-//         {
-//             definition = null;
-//             return false;
-//         }
-//
-//         var functionName = GetFunctionName(methodInfo);
-//
-//         var paramList = GetNativeMethodParamList(parentScope, program, methodInfo);
-//         var returnDef = GetNativeMethodReturnDefinition(parentScope, program, methodInfo);
-//
-//         definition = new Definition(parentScope, program)
-//         {
-//             Name = functionName,
-//             References = new List<SourceRange>(),
-//             SourceRange = SourceRange.Identity,
-//             Type = new BuiltinFunctionType(parentScope, program)
-//             {
-//                 ParameterInfos = paramList.ToArray(),
-//                 ReturnType = returnDef
-//             }
-//         };
-//         return true;
-//     }
-//
-//     private static string GetFunctionName(MethodInfo methodInfo)
-//     {
-//         if (methodInfo.GetCustomAttributes(typeof(BuiltinFunctionAttribute)) is BuiltinFunctionAttribute[] nameAttrs &&
-//             nameAttrs.Length != 0)
-//             return nameAttrs[0].Name;
-//
-//         if (methodInfo.GetCustomAttributes(typeof(BuiltinNativeFunctionAttribute)) is BuiltinNativeFunctionAttribute[]
-//                 nativeNameAttrs &&
-//             nativeNameAttrs.Length != 0)
-//             return nativeNameAttrs[0].Name;
-//
-//         return methodInfo.Name;
-//     }
-//
-//     private static List<Definition> GetMethodParamList(Scope parentScope, PseudoProgram program, MethodInfo methodInfo)
-//     {
-//         return methodInfo.GetCustomAttributes(typeof(ParamTypeAttribute))
-//             .Cast<ParamTypeAttribute>()
-//             .Select(param => new Definition(parentScope, program)
-//             {
-//                 Name = param.Name,
-//                 Attributes =
-//                     param.IsReference ? DefinitionAttribute.Reference : DefinitionAttribute.Immutable,
-//                 SourceRange = SourceRange.Identity,
-//                 TypeDescriptor = param.MakeTypeDescriptor()
-//             }).ToList();
-//     }
-//
-//     private static Definition GetMethodReturnDefinition(Scope parentScope, PseudoProgram program, MethodInfo methodInfo)
-//     {
-//         if (methodInfo.GetCustomAttributes(typeof(ReturnTypeAttribute)) is not ReturnTypeAttribute[]
-//                 returnTypeAttributes || returnTypeAttributes.Length == 0) return null;
-//         var typeDescriptor = returnTypeAttributes[0].MakeTypeDescriptor();
-//         return new Definition(parentScope, program)
-//         {
-//             Name = typeDescriptor.ToString(),
-//             TypeDescriptor = typeDescriptor,
-//             SourceRange = SourceRange.Identity,
-//             Attributes = DefinitionAttribute.Type | DefinitionAttribute.Immutable
-//         };
-//     }
-//
-//     private static List<Definition> GetNativeMethodParamList(Scope parentScope, PseudoProgram program,
-//         MethodInfo methodInfo)
-//     {
-//         return methodInfo.GetParameters().Select(info => new Definition(parentScope, program)
-//         {
-//             Name = info.Name,
-//             TypeDescriptor = GetTypeDescriptorFromSystemType(info.ParameterType),
-//             Attributes = DefinitionAttribute.Immutable,
-//             SourceRange = SourceRange.Identity
-//         }).ToList();
-//     }
-//
-//     private static Definition GetNativeMethodReturnDefinition(Scope parentScope, PseudoProgram program,
-//         MethodInfo methodInfo)
-//     {
-//         var typeDescriptor = GetTypeDescriptorFromSystemType(methodInfo.ReturnType);
-//         return new Definition(parentScope, program)
-//         {
-//             Name = typeDescriptor.ToString(),
-//             TypeDescriptor = typeDescriptor,
-//             SourceRange = SourceRange.Identity,
-//             Attributes = DefinitionAttribute.Type | DefinitionAttribute.Immutable
-//         };
-//     }
-// }
+using System.Reflection;
+using System.Runtime.InteropServices;
+using LLVMSharp.Interop;
+using PseudoCode.Core.CodeGen;
+using Type = System.Type;
 
+namespace PseudoCode.Core.Runtime.Reflection;
+
+public class FunctionBinder
+{
+    public static readonly Dictionary<Type, Symbol> TypeMap = new()
+    {
+        [typeof(int)] = BuiltinTypes.Integer,
+        [typeof(double)] = BuiltinTypes.Real,
+        [typeof(string)] = BuiltinTypes.CharPtr,
+        [typeof(char)] = BuiltinTypes.Char,
+        [typeof(bool)] = BuiltinTypes.Boolean,
+        // [typeof(DateOnly)] = BuiltinTypes.,
+        [typeof(void)] = BuiltinTypes.Void
+    };
+
+    public static void MakeFromType(CodeGenContext ctx, Block block, Type type)
+    {
+        foreach (var method in type.GetMethods()) MakeDefinitionOfNativeMethod(ctx, block, method);
+    }
+
+    public static bool MakeDefinitionOfNativeMethod(CodeGenContext ctx, Block block, MethodInfo methodInfo)
+    {
+        if (methodInfo.GetCustomAttributes(typeof(BuiltinNativeFunctionAttribute), true).Length == 0
+            || methodInfo.GetCustomAttributes(typeof(UnmanagedCallersOnlyAttribute), true).Length == 0)
+            return false;
+
+        var functionName = GetFunctionName(methodInfo);
+        // unsafe
+        // {
+        //     delegate* unmanaged[Cdecl] <char, char> a = &BuiltinFunctions.LowerCase;
+        //     methodInfo.MethodHandle.Value
+        // }
+
+        var paramList = GetNativeMethodParamList(methodInfo);
+        var returnDef = GetNativeMethodReturnDefinition(methodInfo);
+        var functionType =
+            LLVMTypeRef.CreateFunction(returnDef.Type.GetLLVMType(),
+                paramList.Select(p => p.Type.GetLLVMType()).ToArray());
+        var function = ctx.Module.AddFunction(functionName, functionType);
+        function.Linkage = LLVMLinkage.LLVMExternalLinkage;
+        // var functionPointer = Marshal.GetFunctionPointerForDelegate(del);
+        var functionPointer = methodInfo.MethodHandle.GetFunctionPointer();
+        ctx.Engine.AddGlobalMapping(function, functionPointer);
+        var pseudoFunctionType = new CodeGen.Type
+        {
+            Arguments = paramList.ToDictionary(x => x.Name, x => x),
+            ReturnType = returnDef.Type,
+            TypeName = CodeGen.Type.GenerateFunctionTypeName(paramList, returnDef.Type),
+            Kind = CodeGen.Types.Function
+        };
+        pseudoFunctionType.SetLLVMType(functionType);
+        var functionSymbol = new Symbol(functionName, false, pseudoFunctionType)
+        {
+            ValueRef = function
+        };
+        block.Namespace.AddSymbol(functionSymbol);
+        return true;
+    }
+
+    private static string GetFunctionName(MethodInfo methodInfo)
+    {
+        if (methodInfo.GetCustomAttributes(typeof(BuiltinNativeFunctionAttribute)) is BuiltinNativeFunctionAttribute[]
+                nativeNameAttrs &&
+            nativeNameAttrs.Length != 0)
+            return nativeNameAttrs[0].Name;
+
+        return methodInfo.Name;
+    }
+
+    private static List<Symbol> GetNativeMethodParamList(MethodInfo methodInfo)
+    {
+        return methodInfo.GetParameters().Select(info =>
+            new Symbol(info.Name, false, GetTypeDescriptorFromSystemType(info.ParameterType).Type)).ToList();
+    }
+
+    private static Symbol GetTypeDescriptorFromSystemType(Type infoParameterType)
+    {
+        return TypeMap[infoParameterType];
+    }
+
+    private static Symbol GetNativeMethodReturnDefinition(MethodInfo methodInfo)
+    {
+        var typeDescriptor = GetTypeDescriptorFromSystemType(methodInfo.ReturnType);
+        return typeDescriptor;
+    }
+}

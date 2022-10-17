@@ -1,10 +1,12 @@
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using PseudoCode.Core.Runtime.Errors;
 
 namespace PseudoCode.Core.Runtime.Reflection;
 
 public static class BuiltinFunctions
 {
-    public static Random Random = new();
+    public static readonly Random Random = new();
 
     // [BuiltinFunction("EOF")]
     // [ParamType("path", "STRING")]
@@ -44,6 +46,7 @@ public static class BuiltinFunctions
     }
 
     [BuiltinNativeFunction("__in_range")]
+    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
     public static bool InRange(RealNumberType target, RealNumberType from, RealNumberType to)
     {
         return from <= target && target <= to;
@@ -60,12 +63,14 @@ public static class BuiltinFunctions
     }
 
     [BuiltinNativeFunction("LCASE")]
+    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
     public static char LowerCase(char thisChar)
     {
         return char.ToLower(thisChar);
     }
 
     [BuiltinNativeFunction("UCASE")]
+    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
     public static char UpperCase(char thisChar)
     {
         return char.ToUpper(thisChar);
@@ -87,9 +92,11 @@ public static class BuiltinFunctions
     public static bool IsNum(string str) => RealNumberType.TryParse(str, out _);
 
     [BuiltinNativeFunction("ASC")]
+    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
     public static int Ascii(char chr) => chr;
 
     [BuiltinNativeFunction("CHR")]
+    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
     public static char Char(int ascii) => (char)ascii;
 
     [BuiltinNativeFunction("DAY")]
@@ -114,6 +121,7 @@ public static class BuiltinFunctions
     public static DateOnly Today() => DateOnly.FromDateTime(DateTime.Today);
 
     [BuiltinNativeFunction("INT")]
+    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
     public static int Int(RealNumberType x)
     {
         return (int)x;
@@ -126,6 +134,7 @@ public static class BuiltinFunctions
     }
 
     [BuiltinNativeFunction("RAND")]
+    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
     public static RealNumberType RandomReal(int x)
     {
         // ReSharper disable once RedundantCast

@@ -3,6 +3,7 @@ using Antlr4.Runtime.Tree;
 using PseudoCode.Core.Analyzing;
 using PseudoCode.Core.CodeGen;
 using PseudoCode.Core.CodeGen.TypeLookups;
+using PseudoCode.Core.Runtime.Reflection;
 using PseudoCode.Core.Runtime.Types;
 
 namespace PseudoCode.Core.Parsing;
@@ -18,6 +19,7 @@ public class NewCompiler : PseudoCodeBaseListener
         CurrentBlock = Context.Root;
         BuiltinTypes.Initialize();
         BuiltinTypes.AddBuiltinTypes(CurrentBlock);
+        FunctionBinder.MakeFromType(Context, CurrentBlock, typeof(BuiltinFunctions));
     }
 
 

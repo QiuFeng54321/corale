@@ -2,7 +2,7 @@ namespace PseudoCode.Core.CodeGen;
 
 public static class BuiltinTypes
 {
-    public static Symbol Integer, Real, CharPtr, Boolean, Char;
+    public static Symbol Integer, Real, CharPtr, Boolean, Char, Void;
 
     public static void Initialize()
     {
@@ -11,6 +11,7 @@ public static class BuiltinTypes
         Integer = Symbol.MakePrimitiveType("INTEGER", typeof(int));
         Real = Symbol.MakePrimitiveType("REAL", typeof(double));
         Boolean = Symbol.MakePrimitiveType("BOOLEAN", typeof(bool));
+        Void = Symbol.MakePrimitiveType("VOID", typeof(void));
     }
 
     public static void AddBuiltinTypes(Block block)
