@@ -4,6 +4,7 @@ DECLARE b1, b2 : BOOLEAN
 DECLARE c : __CHARPTR
 i1 <- 1 + 2
 i2 <- i1
+CALL __PRINTF(RAND(100))
 r1 <- 2.3
 r2 <- r1 + i1
 b1 <- TRUE + 2

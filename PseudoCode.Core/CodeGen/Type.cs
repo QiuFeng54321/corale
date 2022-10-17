@@ -11,7 +11,7 @@ public class Type
     ///     If the type is a function, this stores the arguments.<br />
     ///     We need this to store symbols because we need to fill them, and we need to specify the attributes
     /// </summary>
-    public Dictionary<string, Symbol> Arguments;
+    public List<Symbol> Arguments;
 
     /// <summary>
     ///     Stores where the type is declared
@@ -107,6 +107,12 @@ public class Type
         {
             resType._llvmTypeRef = LLVMTypeRef.Int8;
             resType.Kind = Types.Character;
+        }
+
+        if (type == typeof(void))
+        {
+            resType._llvmTypeRef = LLVMTypeRef.Void;
+            resType.Kind = Types.None;
         }
 
         return resType;

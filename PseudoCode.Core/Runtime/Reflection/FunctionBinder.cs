@@ -49,7 +49,7 @@ public class FunctionBinder
         ctx.Engine.AddGlobalMapping(function, functionPointer);
         var pseudoFunctionType = new CodeGen.Type
         {
-            Arguments = paramList.ToDictionary(x => x.Name, x => x),
+            Arguments = paramList,
             ReturnType = returnDef.Type,
             TypeName = CodeGen.Type.GenerateFunctionTypeName(paramList, returnDef.Type),
             Kind = CodeGen.Types.Function
@@ -59,7 +59,13 @@ public class FunctionBinder
         {
             ValueRef = function
         };
-        block.Namespace.AddSymbol(functionSymbol);
+        if (!block.Namespace.TryGetSymbol(functionName, out var functionOverloadsSymbol))
+        {
+            functionOverloadsSymbol = new Symbol(functionName, false, pseudoFunctionType);
+            block.Namespace.AddSymbol(functionOverloadsSymbol);
+        }
+
+        functionOverloadsSymbol.FunctionOverloads.Add(functionSymbol);
         return true;
     }
 

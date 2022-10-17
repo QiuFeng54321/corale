@@ -13,6 +13,11 @@ public class Symbol
     public List<Symbol> FunctionOverloads = new();
 
     /// <summary>
+    ///     This stores an expression which can generate a symbol when supplied with generic parameters.
+    /// </summary>
+    public IGenericExpression GenericExpression;
+
+    /// <summary>
     ///     Indicates whether the symbol is type-only
     /// </summary>
     public bool IsType;
@@ -36,11 +41,6 @@ public class Symbol
     ///     Type of the symbol. If the symbol is a set of overloads of a function, this is null
     /// </summary>
     public Type Type;
-
-    /// <summary>
-    ///     It might be a template type
-    /// </summary>
-    public TypeDeclaration TypeDeclaration;
 
     /// <summary>
     ///     Indicates the index of this symbol in a type, if it is in a type
@@ -74,6 +74,25 @@ public class Symbol
         return ValueRef != null
             ? ValueRef
             : ctx.Builder.BuildLoad(MemoryPointer, ctx.NameGenerator.RequestTemp(ReservedNames.Load));
+    }
+
+    public Symbol FindFunctionOverload(List<Symbol> arguments)
+    {
+        foreach (var functionOverload in FunctionOverloads)
+        {
+            if (functionOverload.Type.Arguments.Count != arguments.Count) continue;
+            var found = true;
+            foreach (var (argument1, argument2) in functionOverload.Type.Arguments.Zip(arguments))
+            {
+                if (Equals(argument1.Type, argument2.Type)) continue;
+                found = false;
+                break;
+            }
+
+            if (found) return functionOverload;
+        }
+
+        return null;
     }
 
     /// <summary>
@@ -146,7 +165,7 @@ public class Symbol
     {
         return new Symbol(typeDeclaration.TypeName, true, null)
         {
-            TypeDeclaration = typeDeclaration
+            GenericExpression = typeDeclaration
         };
     }
 
@@ -162,8 +181,8 @@ public class Symbol
     /// <returns>The cloned type with generic types and fields filled in</returns>
     public Symbol FillGeneric(CodeGenContext ctx, Block block, List<Symbol> genericArguments)
     {
-        if (TypeDeclaration == null) return this; // Nothing to fill
-        return TypeDeclaration.GenerateType(ctx, block, genericArguments);
+        if (GenericExpression == null) return this; // Nothing to fill
+        return GenericExpression.Generate(ctx, block, genericArguments);
     }
 
     public Symbol Clone()

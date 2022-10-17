@@ -4,6 +4,7 @@ using PseudoCode.Core.Analyzing;
 using PseudoCode.Core.CodeGen;
 using PseudoCode.Core.CodeGen.TypeLookups;
 using PseudoCode.Core.Runtime.Reflection;
+using PseudoCode.Core.Runtime.Reflection.Builtin;
 using PseudoCode.Core.Runtime.Types;
 
 namespace PseudoCode.Core.Parsing;
@@ -20,6 +21,7 @@ public class NewCompiler : PseudoCodeBaseListener
         BuiltinTypes.Initialize();
         BuiltinTypes.AddBuiltinTypes(CurrentBlock);
         FunctionBinder.MakeFromType(Context, CurrentBlock, typeof(BuiltinFunctions));
+        FunctionBinder.MakeFromType(Context, CurrentBlock, typeof(Printer));
     }
 
 
@@ -117,6 +119,16 @@ public class NewCompiler : PseudoCodeBaseListener
                 Symbol.MakeTypeDeclSymbol(new TypeDeclaration(name, new GenericDeclaration(genericParams), block)));
     }
 
+    public override void ExitCallStatement(PseudoCodeParser.CallStatementContext context)
+    {
+        base.ExitCallStatement(context);
+        var callExpr = Context.ExpressionStack.Pop();
+        CurrentBlock.Statements.Add(new CallStatement
+        {
+            Expression = callExpr
+        });
+    }
+
     public override void ExitArithmeticExpression(PseudoCodeParser.ArithmeticExpressionContext context)
     {
         base.ExitArithmeticExpression(context);
@@ -144,6 +156,27 @@ public class NewCompiler : PseudoCodeBaseListener
                 });
             else if (context.OpenParen() != null)
                 Context.ExpressionStack.Push(new ParenthesisExpression(Context.ExpressionStack.Pop()));
+        }
+        else
+        {
+            if (context.arguments() is { } arguments)
+            {
+                var argumentSymbols = new List<Expression>();
+                var argumentExpressions = arguments.tuple()?.expression();
+                if (argumentExpressions != null)
+                {
+                    foreach (var expr in argumentExpressions) argumentSymbols.Add(Context.ExpressionStack.Pop());
+
+                    argumentSymbols.Reverse();
+                }
+
+                var functionExpression = Context.ExpressionStack.Pop();
+                Context.ExpressionStack.Push(new CallExpression
+                {
+                    Function = functionExpression,
+                    Arguments = argumentSymbols
+                });
+            }
         }
     }
 

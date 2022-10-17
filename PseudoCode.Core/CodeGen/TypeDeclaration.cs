@@ -5,7 +5,7 @@ namespace PseudoCode.Core.CodeGen;
 /// <summary>
 ///     This is for type declaration, but will be used to make classes too
 /// </summary>
-public class TypeDeclaration : Statement
+public class TypeDeclaration : Statement, IGenericExpression
 {
     public readonly List<DeclarationStatement> DeclarationStatements;
     public readonly GenericDeclaration GenericDeclaration;
@@ -19,16 +19,16 @@ public class TypeDeclaration : Statement
         DeclarationStatements = declarationStatements;
     }
 
-    public Symbol GenerateType(CodeGenContext ctx, Block block, List<Symbol> genericFill = default)
+    public Symbol Generate(CodeGenContext ctx, Block block, List<Symbol> genericParams = default)
     {
-        var typeName = Type.GenerateFilledGenericTypeName(TypeName, genericFill);
+        var typeName = Type.GenerateFilledGenericTypeName(TypeName, genericParams);
         if (block.Namespace.TryGetSymbol(typeName, out var existingSymbol)) return existingSymbol;
         // 创建一个悬挂块，不会改动Statements但是能达到独立查找的效果
         var subNs = block.Namespace.AddNamespace(typeName);
         var subBlock = block.EnterBlock(subNs, true);
-        if (genericFill != null)
-            for (var i = 0; i < genericFill.Count; i++)
-                subNs.AddSymbol(genericFill[i], false, GenericDeclaration.Identifiers[i]);
+        if (genericParams != null)
+            for (var i = 0; i < genericParams.Count; i++)
+                subNs.AddSymbol(genericParams[i], false, GenericDeclaration.Identifiers[i]);
 
         var resType = new Type
         {
@@ -53,7 +53,7 @@ public class TypeDeclaration : Statement
 
     public override void CodeGen(CodeGenContext ctx, Block block)
     {
-        GenerateType(ctx, block);
+        Generate(ctx, block);
     }
 
     public override void Format(PseudoFormatter formatter)

@@ -2,11 +2,12 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using PseudoCode.Core.Runtime.Errors;
 
-namespace PseudoCode.Core.Runtime.Reflection;
+namespace PseudoCode.Core.Runtime.Reflection.Builtin;
 
 public static class BuiltinFunctions
 {
     public static readonly Random Random = new();
+
 
     // [BuiltinFunction("EOF")]
     // [ParamType("path", "STRING")]
