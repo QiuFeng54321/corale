@@ -1,3 +1,5 @@
+using PseudoCode.Core.CodeGen.Containers;
+
 namespace PseudoCode.Core.CodeGen;
 
 public static class ReservedNames
@@ -12,6 +14,7 @@ public static class ReservedNames
     public const string Pointer = "ptr";
     public const string Function = "func";
     public const string Main = "__main";
+    public const string Block = "block";
     public const string Temp = "_";
 
     public static readonly Dictionary<Types, string> Map = new()

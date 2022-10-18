@@ -1,4 +1,5 @@
 using LLVMSharp.Interop;
+using PseudoCode.Core.CodeGen.Containers;
 using PseudoCode.Core.Runtime.Errors;
 
 namespace PseudoCode.Core.CodeGen;
@@ -73,7 +74,8 @@ public class Symbol
     {
         return ValueRef != null
             ? ValueRef
-            : ctx.Builder.BuildLoad(MemoryPointer, ctx.NameGenerator.RequestTemp(ReservedNames.Load));
+            : ctx.Builder.BuildLoad2(Type.GetLLVMType(), MemoryPointer,
+                ctx.NameGenerator.RequestTemp(ReservedNames.Load));
     }
 
     public Symbol FindFunctionOverload(List<Symbol> arguments)
@@ -129,7 +131,7 @@ public class Symbol
 
     /// <summary>
     ///     <seealso
-    ///         cref="MakeTemp(string,PseudoCode.Core.CodeGen.Type,PseudoCode.Core.CodeGen.CodeGenContext,LLVMSharp.Interop.LLVMValueRef)" />
+    ///         cref="MakeTemp(string,PseudoCode.Core.CodeGen.Type,CodeGenContext,LLVMSharp.Interop.LLVMValueRef)" />
     /// </summary>
     /// <param name="nameTemplate"></param>
     /// <param name="typeName">The name of the type to lookup</param>
@@ -139,7 +141,7 @@ public class Symbol
     /// <exception cref="InvalidTypeError">Type cannot be found</exception>
     public static Symbol MakeTemp(string nameTemplate, string typeName, CodeGenContext ctx, LLVMValueRef value)
     {
-        if (!ctx.Root.Namespace.TryGetSymbol(typeName, out var sym)) throw new InvalidTypeError(typeName);
+        if (!ctx.GlobalNamespace.TryGetSymbol(typeName, out var sym)) throw new InvalidTypeError(typeName);
 
         return MakeTemp(nameTemplate, sym.Type, ctx, value);
     }

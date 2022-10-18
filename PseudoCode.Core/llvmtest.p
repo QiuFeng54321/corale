@@ -12,6 +12,16 @@ b1 <- TRUE + 2
 b2 <- FALSE
 CALL __PRINTF(b1)
 CALL __PRINTF(b2)
+IF FALSE THEN
+    CALL __PRINTF('c')
+ELSE
+    IF FALSE THEN
+        CALL __PRINTF('e')
+    ELSE
+        CALL __PRINTF('f')
+    ENDIF
+    CALL __PRINTF('d')
+ENDIF
 TYPE t1<T, S>
     DECLARE t1t : T
     DECLARE s : INTEGER

@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using LLVMSharp.Interop;
 using PseudoCode.Core.CodeGen;
+using PseudoCode.Core.CodeGen.Containers;
 using Type = System.Type;
 
 namespace PseudoCode.Core.Runtime.Reflection;
@@ -14,6 +15,8 @@ public class FunctionBinder
         [typeof(double)] = BuiltinTypes.Real,
         [typeof(string)] = BuiltinTypes.CharPtr,
         [typeof(char)] = BuiltinTypes.Char,
+        [typeof(byte)] = BuiltinTypes.Char,
+        [typeof(BlittableChar)] = BuiltinTypes.Char,
         [typeof(bool)] = BuiltinTypes.Boolean,
         [typeof(BlittableBoolean)] = BuiltinTypes.Boolean,
         // [typeof(DateOnly)] = BuiltinTypes.,

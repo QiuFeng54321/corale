@@ -1,6 +1,6 @@
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using LLVMSharp.Interop;
+using PseudoCode.Core.CodeGen.Containers;
 
 namespace PseudoCode.Core.CodeGen;
 
@@ -14,15 +14,10 @@ public class PseudoString : Expression
         LLVMValueRef val;
         unsafe
         {
-            val = LLVM.BuildGlobalStringPtr(ctx.Builder, ToSByte(Value), ToSByte(name));
+            val = LLVM.BuildGlobalStringPtr(ctx.Builder, Value.ToSByte(), name.ToSByte());
         }
 
         return Symbol.MakeTemp(BuiltinTypes.CharPtr.Type, val);
-    }
-
-    public static unsafe sbyte* ToSByte(string str)
-    {
-        return (sbyte*)Marshal.StringToHGlobalAuto(str);
     }
 
     public override string ToFormatString()

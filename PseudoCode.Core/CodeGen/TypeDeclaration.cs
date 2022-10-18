@@ -1,3 +1,4 @@
+using PseudoCode.Core.CodeGen.Containers;
 using PseudoCode.Core.Formatting;
 
 namespace PseudoCode.Core.CodeGen;
@@ -25,7 +26,7 @@ public class TypeDeclaration : Statement, IGenericExpression
         if (block.Namespace.TryGetSymbol(typeName, out var existingSymbol)) return existingSymbol;
         // 创建一个悬挂块，不会改动Statements但是能达到独立查找的效果
         var subNs = block.Namespace.AddNamespace(typeName);
-        var subBlock = block.EnterBlock(subNs, true);
+        var subBlock = block.EnterBlock(ctx.NameGenerator.Request(ReservedNames.Type), subNs, true);
         if (genericParams != null)
             for (var i = 0; i < genericParams.Count; i++)
                 subNs.AddSymbol(genericParams[i], false, GenericDeclaration.Identifiers[i]);

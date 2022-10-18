@@ -2,6 +2,7 @@ global using RealNumberType = System.Double;
 using Antlr4.Runtime.Tree;
 using PseudoCode.Core.Analyzing;
 using PseudoCode.Core.CodeGen;
+using PseudoCode.Core.CodeGen.Containers;
 using PseudoCode.Core.CodeGen.TypeLookups;
 using PseudoCode.Core.Runtime.Reflection;
 using PseudoCode.Core.Runtime.Reflection.Builtin;
@@ -16,9 +17,10 @@ public class NewCompiler : PseudoCodeBaseListener
 
     public void Initialize()
     {
-        Context = new CodeGenContext();
-        CurrentBlock = Context.Root;
         BuiltinTypes.Initialize();
+        Context = new CodeGenContext();
+        CurrentBlock = Context.CompilationUnit.MainFunction.Blocks[0];
+        // Context.Builder.PositionAtEnd(CurrentBlock);
         BuiltinTypes.AddBuiltinTypes(CurrentBlock);
         FunctionBinder.MakeFromType(Context, CurrentBlock, typeof(BuiltinFunctions));
         FunctionBinder.MakeFromType(Context, CurrentBlock, typeof(Printer));
@@ -29,7 +31,7 @@ public class NewCompiler : PseudoCodeBaseListener
     {
         Initialize();
         ParseTreeWalker.Default.Walk(this, tree);
-        var block = Context.Root.GetBlock(Context);
+        Context.CompilationUnit.CodeGen(Context, null);
         Context.Module.Dump();
         return Context;
         // var func = Context.Module.GetNamedFunction(ReservedNames.Main);
@@ -100,7 +102,7 @@ public class NewCompiler : PseudoCodeBaseListener
     public override void EnterTypeDefinition(PseudoCodeParser.TypeDefinitionContext context)
     {
         base.EnterTypeDefinition(context);
-        CurrentBlock = CurrentBlock.EnterBlock();
+        CurrentBlock = CurrentBlock.EnterBlock(Context.NameGenerator.Request(ReservedNames.Type));
     }
 
     public override void ExitTypeDefinition(PseudoCodeParser.TypeDefinitionContext context)
@@ -117,6 +119,43 @@ public class NewCompiler : PseudoCodeBaseListener
         else
             CurrentBlock.Namespace.AddSymbol(
                 Symbol.MakeTypeDeclSymbol(new TypeDeclaration(name, new GenericDeclaration(genericParams), block)));
+    }
+
+    public override void ExitIfStatement(PseudoCodeParser.IfStatementContext context)
+    {
+        base.ExitIfStatement(context);
+        Block elseBlock = null;
+        if (context.HasElse)
+        {
+            elseBlock = (Block)CurrentBlock.Statements[^1];
+            CurrentBlock.Statements.RemoveAt(CurrentBlock.Statements.Count - 1);
+        }
+
+        var thenBlock = (Block)CurrentBlock.Statements[^1];
+        CurrentBlock.Statements.RemoveAt(CurrentBlock.Statements.Count - 1);
+        var condExpr = Context.ExpressionStack.Pop();
+        var ifStatement = new IfStatement
+        {
+            Condition = condExpr,
+            Then = thenBlock,
+            Else = elseBlock
+        };
+        CurrentBlock.Statements.Add(ifStatement);
+        var continueBlock = CurrentBlock.ParentFunction.AddBlock(Context.NameGenerator.Request(ReservedNames.Block));
+        CurrentBlock.Statements.Add(continueBlock);
+        ifStatement.Continue = continueBlock;
+    }
+
+    public override void EnterIndentedBlock(PseudoCodeParser.IndentedBlockContext context)
+    {
+        base.EnterIndentedBlock(context);
+        CurrentBlock = CurrentBlock.EnterBlock(Context.NameGenerator.Request(ReservedNames.Block));
+    }
+
+    public override void ExitIndentedBlock(PseudoCodeParser.IndentedBlockContext context)
+    {
+        base.ExitIndentedBlock(context);
+        CurrentBlock = CurrentBlock.ParentBlock;
     }
 
     public override void ExitCallStatement(PseudoCodeParser.CallStatementContext context)
@@ -220,6 +259,14 @@ public class NewCompiler : PseudoCodeBaseListener
                 Context.ExpressionStack.Push(new PseudoString
                 {
                     Value = (string)val
+                });
+                break;
+            }
+            case "CHAR":
+            {
+                Context.ExpressionStack.Push(new PseudoCharacter
+                {
+                    Value = (char)val
                 });
                 break;
             }

@@ -3,14 +3,14 @@ using PseudoCode.Core.CodeGen.Containers;
 
 namespace PseudoCode.Core.CodeGen;
 
-public class PseudoInteger : Expression
+public class PseudoCharacter : Expression
 {
-    public int Value;
+    public char Value;
 
     public override Symbol CodeGen(CodeGenContext ctx, Block block)
     {
-        var val = LLVMValueRef.CreateConstInt(LLVMTypeRef.Int32, (ulong)Value);
-        return Symbol.MakeTemp(ReservedNames.Integer, BuiltinTypes.Integer.Type, ctx, val);
+        var val = LLVMValueRef.CreateConstInt(LLVMTypeRef.Int8, Value);
+        return Symbol.MakeTemp(ReservedNames.Char, BuiltinTypes.Char.Type, ctx, val);
     }
 
     public override string ToFormatString()

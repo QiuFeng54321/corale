@@ -27,7 +27,7 @@ void RunProgram(CommandLines.Options opts)
         IParseTree parseTree = parser.fileInput();
         var ctx = interpreter.Compile(parseTree);
         ctx.Analysis.PrintFeedbacks();
-        Console.WriteLine(ctx.Root.ToString());
+        Console.WriteLine(ctx.CompilationUnit.MainFunction.ToString());
         var func = ctx.Module.GetNamedFunction(ReservedNames.Main);
         var res = LLVM.VerifyFunction(func, LLVMVerifierFailureAction.LLVMPrintMessageAction);
         Debug.WriteLine(res.ToString());
