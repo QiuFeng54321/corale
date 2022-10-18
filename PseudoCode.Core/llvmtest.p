@@ -5,10 +5,13 @@ DECLARE c : __CHARPTR
 i1 <- 1 + 2
 i2 <- i1
 CALL __PRINTF(RAND(100))
+CALL __PRINTLN()
 r1 <- 2.3
 r2 <- r1 + i1
 b1 <- TRUE + 2
 b2 <- FALSE
+CALL __PRINTF(b1)
+CALL __PRINTF(b2)
 TYPE t1<T, S>
     DECLARE t1t : T
     DECLARE s : INTEGER

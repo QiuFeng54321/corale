@@ -28,7 +28,7 @@ public static class Printer
 
     [BuiltinNativeFunction("__PRINTF")]
     [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static void Printf(bool x)
+    public static void Printf(BlittableBoolean x)
     {
         Console.Write(x ? "TRUE" : "FALSE");
     }

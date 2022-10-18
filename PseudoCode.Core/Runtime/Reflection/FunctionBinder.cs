@@ -15,6 +15,7 @@ public class FunctionBinder
         [typeof(string)] = BuiltinTypes.CharPtr,
         [typeof(char)] = BuiltinTypes.Char,
         [typeof(bool)] = BuiltinTypes.Boolean,
+        [typeof(BlittableBoolean)] = BuiltinTypes.Boolean,
         // [typeof(DateOnly)] = BuiltinTypes.,
         [typeof(void)] = BuiltinTypes.Void
     };
