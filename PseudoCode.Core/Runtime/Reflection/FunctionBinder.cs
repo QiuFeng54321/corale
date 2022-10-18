@@ -1,6 +1,5 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
-using LLVMSharp.Interop;
 using PseudoCode.Core.CodeGen;
 using PseudoCode.Core.CodeGen.Containers;
 using Type = System.Type;
@@ -35,41 +34,13 @@ public class FunctionBinder
             return false;
 
         var functionName = GetFunctionName(methodInfo);
-        // unsafe
-        // {
-        //     delegate* unmanaged[Cdecl] <char, char> a = &BuiltinFunctions.LowerCase;
-        //     methodInfo.MethodHandle.Value
-        // }
-
         var paramList = GetNativeMethodParamList(methodInfo);
         var returnDef = GetNativeMethodReturnDefinition(methodInfo);
-        var functionType =
-            LLVMTypeRef.CreateFunction(returnDef.Type.GetLLVMType(),
-                paramList.Select(p => p.Type.GetLLVMType()).ToArray());
-        var function = ctx.Module.AddFunction(functionName, functionType);
-        function.Linkage = LLVMLinkage.LLVMExternalLinkage;
-        // var functionPointer = Marshal.GetFunctionPointerForDelegate(del);
+        var function = ctx.CompilationUnit.MakeFunction(functionName, paramList, returnDef, true);
+        function.GeneratePrototype(ctx);
         var functionPointer = methodInfo.MethodHandle.GetFunctionPointer();
-        ctx.Engine.AddGlobalMapping(function, functionPointer);
-        var pseudoFunctionType = new CodeGen.Type
-        {
-            Arguments = paramList,
-            ReturnType = returnDef.Type,
-            TypeName = CodeGen.Type.GenerateFunctionTypeName(paramList, returnDef.Type),
-            Kind = CodeGen.Types.Function
-        };
-        pseudoFunctionType.SetLLVMType(functionType);
-        var functionSymbol = new Symbol(functionName, false, pseudoFunctionType)
-        {
-            ValueRef = function
-        };
-        if (!block.Namespace.TryGetSymbol(functionName, out var functionOverloadsSymbol))
-        {
-            functionOverloadsSymbol = new Symbol(functionName, false, pseudoFunctionType);
-            block.Namespace.AddSymbol(functionOverloadsSymbol);
-        }
+        function.LinkToFunctionPointer(ctx, functionPointer);
 
-        functionOverloadsSymbol.FunctionOverloads.Add(functionSymbol);
         return true;
     }
 

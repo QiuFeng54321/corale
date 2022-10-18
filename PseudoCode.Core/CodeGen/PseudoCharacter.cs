@@ -15,6 +15,6 @@ public class PseudoCharacter : Expression
 
     public override string ToFormatString()
     {
-        return Value.ToString();
+        return '\'' + Value.ToString() + '\'';
     }
 }

@@ -9,14 +9,16 @@ public class CompilationUnit : Statement
     public Function MainFunction;
     public Namespace Namespace;
 
-    public Function MakeFunction(string name, List<Symbol> arguments, Symbol retType)
+    public Function MakeFunction(string name, List<Symbol> arguments, Symbol retType, bool isExtern = false)
     {
         var func = new Function
         {
             Name = name,
             Arguments = arguments,
             ReturnType = retType,
-            CompilationUnit = this
+            CompilationUnit = this,
+            ParentNamespace = Namespace,
+            IsExtern = isExtern
         };
         Functions.Add(func);
         return func;

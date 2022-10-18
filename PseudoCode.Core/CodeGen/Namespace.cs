@@ -51,6 +51,11 @@ public class Namespace
         return ns;
     }
 
+    public string GetFullQualifier(string typeName)
+    {
+        return Parent == null ? typeName : $"{ToString()}.{typeName}";
+    }
+
     public override string ToString()
     {
         return Parent == null ? "" : $"{Parent}.{Name}";
