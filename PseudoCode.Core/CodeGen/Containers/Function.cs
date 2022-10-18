@@ -7,6 +7,7 @@ public class Function : Statement
 {
     public readonly List<Block> Blocks = new();
     public List<Symbol> Arguments;
+    public Namespace BodyNamespace;
     public CompilationUnit CompilationUnit;
     public bool IsExtern;
     public LLVMValueRef LLVMFunction;
@@ -17,12 +18,8 @@ public class Function : Statement
 
     public unsafe void GeneratePrototype(CodeGenContext ctx)
     {
+        if (LLVMFunction != null) return;
         AddSymbol(ctx);
-        for (uint index = 0; index < Arguments.Count; index++)
-        {
-            var argument = Arguments[(int)index];
-            LLVM.SetValueName(LLVM.GetParam(LLVMFunction, index), argument.Name.ToSByte());
-        }
 
         if (IsExtern)
         {
@@ -30,8 +27,21 @@ public class Function : Statement
         }
         else
         {
+            BodyNamespace = ParentNamespace.AddNamespace(ResultFunction.Name);
             var entry = AddBlock("entry");
             ctx.Builder.PositionAtEnd(entry.BlockRef);
+        }
+
+        for (uint index = 0; index < Arguments.Count; index++)
+        {
+            var argument = Arguments[(int)index];
+            LLVMValueRef paramValue = LLVM.GetParam(LLVMFunction, index);
+            LLVM.SetValueName(paramValue, argument.Name.ToSByte());
+            if (!IsExtern)
+                ParentNamespace.AddSymbol(new Symbol(argument.Name, false, argument.Type)
+                {
+                    ValueRef = paramValue
+                });
         }
     }
 
@@ -57,7 +67,7 @@ public class Function : Statement
             Kind = Types.Function
         };
         pseudoFunctionType.SetLLVMType(functionType);
-        var functionSymbol = new Symbol(Name, false, pseudoFunctionType)
+        ResultFunction = new Symbol(Name, false, pseudoFunctionType)
         {
             ValueRef = LLVMFunction
         };
@@ -67,7 +77,7 @@ public class Function : Statement
             ParentNamespace.AddSymbol(functionOverloadsSymbol);
         }
 
-        functionOverloadsSymbol.FunctionOverloads.Add(functionSymbol);
+        functionOverloadsSymbol.FunctionOverloads.Add(ResultFunction);
     }
 
     public Block AddBlock(string name, Namespace ns = null)
@@ -75,7 +85,7 @@ public class Function : Statement
         var block = new Block
         {
             Name = name,
-            Namespace = ns ?? CompilationUnit.Namespace,
+            Namespace = ns ?? BodyNamespace,
             ParentFunction = this
         };
         block.InitializeBlock();

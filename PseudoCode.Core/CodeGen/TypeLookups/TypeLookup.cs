@@ -18,12 +18,8 @@ public class TypeLookup
     {
         // 找到
         var ns = _parent?.Lookup(block).Ns ?? block.Namespace;
-        while (ns != null)
-        {
-            if (ns.TryGetSymbol(_name, out var sym)) return new SymbolOrNamespace(sym);
-            if (ns.TryGetNamespace(_name, out var nsFound)) return new SymbolOrNamespace(Ns: nsFound);
-            ns = ns.Parent;
-        }
+        if (ns.TryGetSymbol(_name, out var sym)) return new SymbolOrNamespace(sym);
+        if (ns.TryGetNamespace(_name, out var nsFound)) return new SymbolOrNamespace(Ns: nsFound);
 
         throw new InvalidAccessError($"Unknown namespace or symbol: {_name}");
     }

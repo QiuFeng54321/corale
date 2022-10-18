@@ -30,12 +30,15 @@ public class Namespace
 
     public bool TryGetSymbol(string name, out Symbol result)
     {
-        return Symbols.TryGetValue(name, out result);
+        if (!Symbols.TryGetValue(name, out result)) return Parent != null && Parent.TryGetSymbol(name, out result);
+        return true;
     }
 
     public bool TryGetNamespace(string name, out Namespace result)
     {
-        return ChildrenNamespaces.TryGetValue(name, out result);
+        if (!ChildrenNamespaces.TryGetValue(name, out result))
+            return Parent != null && Parent.TryGetNamespace(name, out result);
+        return true;
     }
 
     public void AddSymbol(Symbol symbol, bool setNs = true, string name = default)
