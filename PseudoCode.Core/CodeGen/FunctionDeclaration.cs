@@ -29,7 +29,12 @@ public class FunctionDeclaration : Statement, IGenericExpression
             for (var i = 0; i < genericParams.Count; i++)
                 subNs.AddSymbol(genericParams[i], false, GenericDeclaration.Identifiers[i]);
         var filledArgumentSymbols =
-            Arguments.Select(a => new Symbol(a.Name, false, a.DataType.Lookup(ctx, function, subNs).Type));
+            Arguments.Select(a =>
+            {
+                var dataTypeSymbol = a.DataType.Lookup(ctx, function, subNs);
+                return new Symbol(a.Name, false, dataTypeSymbol.Type, dataTypeSymbol.Namespace,
+                    a.IsRef ? DefinitionAttribute.Reference : DefinitionAttribute.None);
+            });
         var filledReturnType = ReturnType.Lookup(ctx, function, subNs);
         var func = ctx.CompilationUnit.MakeFunction(Name, filledArgumentSymbols.ToList(), filledReturnType,
             addToList: false);

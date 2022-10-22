@@ -1,5 +1,3 @@
-using PseudoCode.Core.CodeGen.Containers;
-
 namespace PseudoCode.Core.CodeGen;
 
 public static class BuiltinTypes
@@ -16,12 +14,13 @@ public static class BuiltinTypes
         Void = Symbol.MakePrimitiveType("VOID", typeof(void));
     }
 
-    public static void AddBuiltinTypes(Block block)
+    public static void AddBuiltinTypes(Namespace ns)
     {
-        block.Namespace.AddSymbol(CharPtr);
-        block.Namespace.AddSymbol(Integer);
-        block.Namespace.AddSymbol(Real);
-        block.Namespace.AddSymbol(Char);
-        block.Namespace.AddSymbol(Boolean);
+        ns.AddSymbol(CharPtr);
+        ns.AddSymbol(Integer);
+        ns.AddSymbol(Real);
+        ns.AddSymbol(Char);
+        ns.AddSymbol(Boolean);
+        ns.AddSymbol(Void);
     }
 }

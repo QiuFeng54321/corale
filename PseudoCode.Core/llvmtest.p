@@ -8,8 +8,17 @@ FUNCTION recFib(n : INTEGER) RETURNS INTEGER
     ENDIF
     RETURN recFib(n - 1) + recFib(n - 2)
 ENDFUNCTION
+FUNCTION swap(BYREF a : INTEGER, b : INTEGER) RETURNS VOID
+    DECLARE tmp : INTEGER
+    tmp <- a
+    a <- b
+    b <- tmp
+ENDFUNCTION
 i1 <- 1 + 2
-i2 <- i1
+i2 <- 4
+CALL swap(i1, i2)
+CALL __PRINTF(i1)
+CALL __PRINTF(i2)
 CALL __PRINTF(RAND(100))
 CALL __PRINTLN()
 r1 <- 2.3
@@ -38,8 +47,8 @@ TYPE t2<T, S>
     DECLARE t2t2 : t1<T, S>
 ENDTYPE
 DECLARE t11 : t1<INTEGER, BOOLEAN>
-DECLARE t12 : t1<__CHARPTR, t1<INTEGER, REAL>>
-DECLARE t21 : t2<INTEGER, __CHARPTR>
+DECLARE t12 : t1<^CHAR, t1<INTEGER, REAL>>
+DECLARE t21 : t2<INTEGER, ^^CHAR>
 b1 <- b2 AND(NOT(b1 OR b2)) OR i1= - i2 // Testing unformatted string
 r1 <- r2 + r1
 r2 <- i2 + r1

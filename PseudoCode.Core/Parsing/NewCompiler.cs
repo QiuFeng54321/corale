@@ -21,7 +21,7 @@ public class NewCompiler : PseudoCodeBaseListener
         Context = new CodeGenContext();
         CurrentBlock = Context.CompilationUnit.MainFunction.Block;
         // Context.Builder.PositionAtEnd(CurrentBlock);
-        BuiltinTypes.AddBuiltinTypes(CurrentBlock);
+        BuiltinTypes.AddBuiltinTypes(Context.GlobalNamespace);
         FunctionBinder.MakeFromType(Context, typeof(BuiltinFunctions));
         FunctionBinder.MakeFromType(Context, typeof(Printer));
     }
@@ -188,13 +188,20 @@ public class NewCompiler : PseudoCodeBaseListener
         var name = context.Identifier().GetText();
         List<FunctionDeclaration.ArgumentType> arguments = new();
         if (context.argumentsDeclaration() != null)
+        {
+            var byRef = false;
             foreach (var argumentDeclarationContext in context.argumentsDeclaration().argumentDeclaration())
+            {
+                if (argumentDeclarationContext.Byref() != null) byRef = true;
+                if (argumentDeclarationContext.Byval() != null) byRef = false;
                 arguments.Add(new FunctionDeclaration.ArgumentType
                 {
                     Name = argumentDeclarationContext.Identifier().GetText(),
                     DataType = GetType(argumentDeclarationContext.dataType()),
-                    IsRef = argumentDeclarationContext.Byref() != null
+                    IsRef = byRef
                 });
+            }
+        }
 
         var retType = GetType(context.dataType());
         var body = (Block)CurrentBlock.Statements[^1];

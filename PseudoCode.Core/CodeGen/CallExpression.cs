@@ -1,3 +1,4 @@
+using LLVMSharp.Interop;
 using PseudoCode.Core.CodeGen.Containers;
 
 namespace PseudoCode.Core.CodeGen;
@@ -13,8 +14,18 @@ public class CallExpression : Expression
         var arguments = Arguments.Select(a => a.CodeGen(ctx, function1)).ToArray();
         var overload = function.FindFunctionOverload(arguments.ToList());
         var retType = overload.Type.ReturnType;
+        var llvmArguments = new List<LLVMValueRef>();
+        for (var index = 0; index < arguments.Length; index++)
+        {
+            var argValue = arguments[index];
+            var funcArg = overload.Type.Arguments[index];
+            llvmArguments.Add(funcArg.DefinitionAttribute.HasFlag(DefinitionAttribute.Reference)
+                ? argValue.MemoryPointer
+                : argValue.GetRealValueRef(ctx));
+        }
+
         var ret = ctx.Builder.BuildCall2(overload.Type.GetLLVMType(), overload.ValueRef,
-            arguments.Select(a => a.GetRealValueRef(ctx)).ToArray(),
+            llvmArguments.ToArray(),
             retType.Kind == Types.None ? "" : retType.Kind.RequestTemp(ctx));
         return retType.Kind == Types.None ? null : Symbol.MakeTemp(retType, ret);
     }

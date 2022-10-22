@@ -29,7 +29,7 @@ public class Function : Statement
         }
         else
         {
-            BodyNamespace = ParentNamespace.AddNamespace(ResultFunction.Name);
+            BodyNamespace ??= ParentNamespace.AddNamespace(ResultFunction.Name);
             AddBlock("entry");
             CurrentBlockRef = LLVMFunction.AppendBasicBlock("entry");
             ctx.Builder.PositionAtEnd(CurrentBlockRef);
@@ -41,10 +41,14 @@ public class Function : Statement
             LLVMValueRef paramValue = LLVM.GetParam(LLVMFunction, index);
             LLVM.SetValueName(paramValue, argument.Name.ToSByte());
             if (!IsExtern)
-                ParentNamespace.AddSymbol(new Symbol(argument.Name, false, argument.Type)
-                {
-                    ValueRef = paramValue
-                });
+            {
+                var symbol = new Symbol(argument.Name, false, argument.Type);
+                if (argument.DefinitionAttribute.HasFlag(DefinitionAttribute.Reference))
+                    symbol.MemoryPointer = paramValue;
+                else
+                    symbol.ValueRef = paramValue;
+                ParentNamespace.AddSymbol(symbol);
+            }
         }
     }
 
@@ -57,8 +61,17 @@ public class Function : Statement
 
     private unsafe void AddSymbol(CodeGenContext ctx)
     {
+        var llvmParamTypes = new List<LLVMTypeRef>();
+        foreach (var argument in Arguments)
+        {
+            var llvmTypeRef = argument.Type.GetLLVMType();
+            if (argument.DefinitionAttribute.HasFlag(DefinitionAttribute.Reference))
+                llvmTypeRef = LLVMTypeRef.CreatePointer(llvmTypeRef, 0);
+            llvmParamTypes.Add(llvmTypeRef);
+        }
+
         var functionType = LLVMTypeRef.CreateFunction(ReturnType.Type.GetLLVMType(),
-            Arguments.Select(a => a.Type.GetLLVMType()).ToArray());
+            llvmParamTypes.ToArray());
         LLVMFunction = LLVM.AddFunction(ctx.Module, ParentNamespace.GetFullQualifier(Name).ToSByte(),
             functionType);
 
