@@ -194,6 +194,8 @@ public class Symbol
     /// <summary>
     ///     Fill the generic arguments (kinda like making types from template)
     /// </summary>
+    /// <param name="ctx">Context of the symbol</param>
+    /// <param name="function">The function this symbol is in</param>
     /// <param name="genericArguments">The arguments to fill</param>
     /// <returns>The cloned type with generic types and fields filled in</returns>
     public Symbol FillGeneric(CodeGenContext ctx, Function function, List<Symbol> genericArguments)

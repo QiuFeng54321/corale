@@ -33,7 +33,7 @@ public class Type
     ///     If the type is a custom type, this stores the members in the type.<br />
     ///     We need this to store symbols because we need to fill them, and we need to specify the attributes
     /// </summary>
-    public Dictionary<string, Symbol> Members;
+    public List<Symbol> Members;
 
     /// <summary>
     ///     Return type of the function
@@ -57,7 +57,7 @@ public class Type
         {
             var i = 0;
             List<LLVMTypeRef> llvmTypeMembers = new();
-            foreach (var (key, sym) in Members)
+            foreach (var sym in Members)
             {
                 sym.TypeMemberIndex = i++;
                 llvmTypeMembers.Add(sym.Type.GetLLVMType());

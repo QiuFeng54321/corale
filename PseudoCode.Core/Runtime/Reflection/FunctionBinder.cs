@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using PseudoCode.Core.CodeGen;
 using PseudoCode.Core.CodeGen.Containers;
+using PseudoCode.Core.Runtime.Errors;
 using Type = System.Type;
 
 namespace PseudoCode.Core.Runtime.Reflection;
@@ -62,7 +63,15 @@ public class FunctionBinder
 
     private static Symbol GetTypeDescriptorFromSystemType(Type infoParameterType)
     {
-        return TypeMap[infoParameterType];
+        if (TypeMap.ContainsKey(infoParameterType)) return TypeMap[infoParameterType];
+        if (infoParameterType.IsPointer)
+            return GetTypeDescriptorFromSystemType(infoParameterType.GetElementType()).MakePointerType();
+
+        if (infoParameterType.IsValueType)
+        {
+        }
+
+        throw new InvalidTypeError(infoParameterType.ToString());
     }
 
     private static Symbol GetNativeMethodReturnDefinition(MethodInfo methodInfo)

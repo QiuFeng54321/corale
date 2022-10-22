@@ -30,25 +30,23 @@ public class TypeDeclaration : Statement, IGenericExpression
             for (var i = 0; i < genericParams.Count; i++)
                 subNs.AddSymbol(genericParams[i], false, GenericDeclaration.Identifiers[i]);
 
-        var resType = new Type
-        {
-            TypeName = typeName,
-            Kind = Types.Type
-        };
-        var typeSymbol = Symbol.MakeTypeSymbol(resType);
-        function.BodyNamespace.AddSymbol(typeSymbol);
-        Dictionary<string, Symbol> typeMembers = new();
+        List<Symbol> typeMembers = new();
         for (var index = 0; index < DeclarationStatements.Count; index++)
         {
             var declarationStatement = DeclarationStatements[index];
             var typeSym = declarationStatement.GetTypeSymbol(ctx, function, subNs);
             var sym = declarationStatement.MakeSymbol(typeSym);
-            typeMembers.Add(declarationStatement.Name, sym);
+            typeMembers.Add(sym);
             sym.TypeMemberIndex = index;
         }
 
-        resType.Members = typeMembers;
-        return typeSymbol;
+        var record = new Record
+        {
+            TypeName = typeName,
+            Members = typeMembers
+        };
+        record.CodeGen(ctx, function);
+        return record.TypeSymbol;
     }
 
     public override void CodeGen(CodeGenContext ctx, Function function)
