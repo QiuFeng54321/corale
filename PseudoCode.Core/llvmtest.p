@@ -17,9 +17,11 @@ ENDFUNCTION
 i1 <- 1 + 2
 i2 <- 4
 CALL swap(i1, i2)
+CALL __PRINTF("\nHello\n")
 CALL __PRINTF(i1)
 CALL __PRINTF(i2)
 CALL __PRINTF(RAND(100))
+CALL __PRINTF(TO_UPPER(__STR("喵adFSEf")))
 CALL __PRINTLN()
 r1 <- 2.3
 r2 <- r1 + i1

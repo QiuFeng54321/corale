@@ -19,29 +19,32 @@ public static class BuiltinFunctions
     // }
 
     [BuiltinNativeFunction("RIGHT")]
-    public static string Right(string thisString, int x)
+    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static PseudoStringStruct Right(PseudoStringStruct thisString, int x)
     {
         if (x < 0 || x > thisString.Length)
             throw new OutOfBoundsError(
                 $"Cannot take substring [^{x}..] of \"{thisString}\": Length of string is {thisString.Length}");
 
-        return thisString[^x..];
+        return thisString.ToString()[^x..];
     }
 
     [BuiltinNativeFunction("LEFT")]
-    public static string Left(string str, int index)
+    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static PseudoStringStruct Left(PseudoStringStruct str, int index)
     {
         if (index < 0 || index > str.Length)
             throw new OutOfBoundsError(
                 $"Cannot take substring [..{index}] of \"{str}\": Length of string is {str.Length}"
             );
 
-        return str[..index];
+        return str.ToString()[..index];
     }
 
 
     [BuiltinNativeFunction("LENGTH")]
-    public static int Length(string thisString)
+    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static int Length(PseudoStringStruct thisString)
     {
         return thisString.Length;
     }
@@ -54,68 +57,108 @@ public static class BuiltinFunctions
     }
 
     [BuiltinNativeFunction("MID")]
-    public static string Mid(string thisString, int x, int y)
+    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static PseudoStringStruct Mid(PseudoStringStruct thisString, int x, int y)
     {
         if (x < 0 || x >= thisString.Length || y < 0 || x + y >= thisString.Length)
             throw new OutOfBoundsError(
                 $"Cannot take substring [{x}..{x + y}] of \"{thisString}\": Length of string is {thisString.Length}",
                 null);
-        return thisString.Substring(x - 1, y);
+        return thisString.ToString().Substring(x - 1, y);
     }
 
     [BuiltinNativeFunction("LCASE")]
     [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static char LowerCase(char thisChar)
+    public static sbyte LowerCase(sbyte thisChar)
     {
-        return char.ToLower(thisChar);
+        return (sbyte)char.ToLower((char)thisChar);
     }
 
     [BuiltinNativeFunction("UCASE")]
     [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static char UpperCase(char thisChar)
+    public static sbyte UpperCase(sbyte thisChar)
     {
-        return char.ToUpper(thisChar);
+        return (sbyte)char.ToUpper((char)thisChar);
     }
 
     [BuiltinNativeFunction("TO_UPPER")]
-    public static string ToUpper(string str) => str.ToUpper();
+    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static PseudoStringStruct ToUpper(PseudoStringStruct str)
+    {
+        return str.ToString().ToUpper();
+    }
 
     [BuiltinNativeFunction("TO_LOWER")]
-    public static string ToLower(string str) => str.ToLower();
+    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static PseudoStringStruct ToLower(PseudoStringStruct str)
+    {
+        return str.ToString().ToLower();
+    }
 
     [BuiltinNativeFunction("NUM_TO_STR")]
-    public static string NumToStr(RealNumberType num) => num.ToString();
+    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static PseudoStringStruct NumToStr(double num)
+    {
+        return num.ToString();
+    }
 
     [BuiltinNativeFunction("STR_TO_NUM")]
-    public static RealNumberType StrToNum(string str) => RealNumberType.Parse(str);
+    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static double StrToNum(PseudoStringStruct str)
+    {
+        return double.Parse(str);
+    }
 
     [BuiltinNativeFunction("IS_NUM")]
-    public static bool IsNum(string str) => RealNumberType.TryParse(str, out _);
+    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static bool IsNum(PseudoStringStruct str)
+    {
+        return double.TryParse(str, out _);
+    }
 
     [BuiltinNativeFunction("ASC")]
     [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static int Ascii(char chr) => chr;
+    public static int Ascii(sbyte chr)
+    {
+        return chr;
+    }
 
     [BuiltinNativeFunction("CHR")]
     [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static char Char(int ascii) => (char)ascii;
+    public static sbyte Char(int ascii)
+    {
+        return (sbyte)ascii;
+    }
 
     [BuiltinNativeFunction("DAY")]
-    public static int Day(DateOnly date) => date.Day;
+    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static int Day(PseudoDateStruct date)
+    {
+        return date.Day;
+    }
 
     [BuiltinNativeFunction("MONTH")]
-    public static int Month(DateOnly date) => date.Month;
+    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static int Month(PseudoDateStruct date)
+    {
+        return date.Month;
+    }
 
     [BuiltinNativeFunction("YEAR")]
-    public static int Year(DateOnly date) => date.Year;
+    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static int Year(PseudoDateStruct date)
+    {
+        return date.Year;
+    }
 
     [BuiltinNativeFunction("DAYINDEX")]
     public static int DayIndex(DateOnly date) => (int)date.DayOfWeek + 1;
 
     [BuiltinNativeFunction("SETDATE")]
-    public static DateOnly SetDate(int day, int month, int year)
+    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static PseudoDateStruct SetDate(int day, int month, int year)
     {
-        return new DateOnly(year, month, day);
+        return new PseudoDateStruct(year, month, day);
     }
 
     [BuiltinNativeFunction("TODAY")]
@@ -129,9 +172,10 @@ public static class BuiltinFunctions
     }
 
     [BuiltinNativeFunction("FIND")]
-    public static int Find(string str, char chr)
+    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static int Find(PseudoStringStruct str, sbyte chr)
     {
-        return str.IndexOf(chr) + 1;
+        return str.ToString().IndexOf((char)chr) + 1;
     }
 
     [BuiltinNativeFunction("RAND")]
@@ -140,5 +184,12 @@ public static class BuiltinFunctions
     {
         // ReSharper disable once RedundantCast
         return (RealNumberType)(Random.NextDouble() * x);
+    }
+
+    [BuiltinNativeFunction("__STR")]
+    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static unsafe PseudoStringStruct Str(sbyte* x)
+    {
+        return x;
     }
 }

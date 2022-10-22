@@ -12,12 +12,9 @@ public static class TypeBinder
         [typeof(int)] = BuiltinTypes.Integer,
         [typeof(double)] = BuiltinTypes.Real,
         [typeof(string)] = BuiltinTypes.CharPtr,
-        [typeof(char)] = BuiltinTypes.Char,
-        [typeof(byte)] = BuiltinTypes.Char,
-        [typeof(BlittableChar)] = BuiltinTypes.Char,
+        [typeof(sbyte)] = BuiltinTypes.Char,
         [typeof(bool)] = BuiltinTypes.Boolean,
         [typeof(BlittableBoolean)] = BuiltinTypes.Boolean,
-        // [typeof(DateOnly)] = BuiltinTypes.,
         [typeof(void)] = BuiltinTypes.Void
     };
 

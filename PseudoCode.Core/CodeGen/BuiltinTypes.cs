@@ -11,7 +11,6 @@ public static class BuiltinTypes
     public static void Initialize()
     {
         Char = Symbol.MakePrimitiveType("CHAR", typeof(char));
-        CharPtr = Symbol.MakePrimitiveType("__CHARPTR", typeof(string));
         Integer = Symbol.MakePrimitiveType("INTEGER", typeof(int));
         Real = Symbol.MakePrimitiveType("REAL", typeof(double));
         Boolean = Symbol.MakePrimitiveType("BOOLEAN", typeof(bool));
@@ -20,6 +19,7 @@ public static class BuiltinTypes
 
     public static void InitializeReflectedTypes(CodeGenContext ctx)
     {
+        CharPtr = TypeBinder.GetTypeSymbolFromSystemType(ctx, typeof(sbyte*));
         String = TypeBinder.GetTypeSymbolFromSystemType(ctx, typeof(PseudoStringStruct));
         Date = TypeBinder.GetTypeSymbolFromSystemType(ctx, typeof(PseudoDateStruct));
     }

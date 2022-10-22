@@ -9,4 +9,11 @@ public struct PseudoDateStruct
     public int Year;
     public int Month;
     public int Day;
+
+    public PseudoDateStruct(int year, int month, int day)
+    {
+        Year = year;
+        Month = month;
+        Day = day;
+    }
 }
