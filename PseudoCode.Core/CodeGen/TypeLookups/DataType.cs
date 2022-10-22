@@ -4,6 +4,8 @@ namespace PseudoCode.Core.CodeGen.TypeLookups;
 
 public class DataType
 {
+    // For pointer and array type
+    private readonly DataType _elementType;
     private readonly ModularType _modularType;
 
     public DataType(ModularType modularType)
@@ -11,13 +13,21 @@ public class DataType
         _modularType = modularType;
     }
 
+    public DataType(DataType elementType)
+    {
+        _elementType = elementType;
+    }
+
     public Symbol Lookup(CodeGenContext ctx, Function function, Namespace ns = default)
     {
-        return _modularType.Lookup(ctx, function, ns ?? function.BodyNamespace);
+        if (_modularType != null)
+            return _modularType.Lookup(ctx, function, ns ?? function.BodyNamespace);
+        return _elementType.Lookup(ctx, function, ns).MakePointerType();
     }
 
     public override string ToString()
     {
-        return _modularType.ToString();
+        if (_modularType != null) return _modularType.ToString();
+        return "^" + _elementType;
     }
 }

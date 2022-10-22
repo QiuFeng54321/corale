@@ -69,6 +69,12 @@ public class Type
 
         if (Kind == Types.GenericPlaceholder) throw new InvalidAccessError($"Generic placeholder for {TypeName}");
 
+        if (Kind == Types.Pointer)
+        {
+            _llvmTypeRef = LLVMTypeRef.CreatePointer(ElementType.GetLLVMType(), 0);
+            return _llvmTypeRef;
+        }
+
         throw new NotImplementedException();
     }
 

@@ -6,12 +6,12 @@ namespace PseudoCode.Core.CodeGen;
 
 public class Symbol
 {
-    public DefinitionAttribute DefinitionAttribute;
-
     /// <summary>
     ///     If the symbol is a function, this stores the overloads of the function
     /// </summary>
-    public List<Symbol> FunctionOverloads = new();
+    public readonly List<Symbol> FunctionOverloads = new();
+
+    public DefinitionAttribute DefinitionAttribute;
 
     /// <summary>
     ///     This stores an expression which can generate a symbol when supplied with generic parameters.
@@ -78,6 +78,16 @@ public class Symbol
                 ctx.NameGenerator.RequestTemp(ReservedNames.Load));
     }
 
+    public Symbol MakePointer(CodeGenContext ctx)
+    {
+        return MakeTemp(new Type
+        {
+            Kind = Types.Pointer,
+            ElementType = Type,
+            TypeName = "^" + Type.TypeName
+        }, MemoryPointer);
+    }
+
     public Symbol FindFunctionOverload(List<Symbol> arguments)
     {
         foreach (var functionOverload in FunctionOverloads)
@@ -112,6 +122,16 @@ public class Symbol
             ValueRef = value
         };
         return sym;
+    }
+
+    public Symbol MakePointerType()
+    {
+        return MakeTypeSymbol(new Type
+        {
+            ElementType = Type,
+            Kind = Types.Pointer,
+            TypeName = "^" + Type.TypeName
+        });
     }
 
     /// <summary>
@@ -169,11 +189,6 @@ public class Symbol
         {
             GenericExpression = genericDecl
         };
-    }
-
-    public static Symbol MakeGenericPlaceholderSymbol(string name)
-    {
-        return new Symbol(name, false, Type.MakeGenericPlaceholder(name));
     }
 
     /// <summary>

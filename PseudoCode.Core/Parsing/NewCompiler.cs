@@ -39,7 +39,9 @@ public class NewCompiler : PseudoCodeBaseListener
 
     public DataType GetType(PseudoCodeParser.DataTypeContext context)
     {
-        return new DataType(GetType(context.modularDataType()));
+        if (context.modularDataType() != null) return new DataType(GetType(context.modularDataType()));
+        if (context.Array() == null) return new DataType(GetType(context.dataType()));
+        throw new NotImplementedException("Array not implemented yet");
     }
 
     public ModularType GetType(PseudoCodeParser.ModularDataTypeContext context)

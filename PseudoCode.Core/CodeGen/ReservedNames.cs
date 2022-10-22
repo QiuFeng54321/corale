@@ -16,6 +16,9 @@ public static class ReservedNames
     public const string Main = "__main";
     public const string Block = "block";
     public const string Temp = "_";
+    public const string BlockRefContinuation = "continue";
+    public const string Then = "then";
+    public const string Else = "else";
 
     public static readonly Dictionary<Types, string> Map = new()
     {

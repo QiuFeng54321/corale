@@ -27,9 +27,9 @@ public class IfStatement : Statement
     {
         var condRes = Condition.CodeGen(ctx, function);
         // var function = LLVM.GetBasicBlockParent(LLVM.GetInsertBlock(ctx.Builder));
-        var thenBlockRef = function.LLVMFunction.AppendBasicBlock("THEN");
-        var elseBlockRef = function.LLVMFunction.AppendBasicBlock("ELSE");
-        var continueBlockRef = function.LLVMFunction.AppendBasicBlock("IF_CONTINUE");
+        var thenBlockRef = function.LLVMFunction.AppendBasicBlock(ReservedNames.Then);
+        var elseBlockRef = Else == null ? null : function.LLVMFunction.AppendBasicBlock(ReservedNames.Else);
+        var continueBlockRef = function.LLVMFunction.AppendBasicBlock(ReservedNames.BlockRefContinuation);
 
         LLVM.BuildCondBr(ctx.Builder, condRes.GetRealValueRef(ctx), thenBlockRef,
             Else != null ? elseBlockRef : continueBlockRef);
