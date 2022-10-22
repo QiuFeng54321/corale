@@ -5,13 +5,15 @@ namespace PseudoCode.Core.CodeGen.Containers;
 
 public class Function : Statement
 {
-    public readonly List<Block> Blocks = new();
     public List<Symbol> Arguments;
+    public Block Block = new();
     public Namespace BodyNamespace;
     public CompilationUnit CompilationUnit;
+    public LLVMBasicBlockRef CurrentBlockRef;
     public bool IsExtern;
     public LLVMValueRef LLVMFunction;
     public string Name;
+    public Function ParentFunction;
     public Namespace ParentNamespace;
     public Symbol ResultFunction;
     public Symbol ReturnType;
@@ -28,8 +30,9 @@ public class Function : Statement
         else
         {
             BodyNamespace = ParentNamespace.AddNamespace(ResultFunction.Name);
-            var entry = AddBlock("entry");
-            ctx.Builder.PositionAtEnd(entry.BlockRef);
+            AddBlock("entry");
+            CurrentBlockRef = LLVMFunction.AppendBasicBlock("entry");
+            ctx.Builder.PositionAtEnd(CurrentBlockRef);
         }
 
         for (uint index = 0; index < Arguments.Count; index++)
@@ -82,15 +85,13 @@ public class Function : Statement
 
     public Block AddBlock(string name, Namespace ns = null)
     {
-        var block = new Block
+        Block = new Block
         {
             Name = name,
             Namespace = ns ?? BodyNamespace,
             ParentFunction = this
         };
-        block.InitializeBlock();
-        Blocks.Add(block);
-        return block;
+        return Block;
     }
 
     public override void Format(PseudoFormatter formatter)
@@ -98,16 +99,19 @@ public class Function : Statement
         formatter.WriteStatement(
             $"FUNCTION {Name}({string.Join(", ", Arguments.Select(a => $"{a.Name} : {a.Type.TypeName}"))}) RETURNS {ReturnType?.Type.TypeName}");
 
-        foreach (var block in Blocks) block.Format(formatter);
+        Block.Format(formatter);
         formatter.WriteStatement("ENDFUNCTION");
     }
 
-    public override void CodeGen(CodeGenContext ctx, Block _)
+    public override void CodeGen(CodeGenContext ctx, Function parentBlock)
     {
         if (LLVMFunction == null) GeneratePrototype(ctx);
         if (IsExtern) return;
-        foreach (var block in Blocks) block.CodeGen(ctx, _);
-
+        Block.ParentFunction = this;
+        ctx.Builder.PositionAtEnd(CurrentBlockRef);
+        Block.CodeGen(ctx, this);
+        ctx.Builder.PositionAtEnd(CurrentBlockRef);
         ctx.Builder.BuildRetVoid();
+        if (ParentFunction != null) ctx.Builder.PositionAtEnd(ParentFunction.CurrentBlockRef);
     }
 }

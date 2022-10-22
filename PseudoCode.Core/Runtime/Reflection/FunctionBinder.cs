@@ -22,12 +22,12 @@ public class FunctionBinder
         [typeof(void)] = BuiltinTypes.Void
     };
 
-    public static void MakeFromType(CodeGenContext ctx, Block block, Type type)
+    public static void MakeFromType(CodeGenContext ctx, Type type)
     {
-        foreach (var method in type.GetMethods()) MakeDefinitionOfNativeMethod(ctx, block, method);
+        foreach (var method in type.GetMethods()) MakeDefinitionOfNativeMethod(ctx, method);
     }
 
-    public static bool MakeDefinitionOfNativeMethod(CodeGenContext ctx, Block block, MethodInfo methodInfo)
+    public static bool MakeDefinitionOfNativeMethod(CodeGenContext ctx, MethodInfo methodInfo)
     {
         if (methodInfo.GetCustomAttributes(typeof(BuiltinNativeFunctionAttribute), true).Length == 0
             || methodInfo.GetCustomAttributes(typeof(UnmanagedCallersOnlyAttribute), true).Length == 0)

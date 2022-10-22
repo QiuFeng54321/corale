@@ -1,16 +1,24 @@
-using LLVMSharp.Interop;
 using PseudoCode.Core.Formatting;
 
 namespace PseudoCode.Core.CodeGen.Containers;
 
+/// <summary>
+///     A block is a scope and is NOT an LLVMBasicBlockRef!!
+/// </summary>
 public class Block : Statement
 {
-    public LLVMBasicBlockRef BlockRef;
+    private Function _parentFunction;
     public string Name;
     public Namespace Namespace;
     public Block ParentBlock;
-    public Function ParentFunction;
+
     public List<Statement> Statements = new();
+
+    public Function ParentFunction
+    {
+        get => _parentFunction ?? ParentBlock?.ParentFunction;
+        set => _parentFunction = value;
+    }
 
     public override void Format(PseudoFormatter formatter)
     {
@@ -31,41 +39,24 @@ public class Block : Statement
         var block = new Block();
         if (!dangling) Statements.Add(block);
         block.ParentBlock = this;
-        block.ParentFunction = ParentFunction;
         block.Namespace = ns ?? Namespace;
         block.Name = name;
         return block;
     }
 
-    public override void CodeGen(CodeGenContext ctx, Block _)
+    public override void CodeGen(CodeGenContext ctx, Function _)
     {
         GetBlock(ctx);
     }
 
-    public unsafe LLVMBasicBlockRef InitializeBlock()
+    public void GetBlock(CodeGenContext ctx)
     {
-        if (BlockRef != null) return BlockRef;
-        var function = ParentFunction.LLVMFunction;
-        BlockRef = LLVM.AppendBasicBlock(function, Name.ToSByte());
-        return BlockRef;
-    }
-
-    public LLVMBasicBlockRef GetBlock(CodeGenContext ctx)
-    {
-        // if (BlockRef != null) return BlockRef;
-        if (BlockRef == null)
-        {
-            InitializeBlock();
-        }
-
-        ctx.Builder.PositionAtEnd(BlockRef);
         CodeGenDirectly(ctx);
-        return BlockRef;
     }
 
     public void CodeGenDirectly(CodeGenContext ctx)
     {
-        foreach (var s in Statements) s.CodeGen(ctx, this);
+        foreach (var s in Statements) s.CodeGen(ctx, ParentFunction);
     }
 
     protected void WriteStatements(PseudoFormatter formatter)

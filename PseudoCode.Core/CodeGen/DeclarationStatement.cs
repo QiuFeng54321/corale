@@ -9,16 +9,16 @@ public class DeclarationStatement : Statement
     public DataType DataType;
     public string Name;
 
-    public Symbol GetTypeSymbol(CodeGenContext ctx, Block block, Type parentType = default)
+    public Symbol GetTypeSymbol(CodeGenContext ctx, Function function, Namespace ns = default)
     {
-        return DataType.Lookup(ctx, block);
+        return DataType.Lookup(ctx, function, ns);
     }
 
-    public override void CodeGen(CodeGenContext ctx, Block block)
+    public override void CodeGen(CodeGenContext ctx, Function function)
     {
-        var typeSymbol = GetTypeSymbol(ctx, block);
+        var typeSymbol = GetTypeSymbol(ctx, function);
         var symbol = MakeSymbol(typeSymbol);
-        block.Namespace.AddSymbol(symbol);
+        function.BodyNamespace.AddSymbol(symbol);
         symbol.MemoryPointer = ctx.Builder.BuildAlloca(typeSymbol.Type.GetLLVMType(), symbol.Name);
     }
 

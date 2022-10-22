@@ -19,11 +19,11 @@ public class NewCompiler : PseudoCodeBaseListener
     {
         BuiltinTypes.Initialize();
         Context = new CodeGenContext();
-        CurrentBlock = Context.CompilationUnit.MainFunction.Blocks[0];
+        CurrentBlock = Context.CompilationUnit.MainFunction.Block;
         // Context.Builder.PositionAtEnd(CurrentBlock);
         BuiltinTypes.AddBuiltinTypes(CurrentBlock);
-        FunctionBinder.MakeFromType(Context, CurrentBlock, typeof(BuiltinFunctions));
-        FunctionBinder.MakeFromType(Context, CurrentBlock, typeof(Printer));
+        FunctionBinder.MakeFromType(Context, typeof(BuiltinFunctions));
+        FunctionBinder.MakeFromType(Context, typeof(Printer));
     }
 
 
@@ -118,7 +118,8 @@ public class NewCompiler : PseudoCodeBaseListener
             CurrentBlock.Statements.Add(new TypeDeclaration(name, null, block));
         else
             CurrentBlock.Namespace.AddSymbol(
-                Symbol.MakeTypeDeclSymbol(new TypeDeclaration(name, new GenericDeclaration(genericParams), block)));
+                Symbol.MakeGenericSymbol(name,
+                    new TypeDeclaration(name, new GenericDeclaration(genericParams), block)));
     }
 
     public override void ExitIfStatement(PseudoCodeParser.IfStatementContext context)
@@ -141,9 +142,6 @@ public class NewCompiler : PseudoCodeBaseListener
             Else = elseBlock
         };
         CurrentBlock.Statements.Add(ifStatement);
-        var continueBlock = CurrentBlock.ParentFunction.AddBlock(Context.NameGenerator.Request(ReservedNames.Block));
-        CurrentBlock.Statements.Add(continueBlock);
-        ifStatement.Continue = continueBlock;
     }
 
     public override void EnterIndentedBlock(PseudoCodeParser.IndentedBlockContext context)
@@ -166,6 +164,48 @@ public class NewCompiler : PseudoCodeBaseListener
         {
             Expression = callExpr
         });
+    }
+
+    public override void ExitReturnStatement(PseudoCodeParser.ReturnStatementContext context)
+    {
+        base.ExitReturnStatement(context);
+        CurrentBlock.Statements.Add(new ReturnStatement
+        {
+            Expression = Context.ExpressionStack.Pop()
+        });
+    }
+
+    public override void EnterFunctionDefinition(PseudoCodeParser.FunctionDefinitionContext context)
+    {
+        base.EnterFunctionDefinition(context);
+    }
+
+    public override void ExitFunctionDefinition(PseudoCodeParser.FunctionDefinitionContext context)
+    {
+        base.ExitFunctionDefinition(context);
+        var name = context.Identifier().GetText();
+        List<FunctionDeclaration.ArgumentType> arguments = new();
+        if (context.argumentsDeclaration() != null)
+            foreach (var argumentDeclarationContext in context.argumentsDeclaration().argumentDeclaration())
+                arguments.Add(new FunctionDeclaration.ArgumentType
+                {
+                    Name = argumentDeclarationContext.Identifier().GetText(),
+                    DataType = GetType(argumentDeclarationContext.dataType()),
+                    IsRef = argumentDeclarationContext.Byref() != null
+                });
+
+        var retType = GetType(context.dataType());
+        var body = (Block)CurrentBlock.Statements[^1];
+        CurrentBlock.Statements.RemoveAt(CurrentBlock.Statements.Count - 1);
+        var genericParams = context.genericDeclaration()?.identifierList()?.Identifier().Select(s => s.GetText())
+            .ToList();
+        var functionDecl = new FunctionDeclaration(name, arguments, retType, body,
+            genericParams != null ? new GenericDeclaration(genericParams) : null);
+        if (genericParams == null)
+            CurrentBlock.Statements.Add(functionDecl);
+        else
+            CurrentBlock.Namespace.AddSymbol(
+                Symbol.MakeGenericSymbol(name, functionDecl));
     }
 
     public override void ExitArithmeticExpression(PseudoCodeParser.ArithmeticExpressionContext context)

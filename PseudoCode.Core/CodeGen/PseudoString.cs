@@ -8,7 +8,7 @@ public class PseudoString : Expression
 {
     public string Value;
 
-    public override Symbol CodeGen(CodeGenContext ctx, Block block)
+    public override Symbol CodeGen(CodeGenContext ctx, Function function)
     {
         var name = ctx.NameGenerator.Request(ReservedNames.String);
         LLVMValueRef val;

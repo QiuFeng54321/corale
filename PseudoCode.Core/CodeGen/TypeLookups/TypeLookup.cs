@@ -1,4 +1,3 @@
-using PseudoCode.Core.CodeGen.Containers;
 using PseudoCode.Core.Runtime.Errors;
 
 namespace PseudoCode.Core.CodeGen.TypeLookups;
@@ -14,14 +13,28 @@ public class TypeLookup
         _parent = parent;
     }
 
-    public SymbolOrNamespace Lookup(Block block)
+    /// <summary>
+    ///     Tries to lookup a type starting from the <see cref="surroundingNs" /><br />
+    ///     If the surrounding namespace doesn't contain the required type, it will search from its parent.
+    /// </summary>
+    /// <param name="surroundingNs">The namespace to start searching from</param>
+    /// <returns>The symbol or namespace found</returns>
+    /// <exception cref="InvalidAccessError">
+    ///     Thrown when required name is not found in any of the surrounding namespace and its
+    ///     ancestors.
+    /// </exception>
+    public SymbolOrNamespace Lookup(Namespace surroundingNs)
     {
-        // 找到
-        var ns = _parent?.Lookup(block).Ns ?? block.Namespace;
-        if (ns.TryGetSymbol(_name, out var sym)) return new SymbolOrNamespace(sym);
-        if (ns.TryGetNamespace(_name, out var nsFound)) return new SymbolOrNamespace(Ns: nsFound);
+        while (true)
+        {
+            // 找到
+            var typeNs = _parent?.Lookup(surroundingNs).Ns ?? surroundingNs;
+            if (typeNs.TryGetSymbol(_name, out var sym)) return new SymbolOrNamespace(sym);
+            if (typeNs.TryGetNamespace(_name, out var nsFound)) return new SymbolOrNamespace(Ns: nsFound);
 
-        throw new InvalidAccessError($"Unknown namespace or symbol: {_name}");
+            surroundingNs = surroundingNs.Parent ??
+                            throw new InvalidAccessError($"Unknown namespace or symbol: {_name}");
+        }
     }
 
     public override string ToString()

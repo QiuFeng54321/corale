@@ -8,10 +8,10 @@ public class AssignmentStatement : Statement
 {
     public Expression Target, Value;
 
-    public override void CodeGen(CodeGenContext ctx, Block block)
+    public override void CodeGen(CodeGenContext ctx, Function function)
     {
-        var val = Value.CodeGen(ctx, block).GetRealValueRef(ctx);
-        var target = Target.CodeGen(ctx, block).MemoryPointer;
+        var val = Value.CodeGen(ctx, function).GetRealValueRef(ctx);
+        var target = Target.CodeGen(ctx, function).MemoryPointer;
         if (target == null)
             ctx.Analysis.Feedbacks.Add(new Feedback
             {

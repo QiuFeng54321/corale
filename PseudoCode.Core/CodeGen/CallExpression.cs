@@ -7,10 +7,10 @@ public class CallExpression : Expression
     public List<Expression> Arguments;
     public Expression Function;
 
-    public override Symbol CodeGen(CodeGenContext ctx, Block block)
+    public override Symbol CodeGen(CodeGenContext ctx, Function function1)
     {
-        var function = Function.CodeGen(ctx, block);
-        var arguments = Arguments.Select(a => a.CodeGen(ctx, block)).ToArray();
+        var function = Function.CodeGen(ctx, function1);
+        var arguments = Arguments.Select(a => a.CodeGen(ctx, function1)).ToArray();
         var overload = function.FindFunctionOverload(arguments.ToList());
         var retType = overload.Type.ReturnType;
         var ret = ctx.Builder.BuildCall2(overload.Type.GetLLVMType(), overload.ValueRef,

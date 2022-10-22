@@ -13,12 +13,12 @@ public class ModularType
         _genericParameters = genericParameters;
     }
 
-    public Symbol Lookup(CodeGenContext ctx, Block block)
+    public Symbol Lookup(CodeGenContext ctx, Function function, Namespace ns)
     {
-        var symbol = _typeLookup.Lookup(block).Symbol;
+        var symbol = _typeLookup.Lookup(ns).Symbol;
         if (_genericParameters != null)
-            symbol = symbol.FillGeneric(ctx, block,
-                _genericParameters.Select(t => t.Lookup(ctx, block)).ToList());
+            symbol = symbol.FillGeneric(ctx, function,
+                _genericParameters.Select(t => t.Lookup(ctx, function, ns)).ToList());
 
         return symbol;
     }

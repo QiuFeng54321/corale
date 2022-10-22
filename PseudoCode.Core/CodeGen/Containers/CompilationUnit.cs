@@ -9,7 +9,8 @@ public class CompilationUnit : Statement
     public Function MainFunction;
     public Namespace Namespace;
 
-    public Function MakeFunction(string name, List<Symbol> arguments, Symbol retType, bool isExtern = false)
+    public Function MakeFunction(string name, List<Symbol> arguments, Symbol retType, bool isExtern = false,
+        bool addToList = true)
     {
         var func = new Function
         {
@@ -20,7 +21,7 @@ public class CompilationUnit : Statement
             ParentNamespace = Namespace,
             IsExtern = isExtern
         };
-        Functions.Add(func);
+        if (addToList) Functions.Add(func);
         return func;
     }
 
@@ -36,7 +37,7 @@ public class CompilationUnit : Statement
         foreach (var function in Functions) function.Format(formatter);
     }
 
-    public override void CodeGen(CodeGenContext ctx, Block _)
+    public override void CodeGen(CodeGenContext ctx, Function _)
     {
         foreach (var function in Functions) function.CodeGen(ctx, _);
     }

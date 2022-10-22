@@ -163,11 +163,11 @@ public class Symbol
         return new Symbol(type.TypeName, true, type);
     }
 
-    public static Symbol MakeTypeDeclSymbol(TypeDeclaration typeDeclaration)
+    public static Symbol MakeGenericSymbol(string name, IGenericExpression genericDecl)
     {
-        return new Symbol(typeDeclaration.TypeName, true, null)
+        return new Symbol(name, true, null)
         {
-            GenericExpression = typeDeclaration
+            GenericExpression = genericDecl
         };
     }
 
@@ -181,10 +181,10 @@ public class Symbol
     /// </summary>
     /// <param name="genericArguments">The arguments to fill</param>
     /// <returns>The cloned type with generic types and fields filled in</returns>
-    public Symbol FillGeneric(CodeGenContext ctx, Block block, List<Symbol> genericArguments)
+    public Symbol FillGeneric(CodeGenContext ctx, Function function, List<Symbol> genericArguments)
     {
         if (GenericExpression == null) return this; // Nothing to fill
-        return GenericExpression.Generate(ctx, block, genericArguments);
+        return GenericExpression.Generate(ctx, function, genericArguments);
     }
 
     public Symbol Clone()

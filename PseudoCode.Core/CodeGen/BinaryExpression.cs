@@ -8,10 +8,10 @@ public class BinaryExpression : Expression
     public Expression Left, Right;
     public PseudoOperator Operator;
 
-    public override Symbol CodeGen(CodeGenContext ctx, Block block)
+    public override Symbol CodeGen(CodeGenContext ctx, Function function)
     {
-        var left = Left.CodeGen(ctx, block);
-        var right = Right?.CodeGen(ctx, block);
+        var left = Left.CodeGen(ctx, function);
+        var right = Right?.CodeGen(ctx, function);
         return ctx.OperatorResolverMap.Resolve(left, right, Operator, ctx);
     }
 

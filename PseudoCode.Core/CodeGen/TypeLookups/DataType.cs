@@ -11,9 +11,9 @@ public class DataType
         _modularType = modularType;
     }
 
-    public Symbol Lookup(CodeGenContext ctx, Block block)
+    public Symbol Lookup(CodeGenContext ctx, Function function, Namespace ns = default)
     {
-        return _modularType.Lookup(ctx, block);
+        return _modularType.Lookup(ctx, function, ns ?? function.BodyNamespace);
     }
 
     public override string ToString()

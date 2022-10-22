@@ -2,6 +2,12 @@ DECLARE i1, i2 : INTEGER
 DECLARE r1, r2 : REAL
 DECLARE b1, b2 : BOOLEAN
 DECLARE c : __CHARPTR
+FUNCTION recFib(n : INTEGER) RETURNS INTEGER
+    IF n = 1 OR n = 2 THEN
+        RETURN 1
+    ENDIF
+    RETURN recFib(n - 1) + recFib(n - 2)
+ENDFUNCTION
 i1 <- 1 + 2
 i2 <- i1
 CALL __PRINTF(RAND(100))
@@ -11,7 +17,7 @@ r2 <- r1 + i1
 b1 <- TRUE + 2
 b2 <- FALSE
 CALL __PRINTF(b1)
-CALL __PRINTF(b2)
+CALL __PRINTF(recFib(10))
 IF FALSE THEN
     CALL __PRINTF('c')
 ELSE

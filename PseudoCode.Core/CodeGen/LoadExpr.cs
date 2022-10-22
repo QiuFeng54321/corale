@@ -7,9 +7,9 @@ public class LoadExpr : Expression
 {
     public string Name;
 
-    public override Symbol CodeGen(CodeGenContext ctx, Block block)
+    public override Symbol CodeGen(CodeGenContext ctx, Function function)
     {
-        if (block.Namespace.TryGetSymbol(Name, out var sym)) return sym;
+        if (function.BodyNamespace.TryGetSymbol(Name, out var sym)) return sym;
         throw new InvalidAccessError(Name);
     }
 
