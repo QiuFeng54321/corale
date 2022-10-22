@@ -2,27 +2,12 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using PseudoCode.Core.CodeGen;
 using PseudoCode.Core.CodeGen.Containers;
-using PseudoCode.Core.Runtime.Errors;
 using Type = System.Type;
 
 namespace PseudoCode.Core.Runtime.Reflection;
 
-public class FunctionBinder
+public static class FunctionBinder
 {
-    public static readonly Dictionary<Type, Symbol> TypeMap = new()
-    {
-        [typeof(int)] = BuiltinTypes.Integer,
-        [typeof(double)] = BuiltinTypes.Real,
-        [typeof(string)] = BuiltinTypes.CharPtr,
-        [typeof(char)] = BuiltinTypes.Char,
-        [typeof(byte)] = BuiltinTypes.Char,
-        [typeof(BlittableChar)] = BuiltinTypes.Char,
-        [typeof(bool)] = BuiltinTypes.Boolean,
-        [typeof(BlittableBoolean)] = BuiltinTypes.Boolean,
-        // [typeof(DateOnly)] = BuiltinTypes.,
-        [typeof(void)] = BuiltinTypes.Void
-    };
-
     public static void MakeFromType(CodeGenContext ctx, Type type)
     {
         foreach (var method in type.GetMethods()) MakeDefinitionOfNativeMethod(ctx, method);
@@ -35,8 +20,8 @@ public class FunctionBinder
             return false;
 
         var functionName = GetFunctionName(methodInfo);
-        var paramList = GetNativeMethodParamList(methodInfo);
-        var returnDef = GetNativeMethodReturnDefinition(methodInfo);
+        var paramList = GetNativeMethodParamList(ctx, methodInfo);
+        var returnDef = GetNativeMethodReturnDefinition(ctx, methodInfo);
         var function = ctx.CompilationUnit.MakeFunction(functionName, paramList, returnDef, true);
         function.GeneratePrototype(ctx);
         var functionPointer = methodInfo.MethodHandle.GetFunctionPointer();
@@ -47,36 +32,19 @@ public class FunctionBinder
 
     private static string GetFunctionName(MethodInfo methodInfo)
     {
-        if (methodInfo.GetCustomAttributes(typeof(BuiltinNativeFunctionAttribute)) is BuiltinNativeFunctionAttribute[]
-                nativeNameAttrs &&
-            nativeNameAttrs.Length != 0)
-            return nativeNameAttrs[0].Name;
-
-        return methodInfo.Name;
+        return ReflectionHelper.GetAttribute<BuiltinNativeFunctionAttribute>(methodInfo)?.Name ?? methodInfo.Name;
     }
 
-    private static List<Symbol> GetNativeMethodParamList(MethodInfo methodInfo)
+    private static List<Symbol> GetNativeMethodParamList(CodeGenContext ctx, MethodInfo methodInfo)
     {
         return methodInfo.GetParameters().Select(info =>
-            new Symbol(info.Name, false, GetTypeDescriptorFromSystemType(info.ParameterType).Type)).ToList();
+                new Symbol(info.Name, false, TypeBinder.GetTypeSymbolFromSystemType(ctx, info.ParameterType).Type))
+            .ToList();
     }
 
-    private static Symbol GetTypeDescriptorFromSystemType(Type infoParameterType)
+    private static Symbol GetNativeMethodReturnDefinition(CodeGenContext ctx, MethodInfo methodInfo)
     {
-        if (TypeMap.ContainsKey(infoParameterType)) return TypeMap[infoParameterType];
-        if (infoParameterType.IsPointer)
-            return GetTypeDescriptorFromSystemType(infoParameterType.GetElementType()).MakePointerType();
-
-        if (infoParameterType.IsValueType)
-        {
-        }
-
-        throw new InvalidTypeError(infoParameterType.ToString());
-    }
-
-    private static Symbol GetNativeMethodReturnDefinition(MethodInfo methodInfo)
-    {
-        var typeDescriptor = GetTypeDescriptorFromSystemType(methodInfo.ReturnType);
+        var typeDescriptor = TypeBinder.GetTypeSymbolFromSystemType(ctx, methodInfo.ReturnType);
         return typeDescriptor;
     }
 }

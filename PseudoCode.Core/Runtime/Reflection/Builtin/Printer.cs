@@ -33,6 +33,20 @@ public static class Printer
         Console.Write(x ? "TRUE" : "FALSE");
     }
 
+    [BuiltinNativeFunction("__PRINTF")]
+    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static unsafe void Printf(PseudoStringStruct x)
+    {
+        Console.Write(new string(x.CStr, 0, x.Length));
+    }
+
+    [BuiltinNativeFunction("__PRINTF")]
+    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static void Printf(PseudoDateStruct x)
+    {
+        Console.Write($"{x.Month:00}/{x.Day:00}/{x.Year:0000}");
+    }
+
     [BuiltinNativeFunction("__PRINTLN")]
     [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
     public static void Println()

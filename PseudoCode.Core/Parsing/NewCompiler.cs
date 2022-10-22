@@ -19,6 +19,7 @@ public class NewCompiler : PseudoCodeBaseListener
     {
         BuiltinTypes.Initialize();
         Context = new CodeGenContext();
+        BuiltinTypes.InitializeReflectedTypes(Context);
         CurrentBlock = Context.CompilationUnit.MainFunction.Block;
         // Context.Builder.PositionAtEnd(CurrentBlock);
         BuiltinTypes.AddBuiltinTypes(Context.GlobalNamespace);

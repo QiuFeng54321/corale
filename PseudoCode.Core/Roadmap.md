@@ -1,7 +1,7 @@
 # Roadmap
 
 - [x] BYREF
-- [ ] Struct mapping
+- [x] Struct mapping
 - [ ] Cast
 - [ ] Generic function
 - [ ] Member access
