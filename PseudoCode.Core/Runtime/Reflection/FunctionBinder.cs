@@ -37,9 +37,23 @@ public static class FunctionBinder
 
     private static List<Symbol> GetNativeMethodParamList(CodeGenContext ctx, MethodInfo methodInfo)
     {
-        return methodInfo.GetParameters().Select(info =>
-                new Symbol(info.Name, false, TypeBinder.GetTypeSymbolFromSystemType(ctx, info.ParameterType).Type))
-            .ToList();
+        var parameterInfos = methodInfo.GetParameters();
+        var res = new List<Symbol>();
+        foreach (var info in parameterInfos)
+        {
+            var paramTypeSym = TypeBinder.GetTypeSymbolFromSystemType(ctx, info.ParameterType);
+            var paramTy = paramTypeSym.Type;
+            var defAttr = DefinitionAttribute.None;
+            if (ReflectionHelper.TryGetAttribute<ByRefAttribute>(info, out _))
+            {
+                paramTy = paramTy.ElementType;
+                defAttr = DefinitionAttribute.Reference;
+            }
+
+            res.Add(new Symbol(info.Name, false, paramTy, null, defAttr));
+        }
+
+        return res;
     }
 
     private static Symbol GetNativeMethodReturnDefinition(CodeGenContext ctx, MethodInfo methodInfo)

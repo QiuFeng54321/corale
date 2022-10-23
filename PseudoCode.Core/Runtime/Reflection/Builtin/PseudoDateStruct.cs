@@ -16,4 +16,9 @@ public struct PseudoDateStruct
         Month = month;
         Day = day;
     }
+
+    public static implicit operator PseudoDateStruct(DateOnly dateOnly)
+    {
+        return new PseudoDateStruct(dateOnly.Year, dateOnly.Month, dateOnly.Day);
+    }
 }

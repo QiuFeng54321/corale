@@ -15,7 +15,7 @@ FUNCTION swap<T>(BYREF a : T, b : T) RETURNS VOID
     b <- tmp
 ENDFUNCTION
 i1 <- 1 + 2
-i2 <- 4
+CALL __SCAN(i2)
 CALL swap<INTEGER>(i1, i2)
 CALL swap<INTEGER>(i1, i2)
 CALL __PRINTF("\nHello\n")

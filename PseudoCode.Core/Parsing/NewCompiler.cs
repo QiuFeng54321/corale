@@ -25,6 +25,7 @@ public class NewCompiler : PseudoCodeBaseListener
         BuiltinTypes.AddBuiltinTypes(Context.GlobalNamespace);
         FunctionBinder.MakeFromType(Context, typeof(BuiltinFunctions));
         FunctionBinder.MakeFromType(Context, typeof(Printer));
+        FunctionBinder.MakeFromType(Context, typeof(Scanner));
     }
 
 
