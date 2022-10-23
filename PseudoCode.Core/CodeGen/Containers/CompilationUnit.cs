@@ -9,7 +9,8 @@ public class CompilationUnit : Statement
     public Function MainFunction;
     public Namespace Namespace;
 
-    public Function MakeFunction(string name, List<Symbol> arguments, Symbol retType, bool isExtern = false,
+    public Function MakeFunction(string name, List<Symbol> arguments, Symbol retType, Namespace ns = default,
+        bool isExtern = false,
         bool addToList = true)
     {
         var func = new Function
@@ -18,7 +19,7 @@ public class CompilationUnit : Statement
             Arguments = arguments,
             ReturnType = retType,
             CompilationUnit = this,
-            ParentNamespace = Namespace,
+            ParentNamespace = ns ?? Namespace,
             IsExtern = isExtern
         };
         if (addToList) Functions.Add(func);

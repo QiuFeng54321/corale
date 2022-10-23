@@ -22,7 +22,7 @@ public static class FunctionBinder
         var functionName = GetFunctionName(methodInfo);
         var paramList = GetNativeMethodParamList(ctx, methodInfo);
         var returnDef = GetNativeMethodReturnDefinition(ctx, methodInfo);
-        var function = ctx.CompilationUnit.MakeFunction(functionName, paramList, returnDef, true);
+        var function = ctx.CompilationUnit.MakeFunction(functionName, paramList, returnDef, null, true);
         function.GeneratePrototype(ctx);
         var functionPointer = methodInfo.MethodHandle.GetFunctionPointer();
         function.LinkToFunctionPointer(ctx, functionPointer);

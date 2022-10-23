@@ -6,7 +6,7 @@ namespace PseudoCode.Core.CodeGen.Containers;
 public class Function : Statement
 {
     public List<Symbol> Arguments;
-    public Block Block = new();
+    public Block Block;
     public Namespace BodyNamespace;
     public CompilationUnit CompilationUnit;
     public LLVMBasicBlockRef CurrentBlockRef;
@@ -31,7 +31,7 @@ public class Function : Statement
         else
         {
             BodyNamespace ??= ParentNamespace.AddNamespace(ResultFunction.Name);
-            AddBlock("entry");
+            if (Block == null) CreateBlock("entry");
             CurrentBlockRef = LLVMFunction.AppendBasicBlock("entry");
             ctx.Builder.PositionAtEnd(CurrentBlockRef);
         }
@@ -62,6 +62,7 @@ public class Function : Statement
 
     private unsafe void AddSymbol(CodeGenContext ctx)
     {
+        // Make parameter list
         var llvmParamTypes = new List<LLVMTypeRef>();
         foreach (var argument in Arguments)
         {
@@ -71,6 +72,7 @@ public class Function : Statement
             llvmParamTypes.Add(llvmTypeRef);
         }
 
+        // Make function type
         var functionType = LLVMTypeRef.CreateFunction(ReturnType.Type.GetLLVMType(),
             llvmParamTypes.ToArray());
         LLVMFunction = LLVM.AddFunction(ctx.Module, ParentNamespace.GetFullQualifier(Name).ToSByte(),
@@ -88,6 +90,7 @@ public class Function : Statement
         {
             ValueRef = LLVMFunction
         };
+        // Add to function group
         if (!ParentNamespace.TryGetSymbol(Name, out var functionOverloadsSymbol))
         {
             functionOverloadsSymbol = new Symbol(Name, false, pseudoFunctionType);
@@ -98,7 +101,7 @@ public class Function : Statement
         ResultFunctionGroup = functionOverloadsSymbol;
     }
 
-    public Block AddBlock(string name, Namespace ns = null)
+    public Block CreateBlock(string name, Namespace ns = null)
     {
         Block = new Block
         {

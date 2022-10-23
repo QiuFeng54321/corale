@@ -6,11 +6,11 @@ namespace PseudoCode.Core.CodeGen;
 
 public class FunctionDeclaration : Statement, IGenericExpression
 {
-    public List<ArgumentType> Arguments;
-    public Block FunctionBody;
-    public GenericDeclaration GenericDeclaration;
-    public string Name;
-    public DataType ReturnType;
+    public readonly List<ArgumentType> Arguments;
+    public readonly Block FunctionBody;
+    public readonly GenericDeclaration GenericDeclaration;
+    public readonly string Name;
+    public readonly DataType ReturnType;
 
     public FunctionDeclaration(string name, List<ArgumentType> arguments, DataType returnType,
         Block functionBody, GenericDeclaration genericDeclaration = default)
@@ -24,10 +24,13 @@ public class FunctionDeclaration : Statement, IGenericExpression
 
     public Symbol Generate(CodeGenContext ctx, Function function, List<Symbol> genericParams = default)
     {
+        // Make function name
         var funcName = MakeFunctionName(genericParams);
+        // Return existing function
         if (function.BodyNamespace.TryGetSymbol(Name, out var res))
             if (res.FunctionOverloads.FirstOrDefault(o => o.Name == funcName) is { } f)
                 return res;
+        // Fill generic parameters
         var subNs = function.BodyNamespace.AddNamespace(funcName);
         if (genericParams != null)
             for (var i = 0; i < genericParams.Count; i++)
@@ -40,15 +43,18 @@ public class FunctionDeclaration : Statement, IGenericExpression
                     a.IsRef ? DefinitionAttribute.Reference : DefinitionAttribute.None);
             });
         var filledReturnType = ReturnType.Lookup(ctx, function, subNs);
+
+        // Make function
         var func = ctx.CompilationUnit.MakeFunction(Name, filledArgumentSymbols.ToList(), filledReturnType,
+            function.BodyNamespace,
             addToList: false);
         func.BodyNamespace = subNs;
-        func.GeneratePrototype(ctx);
+        // func.GeneratePrototype(ctx);
         FunctionBody.ParentFunction = func;
         func.ParentFunction = function;
         func.Block = FunctionBody;
         func.CodeGen(ctx, function);
-        func.Name = funcName;
+        func.ResultFunction.Name = funcName;
         return func.ResultFunctionGroup;
     }
 
