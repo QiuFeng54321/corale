@@ -4,10 +4,10 @@ namespace PseudoCode.Core.CodeGen.TypeLookups;
 
 public class ModularType
 {
-    private readonly List<DataType> _genericParameters;
+    private readonly GenericUtilisation _genericParameters;
     private readonly TypeLookup _typeLookup;
 
-    public ModularType(TypeLookup typeLookup, List<DataType> genericParameters = default)
+    public ModularType(TypeLookup typeLookup, GenericUtilisation genericParameters = default)
     {
         _typeLookup = typeLookup;
         _genericParameters = genericParameters;
@@ -18,13 +18,13 @@ public class ModularType
         var symbol = _typeLookup.Lookup(ns).Symbol;
         if (_genericParameters != null)
             symbol = symbol.FillGeneric(ctx, function,
-                _genericParameters.Select(t => t.Lookup(ctx, function, ns)).ToList());
+                _genericParameters.GetSymbols(ctx, function, ns));
 
         return symbol;
     }
 
     public override string ToString()
     {
-        return _typeLookup + (_genericParameters != null ? $"<{string.Join(", ", _genericParameters)}>" : "");
+        return _typeLookup.ToString() + _genericParameters;
     }
 }

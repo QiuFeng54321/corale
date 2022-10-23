@@ -16,6 +16,7 @@ public class Function : Statement
     public Function ParentFunction;
     public Namespace ParentNamespace;
     public Symbol ResultFunction;
+    public Symbol ResultFunctionGroup;
     public Symbol ReturnType;
 
     public unsafe void GeneratePrototype(CodeGenContext ctx)
@@ -47,7 +48,7 @@ public class Function : Statement
                     symbol.MemoryPointer = paramValue;
                 else
                     symbol.ValueRef = paramValue;
-                ParentNamespace.AddSymbol(symbol);
+                BodyNamespace.AddSymbol(symbol);
             }
         }
     }
@@ -94,6 +95,7 @@ public class Function : Statement
         }
 
         functionOverloadsSymbol.FunctionOverloads.Add(ResultFunction);
+        ResultFunctionGroup = functionOverloadsSymbol;
     }
 
     public Block AddBlock(string name, Namespace ns = null)

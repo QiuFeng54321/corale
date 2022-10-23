@@ -48,16 +48,22 @@ public class NewCompiler : PseudoCodeBaseListener
     public ModularType GetType(PseudoCodeParser.ModularDataTypeContext context)
     {
         var typeLookup = GetType(context.typeLookup());
-        IEnumerable<DataType> genericParams = null;
+        GenericUtilisation genericParams = null;
         if (context.genericUtilisation() is { } genericUtilisation)
-            genericParams = GetGenericParameters(genericUtilisation);
+            genericParams = GetGenericUtilisation(genericUtilisation);
 
-        return new ModularType(typeLookup, genericParams?.ToList());
+        return new ModularType(typeLookup, genericParams);
     }
 
     public IEnumerable<DataType> GetGenericParameters(PseudoCodeParser.GenericUtilisationContext context)
     {
         return context.dataTypeList().dataType().Select(GetType);
+    }
+
+    public GenericUtilisation GetGenericUtilisation(PseudoCodeParser.GenericUtilisationContext ctx)
+    {
+        var symbols = GetGenericParameters(ctx).ToList();
+        return new GenericUtilisation(symbols);
     }
 
     public TypeLookup GetType(PseudoCodeParser.TypeLookupContext context)
@@ -277,8 +283,19 @@ public class NewCompiler : PseudoCodeBaseListener
                     MemberName = memberName.GetText()
                 });
             }
+
+            if (context.genericUtilisation() is { } genericUtilisationContext)
+            {
+                var expr = Context.ExpressionStack.Pop();
+                Context.ExpressionStack.Push(new ExpressionGenericUtilisation
+                {
+                    Expression = expr,
+                    GenericUtilisation = GetGenericUtilisation(genericUtilisationContext)
+                });
+            }
         }
     }
+
 
     public override void ExitAssignmentStatement(PseudoCodeParser.AssignmentStatementContext context)
     {

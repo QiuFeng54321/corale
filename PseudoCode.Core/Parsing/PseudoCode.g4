@@ -202,6 +202,7 @@ arithmeticExpression locals [bool IsUnary, PseudoOperator Operator = PseudoOpera
  | arithmeticExpression Dot Identifier
  | arithmeticExpression array
  | arithmeticExpression arguments
+ | arithmeticExpression genericUtilisation
  | op=Caret operand=arithmeticExpression {$IsUnary = true; $Operator = PseudoOperator.GetPointer;}
  | operand=arithmeticExpression op=Caret {$IsUnary = true; $Operator = PseudoOperator.GetPointed;}
  | <assoc=right> operand1=arithmeticExpression op=Pow operand2=arithmeticExpression {$Operator = PseudoOperator.Pow;}
