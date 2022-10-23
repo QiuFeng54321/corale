@@ -1,8 +1,10 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace PseudoCode.Core.Runtime.Reflection.Builtin;
 
+[SuppressMessage("ReSharper", "UnusedMember.Global")]
 public static class Printer
 {
     [BuiltinNativeFunction("__PRINTF")]
@@ -35,7 +37,7 @@ public static class Printer
 
     [BuiltinNativeFunction("__PRINTF")]
     [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static unsafe void Printf(PseudoStringStruct x)
+    public static void Printf(PseudoStringStruct x)
     {
         Console.Write(x);
     }

@@ -10,7 +10,7 @@ public static class BuiltinTypes
 
     public static void Initialize()
     {
-        Char = Symbol.MakePrimitiveType("CHAR", typeof(char));
+        Char = Symbol.MakePrimitiveType("CHAR", typeof(sbyte));
         Integer = Symbol.MakePrimitiveType("INTEGER", typeof(int));
         Real = Symbol.MakePrimitiveType("REAL", typeof(double));
         Boolean = Symbol.MakePrimitiveType("BOOLEAN", typeof(bool));

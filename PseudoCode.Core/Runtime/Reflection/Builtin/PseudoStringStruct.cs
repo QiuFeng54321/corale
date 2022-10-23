@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using System.Text;
 using PseudoCode.Core.CodeGen;
 
 namespace PseudoCode.Core.Runtime.Reflection.Builtin;
@@ -20,7 +21,7 @@ public struct PseudoStringStruct
         return new PseudoStringStruct
         {
             Pointer = value.ToSByte(),
-            Length = value.Length
+            Length = Encoding.UTF8.GetByteCount(value) // sbyte length is different from char length
         };
     }
 

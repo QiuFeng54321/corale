@@ -90,13 +90,6 @@ public class Type
             resType.Kind = Types.Integer;
         }
 
-        if (type == typeof(string))
-        {
-            resType._llvmTypeRef = LLVMTypeRef.CreatePointer(LLVMTypeRef.Int8, 0);
-            resType.Kind = Types.Pointer;
-            resType.ElementType = BuiltinTypes.Char.Type;
-        }
-
         if (type == typeof(double))
         {
             resType._llvmTypeRef = LLVMTypeRef.Double;
@@ -109,7 +102,7 @@ public class Type
             resType.Kind = Types.Boolean;
         }
 
-        if (type == typeof(char))
+        if (type == typeof(sbyte))
         {
             resType._llvmTypeRef = LLVMTypeRef.Int8;
             resType.Kind = Types.Character;
