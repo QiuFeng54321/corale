@@ -266,6 +266,17 @@ public class NewCompiler : PseudoCodeBaseListener
                     Arguments = argumentSymbols
                 });
             }
+
+            if (context.Dot() != null)
+            {
+                var memberName = context.Identifier();
+                var parentExpr = Context.ExpressionStack.Pop();
+                Context.ExpressionStack.Push(new MemberAccess
+                {
+                    Before = parentExpr,
+                    MemberName = memberName.GetText()
+                });
+            }
         }
     }
 

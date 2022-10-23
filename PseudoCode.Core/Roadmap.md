@@ -4,5 +4,5 @@
 - [x] Struct mapping
 - [ ] Cast
 - [ ] Generic function
-- [ ] Member access
+- [x] Member access
 - [ ] Complete control flow

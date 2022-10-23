@@ -139,13 +139,13 @@ public class Symbol
     /// </summary>
     /// <param name="type">The type of the symbol</param>
     /// <param name="value">The value of the symbol</param>
+    /// <param name="isMemoryPointer">If true, value will be assigned to MemoryPointer</param>
     /// <returns>The symbol generated</returns>
-    public static Symbol MakeTemp(Type type, LLVMValueRef value)
+    public static Symbol MakeTemp(Type type, LLVMValueRef value, bool isMemoryPointer = false)
     {
-        var sym = new Symbol(value.Name, false, type)
-        {
-            ValueRef = value
-        };
+        var sym = new Symbol(value.Name, false, type);
+        if (isMemoryPointer) sym.MemoryPointer = value;
+        else sym.ValueRef = value;
         return sym;
     }
 
@@ -230,5 +230,10 @@ public class Symbol
     public static bool operator !=(Symbol left, Symbol right)
     {
         return !Equals(left, right);
+    }
+
+    public Symbol MakeStructMemberDeclSymbol(string name)
+    {
+        return new Symbol(name, false, Type);
     }
 }

@@ -17,14 +17,9 @@ public class DeclarationStatement : Statement
     public override void CodeGen(CodeGenContext ctx, Function function)
     {
         var typeSymbol = GetTypeSymbol(ctx, function);
-        var symbol = MakeSymbol(typeSymbol);
+        var symbol = typeSymbol.MakeStructMemberDeclSymbol(Name);
         function.BodyNamespace.AddSymbol(symbol);
         symbol.MemoryPointer = ctx.Builder.BuildAlloca(typeSymbol.Type.GetLLVMType(), symbol.Name);
-    }
-
-    public Symbol MakeSymbol(Symbol typeSymbol)
-    {
-        return new Symbol(Name, false, typeSymbol.Type);
     }
 
     public override void Format(PseudoFormatter formatter)

@@ -35,7 +35,7 @@ public class TypeDeclaration : Statement, IGenericExpression
         {
             var declarationStatement = DeclarationStatements[index];
             var typeSym = declarationStatement.GetTypeSymbol(ctx, function, subNs);
-            var sym = declarationStatement.MakeSymbol(typeSym);
+            var sym = typeSym.MakeStructMemberDeclSymbol(declarationStatement.Name);
             typeMembers.Add(sym);
             sym.TypeMemberIndex = index;
         }

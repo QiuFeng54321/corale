@@ -36,7 +36,8 @@ public static class TypeBinder
         var members = new List<Symbol>();
         foreach (var member in structType.GetFields())
         {
-            var memberTypeSym = GetTypeSymbolFromSystemType(ctx, member.FieldType);
+            var typeSym = GetTypeSymbolFromSystemType(ctx, member.FieldType);
+            var memberTypeSym = typeSym.MakeStructMemberDeclSymbol(member.Name);
             members.Add(memberTypeSym);
         }
 
