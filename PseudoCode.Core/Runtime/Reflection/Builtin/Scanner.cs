@@ -9,9 +9,9 @@ public class Scanner
 {
     [BuiltinNativeFunction("__SCAN")]
     [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static unsafe void Scan([ByRef] int* x)
+    public static unsafe void Scan([ByRef] long* x)
     {
-        *x = int.Parse(Console.ReadLine()!);
+        *x = long.Parse(Console.ReadLine()!);
     }
 
     [BuiltinNativeFunction("__SCAN")]

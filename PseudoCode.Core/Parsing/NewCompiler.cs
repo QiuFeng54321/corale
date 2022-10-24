@@ -353,7 +353,7 @@ public class NewCompiler : PseudoCodeBaseListener
             {
                 Context.ExpressionStack.Push(new PseudoInteger
                 {
-                    Value = (int)val
+                    Value = (long)val
                 });
                 break;
             }

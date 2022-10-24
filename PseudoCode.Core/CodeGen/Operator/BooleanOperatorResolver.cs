@@ -8,7 +8,7 @@ public class BooleanOperatorResolver : OperatorResolver
 {
     public override Symbol Resolve(Symbol left, Symbol right, PseudoOperator op, CodeGenContext ctx)
     {
-        var leftLLVMValue = left.GetRealValue(ctx).ValueRef;
+        var leftLLVMValue = left.GetRealValueRef(ctx);
         var resType = BuiltinTypes.Boolean.Type;
         LLVMValueRef res;
         // Unary
@@ -19,7 +19,7 @@ public class BooleanOperatorResolver : OperatorResolver
             return Symbol.MakeTemp(resType, res);
         }
 
-        var rightLLVMValue = right.GetRealValue(ctx).ValueRef;
+        var rightLLVMValue = right.GetRealValueRef(ctx);
         if (right.Type.Kind is not Types.Boolean) return null;
         Instruction func;
         switch (op)

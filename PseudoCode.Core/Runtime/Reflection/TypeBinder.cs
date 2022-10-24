@@ -10,6 +10,7 @@ public static class TypeBinder
     public static readonly Dictionary<Type, Symbol> TypeMap = new()
     {
         [typeof(int)] = BuiltinTypes.Integer,
+        [typeof(long)] = BuiltinTypes.Integer,
         [typeof(double)] = BuiltinTypes.Real,
         [typeof(string)] = BuiltinTypes.String,
         [typeof(sbyte)] = BuiltinTypes.Char,

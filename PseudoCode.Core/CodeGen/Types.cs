@@ -9,6 +9,5 @@ public enum Types
     Boolean,
     Type,
     Function,
-    GenericPlaceholder, // To be filled
     Pointer
 }

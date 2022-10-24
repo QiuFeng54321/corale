@@ -9,7 +9,7 @@ public static class Printer
 {
     [BuiltinNativeFunction("__PRINTF")]
     [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static void Printf(int x)
+    public static void Printf(long x)
     {
         Console.Write(x);
     }

@@ -1,5 +1,4 @@
 using LLVMSharp.Interop;
-using PseudoCode.Core.Runtime.Errors;
 
 namespace PseudoCode.Core.CodeGen;
 
@@ -67,8 +66,6 @@ public class Type
             return _llvmTypeRef;
         }
 
-        if (Kind == Types.GenericPlaceholder) throw new InvalidAccessError($"Generic placeholder for {TypeName}");
-
         if (Kind == Types.Pointer)
         {
             _llvmTypeRef = LLVMTypeRef.CreatePointer(ElementType.GetLLVMType(), 0);
@@ -84,9 +81,9 @@ public class Type
         {
             TypeName = name
         };
-        if (type == typeof(int))
+        if (type == typeof(long))
         {
-            resType._llvmTypeRef = LLVMTypeRef.Int32;
+            resType._llvmTypeRef = LLVMTypeRef.Int64;
             resType.Kind = Types.Integer;
         }
 
@@ -117,15 +114,6 @@ public class Type
         return resType;
     }
 
-    public static Type MakeGenericPlaceholder(string name)
-    {
-        return new Type
-        {
-            TypeName = name,
-            Kind = Types.GenericPlaceholder
-        };
-    }
-
     public Type Clone()
     {
         return new Type
@@ -139,12 +127,6 @@ public class Type
             ReturnType = ReturnType?.Clone(),
             TypeName = TypeName
         };
-    }
-
-
-    public static void FillGeneric(out Type genericPlaceholder, ref Type targetType)
-    {
-        genericPlaceholder = targetType;
     }
 
     public static string GenerateFilledGenericTypeName(string typeName, List<Symbol> genericArguments)

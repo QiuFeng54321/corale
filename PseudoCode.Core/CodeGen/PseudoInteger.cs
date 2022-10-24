@@ -5,11 +5,11 @@ namespace PseudoCode.Core.CodeGen;
 
 public class PseudoInteger : Expression
 {
-    public int Value;
+    public long Value;
 
     public override Symbol CodeGen(CodeGenContext ctx, Function function)
     {
-        var val = LLVMValueRef.CreateConstInt(LLVMTypeRef.Int32, (ulong)Value);
+        var val = LLVMValueRef.CreateConstInt(LLVMTypeRef.Int64, (ulong)Value);
         return Symbol.MakeTemp(ReservedNames.Integer, BuiltinTypes.Integer.Type, ctx, val);
     }
 

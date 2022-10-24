@@ -17,8 +17,10 @@ public class OperatorResolverMap
     public void Initialize()
     {
         AddResolver(Types.Integer, new IntegerOperatorResolver());
+        AddResolver(Types.Character, new CharacterOperatorResolver());
         AddResolver(Types.Real, new RealOperatorResolver());
         AddResolver(Types.Boolean, new BooleanOperatorResolver());
+        AddResolver(Types.Pointer, new PointerOperatorResolver());
     }
 
     public Symbol Resolve(Symbol left, Symbol right, PseudoOperator op, CodeGenContext ctx)

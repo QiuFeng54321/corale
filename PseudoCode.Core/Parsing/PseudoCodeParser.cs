@@ -4696,7 +4696,7 @@ public partial class PseudoCodeParser : Parser {
 				{
 				State = 702;
 				_localctx._integer = integer();
-				((AtomContext)GetInvokingContext(51)).AtomType =  "INTEGER"; ((AtomContext)GetInvokingContext(51)).Value =  int.Parse((_localctx._integer!=null?TokenStream.GetText(_localctx._integer.Start,_localctx._integer.Stop):null));
+				((AtomContext)GetInvokingContext(51)).AtomType =  "INTEGER"; ((AtomContext)GetInvokingContext(51)).Value =  long.Parse((_localctx._integer!=null?TokenStream.GetText(_localctx._integer.Start,_localctx._integer.Stop):null));
 				}
 				break;
 			case 2:

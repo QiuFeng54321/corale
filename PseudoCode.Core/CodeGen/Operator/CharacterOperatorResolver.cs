@@ -4,12 +4,12 @@ using PseudoCode.Core.Runtime.Types;
 
 namespace PseudoCode.Core.CodeGen.Operator;
 
-public class IntegerOperatorResolver : OperatorResolver
+public class CharacterOperatorResolver : OperatorResolver
 {
     public override Symbol Resolve(Symbol left, Symbol right, PseudoOperator op, CodeGenContext ctx)
     {
         var leftLLVMValue = left.GetRealValueRef(ctx);
-        var resType = BuiltinTypes.Integer.Type;
+        var resType = BuiltinTypes.Char.Type;
         LLVMValueRef res;
         if (right == null)
         {
@@ -76,10 +76,8 @@ public class IntegerOperatorResolver : OperatorResolver
         }
 
         if (op.IsComparison())
-        {
             // res = ctx.Builder.BuildIntCast(res, LLVMTypeRef.Int1, ctx.NameGenerator.Request(ReservedNames.Temp));
             resType = BuiltinTypes.Boolean.Type;
-        }
 
         res = func(leftLLVMValue, rightLLVMValue, resType.Kind.RequestTemp(ctx));
 

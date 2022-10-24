@@ -282,7 +282,7 @@ array
  */
 
 number
- : integer {$atom::AtomType = "INTEGER"; $atom::Value = int.Parse($integer.text);}
+ : integer {$atom::AtomType = "INTEGER"; $atom::Value = long.Parse($integer.text);}
  | decimal {$atom::AtomType = "REAL"; $atom::Value = RealNumberType.Parse($decimal.text);}
  ;
  // Value is either 1. or .1 and not just a single '.' to avoid ambiguity with DOT

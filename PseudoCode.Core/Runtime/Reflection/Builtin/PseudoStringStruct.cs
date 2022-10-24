@@ -9,11 +9,11 @@ namespace PseudoCode.Core.Runtime.Reflection.Builtin;
 public struct PseudoStringStruct
 {
     public unsafe sbyte* Pointer;
-    public int Length;
+    public long Length;
 
     public override unsafe string ToString()
     {
-        return new(Pointer, 0, Length);
+        return new string(Pointer, 0, (int)Length);
     }
 
     public static unsafe implicit operator PseudoStringStruct(string value)

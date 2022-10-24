@@ -20,31 +20,31 @@ public static class BuiltinFunctions
 
     [BuiltinNativeFunction("RIGHT")]
     [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static PseudoStringStruct Right(PseudoStringStruct thisString, int x)
+    public static PseudoStringStruct Right(PseudoStringStruct thisString, long x)
     {
         if (x < 0 || x > thisString.Length)
             throw new OutOfBoundsError(
                 $"Cannot take substring [^{x}..] of \"{thisString}\": Length of string is {thisString.Length}");
 
-        return thisString.ToString()[^x..];
+        return thisString.ToString()[^(int)x..];
     }
 
     [BuiltinNativeFunction("LEFT")]
     [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static PseudoStringStruct Left(PseudoStringStruct str, int index)
+    public static PseudoStringStruct Left(PseudoStringStruct str, long index)
     {
         if (index < 0 || index > str.Length)
             throw new OutOfBoundsError(
                 $"Cannot take substring [..{index}] of \"{str}\": Length of string is {str.Length}"
             );
 
-        return str.ToString()[..index];
+        return str.ToString()[..(int)index];
     }
 
 
     [BuiltinNativeFunction("LENGTH")]
     [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static int Length(PseudoStringStruct thisString)
+    public static long Length(PseudoStringStruct thisString)
     {
         return thisString.Length;
     }
@@ -58,13 +58,13 @@ public static class BuiltinFunctions
 
     [BuiltinNativeFunction("MID")]
     [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static PseudoStringStruct Mid(PseudoStringStruct thisString, int x, int y)
+    public static PseudoStringStruct Mid(PseudoStringStruct thisString, long x, long y)
     {
         if (x < 0 || x >= thisString.Length || y < 0 || x + y >= thisString.Length)
             throw new OutOfBoundsError(
                 $"Cannot take substring [{x}..{x + y}] of \"{thisString}\": Length of string is {thisString.Length}",
                 null);
-        return thisString.ToString().Substring(x - 1, y);
+        return thisString.ToString().Substring((int)x - 1, (int)y);
     }
 
     [BuiltinNativeFunction("LCASE")]
@@ -118,45 +118,48 @@ public static class BuiltinFunctions
 
     [BuiltinNativeFunction("ASC")]
     [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static int Ascii(sbyte chr)
+    public static long Ascii(sbyte chr)
     {
         return chr;
     }
 
     [BuiltinNativeFunction("CHR")]
     [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static sbyte Char(int ascii)
+    public static sbyte Char(long ascii)
     {
         return (sbyte)ascii;
     }
 
     [BuiltinNativeFunction("DAY")]
     [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static int Day(PseudoDateStruct date)
+    public static long Day(PseudoDateStruct date)
     {
         return date.Day;
     }
 
     [BuiltinNativeFunction("MONTH")]
     [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static int Month(PseudoDateStruct date)
+    public static long Month(PseudoDateStruct date)
     {
         return date.Month;
     }
 
     [BuiltinNativeFunction("YEAR")]
     [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static int Year(PseudoDateStruct date)
+    public static long Year(PseudoDateStruct date)
     {
         return date.Year;
     }
 
     [BuiltinNativeFunction("DAYINDEX")]
-    public static int DayIndex(DateOnly date) => (int)date.DayOfWeek + 1;
+    public static long DayIndex(DateOnly date)
+    {
+        return (long)date.DayOfWeek + 1;
+    }
 
     [BuiltinNativeFunction("SETDATE")]
     [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static PseudoDateStruct SetDate(int day, int month, int year)
+    public static PseudoDateStruct SetDate(long day, long month, long year)
     {
         return new PseudoDateStruct(year, month, day);
     }
@@ -164,23 +167,23 @@ public static class BuiltinFunctions
     [BuiltinNativeFunction("TODAY")]
     public static DateOnly Today() => DateOnly.FromDateTime(DateTime.Today);
 
-    [BuiltinNativeFunction("INT")]
+    [BuiltinNativeFunction("long")]
     [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static int Int(RealNumberType x)
+    public static long Int(double x)
     {
-        return (int)x;
+        return (long)x;
     }
 
     [BuiltinNativeFunction("FIND")]
     [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static int Find(PseudoStringStruct str, sbyte chr)
+    public static long Find(PseudoStringStruct str, sbyte chr)
     {
         return str.ToString().IndexOf((char)chr) + 1;
     }
 
     [BuiltinNativeFunction("RAND")]
     [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static RealNumberType RandomReal(int x)
+    public static double RandomReal(long x)
     {
         // ReSharper disable once RedundantCast
         return (RealNumberType)(Random.NextDouble() * x);

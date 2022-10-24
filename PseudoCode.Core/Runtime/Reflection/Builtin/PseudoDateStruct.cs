@@ -6,11 +6,11 @@ namespace PseudoCode.Core.Runtime.Reflection.Builtin;
 [BuiltinType("DATE")]
 public struct PseudoDateStruct
 {
-    public int Year;
-    public int Month;
-    public int Day;
+    public long Year;
+    public long Month;
+    public long Day;
 
-    public PseudoDateStruct(int year, int month, int day)
+    public PseudoDateStruct(long year, long month, long day)
     {
         Year = year;
         Month = month;
