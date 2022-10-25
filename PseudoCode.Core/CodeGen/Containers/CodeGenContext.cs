@@ -8,17 +8,17 @@ namespace PseudoCode.Core.CodeGen.Containers;
 /// </summary>
 public class CodeGenContext
 {
+    public readonly Analysis Analysis;
+    public readonly CompilationUnit CompilationUnit;
     public readonly Stack<Expression> ExpressionStack = new();
-    public readonly Stack<Symbol> TypeLookupStack = new();
-    public Analysis Analysis;
-    public LLVMBuilderRef Builder;
-    public CompilationUnit CompilationUnit;
-    public LLVMExecutionEngineRef Engine;
 
-    public Namespace GlobalNamespace = new("global", null);
+    public readonly Namespace GlobalNamespace = new("global", null);
+    public readonly NameGenerator NameGenerator;
+    public readonly OperatorResolverMap OperatorResolverMap;
+    public readonly Stack<Symbol> TypeLookupStack = new();
+    public LLVMBuilderRef Builder;
+    public LLVMExecutionEngineRef Engine;
     public LLVMModuleRef Module;
-    public NameGenerator NameGenerator;
-    public OperatorResolverMap OperatorResolverMap;
 
     public CodeGenContext(string moduleName = "Module")
     {
@@ -39,7 +39,7 @@ public class CodeGenContext
         {
             Namespace = GlobalNamespace
         };
-        CompilationUnit.MakeMainFunction(this);
+        CompilationUnit.MakeMainFunction(this, moduleName);
         // CompilationUnit.MainFunction.GeneratePrototype(this);
     }
 }

@@ -1,4 +1,5 @@
 using PseudoCode.Core.CodeGen.Containers;
+using PseudoCode.Core.Runtime.Types;
 
 namespace PseudoCode.Core.CodeGen;
 
@@ -19,6 +20,7 @@ public static class ReservedNames
     public const string BlockRefContinuation = "continue";
     public const string Then = "then";
     public const string Else = "else";
+    public const string Operator = "__operator_";
 
     public static readonly Dictionary<Types, string> Map = new()
     {
@@ -39,5 +41,10 @@ public static class ReservedNames
     public static string RequestTemp(this Types type, CodeGenContext ctx)
     {
         return ctx.NameGenerator.RequestTemp(type.ToTemp());
+    }
+
+    public static string MakeOperatorFunctionName(PseudoOperator @operator)
+    {
+        return Operator + @operator.ToString().ToLower();
     }
 }

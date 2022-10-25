@@ -7,7 +7,6 @@ using Antlr4.Runtime.Tree;
 using CommandLine;
 using LLVMSharp.Interop;
 using PseudoCode.Cli;
-using PseudoCode.Core.CodeGen;
 using PseudoCode.Core.Parsing;
 using Parser = CommandLine.Parser;
 
@@ -25,10 +24,11 @@ void RunProgram(CommandLines.Options opts)
         var interpreter = new NewCompiler();
         PseudoCodeDocument.AddErrorListener(parser, interpreter);
         IParseTree parseTree = parser.fileInput();
-        var ctx = interpreter.Compile(parseTree);
+        var moduleName = "Module";
+        var ctx = interpreter.Compile(parseTree, moduleName);
         ctx.Analysis.PrintFeedbacks();
         Console.WriteLine(ctx.CompilationUnit.MainFunction.ToString());
-        var func = ctx.Module.GetNamedFunction(ReservedNames.Main);
+        var func = ctx.Module.GetNamedFunction(moduleName);
         var res = LLVM.VerifyFunction(func, LLVMVerifierFailureAction.LLVMPrintMessageAction);
         Debug.WriteLine(res.ToString());
         ctx.Engine.RunFunction(func, Array.Empty<LLVMGenericValueRef>());

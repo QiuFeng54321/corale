@@ -26,9 +26,9 @@ public class CompilationUnit : Statement
         return func;
     }
 
-    public void MakeMainFunction(CodeGenContext ctx)
+    public void MakeMainFunction(CodeGenContext ctx, string name)
     {
-        MainFunction = MakeFunction(ReservedNames.Main, new List<Symbol>(), BuiltinTypes.Void);
+        MainFunction = MakeFunction(name, new List<Symbol>(), BuiltinTypes.Void);
         MainFunction.GeneratePrototype(ctx);
         MainFunction.LLVMFunction.Linkage = LLVMLinkage.LLVMExternalLinkage;
     }

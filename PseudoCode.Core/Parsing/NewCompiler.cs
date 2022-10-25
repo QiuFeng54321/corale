@@ -15,7 +15,7 @@ public class NewCompiler : PseudoCodeBaseListener
     public CodeGenContext Context;
     public Block CurrentBlock;
 
-    public void Initialize()
+    public void Initialize(string name)
     {
         BuiltinTypes.Initialize();
         Context = new CodeGenContext();
@@ -31,9 +31,9 @@ public class NewCompiler : PseudoCodeBaseListener
     }
 
 
-    public CodeGenContext Compile(IParseTree tree)
+    public CodeGenContext Compile(IParseTree tree, string name)
     {
-        Initialize();
+        Initialize(name);
         ParseTreeWalker.Default.Walk(this, tree);
         Context.CompilationUnit.CodeGen(Context, null);
         Context.Module.Dump();
