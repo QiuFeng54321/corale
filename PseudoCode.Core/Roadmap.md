@@ -9,7 +9,7 @@
 - [ ] Complete control flow
 - [x] IO
 - [ ] File IO
-- [ ] Malloc, Sizeof
+- [x] Malloc, Sizeof
 - [ ] Array
 - [ ] Import
 - [ ] Find function through namespace

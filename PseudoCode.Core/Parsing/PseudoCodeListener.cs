@@ -327,6 +327,16 @@ public interface IPseudoCodeListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitFunctionDefinition([NotNull] PseudoCodeParser.FunctionDefinitionContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="PseudoCodeParser.operatorDefinition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterOperatorDefinition([NotNull] PseudoCodeParser.OperatorDefinitionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="PseudoCodeParser.operatorDefinition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitOperatorDefinition([NotNull] PseudoCodeParser.OperatorDefinitionContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="PseudoCodeParser.argumentsDeclaration"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -556,6 +566,26 @@ public interface IPseudoCodeListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitAtom([NotNull] PseudoCodeParser.AtomContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="PseudoCodeParser.sizeOfExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterSizeOfExpression([NotNull] PseudoCodeParser.SizeOfExpressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="PseudoCodeParser.sizeOfExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitSizeOfExpression([NotNull] PseudoCodeParser.SizeOfExpressionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="PseudoCodeParser.mallocExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterMallocExpression([NotNull] PseudoCodeParser.MallocExpressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="PseudoCodeParser.mallocExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitMallocExpression([NotNull] PseudoCodeParser.MallocExpressionContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="PseudoCodeParser.dataType"/>.
 	/// </summary>

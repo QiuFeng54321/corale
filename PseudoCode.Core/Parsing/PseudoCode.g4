@@ -115,6 +115,7 @@ compoundStatement
  | externFunctionDefinition
  | procedureDefinition
  | functionDefinition
+ | operatorDefinition
  | typeDefinition
  | enumDefinition
  | typeAliasDefinition
@@ -143,6 +144,7 @@ valueRange: from=scopedExpression To to=scopedExpression;
 externFunctionDefinition: Extern Function Identifier genericDeclaration? argumentsDeclaration? (Returns dataType);
 procedureDefinition: Procedure identifierWithNew genericDeclaration? argumentsDeclaration? indentedBlock Endprocedure;
 functionDefinition: Function Identifier genericDeclaration? argumentsDeclaration? Returns dataType indentedBlock Endfunction;
+operatorDefinition: OperatorKeyword Identifier argumentsDeclaration Returns dataType indentedBlock EndOperator;
 argumentsDeclaration: OpenParen (argumentDeclaration (Comma argumentDeclaration)*)? CloseParen;
 argumentDeclaration: (Byval | Byref)? Identifier Colon dataType;
 genericUtilisation: Smaller dataTypeList Greater;
@@ -199,6 +201,8 @@ arithmeticExpression locals [bool IsUnary, PseudoOperator Operator = PseudoOpera
  : New modularDataType arguments
  | Identifier {$IsUnary = true;}
  | atom {$IsUnary = true;}
+ | sizeOfExpression {$IsUnary = true;}
+ | mallocExpression {$IsUnary = true;}
  | arithmeticExpression Dot Identifier
  | arithmeticExpression array
  | arithmeticExpression arguments
@@ -253,6 +257,12 @@ atom locals [string AtomType, object Value]
  | array {$AtomType = "ARRAY";}
  ;
 
+sizeOfExpression
+ : SizeOf dataType
+ ;
+mallocExpression
+ : Malloc expression For dataType
+ ;
 dataType
  : Array OpenBrack arrayRange (Comma arrayRange)* CloseBrack Of dataType
  | Caret dataType
@@ -354,6 +364,9 @@ Byref : 'BYREF';
 Returns : 'RETURNS';
 Return : 'RETURN';
 
+OperatorKeyword : 'OPERATOR';
+EndOperator : 'ENDOPERATOR';
+
 Type : 'TYPE';
 Endtype : 'ENDTYPE';
 
@@ -379,6 +392,9 @@ New : 'NEW';
 Namespace : 'NAMESPACE';
 EndNamespace : 'ENDNAMESPACE';
 Use : 'USE';
+
+Malloc : 'MALLOC';
+SizeOf : 'SIZEOF';
 
 // Logic
 And : 'AND';

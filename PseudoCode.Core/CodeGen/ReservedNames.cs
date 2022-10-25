@@ -21,6 +21,7 @@ public static class ReservedNames
     public const string Then = "then";
     public const string Else = "else";
     public const string Operator = "__operator_";
+    public const string Malloc = "malloc";
 
     public static readonly Dictionary<Types, string> Map = new()
     {

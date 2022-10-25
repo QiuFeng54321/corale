@@ -318,6 +318,20 @@ public class NewCompiler : PseudoCodeBaseListener
         }
     }
 
+    public override void ExitMallocExpression(PseudoCodeParser.MallocExpressionContext context)
+    {
+        base.ExitMallocExpression(context);
+        var sizeExpr = Context.ExpressionStack.Pop();
+        var dataType = GetType(context.dataType());
+        Context.ExpressionStack.Push(new MallocExpression(sizeExpr, dataType));
+    }
+
+    public override void ExitSizeOfExpression(PseudoCodeParser.SizeOfExpressionContext context)
+    {
+        base.ExitSizeOfExpression(context);
+        var dataType = GetType(context.dataType());
+        Context.ExpressionStack.Push(new SizeOfExpression(dataType));
+    }
 
     public override void ExitAssignmentStatement(PseudoCodeParser.AssignmentStatementContext context)
     {
