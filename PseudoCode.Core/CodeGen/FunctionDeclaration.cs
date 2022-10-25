@@ -25,13 +25,8 @@ public class FunctionDeclaration : Statement, IGenericExpression
     public Symbol Generate(CodeGenContext ctx, Function function, List<Symbol> genericParams = default)
     {
         // Make function name
-        var funcName = MakeFunctionName(genericParams);
-        // Return existing function
-        if (function.BodyNamespace.TryGetSymbol(Name, out var res))
-            if (res.FunctionOverloads.FirstOrDefault(o => o.Name == funcName) is { } f)
-                return res;
         // Fill generic parameters
-        var subNs = function.BodyNamespace.AddNamespace(funcName);
+        var subNs = function.BodyNamespace.AddNamespace(ctx.NameGenerator.Request(Name));
         if (genericParams != null)
             for (var i = 0; i < genericParams.Count; i++)
                 subNs.AddSymbol(genericParams[i], false, GenericDeclaration.Identifiers[i]);
@@ -43,6 +38,11 @@ public class FunctionDeclaration : Statement, IGenericExpression
                     a.IsRef ? DefinitionAttribute.Reference : DefinitionAttribute.None);
             });
         var filledReturnType = ReturnType.Lookup(ctx, function, subNs);
+        var funcName = MakeFunctionName(filledReturnType, genericParams ?? new List<Symbol>());
+        // Return existing function
+        if (function.BodyNamespace.TryGetSymbol(Name, out var res))
+            if (res.FunctionOverloads.FirstOrDefault(o => o.Name == funcName) is { } f)
+                return res;
 
         // Make function
         var func = ctx.CompilationUnit.MakeFunction(Name, filledArgumentSymbols.ToList(), filledReturnType,
@@ -58,10 +58,10 @@ public class FunctionDeclaration : Statement, IGenericExpression
         return func.ResultFunctionGroup;
     }
 
-    public string MakeFunctionName(List<Symbol> genericParams = default)
+    public string MakeFunctionName(Symbol returnSym, IEnumerable<Symbol> genericParams)
     {
-        if (genericParams == null) return Name;
-        return $"{Name}<{string.Join(", ", genericParams.Select(g => g.Type.TypeName))}>";
+        return
+            $"{Name}<{string.Join(", ", genericParams.Select(g => g.Namespace.GetFullQualifier(g.Type.TypeName)))}>:{returnSym.Namespace.GetFullQualifier(returnSym.Type.TypeName)}";
     }
 
     public override void Format(PseudoFormatter formatter)

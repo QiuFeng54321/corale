@@ -13,3 +13,4 @@
 - [ ] Array
 - [ ] Import
 - [ ] Find function through namespace
+- [ ] Debug info
