@@ -4,7 +4,7 @@ namespace PseudoCode.Core.CodeGen;
 
 public class ParenthesisExpression : Expression
 {
-    public Expression IncludingExpression;
+    public readonly Expression IncludingExpression;
 
     public ParenthesisExpression(Expression includingExpression)
     {

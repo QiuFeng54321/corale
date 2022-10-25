@@ -41,7 +41,7 @@ public class FunctionDeclaration : Statement, IGenericExpression
         var funcName = MakeFunctionName(filledReturnType, genericParams ?? new List<Symbol>());
         // Return existing function
         if (function.BodyNamespace.TryGetSymbol(Name, out var res))
-            if (res.FunctionOverloads.FirstOrDefault(o => o.Name == funcName) is { } f)
+            if (res.FunctionOverloads.FirstOrDefault(o => o.Name == funcName) is { })
                 return res;
 
         // Make function

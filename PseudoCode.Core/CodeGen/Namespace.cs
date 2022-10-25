@@ -8,19 +8,19 @@ public class Namespace
     public readonly Dictionary<string, Namespace> ChildrenNamespaces = new();
 
     /// <summary>
-    ///     Stores the symbols defined under this namespace
-    /// </summary>
-    public readonly Dictionary<string, Symbol> Symbols = new();
-
-    /// <summary>
     ///     The name of this namespace
     /// </summary>
-    public string Name;
+    public readonly string Name;
 
     /// <summary>
     ///     The parent namespace. Null if this namespace is root
     /// </summary>
-    public Namespace Parent;
+    public readonly Namespace Parent;
+
+    /// <summary>
+    ///     Stores the symbols defined under this namespace
+    /// </summary>
+    public readonly Dictionary<string, Symbol> Symbols = new();
 
     public Namespace(string name, Namespace parent)
     {

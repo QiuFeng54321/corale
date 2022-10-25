@@ -7,12 +7,11 @@ namespace PseudoCode.Core.CodeGen.Containers;
 /// </summary>
 public class Block : Statement
 {
+    public readonly List<Statement> Statements = new();
     private Function _parentFunction;
     public string Name;
     public Namespace Namespace;
     public Block ParentBlock;
-
-    public List<Statement> Statements = new();
 
     public Function ParentFunction
     {
@@ -49,17 +48,17 @@ public class Block : Statement
         GetBlock(ctx);
     }
 
-    public void GetBlock(CodeGenContext ctx)
+    private void GetBlock(CodeGenContext ctx)
     {
         CodeGenDirectly(ctx);
     }
 
-    public void CodeGenDirectly(CodeGenContext ctx)
+    private void CodeGenDirectly(CodeGenContext ctx)
     {
         foreach (var s in Statements) s.CodeGen(ctx, ParentFunction);
     }
 
-    protected void WriteStatements(PseudoFormatter formatter)
+    private void WriteStatements(PseudoFormatter formatter)
     {
         foreach (var statement in Statements) statement.Format(formatter);
     }

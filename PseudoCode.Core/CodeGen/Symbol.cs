@@ -6,22 +6,27 @@ namespace PseudoCode.Core.CodeGen;
 
 public class Symbol
 {
+    public readonly DefinitionAttribute DefinitionAttribute;
+
     /// <summary>
     ///     If the symbol is a function, this stores the overloads of the function
     /// </summary>
     public readonly List<Symbol> FunctionOverloads = new();
 
-    public DefinitionAttribute DefinitionAttribute;
+    /// <summary>
+    ///     Indicates whether the symbol is type-only
+    /// </summary>
+    public readonly bool IsType;
+
+    /// <summary>
+    ///     Type of the symbol. If the symbol is a set of overloads of a function, this is null
+    /// </summary>
+    public readonly Type Type;
 
     /// <summary>
     ///     This stores an expression which can generate a symbol when supplied with generic parameters.
     /// </summary>
     public IGenericExpression GenericExpression;
-
-    /// <summary>
-    ///     Indicates whether the symbol is type-only
-    /// </summary>
-    public bool IsType;
 
     /// <summary>
     ///     Pointer to the variable in memory
@@ -37,11 +42,6 @@ public class Symbol
     ///     Namespace of this symbol
     /// </summary>
     public Namespace Namespace;
-
-    /// <summary>
-    ///     Type of the symbol. If the symbol is a set of overloads of a function, this is null
-    /// </summary>
-    public Type Type;
 
     /// <summary>
     ///     Indicates the index of this symbol in a type, if it is in a type
@@ -251,5 +251,21 @@ public class Symbol
     public Symbol MakeStructMemberDeclSymbol(string name)
     {
         return new Symbol(name, false, Type);
+    }
+
+    public override int GetHashCode()
+    {
+        var hashCode = new HashCode();
+        hashCode.Add(FunctionOverloads);
+        hashCode.Add((int)DefinitionAttribute);
+        hashCode.Add(GenericExpression);
+        hashCode.Add(IsType);
+        hashCode.Add(MemoryPointer);
+        hashCode.Add(Name);
+        hashCode.Add(Namespace);
+        hashCode.Add(Type);
+        hashCode.Add(TypeMemberIndex);
+        hashCode.Add(ValueRef);
+        return hashCode.ToHashCode();
     }
 }

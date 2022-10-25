@@ -2,7 +2,7 @@ namespace PseudoCode.Core.CodeGen;
 
 public class GenericDeclaration : AstNode
 {
-    public List<string> Identifiers;
+    public readonly List<string> Identifiers;
 
     public GenericDeclaration(List<string> identifiers)
     {

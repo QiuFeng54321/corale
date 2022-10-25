@@ -4,7 +4,7 @@ namespace PseudoCode.Core.CodeGen.TypeLookups;
 
 public class GenericUtilisation
 {
-    public List<DataType> TypeParameters;
+    public readonly List<DataType> TypeParameters;
 
     public GenericUtilisation(List<DataType> typeParameters)
     {

@@ -14,7 +14,6 @@ public class CallStatement : Statement
 
     public override void CodeGen(CodeGenContext ctx, Function function)
     {
-        Symbol returnSymbol = null;
         if (Expression is not CallExpression)
         {
             var implicitCallExpr = new CallExpression
@@ -22,11 +21,11 @@ public class CallStatement : Statement
                 Function = Expression,
                 Arguments = new List<Expression>()
             };
-            returnSymbol = implicitCallExpr.CodeGen(ctx, function);
+            implicitCallExpr.CodeGen(ctx, function);
         }
         else
         {
-            returnSymbol = Expression.CodeGen(ctx, function);
+            Expression.CodeGen(ctx, function);
         }
     }
 }
