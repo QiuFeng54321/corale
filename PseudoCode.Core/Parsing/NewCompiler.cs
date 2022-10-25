@@ -27,6 +27,7 @@ public class NewCompiler : PseudoCodeBaseListener
         FunctionBinder.MakeFromType(Context, typeof(Printer));
         FunctionBinder.MakeFromType(Context, typeof(Scanner));
         OutputStatement.MakeConstants();
+        InputStatement.MakeConstants();
     }
 
 
@@ -197,6 +198,11 @@ public class NewCompiler : PseudoCodeBaseListener
 
             exprs.Reverse();
             CurrentBlock.Statements.Add(new OutputStatement(exprs));
+        }
+        else if (context.IoKeyword().GetText() == "INPUT")
+        {
+            var expr = Context.ExpressionStack.Pop();
+            CurrentBlock.Statements.Add(new InputStatement(expr));
         }
     }
 
