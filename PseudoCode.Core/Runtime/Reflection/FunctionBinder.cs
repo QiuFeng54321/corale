@@ -8,6 +8,8 @@ namespace PseudoCode.Core.Runtime.Reflection;
 
 public static class FunctionBinder
 {
+    public static readonly Dictionary<object, Symbol> FunctionGroupMap = new();
+
     public static void MakeFromType(CodeGenContext ctx, Type type)
     {
         foreach (var method in type.GetMethods()) MakeDefinitionOfNativeMethod(ctx, method);
@@ -26,7 +28,7 @@ public static class FunctionBinder
         function.GeneratePrototype(ctx);
         var functionPointer = methodInfo.MethodHandle.GetFunctionPointer();
         function.LinkToFunctionPointer(ctx, functionPointer);
-
+        FunctionGroupMap.TryAdd(methodInfo.Name, function.ResultFunctionGroup);
         return true;
     }
 

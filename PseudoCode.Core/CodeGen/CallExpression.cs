@@ -12,7 +12,12 @@ public class CallExpression : Expression
     {
         var function = Function.CodeGen(ctx, function1);
         var arguments = Arguments.Select(a => a.CodeGen(ctx, function1)).ToArray();
-        var overload = function.FindFunctionOverload(arguments.ToList());
+        return CodeGenCall(ctx, function, arguments);
+    }
+
+    public static Symbol CodeGenCall(CodeGenContext ctx, Symbol functionGroup, Symbol[] arguments)
+    {
+        var overload = functionGroup.FindFunctionOverload(arguments.ToList());
         var retType = overload.Type.ReturnType;
         var llvmArguments = new List<LLVMValueRef>();
         for (var index = 0; index < arguments.Length; index++)

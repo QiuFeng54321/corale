@@ -26,6 +26,7 @@ public class NewCompiler : PseudoCodeBaseListener
         FunctionBinder.MakeFromType(Context, typeof(BuiltinFunctions));
         FunctionBinder.MakeFromType(Context, typeof(Printer));
         FunctionBinder.MakeFromType(Context, typeof(Scanner));
+        OutputStatement.MakeConstants();
     }
 
 
@@ -183,6 +184,20 @@ public class NewCompiler : PseudoCodeBaseListener
         {
             Expression = Context.ExpressionStack.Pop()
         });
+    }
+
+    public override void ExitIoStatement(PseudoCodeParser.IoStatementContext context)
+    {
+        base.ExitIoStatement(context);
+        if (context.IoKeyword().GetText() == "OUTPUT")
+        {
+            var exprCount = context.tuple().expression().Length;
+            var exprs = new List<Expression>();
+            for (var i = 0; i < exprCount; i++) exprs.Add(Context.ExpressionStack.Pop());
+
+            exprs.Reverse();
+            CurrentBlock.Statements.Add(new OutputStatement(exprs));
+        }
     }
 
     public override void EnterFunctionDefinition(PseudoCodeParser.FunctionDefinitionContext context)
