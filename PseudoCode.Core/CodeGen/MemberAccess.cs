@@ -15,7 +15,8 @@ public class MemberAccess : Expression
             if (member.Name == MemberName)
             {
                 var memberVal = ctx.Builder.BuildStructGEP2(parentVal.Type.GetLLVMType(),
-                    parentVal.MemoryPointer, (uint)member.TypeMemberIndex, ctx.NameGenerator.RequestTemp(MemberName));
+                    parentVal.GetPointerValueRef(), (uint)member.TypeMemberIndex,
+                    ctx.NameGenerator.RequestTemp(MemberName));
                 return Symbol.MakeTemp(member.Type, memberVal, true);
             }
 

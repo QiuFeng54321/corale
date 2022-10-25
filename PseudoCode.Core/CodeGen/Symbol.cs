@@ -74,8 +74,14 @@ public class Symbol
     {
         return ValueRef != null
             ? ValueRef
-            : ctx.Builder.BuildLoad2(Type.GetLLVMType(), MemoryPointer,
+            : ctx.Builder.BuildLoad2(Type.GetLLVMType(), GetPointerValueRef(),
                 ctx.NameGenerator.RequestTemp(ReservedNames.Load));
+    }
+
+    public LLVMValueRef GetPointerValueRef()
+    {
+        if (MemoryPointer == null) throw new InvalidOperationException();
+        return MemoryPointer;
     }
 
     public Symbol MakePointer(CodeGenContext ctx)
@@ -85,10 +91,18 @@ public class Symbol
             Kind = Types.Pointer,
             ElementType = Type,
             TypeName = "^" + Type.TypeName
-        }, MemoryPointer);
+        }, GetPointerValueRef());
     }
 
-    public Symbol FindFunctionOverload(List<Symbol> arguments)
+    /// <summary>
+    ///     Finds the function overload using the given argument types and return type.<br />
+    ///     The return type can be omitted when return type is not known or doesn't matter.<br />
+    ///     The return type can be used for finding cast functions
+    /// </summary>
+    /// <param name="arguments">Specified argument types to look for</param>
+    /// <param name="returnSym">The return type of the function overload</param>
+    /// <returns>The function overload found. Null if not found.</returns>
+    public Symbol FindFunctionOverload(List<Symbol> arguments, Symbol returnSym = default)
     {
         foreach (var functionOverload in FunctionOverloads)
         {
@@ -101,7 +115,9 @@ public class Symbol
                 break;
             }
 
-            if (found) return functionOverload;
+            if (!found) continue;
+            if (returnSym == default || Equals(returnSym.Type, functionOverload.Type.ReturnType))
+                return functionOverload;
         }
 
         return null;

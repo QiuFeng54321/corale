@@ -11,7 +11,7 @@ public class AssignmentStatement : Statement
     public override void CodeGen(CodeGenContext ctx, Function function)
     {
         var val = Value.CodeGen(ctx, function).GetRealValueRef(ctx);
-        var target = Target.CodeGen(ctx, function).MemoryPointer;
+        var target = Target.CodeGen(ctx, function).GetPointerValueRef();
         if (target == null)
             ctx.Analysis.Feedbacks.Add(new Feedback
             {
