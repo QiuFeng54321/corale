@@ -21,7 +21,7 @@ public class Record : Statement
             Kind = Types.Type,
             Members = Members
         };
-        TypeSymbol = Symbol.MakeTypeSymbol(resType);
+        TypeSymbol = Symbol.MakeTypeSymbol(resType, function.BodyNamespace);
         function.BodyNamespace.AddSymbol(TypeSymbol);
     }
 }

@@ -147,7 +147,7 @@ public class Symbol
             ElementType = Type,
             Kind = Types.Pointer,
             TypeName = "^" + Type.TypeName
-        });
+        }, Namespace);
     }
 
     /// <summary>
@@ -194,9 +194,9 @@ public class Symbol
         return new Symbol(typeName, true, Type.MakePrimitiveType(typeName, type));
     }
 
-    public static Symbol MakeTypeSymbol(Type type)
+    public static Symbol MakeTypeSymbol(Type type, Namespace ns)
     {
-        return new Symbol(type.TypeName, true, type);
+        return new Symbol(type.TypeName, true, type, ns);
     }
 
     public static Symbol MakeGenericSymbol(string name, IGenericExpression genericDecl)

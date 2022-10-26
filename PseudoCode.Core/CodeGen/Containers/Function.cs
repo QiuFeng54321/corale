@@ -73,7 +73,10 @@ public class Function : Statement
         }
 
         // Make function type
-        var functionType = LLVMTypeRef.CreateFunction(ReturnType.Type.GetLLVMType(),
+        var returnType = ReturnType.Type.GetLLVMType();
+        if (ReturnType.DefinitionAttribute.HasFlag(DefinitionAttribute.Reference))
+            returnType = LLVMTypeRef.CreatePointer(returnType, 0);
+        var functionType = LLVMTypeRef.CreateFunction(returnType,
             llvmParamTypes.ToArray());
         LLVMFunction = LLVM.AddFunction(ctx.Module, ParentNamespace.GetFullQualifier(Name).ToSByte(),
             functionType);
@@ -81,7 +84,7 @@ public class Function : Statement
         var pseudoFunctionType = new Type
         {
             Arguments = Arguments,
-            ReturnType = ReturnType.Type,
+            ReturnType = ReturnType,
             TypeName = Type.GenerateFunctionTypeName(Arguments, ReturnType.Type),
             Kind = Types.Function
         };

@@ -143,7 +143,7 @@ valueRange: from=scopedExpression To to=scopedExpression;
 
 externFunctionDefinition: Extern Function Identifier genericDeclaration? argumentsDeclaration? (Returns dataType);
 procedureDefinition: Procedure identifierWithNew genericDeclaration? argumentsDeclaration? indentedBlock Endprocedure;
-functionDefinition: Function Identifier genericDeclaration? argumentsDeclaration? Returns dataType indentedBlock Endfunction;
+functionDefinition: Function Identifier genericDeclaration? argumentsDeclaration? Returns Byref? dataType indentedBlock Endfunction;
 operatorDefinition: OperatorKeyword Identifier argumentsDeclaration Returns dataType indentedBlock EndOperator;
 argumentsDeclaration: OpenParen (argumentDeclaration (Comma argumentDeclaration)*)? CloseParen;
 argumentDeclaration: (Byval | Byref)? Identifier Colon dataType;

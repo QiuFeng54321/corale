@@ -31,8 +31,10 @@ public class CallExpression : Expression
 
         var ret = ctx.Builder.BuildCall2(overload.Type.GetLLVMType(), overload.ValueRef,
             llvmArguments.ToArray(),
-            retType.Kind == Types.None ? "" : retType.Kind.RequestTemp(ctx));
-        return retType.Kind == Types.None ? null : Symbol.MakeTemp(retType, ret);
+            retType.Type.Kind == Types.None ? "" : retType.Type.Kind.RequestTemp(ctx));
+        return retType.Type.Kind == Types.None
+            ? null
+            : Symbol.MakeTemp(retType.Type, ret, retType.DefinitionAttribute.HasFlag(DefinitionAttribute.Reference));
     }
 
     public override string ToFormatString()

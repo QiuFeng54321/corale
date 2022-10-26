@@ -14,6 +14,9 @@ public class ReturnStatement : Statement
 
     public override void CodeGen(CodeGenContext ctx, Function function)
     {
-        ctx.Builder.BuildRet(Expression.CodeGen(ctx, function).GetRealValueRef(ctx));
+        var returnSym = Expression.CodeGen(ctx, function);
+        ctx.Builder.BuildRet(function.ReturnType.DefinitionAttribute.HasFlag(DefinitionAttribute.Reference)
+            ? returnSym.GetPointerValueRef()
+            : returnSym.GetRealValueRef(ctx));
     }
 }

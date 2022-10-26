@@ -6,13 +6,13 @@ namespace PseudoCode.Core.CodeGen;
 
 public class FunctionDeclaration : Statement, IGenericExpression
 {
-    public readonly List<ArgumentType> Arguments;
+    public readonly List<ArgumentOrReturnType> Arguments;
     public readonly Block FunctionBody;
     public readonly GenericDeclaration GenericDeclaration;
     public readonly string Name;
-    public readonly DataType ReturnType;
+    public readonly ArgumentOrReturnType ReturnType;
 
-    public FunctionDeclaration(string name, List<ArgumentType> arguments, DataType returnType,
+    public FunctionDeclaration(string name, List<ArgumentOrReturnType> arguments, ArgumentOrReturnType returnType,
         Block functionBody, GenericDeclaration genericDeclaration = default)
     {
         GenericDeclaration = genericDeclaration;
@@ -37,15 +37,17 @@ public class FunctionDeclaration : Statement, IGenericExpression
                 return new Symbol(a.Name, false, dataTypeSymbol.Type, dataTypeSymbol.Namespace,
                     a.IsRef ? DefinitionAttribute.Reference : DefinitionAttribute.None);
             });
-        var filledReturnType = ReturnType.Lookup(ctx, function, subNs);
-        var funcName = MakeFunctionName(filledReturnType, genericParams ?? new List<Symbol>());
+        var filledReturnTypeSym = ReturnType.DataType.Lookup(ctx, function, subNs);
+        var filledReturnSym = new Symbol(ReturnType.Name, false, filledReturnTypeSym.Type,
+            filledReturnTypeSym.Namespace, ReturnType.IsRef ? DefinitionAttribute.Reference : DefinitionAttribute.None);
+        var funcName = MakeFunctionName(filledReturnSym, genericParams ?? new List<Symbol>());
         // Return existing function
         if (function.BodyNamespace.TryGetSymbol(Name, out var res))
             if (res.FunctionOverloads.FirstOrDefault(o => o.Name == funcName) is { })
                 return res;
 
         // Make function
-        var func = ctx.CompilationUnit.MakeFunction(Name, filledArgumentSymbols.ToList(), filledReturnType,
+        var func = ctx.CompilationUnit.MakeFunction(Name, filledArgumentSymbols.ToList(), filledReturnSym,
             function.BodyNamespace,
             addToList: false);
         func.BodyNamespace = subNs;
@@ -77,7 +79,7 @@ public class FunctionDeclaration : Statement, IGenericExpression
         Generate(ctx, function, new List<Symbol>());
     }
 
-    public class ArgumentType
+    public class ArgumentOrReturnType
     {
         public DataType DataType;
         public bool IsRef;

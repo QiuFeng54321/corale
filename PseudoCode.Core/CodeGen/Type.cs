@@ -8,7 +8,7 @@ public class Type
 
     /// <summary>
     ///     If the type is a function, this stores the arguments.<br />
-    ///     We need this to store symbols because we need to fill them, and we need to specify the attributes
+    ///     We need this to store symbols because we need to specify the attributes
     /// </summary>
     public List<Symbol> Arguments;
 
@@ -35,9 +35,9 @@ public class Type
     public List<Symbol> Members;
 
     /// <summary>
-    ///     Return type of the function
+    ///     Return type of the function. Use symbol because we need attribute
     /// </summary>
-    public Type ReturnType;
+    public Symbol ReturnType;
 
     /// <summary>
     ///     The name of the type. NOT THE NAME OF THE VARIABLE/PARAMETER!!

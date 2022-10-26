@@ -206,16 +206,11 @@ public class NewCompiler : PseudoCodeBaseListener
         }
     }
 
-    public override void EnterFunctionDefinition(PseudoCodeParser.FunctionDefinitionContext context)
-    {
-        base.EnterFunctionDefinition(context);
-    }
-
     public override void ExitFunctionDefinition(PseudoCodeParser.FunctionDefinitionContext context)
     {
         base.ExitFunctionDefinition(context);
         var name = context.Identifier().GetText();
-        List<FunctionDeclaration.ArgumentType> arguments = new();
+        List<FunctionDeclaration.ArgumentOrReturnType> arguments = new();
         if (context.argumentsDeclaration() != null)
         {
             var byRef = false;
@@ -223,7 +218,7 @@ public class NewCompiler : PseudoCodeBaseListener
             {
                 if (argumentDeclarationContext.Byref() != null) byRef = true;
                 if (argumentDeclarationContext.Byval() != null) byRef = false;
-                arguments.Add(new FunctionDeclaration.ArgumentType
+                arguments.Add(new FunctionDeclaration.ArgumentOrReturnType
                 {
                     Name = argumentDeclarationContext.Identifier().GetText(),
                     DataType = GetType(argumentDeclarationContext.dataType()),
@@ -237,7 +232,14 @@ public class NewCompiler : PseudoCodeBaseListener
         CurrentBlock.Statements.RemoveAt(CurrentBlock.Statements.Count - 1);
         var genericParams = context.genericDeclaration()?.identifierList()?.Identifier().Select(s => s.GetText())
             .ToList();
-        var functionDecl = new FunctionDeclaration(name, arguments, retType, body,
+        var functionDecl = new FunctionDeclaration(name,
+            arguments,
+            new FunctionDeclaration.ArgumentOrReturnType
+            {
+                DataType = retType,
+                IsRef = context.Byref() != null
+            },
+            body,
             genericParams != null ? new GenericDeclaration(genericParams) : null);
         if (genericParams == null)
             CurrentBlock.Statements.Add(functionDecl);
