@@ -43,8 +43,8 @@ public class OutputStatement : Statement
         for (var i = 0; i < _expressions.Count; i++)
         {
             var param = _expressions[i].CodeGen(ctx, function);
-            CallExpression.CodeGenCall(ctx, _printFunctionGroup, new[] { param });
-            CallExpression.CodeGenCall(ctx, _printFunctionGroup,
+            CallExpression.CodeGenCallFuncGroup(ctx, _printFunctionGroup, new[] { param });
+            CallExpression.CodeGenCallFuncGroup(ctx, _printFunctionGroup,
                 new[] { i == _expressions.Count - 1 ? _newlineChar : _spaceChar });
         }
     }

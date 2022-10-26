@@ -115,7 +115,6 @@ compoundStatement
  | externFunctionDefinition
  | procedureDefinition
  | functionDefinition
- | operatorDefinition
  | typeDefinition
  | enumDefinition
  | typeAliasDefinition
@@ -143,8 +142,7 @@ valueRange: from=scopedExpression To to=scopedExpression;
 
 externFunctionDefinition: Extern Function Identifier genericDeclaration? argumentsDeclaration? (Returns dataType);
 procedureDefinition: Procedure identifierWithNew genericDeclaration? argumentsDeclaration? indentedBlock Endprocedure;
-functionDefinition: Function Identifier genericDeclaration? argumentsDeclaration? Returns Byref? dataType indentedBlock Endfunction;
-operatorDefinition: OperatorKeyword Identifier argumentsDeclaration Returns dataType indentedBlock EndOperator;
+functionDefinition: (Function | OperatorKeyword) Identifier genericDeclaration? argumentsDeclaration? Returns Byref? dataType indentedBlock Endfunction;
 argumentsDeclaration: OpenParen (argumentDeclaration (Comma argumentDeclaration)*)? CloseParen;
 argumentDeclaration: (Byval | Byref)? Identifier Colon dataType;
 genericUtilisation: Smaller dataTypeList Greater;

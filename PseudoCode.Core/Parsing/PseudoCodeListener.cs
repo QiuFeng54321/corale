@@ -327,16 +327,6 @@ public interface IPseudoCodeListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitFunctionDefinition([NotNull] PseudoCodeParser.FunctionDefinitionContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="PseudoCodeParser.operatorDefinition"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterOperatorDefinition([NotNull] PseudoCodeParser.OperatorDefinitionContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="PseudoCodeParser.operatorDefinition"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitOperatorDefinition([NotNull] PseudoCodeParser.OperatorDefinitionContext context);
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="PseudoCodeParser.argumentsDeclaration"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

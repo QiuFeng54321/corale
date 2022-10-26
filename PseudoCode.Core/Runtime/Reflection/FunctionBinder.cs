@@ -61,6 +61,16 @@ public static class FunctionBinder
     private static Symbol GetNativeMethodReturnDefinition(CodeGenContext ctx, MethodInfo methodInfo)
     {
         var typeDescriptor = TypeBinder.GetTypeSymbolFromSystemType(ctx, methodInfo.ReturnType);
+        var defAttr = DefinitionAttribute.None;
+        var retType = typeDescriptor.Type;
+        if (ReflectionHelper.TryGetAttribute<ByRefAttribute>(methodInfo.ReturnType, out _))
+        {
+            retType = retType.ElementType;
+            defAttr = DefinitionAttribute.Reference;
+        }
+
+        typeDescriptor = new Symbol("", false, retType, null, defAttr);
+
         return typeDescriptor;
     }
 }

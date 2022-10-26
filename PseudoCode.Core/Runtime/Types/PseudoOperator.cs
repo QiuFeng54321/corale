@@ -22,5 +22,6 @@ public enum PseudoOperator
     NotEqual,
     And,
     Or,
-    Not
+    Not,
+    Cast
 }

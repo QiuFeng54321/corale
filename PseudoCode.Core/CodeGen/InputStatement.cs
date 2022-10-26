@@ -28,6 +28,6 @@ public class InputStatement : Statement
     public override void CodeGen(CodeGenContext ctx, Function function)
     {
         var param = _expression.CodeGen(ctx, function);
-        CallExpression.CodeGenCall(ctx, _scanFunctionGroup, new[] { param });
+        CallExpression.CodeGenCallFuncGroup(ctx, _scanFunctionGroup, new[] { param });
     }
 }

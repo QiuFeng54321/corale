@@ -232,15 +232,13 @@ public class NewCompiler : PseudoCodeBaseListener
         CurrentBlock.Statements.RemoveAt(CurrentBlock.Statements.Count - 1);
         var genericParams = context.genericDeclaration()?.identifierList()?.Identifier().Select(s => s.GetText())
             .ToList();
-        var functionDecl = new FunctionDeclaration(name,
-            arguments,
-            new FunctionDeclaration.ArgumentOrReturnType
-            {
-                DataType = retType,
-                IsRef = context.Byref() != null
-            },
-            body,
-            genericParams != null ? new GenericDeclaration(genericParams) : null);
+        var funcReturnTypeSpec = new FunctionDeclaration.ArgumentOrReturnType
+        {
+            DataType = retType,
+            IsRef = context.Byref() != null
+        };
+        var genericDeclaration = genericParams != null ? new GenericDeclaration(genericParams) : null;
+        var functionDecl = new FunctionDeclaration(name, arguments, funcReturnTypeSpec, body, genericDeclaration);
         if (genericParams == null)
             CurrentBlock.Statements.Add(functionDecl);
         else

@@ -390,18 +390,6 @@ public partial class PseudoCodeBaseListener : IPseudoCodeListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitFunctionDefinition([NotNull] PseudoCodeParser.FunctionDefinitionContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="PseudoCodeParser.operatorDefinition"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterOperatorDefinition([NotNull] PseudoCodeParser.OperatorDefinitionContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="PseudoCodeParser.operatorDefinition"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitOperatorDefinition([NotNull] PseudoCodeParser.OperatorDefinitionContext context) { }
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="PseudoCodeParser.argumentsDeclaration"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

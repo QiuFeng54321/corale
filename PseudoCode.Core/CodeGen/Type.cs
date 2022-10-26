@@ -35,7 +35,7 @@ public class Type
     public List<Symbol> Members;
 
     /// <summary>
-    ///     Return type of the function. Use symbol because we need attribute
+    ///     Return type of the function. Use <see cref="Symbol"/> because we need attribute
     /// </summary>
     public Symbol ReturnType;
 
@@ -143,7 +143,27 @@ public class Type
     public override bool Equals(object obj)
     {
         if (obj is not Type t) return false;
-        return t.TypeName == TypeName && t.Kind == Kind;
+        return t.Equals(this);
+    }
+
+    protected bool Equals(Type other)
+    {
+        return _llvmTypeRef.Equals(other._llvmTypeRef) && Kind == other.Kind && TypeName == other.TypeName;
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(_llvmTypeRef, (int)Kind, TypeName);
+    }
+
+    public static bool operator ==(Type left, Type right)
+    {
+        return Equals(left, right);
+    }
+
+    public static bool operator !=(Type left, Type right)
+    {
+        return !Equals(left, right);
     }
 
     public static implicit operator LLVMTypeRef(Type type)

@@ -22,6 +22,7 @@ public static class ReservedNames
     public const string Else = "else";
     public const string Operator = "__operator_";
     public const string Malloc = "malloc";
+    public const string Caster = "__cast";
 
     public static readonly Dictionary<Types, string> Map = new()
     {
