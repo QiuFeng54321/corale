@@ -8,13 +8,13 @@ public class MemberAccess : Expression
     public Expression Before;
     public string MemberName;
 
-    public override Symbol CodeGen(CodeGenContext ctx, Function function)
+    public override Symbol CodeGen(CodeGenContext ctx, CompilationUnit cu, Function function)
     {
-        var parentVal = Before.CodeGen(ctx, function);
+        var parentVal = Before.CodeGen(ctx, cu, function);
         foreach (var member in parentVal.Type.Members)
             if (member.Name == MemberName)
             {
-                var memberVal = ctx.Builder.BuildStructGEP2(parentVal.Type.GetLLVMType(),
+                var memberVal = cu.Builder.BuildStructGEP2(parentVal.Type.GetLLVMType(),
                     parentVal.GetPointerValueRef(), (uint)member.TypeMemberIndex,
                     ctx.NameGenerator.RequestTemp(MemberName));
                 return Symbol.MakeTemp(member.Type, memberVal, true);

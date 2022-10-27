@@ -24,7 +24,7 @@ public class Program
         }
     };
 
-    public static readonly Version CurrentVersion = typeof(NewCompiler).Assembly.GetName().Version;
+    public static readonly Version CurrentVersion = typeof(PseudoFileCompiler).Assembly.GetName().Version;
 
     private static async Task RunProcessAsync(Process p)
     {

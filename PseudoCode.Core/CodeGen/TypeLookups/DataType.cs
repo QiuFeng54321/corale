@@ -18,11 +18,11 @@ public class DataType
         _elementType = elementType;
     }
 
-    public Symbol Lookup(CodeGenContext ctx, Function function, Namespace ns = default)
+    public Symbol Lookup(CodeGenContext ctx, CompilationUnit cu, Function function, Namespace ns = default)
     {
         if (_modularType != null)
-            return _modularType.Lookup(ctx, function, ns ?? function.BodyNamespace);
-        return _elementType.Lookup(ctx, function, ns).MakePointerType();
+            return _modularType.Lookup(ctx, cu, function, ns ?? function.BodyNamespace);
+        return _elementType.Lookup(ctx, cu, function, ns).MakePointerType();
     }
 
     public override string ToString()

@@ -25,9 +25,9 @@ public class InputStatement : Statement
         _scanFunctionGroup = FunctionBinder.FunctionGroupMap[nameof(Scanner.Scan)];
     }
 
-    public override void CodeGen(CodeGenContext ctx, Function function)
+    public override void CodeGen(CodeGenContext ctx, CompilationUnit cu, Function function)
     {
-        var param = _expression.CodeGen(ctx, function);
-        CallExpression.CodeGenCallFuncGroup(ctx, _scanFunctionGroup, new[] { param });
+        var param = _expression.CodeGen(ctx, cu, function);
+        CallExpression.CodeGenCallFuncGroup(ctx, cu, _scanFunctionGroup, new[] { param });
     }
 }

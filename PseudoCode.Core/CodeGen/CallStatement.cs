@@ -12,7 +12,7 @@ public class CallStatement : Statement
         formatter.WriteStatement($"CALL {Expression.ToFormatString()}");
     }
 
-    public override void CodeGen(CodeGenContext ctx, Function function)
+    public override void CodeGen(CodeGenContext ctx, CompilationUnit cu, Function function)
     {
         if (Expression is not CallExpression)
         {
@@ -21,11 +21,11 @@ public class CallStatement : Statement
                 Function = Expression,
                 Arguments = new List<Expression>()
             };
-            implicitCallExpr.CodeGen(ctx, function);
+            implicitCallExpr.CodeGen(ctx, cu, function);
         }
         else
         {
-            Expression.CodeGen(ctx, function);
+            Expression.CodeGen(ctx, cu, function);
         }
     }
 }

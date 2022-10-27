@@ -8,7 +8,9 @@ namespace PseudoCode.Core.CodeGen;
 public abstract class OperatorResolver
 {
     public OperatorResolverMap ResolverMap;
-    public abstract Symbol Resolve(Symbol left, Symbol right, PseudoOperator op, CodeGenContext ctx);
+
+    public abstract Symbol Resolve(Symbol left, Symbol right, PseudoOperator op, CodeGenContext ctx,
+        CompilationUnit cu);
 
     private protected static Instruction MakeInst(IntCmpInstruction instruction, LLVMIntPredicate pred)
     {

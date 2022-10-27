@@ -65,18 +65,18 @@ public class Symbol
 
     public bool IsReference => DefinitionAttribute.HasFlag(DefinitionAttribute.Reference);
 
-    public Symbol GetRealValue(CodeGenContext ctx)
+    public Symbol GetRealValue(CodeGenContext ctx, CompilationUnit cu)
     {
         return ValueRef != null
             ? this
-            : MakeTemp(Type, GetRealValueRef(ctx));
+            : MakeTemp(Type, GetRealValueRef(ctx, cu));
     }
 
-    public LLVMValueRef GetRealValueRef(CodeGenContext ctx)
+    public LLVMValueRef GetRealValueRef(CodeGenContext ctx, CompilationUnit cu)
     {
         return ValueRef != null
             ? ValueRef
-            : ctx.Builder.BuildLoad2(Type.GetLLVMType(), GetPointerValueRef(),
+            : cu.Builder.BuildLoad2(Type.GetLLVMType(), GetPointerValueRef(),
                 ctx.NameGenerator.RequestTemp(ReservedNames.Load));
     }
 
@@ -221,10 +221,10 @@ public class Symbol
     /// <param name="function">The function this symbol is in</param>
     /// <param name="genericArguments">The arguments to fill</param>
     /// <returns>The cloned type with generic types and fields filled in</returns>
-    public Symbol FillGeneric(CodeGenContext ctx, Function function, List<Symbol> genericArguments)
+    public Symbol FillGeneric(CodeGenContext ctx, CompilationUnit cu, Function function, List<Symbol> genericArguments)
     {
         if (GenericExpression == null) return this; // Nothing to fill
-        return GenericExpression.Generate(ctx, function, genericArguments);
+        return GenericExpression.Generate(ctx, cu, function, genericArguments);
     }
 
     public Symbol Clone()

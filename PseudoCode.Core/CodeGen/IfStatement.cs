@@ -23,30 +23,30 @@ public class IfStatement : Statement
         formatter.WriteStatement("ENDIF");
     }
 
-    public override unsafe void CodeGen(CodeGenContext ctx, Function function)
+    public override unsafe void CodeGen(CodeGenContext ctx, CompilationUnit cu, Function function)
     {
-        var condRes = Condition.CodeGen(ctx, function);
-        // var function = LLVM.GetBasicBlockParent(LLVM.GetInsertBlock(ctx.Builder));
+        var condRes = Condition.CodeGen(ctx, cu, function);
+        // var function = LLVM.GetBasicBlockParent(LLVM.GetInsertBlock(cu.Builder));
         var thenBlockRef = function.LLVMFunction.AppendBasicBlock(ReservedNames.Then);
         var elseBlockRef = Else == null ? null : function.LLVMFunction.AppendBasicBlock(ReservedNames.Else);
         var continueBlockRef = function.LLVMFunction.AppendBasicBlock(ReservedNames.BlockRefContinuation);
 
-        LLVM.BuildCondBr(ctx.Builder, condRes.GetRealValueRef(ctx), thenBlockRef,
+        LLVM.BuildCondBr(cu.Builder, condRes.GetRealValueRef(ctx, cu), thenBlockRef,
             Else != null ? elseBlockRef : continueBlockRef);
 
         // Emit then value.
-        ctx.Builder.PositionAtEnd(thenBlockRef);
-        Then.CodeGen(ctx, function);
-        ctx.Builder.BuildBr(continueBlockRef);
+        cu.Builder.PositionAtEnd(thenBlockRef);
+        Then.CodeGen(ctx, cu, function);
+        cu.Builder.BuildBr(continueBlockRef);
 
         if (Else != null)
         {
-            ctx.Builder.PositionAtEnd(elseBlockRef);
-            Else.CodeGen(ctx, function);
-            ctx.Builder.BuildBr(continueBlockRef);
+            cu.Builder.PositionAtEnd(elseBlockRef);
+            Else.CodeGen(ctx, cu, function);
+            cu.Builder.BuildBr(continueBlockRef);
         }
 
         function.CurrentBlockRef = continueBlockRef;
-        ctx.Builder.PositionAtEnd(continueBlockRef);
+        cu.Builder.PositionAtEnd(continueBlockRef);
     }
 }

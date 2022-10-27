@@ -257,6 +257,16 @@ public interface IPseudoCodeListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitUseNamespaceStatement([NotNull] PseudoCodeParser.UseNamespaceStatementContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="PseudoCodeParser.importStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterImportStatement([NotNull] PseudoCodeParser.ImportStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="PseudoCodeParser.importStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitImportStatement([NotNull] PseudoCodeParser.ImportStatementContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="PseudoCodeParser.caseStatement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -536,6 +546,16 @@ public interface IPseudoCodeListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitArithmeticExpression([NotNull] PseudoCodeParser.ArithmeticExpressionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="PseudoCodeParser.identiferAccess"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterIdentiferAccess([NotNull] PseudoCodeParser.IdentiferAccessContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="PseudoCodeParser.identiferAccess"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitIdentiferAccess([NotNull] PseudoCodeParser.IdentiferAccessContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="PseudoCodeParser.arguments"/>.
 	/// </summary>

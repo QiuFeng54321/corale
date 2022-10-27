@@ -11,9 +11,9 @@ public class ParenthesisExpression : Expression
         IncludingExpression = includingExpression;
     }
 
-    public override Symbol CodeGen(CodeGenContext ctx, Function function)
+    public override Symbol CodeGen(CodeGenContext ctx, CompilationUnit cu, Function function)
     {
-        return IncludingExpression.CodeGen(ctx, function);
+        return IncludingExpression.CodeGen(ctx, cu, function);
     }
 
     public override string ToFormatString()

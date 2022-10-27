@@ -5,9 +5,9 @@ namespace PseudoCode.Core.Parsing;
 
 public class PseudoCodeErrorListener : BaseErrorListener
 {
-    public NewCompiler PseudoCodeCompiler;
+    public PseudoFileCompiler PseudoCodeCompiler;
 
-    public PseudoCodeErrorListener(NewCompiler pseudoCodeCompiler)
+    public PseudoCodeErrorListener(PseudoFileCompiler pseudoCodeCompiler)
     {
         PseudoCodeCompiler = pseudoCodeCompiler;
     }

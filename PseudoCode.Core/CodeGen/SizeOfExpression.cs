@@ -12,9 +12,9 @@ public class SizeOfExpression : Expression
         _dataType = dataType;
     }
 
-    public override Symbol CodeGen(CodeGenContext ctx, Function function)
+    public override Symbol CodeGen(CodeGenContext ctx, CompilationUnit cu, Function function)
     {
-        var sizeVal = _dataType.Lookup(ctx, function).Type.GetLLVMType().SizeOf;
+        var sizeVal = _dataType.Lookup(ctx, cu, function).Type.GetLLVMType().SizeOf;
         return Symbol.MakeTemp(BuiltinTypes.Integer.Type, sizeVal);
     }
 

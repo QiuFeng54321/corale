@@ -24,8 +24,8 @@ public static class FunctionBinder
         var functionName = GetFunctionName(methodInfo);
         var paramList = GetNativeMethodParamList(ctx, methodInfo);
         var returnDef = GetNativeMethodReturnDefinition(ctx, methodInfo);
-        var function = ctx.CompilationUnit.MakeFunction(functionName, paramList, returnDef, null, true);
-        function.GeneratePrototype(ctx);
+        var function = ctx.MainCompilationUnit.MakeFunction(functionName, paramList, returnDef, null, true);
+        function.GeneratePrototype(ctx, ctx.MainCompilationUnit);
         var functionPointer = methodInfo.MethodHandle.GetFunctionPointer();
         function.LinkToFunctionPointer(ctx, functionPointer);
         FunctionGroupMap.TryAdd(methodInfo.Name, function.ResultFunctionGroup);

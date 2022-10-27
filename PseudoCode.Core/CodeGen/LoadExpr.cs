@@ -1,20 +1,19 @@
 using PseudoCode.Core.CodeGen.Containers;
-using PseudoCode.Core.Runtime.Errors;
+using PseudoCode.Core.CodeGen.TypeLookups;
 
 namespace PseudoCode.Core.CodeGen;
 
 public class LoadExpr : Expression
 {
-    public string Name;
+    public NamespaceLookup NamespaceLookup;
 
-    public override Symbol CodeGen(CodeGenContext ctx, Function function)
+    public override Symbol CodeGen(CodeGenContext ctx, CompilationUnit cu, Function function)
     {
-        if (function.BodyNamespace.TryGetSymbol(Name, out var sym)) return sym;
-        throw new InvalidAccessError(Name);
+        return NamespaceLookup.Lookup(function);
     }
 
     public override string ToFormatString()
     {
-        return Name;
+        return NamespaceLookup.ToString();
     }
 }

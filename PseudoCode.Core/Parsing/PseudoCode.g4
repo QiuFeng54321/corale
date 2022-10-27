@@ -112,6 +112,7 @@ compoundStatement
  | whileStatement
  | forStatement
  | repeatStatement
+ | importStatement
  | externFunctionDefinition
  | procedureDefinition
  | functionDefinition
@@ -130,6 +131,7 @@ whileStatement: While scopedExpression indentedBlock Endwhile;
 repeatStatement: Repeat indentedBlock Until scopedExpression;
 namespaceStatement: Namespace typeLookup (indentedBlock EndNamespace)?;
 useNamespaceStatement: Use Namespace typeLookup;
+importStatement: Import atom;
 
 caseStatement: Case expression Of caseBody Endcase;
 caseBranch
@@ -197,7 +199,7 @@ logicExpression locals [bool IsUnary, PseudoOperator Operator]
 // ;
 arithmeticExpression locals [bool IsUnary, PseudoOperator Operator = PseudoOperator.None]
  : New modularDataType arguments
- | Identifier {$IsUnary = true;}
+ | identiferAccess {$IsUnary = true;}
  | atom {$IsUnary = true;}
  | sizeOfExpression {$IsUnary = true;}
  | mallocExpression {$IsUnary = true;}
@@ -217,6 +219,11 @@ arithmeticExpression locals [bool IsUnary, PseudoOperator Operator = PseudoOpera
  | operand1=arithmeticExpression op=Add operand2=arithmeticExpression {$Operator = PseudoOperator.Add;}
  | operand1=arithmeticExpression op=BitAnd operand2=arithmeticExpression {$Operator = PseudoOperator.BitAnd;}
  | OpenParen arithmeticExpression CloseParen {$IsUnary = true;}
+ ;
+ 
+ identiferAccess
+ : identiferAccess NamespaceAccess Identifier
+ | Identifier
  ;
 
  
@@ -394,6 +401,8 @@ Use : 'USE';
 Malloc : 'MALLOC';
 SizeOf : 'SIZEOF';
 
+Import : 'IMPORT';
+
 // Logic
 And : 'AND';
 Or : 'OR';
@@ -429,6 +438,7 @@ SmallerEqual : '<=';
 NotEqual : '<>';
 
 AssignmentNotation : '<-';
+NamespaceAccess : '::';
 
 Identifier
  : IdStart IdContinue*

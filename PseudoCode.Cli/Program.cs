@@ -2,13 +2,10 @@
 
 using System.Diagnostics;
 using System.Globalization;
-using Antlr4.Runtime;
-using Antlr4.Runtime.Tree;
 using CommandLine;
 using LLVMSharp.Interop;
 using PseudoCode.Cli;
 using PseudoCode.Core.Parsing;
-using Parser = CommandLine.Parser;
 
 // var input = "your text to parse here";
 
@@ -19,16 +16,13 @@ void RunProgram(CommandLines.Options opts)
     {
         Thread.CurrentThread.CurrentCulture = new CultureInfo(opts.Locale, false);
         Thread.CurrentThread.CurrentUICulture = new CultureInfo(opts.Locale, false);
-        var stream = CharStreams.fromPath(opts.FilePath);
-        var parser = PseudoCodeDocument.GetParser(stream);
-        var interpreter = new NewCompiler();
-        PseudoCodeDocument.AddErrorListener(parser, interpreter);
-        IParseTree parseTree = parser.fileInput();
-        var moduleName = "Module";
-        var ctx = interpreter.Compile(parseTree, moduleName);
+        var compiler = new PseudoCodeCompiler(opts.FilePath);
+        compiler.Compile();
+        var ctx = compiler.Context;
         ctx.Analysis.PrintFeedbacks();
-        Console.WriteLine(ctx.CompilationUnit.MainFunction.ToString());
-        var func = ctx.Module.GetNamedFunction(moduleName);
+        Console.WriteLine(ctx.MainCompilationUnit.MainFunction.ToString());
+        var func = ctx.Engine.FindFunction(ctx.MainCompilationUnit.ModuleName);
+        ctx.MainCompilationUnit.Module.Dump();
         var res = LLVM.VerifyFunction(func, LLVMVerifierFailureAction.LLVMPrintMessageAction);
         Debug.WriteLine(res.ToString());
         ctx.Engine.RunFunction(func, Array.Empty<LLVMGenericValueRef>());

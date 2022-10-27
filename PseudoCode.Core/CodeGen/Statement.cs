@@ -6,7 +6,7 @@ namespace PseudoCode.Core.CodeGen;
 public abstract class Statement : AstNode, IPseudoFormattable
 {
     public abstract void Format(PseudoFormatter formatter);
-    public abstract void CodeGen(CodeGenContext ctx, Function function);
+    public abstract void CodeGen(CodeGenContext ctx, CompilationUnit cu, Function function);
 
     public override string ToString()
     {

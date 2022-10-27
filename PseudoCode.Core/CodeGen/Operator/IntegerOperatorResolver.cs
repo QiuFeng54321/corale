@@ -6,15 +6,15 @@ namespace PseudoCode.Core.CodeGen.Operator;
 
 public class IntegerOperatorResolver : OperatorResolver
 {
-    public override Symbol Resolve(Symbol left, Symbol right, PseudoOperator op, CodeGenContext ctx)
+    public override Symbol Resolve(Symbol left, Symbol right, PseudoOperator op, CodeGenContext ctx, CompilationUnit cu)
     {
-        var leftLLVMValue = left.GetRealValueRef(ctx);
+        var leftLLVMValue = left.GetRealValueRef(ctx, cu);
         var resType = BuiltinTypes.Integer.Type;
         LLVMValueRef res;
         if (right == null)
         {
             if (op != PseudoOperator.Negative) return null;
-            res = ctx.Builder.BuildNeg(leftLLVMValue, resType.Kind.RequestTemp(ctx));
+            res = cu.Builder.BuildNeg(leftLLVMValue, resType.Kind.RequestTemp(ctx));
             return Symbol.MakeTemp(resType, res);
         }
 
@@ -23,53 +23,53 @@ public class IntegerOperatorResolver : OperatorResolver
         {
             resType = BuiltinTypes.Real.Type;
             leftLLVMValue =
-                ctx.Builder.BuildSIToFP(leftLLVMValue, BuiltinTypes.Real.Type, resType.Kind.RequestTemp(ctx));
+                cu.Builder.BuildSIToFP(leftLLVMValue, BuiltinTypes.Real.Type, resType.Kind.RequestTemp(ctx));
             var castedLeft = Symbol.MakeTemp(resType, leftLLVMValue);
-            return ResolverMap.Resolve(castedLeft, right, op, ctx);
+            return ResolverMap.Resolve(castedLeft, right, op, ctx, cu);
         }
 
-        var rightLLVMValue = right.GetRealValueRef(ctx);
+        var rightLLVMValue = right.GetRealValueRef(ctx, cu);
 
         Instruction func;
         switch (op)
         {
             case PseudoOperator.Add:
-                func = ctx.Builder.BuildAdd;
+                func = cu.Builder.BuildAdd;
                 break;
             case PseudoOperator.Subtract:
-                func = ctx.Builder.BuildSub;
+                func = cu.Builder.BuildSub;
                 break;
             case PseudoOperator.Multiply:
-                func = ctx.Builder.BuildMul;
+                func = cu.Builder.BuildMul;
                 break;
             case PseudoOperator.Divide:
-                func = ctx.Builder.BuildFDiv;
+                func = cu.Builder.BuildFDiv;
                 resType = BuiltinTypes.Real.Type;
-                leftLLVMValue = ctx.Builder.BuildSIToFP(leftLLVMValue, BuiltinTypes.Real.Type.GetLLVMType(),
+                leftLLVMValue = cu.Builder.BuildSIToFP(leftLLVMValue, BuiltinTypes.Real.Type.GetLLVMType(),
                     resType.Kind.RequestTemp(ctx));
-                rightLLVMValue = ctx.Builder.BuildSIToFP(rightLLVMValue, BuiltinTypes.Real.Type.GetLLVMType(),
+                rightLLVMValue = cu.Builder.BuildSIToFP(rightLLVMValue, BuiltinTypes.Real.Type.GetLLVMType(),
                     resType.Kind.RequestTemp(ctx));
                 break;
             case PseudoOperator.IntDivide:
-                func = ctx.Builder.BuildSDiv;
+                func = cu.Builder.BuildSDiv;
                 break;
             case PseudoOperator.Mod:
-                func = ctx.Builder.BuildSRem;
+                func = cu.Builder.BuildSRem;
                 break;
             case PseudoOperator.Equal:
-                func = MakeInst(ctx.Builder.BuildICmp, LLVMIntPredicate.LLVMIntEQ);
+                func = MakeInst(cu.Builder.BuildICmp, LLVMIntPredicate.LLVMIntEQ);
                 break;
             case PseudoOperator.GreaterEqual:
-                func = MakeInst(ctx.Builder.BuildICmp, LLVMIntPredicate.LLVMIntSGE);
+                func = MakeInst(cu.Builder.BuildICmp, LLVMIntPredicate.LLVMIntSGE);
                 break;
             case PseudoOperator.SmallerEqual:
-                func = MakeInst(ctx.Builder.BuildICmp, LLVMIntPredicate.LLVMIntSLE);
+                func = MakeInst(cu.Builder.BuildICmp, LLVMIntPredicate.LLVMIntSLE);
                 break;
             case PseudoOperator.Greater:
-                func = MakeInst(ctx.Builder.BuildICmp, LLVMIntPredicate.LLVMIntSGT);
+                func = MakeInst(cu.Builder.BuildICmp, LLVMIntPredicate.LLVMIntSGT);
                 break;
             case PseudoOperator.Smaller:
-                func = MakeInst(ctx.Builder.BuildICmp, LLVMIntPredicate.LLVMIntSLT);
+                func = MakeInst(cu.Builder.BuildICmp, LLVMIntPredicate.LLVMIntSLT);
                 break;
             default:
                 return null;
@@ -77,7 +77,7 @@ public class IntegerOperatorResolver : OperatorResolver
 
         if (op.IsComparison())
         {
-            // res = ctx.Builder.BuildIntCast(res, LLVMTypeRef.Int1, ctx.NameGenerator.Request(ReservedNames.Temp));
+            // res = cu.Builder.BuildIntCast(res, LLVMTypeRef.Int1, ctx.NameGenerator.Request(ReservedNames.Temp));
             resType = BuiltinTypes.Boolean.Type;
         }
 

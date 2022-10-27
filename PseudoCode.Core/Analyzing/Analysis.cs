@@ -11,7 +11,7 @@ public class Analysis
     {
         var stream = CharStreams.fromString(source);
         var parser = PseudoCodeDocument.GetParser(stream);
-        var interpreter = new NewCompiler();
+        var interpreter = new PseudoFileCompiler();
         PseudoCodeDocument.AddErrorListener(parser, interpreter);
         // Program = interpreter.TolerantAnalyse(parser.fileInput());
     }

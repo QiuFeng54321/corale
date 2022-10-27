@@ -11,9 +11,9 @@ public class GenericUtilisation
         TypeParameters = typeParameters;
     }
 
-    public List<Symbol> GetSymbols(CodeGenContext ctx, Function function, Namespace ns = default)
+    public List<Symbol> GetSymbols(CodeGenContext ctx, CompilationUnit cu, Function function, Namespace ns = default)
     {
-        return TypeParameters.Select(t => t.Lookup(ctx, function, ns)).ToList();
+        return TypeParameters.Select(t => t.Lookup(ctx, cu, function, ns)).ToList();
     }
 
     public override string ToString()

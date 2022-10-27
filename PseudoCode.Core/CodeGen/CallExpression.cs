@@ -8,20 +8,21 @@ public class CallExpression : Expression
     public List<Expression> Arguments;
     public Expression Function;
 
-    public override Symbol CodeGen(CodeGenContext ctx, Function function1)
+    public override Symbol CodeGen(CodeGenContext ctx, CompilationUnit cu, Function function1)
     {
-        var function = Function.CodeGen(ctx, function1);
-        var arguments = Arguments.Select(a => a.CodeGen(ctx, function1)).ToArray();
-        return CodeGenCallFuncGroup(ctx, function, arguments);
+        var function = Function.CodeGen(ctx, cu, function1);
+        var arguments = Arguments.Select(a => a.CodeGen(ctx, cu, function1)).ToArray();
+        return CodeGenCallFuncGroup(ctx, cu, function, arguments);
     }
 
-    public static Symbol CodeGenCallFuncGroup(CodeGenContext ctx, Symbol functionGroup, Symbol[] arguments)
+    public static Symbol CodeGenCallFuncGroup(CodeGenContext ctx, CompilationUnit cu, Symbol functionGroup,
+        Symbol[] arguments)
     {
         var overload = functionGroup.FindFunctionOverload(arguments.ToList());
-        return CodeGenCallFunc(ctx, overload, arguments);
+        return CodeGenCallFunc(ctx, cu, overload, arguments);
     }
 
-    public static Symbol CodeGenCallFunc(CodeGenContext ctx, Symbol overload, Symbol[] arguments)
+    public static Symbol CodeGenCallFunc(CodeGenContext ctx, CompilationUnit cu, Symbol overload, Symbol[] arguments)
     {
         var retType = overload.Type.ReturnType;
         var llvmArguments = new List<LLVMValueRef>();
@@ -31,10 +32,10 @@ public class CallExpression : Expression
             var funcArg = overload.Type.Arguments[index];
             llvmArguments.Add(funcArg.DefinitionAttribute.HasFlag(DefinitionAttribute.Reference)
                 ? argValue.GetPointerValueRef()
-                : argValue.GetRealValueRef(ctx));
+                : argValue.GetRealValueRef(ctx, cu));
         }
 
-        var ret = ctx.Builder.BuildCall2(overload.Type.GetLLVMType(), overload.ValueRef,
+        var ret = cu.Builder.BuildCall2(overload.Type.GetLLVMType(), overload.GetRealValueRef(ctx, cu),
             llvmArguments.ToArray(),
             retType.Type.Kind == Types.None ? "" : retType.Type.Kind.RequestTemp(ctx));
         return retType.Type.Kind == Types.None

@@ -4,5 +4,5 @@ namespace PseudoCode.Core.CodeGen;
 
 public interface IGenericExpression
 {
-    Symbol Generate(CodeGenContext ctx, Function function, List<Symbol> genericParams = default);
+    Symbol Generate(CodeGenContext ctx, CompilationUnit cu, Function function, List<Symbol> genericParams = default);
 }

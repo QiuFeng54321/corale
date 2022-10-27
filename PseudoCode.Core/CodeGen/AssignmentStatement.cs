@@ -8,17 +8,17 @@ public class AssignmentStatement : Statement
 {
     public Expression Target, Value;
 
-    public override void CodeGen(CodeGenContext ctx, Function function)
+    public override void CodeGen(CodeGenContext ctx, CompilationUnit cu, Function function)
     {
-        var val = Value.CodeGen(ctx, function).GetRealValueRef(ctx);
-        var target = Target.CodeGen(ctx, function).GetPointerValueRef();
+        var val = Value.CodeGen(ctx, cu, function).GetRealValueRef(ctx, cu);
+        var target = Target.CodeGen(ctx, cu, function).GetPointerValueRef();
         if (target == null)
             ctx.Analysis.Feedbacks.Add(new Feedback
             {
                 Severity = Feedback.SeverityType.Error,
                 Message = $"{Value} not assignable"
             });
-        ctx.Builder.BuildStore(val, target);
+        cu.Builder.BuildStore(val, target);
     }
 
     public override void Format(PseudoFormatter formatter)

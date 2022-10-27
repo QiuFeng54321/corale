@@ -12,11 +12,11 @@ public class ReturnStatement : Statement
         formatter.WriteStatement($"RETURN {Expression.ToFormatString()}");
     }
 
-    public override void CodeGen(CodeGenContext ctx, Function function)
+    public override void CodeGen(CodeGenContext ctx, CompilationUnit cu, Function function)
     {
-        var returnSym = Expression.CodeGen(ctx, function);
-        ctx.Builder.BuildRet(function.ReturnType.DefinitionAttribute.HasFlag(DefinitionAttribute.Reference)
+        var returnSym = Expression.CodeGen(ctx, cu, function);
+        cu.Builder.BuildRet(function.ReturnType.DefinitionAttribute.HasFlag(DefinitionAttribute.Reference)
             ? returnSym.GetPointerValueRef()
-            : returnSym.GetRealValueRef(ctx));
+            : returnSym.GetRealValueRef(ctx, cu));
     }
 }

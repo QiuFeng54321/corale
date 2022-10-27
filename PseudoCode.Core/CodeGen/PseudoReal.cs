@@ -8,7 +8,7 @@ public class PseudoReal : Expression
 {
     public double Value;
 
-    public override Symbol CodeGen(CodeGenContext ctx, Function function)
+    public override Symbol CodeGen(CodeGenContext ctx, CompilationUnit cu, Function function)
     {
         var val = LLVMValueRef.CreateConstReal(LLVMTypeRef.Double, Value);
         return Symbol.MakeTemp(ReservedNames.Real, BuiltinTypes.Real.Type, ctx, val);

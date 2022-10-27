@@ -8,10 +8,10 @@ public class ExpressionGenericUtilisation : Expression
     public Expression Expression;
     public GenericUtilisation GenericUtilisation;
 
-    public override Symbol CodeGen(CodeGenContext ctx, Function function)
+    public override Symbol CodeGen(CodeGenContext ctx, CompilationUnit cu, Function function)
     {
-        var sym = Expression.CodeGen(ctx, function);
-        var filledSym = sym.FillGeneric(ctx, function, GenericUtilisation.GetSymbols(ctx, function));
+        var sym = Expression.CodeGen(ctx, cu, function);
+        var filledSym = sym.FillGeneric(ctx, cu, function, GenericUtilisation.GetSymbols(ctx, cu, function));
         return filledSym;
     }
 

@@ -38,13 +38,13 @@ public class OutputStatement : Statement
         };
     }
 
-    public override void CodeGen(CodeGenContext ctx, Function function)
+    public override void CodeGen(CodeGenContext ctx, CompilationUnit cu, Function function)
     {
         for (var i = 0; i < _expressions.Count; i++)
         {
-            var param = _expressions[i].CodeGen(ctx, function);
-            CallExpression.CodeGenCallFuncGroup(ctx, _printFunctionGroup, new[] { param });
-            CallExpression.CodeGenCallFuncGroup(ctx, _printFunctionGroup,
+            var param = _expressions[i].CodeGen(ctx, cu, function);
+            CallExpression.CodeGenCallFuncGroup(ctx, cu, _printFunctionGroup, new[] { param });
+            CallExpression.CodeGenCallFuncGroup(ctx, cu, _printFunctionGroup,
                 new[] { i == _expressions.Count - 1 ? _newlineChar : _spaceChar });
         }
     }

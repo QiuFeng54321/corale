@@ -1,42 +1,42 @@
 global using RealNumberType = System.Double;
+using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using PseudoCode.Core.Analyzing;
 using PseudoCode.Core.CodeGen;
 using PseudoCode.Core.CodeGen.Containers;
 using PseudoCode.Core.CodeGen.TypeLookups;
-using PseudoCode.Core.Runtime.Reflection;
-using PseudoCode.Core.Runtime.Reflection.Builtin;
 using PseudoCode.Core.Runtime.Types;
 
 namespace PseudoCode.Core.Parsing;
 
-public class NewCompiler : PseudoCodeBaseListener
+public class PseudoFileCompiler : PseudoCodeBaseListener
 {
-    public CodeGenContext Context;
+    public CompilationUnit CompilationUnit;
     public Block CurrentBlock;
+    public PseudoCodeCompiler PseudoCodeCompiler;
+    public CodeGenContext Context => PseudoCodeCompiler.Context;
 
-    public void Initialize(string name)
+    public void Initialize()
     {
-        BuiltinTypes.Initialize();
-        Context = new CodeGenContext();
-        BuiltinTypes.InitializeReflectedTypes(Context);
-        CurrentBlock = Context.CompilationUnit.MainFunction.Block;
-        // Context.Builder.PositionAtEnd(CurrentBlock);
-        BuiltinTypes.AddBuiltinTypes(Context.GlobalNamespace);
-        FunctionBinder.MakeFromType(Context, typeof(BuiltinFunctions));
-        FunctionBinder.MakeFromType(Context, typeof(Printer));
-        FunctionBinder.MakeFromType(Context, typeof(Scanner));
-        OutputStatement.MakeConstants();
-        InputStatement.MakeConstants();
+        CurrentBlock = CompilationUnit.MainFunction.Block;
     }
 
-
-    public CodeGenContext Compile(IParseTree tree, string name)
+    public void Compile()
     {
-        Initialize(name);
+        var stream = CharStreams.fromPath(CompilationUnit.FilePath);
+        var parser = PseudoCodeDocument.GetParser(stream);
+        PseudoCodeDocument.AddErrorListener(parser, this);
+        IParseTree parseTree = parser.fileInput();
+        Compile(parseTree);
+    }
+
+    public CodeGenContext Compile(IParseTree tree)
+    {
+        Initialize();
         ParseTreeWalker.Default.Walk(this, tree);
-        Context.CompilationUnit.CodeGen(Context, null);
-        Context.Module.Dump();
+        CompilationUnit.CodeGen(Context, CompilationUnit, null);
+        Console.WriteLine("-------------");
+        // CompilationUnit.Module.Dump();
         return Context;
         // var func = Context.Module.GetNamedFunction(ReservedNames.Main);
     }
@@ -56,6 +56,13 @@ public class NewCompiler : PseudoCodeBaseListener
             genericParams = GetGenericUtilisation(genericUtilisation);
 
         return new ModularType(typeLookup, genericParams);
+    }
+
+    public NamespaceLookup GetNamespaceLookup(PseudoCodeParser.IdentiferAccessContext context)
+    {
+        NamespaceLookup parent = null;
+        if (context.identiferAccess() is { } parentCtx) parent = GetNamespaceLookup(parentCtx);
+        return new NamespaceLookup(context.Identifier().GetText(), parent);
     }
 
     public IEnumerable<DataType> GetGenericParameters(PseudoCodeParser.GenericUtilisationContext context)
@@ -285,10 +292,10 @@ public class NewCompiler : PseudoCodeBaseListener
 
         if (context.IsUnary)
         {
-            if (context.Identifier() is { } id)
+            if (context.identiferAccess() is { } id)
                 Context.ExpressionStack.Push(new LoadExpr
                 {
-                    Name = id.GetText()
+                    NamespaceLookup = GetNamespaceLookup(id)
                 });
             else if (context.OpenParen() != null)
                 Context.ExpressionStack.Push(new ParenthesisExpression(Context.ExpressionStack.Pop()));
@@ -360,6 +367,14 @@ public class NewCompiler : PseudoCodeBaseListener
             Value = Context.ExpressionStack.Pop(),
             Target = Context.ExpressionStack.Pop()
         });
+    }
+
+    public override void ExitImportStatement(PseudoCodeParser.ImportStatementContext context)
+    {
+        base.ExitImportStatement(context);
+        var expr = Context.ExpressionStack.Pop();
+        if (expr is not PseudoString pseudoString) return;
+        CurrentBlock.Statements.Add(new ImportStatement(pseudoString.Value));
     }
 
     public override void ExitAtom(PseudoCodeParser.AtomContext context)

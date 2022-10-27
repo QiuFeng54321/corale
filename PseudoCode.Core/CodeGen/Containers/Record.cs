@@ -13,7 +13,7 @@ public class Record : Statement
         throw new InvalidOperationException();
     }
 
-    public override void CodeGen(CodeGenContext ctx, Function function)
+    public override void CodeGen(CodeGenContext ctx, CompilationUnit cu, Function function)
     {
         var resType = new Type
         {

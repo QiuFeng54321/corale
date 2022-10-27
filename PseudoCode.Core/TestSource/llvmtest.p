@@ -2,12 +2,6 @@ DECLARE i1, i2 : INTEGER
 DECLARE r1, r2 : REAL
 DECLARE b1, b2 : BOOLEAN
 DECLARE c : STRING
-FUNCTION recFib(n : INTEGER) RETURNS INTEGER
-    IF n = 1 OR n = 2 THEN
-        RETURN 1
-    ENDIF
-    RETURN recFib(n - 1) + recFib(n - 2)
-ENDFUNCTION
 FUNCTION swap<T>(BYREF a : T, b : T) RETURNS VOID
     DECLARE tmp : T
     tmp <- a

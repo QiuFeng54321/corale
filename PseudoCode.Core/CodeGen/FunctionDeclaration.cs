@@ -26,7 +26,8 @@ public class FunctionDeclaration : Statement, IGenericExpression
         Operator = @operator;
     }
 
-    public Symbol Generate(CodeGenContext ctx, Function function, List<Symbol> genericParams = default)
+    public Symbol Generate(CodeGenContext ctx, CompilationUnit cu, Function function,
+        List<Symbol> genericParams = default)
     {
         // Make function name
         // Fill generic parameters
@@ -37,11 +38,11 @@ public class FunctionDeclaration : Statement, IGenericExpression
         var filledArgumentSymbols =
             Arguments.Select(a =>
             {
-                var dataTypeSymbol = a.DataType.Lookup(ctx, function, subNs);
+                var dataTypeSymbol = a.DataType.Lookup(ctx, cu, function, subNs);
                 return new Symbol(a.Name, false, dataTypeSymbol.Type, dataTypeSymbol.Namespace,
                     a.IsRef ? DefinitionAttribute.Reference : DefinitionAttribute.None);
             }).ToList();
-        var filledReturnTypeSym = ReturnType.DataType.Lookup(ctx, function, subNs);
+        var filledReturnTypeSym = ReturnType.DataType.Lookup(ctx, cu, function, subNs);
         var filledReturnSym = new Symbol(ReturnType.Name, false, filledReturnTypeSym.Type,
             filledReturnTypeSym.Namespace, ReturnType.IsRef ? DefinitionAttribute.Reference : DefinitionAttribute.None);
         var funcName = MakeFunctionName(Name, filledReturnSym, genericParams ?? new List<Symbol>());
@@ -51,7 +52,7 @@ public class FunctionDeclaration : Statement, IGenericExpression
                 return res;
 
         // Make function
-        var func = ctx.CompilationUnit.MakeFunction(Name, filledArgumentSymbols.ToList(), filledReturnSym,
+        var func = cu.MakeFunction(Name, filledArgumentSymbols.ToList(), filledReturnSym,
             FunctionBody.Namespace,
             addToList: false);
         func.BodyNamespace = subNs;
@@ -60,7 +61,7 @@ public class FunctionDeclaration : Statement, IGenericExpression
         FunctionBody.ParentFunction = func;
         func.ParentFunction = function;
         func.Block = FunctionBody;
-        func.CodeGen(ctx, function);
+        func.CodeGen(ctx, cu, function);
         return func.ResultFunctionGroup;
     }
 
@@ -78,9 +79,9 @@ public class FunctionDeclaration : Statement, IGenericExpression
         formatter.WriteStatement("ENDFUNCTION");
     }
 
-    public override void CodeGen(CodeGenContext ctx, Function function)
+    public override void CodeGen(CodeGenContext ctx, CompilationUnit cu, Function function)
     {
-        Generate(ctx, function, new List<Symbol>());
+        Generate(ctx, cu, function, new List<Symbol>());
     }
 
     public class ArgumentOrReturnType

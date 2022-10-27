@@ -22,10 +22,10 @@ public class Function : Statement
     public Symbol ResultFunctionGroup;
     public Symbol ReturnType;
 
-    public unsafe void GeneratePrototype(CodeGenContext ctx)
+    public void GeneratePrototype(CodeGenContext ctx, CompilationUnit cu)
     {
         if (LLVMFunction != null) return;
-        AddSymbol(ctx);
+        AddSymbol(ctx, cu);
 
         if (IsExtern)
         {
@@ -33,7 +33,7 @@ public class Function : Statement
         }
         else
         {
-            MakeFunctionBodyBlock(ctx);
+            MakeFunctionBodyBlock(cu);
         }
 
         for (uint index = 0; index < Arguments.Count; index++)
@@ -64,12 +64,12 @@ public class Function : Statement
         return paramValue;
     }
 
-    private void MakeFunctionBodyBlock(CodeGenContext ctx)
+    private void MakeFunctionBodyBlock(CompilationUnit cu)
     {
         BodyNamespace ??= ParentNamespace.AddNamespace(ResultFunction.Name);
         if (Block == null) CreateBlock("entry");
         CurrentBlockRef = LLVMFunction.AppendBasicBlock("entry");
-        ctx.Builder.PositionAtEnd(CurrentBlockRef);
+        cu.Builder.PositionAtEnd(CurrentBlockRef);
     }
 
     public void LinkToFunctionPointer(CodeGenContext ctx, IntPtr ptr)
@@ -79,7 +79,7 @@ public class Function : Statement
         IsExtern = true;
     }
 
-    private unsafe void AddSymbol(CodeGenContext ctx)
+    private unsafe void AddSymbol(CodeGenContext ctx, CompilationUnit cu)
     {
         // Make parameter list
         var llvmParamTypes = new List<LLVMTypeRef>();
@@ -97,7 +97,7 @@ public class Function : Statement
             returnType = LLVMTypeRef.CreatePointer(returnType, 0);
         var functionType = LLVMTypeRef.CreateFunction(returnType,
             llvmParamTypes.ToArray());
-        LLVMFunction = LLVM.AddFunction(ctx.Module, ParentNamespace.GetFullQualifier(Name).ToSByte(),
+        LLVMFunction = LLVM.AddFunction(cu.Module, ParentNamespace.GetFullQualifier(Name).ToSByte(),
             functionType);
 
         var pseudoFunctionType = new Type
@@ -162,15 +162,15 @@ public class Function : Statement
         formatter.WriteStatement("ENDFUNCTION");
     }
 
-    public override void CodeGen(CodeGenContext ctx, Function parentBlock)
+    public override void CodeGen(CodeGenContext ctx, CompilationUnit cu, Function parentBlock)
     {
-        if (LLVMFunction == null) GeneratePrototype(ctx);
+        if (LLVMFunction == null) GeneratePrototype(ctx, cu);
         if (IsExtern) return;
         Block.ParentFunction = this;
-        ctx.Builder.PositionAtEnd(CurrentBlockRef);
-        Block.CodeGen(ctx, this);
-        ctx.Builder.PositionAtEnd(CurrentBlockRef);
-        ctx.Builder.BuildRetVoid();
-        if (ParentFunction != null) ctx.Builder.PositionAtEnd(ParentFunction.CurrentBlockRef);
+        cu.Builder.PositionAtEnd(CurrentBlockRef);
+        Block.CodeGen(ctx, cu, this);
+        cu.Builder.PositionAtEnd(CurrentBlockRef);
+        cu.Builder.BuildRetVoid();
+        if (ParentFunction != null) cu.Builder.PositionAtEnd(ParentFunction.CurrentBlockRef);
     }
 }

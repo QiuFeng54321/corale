@@ -43,19 +43,14 @@ public class Block : Statement
         return block;
     }
 
-    public override void CodeGen(CodeGenContext ctx, Function _)
+    public override void CodeGen(CodeGenContext ctx, CompilationUnit cu, Function _)
     {
-        GetBlock(ctx);
+        CodeGenDirectly(ctx, cu);
     }
 
-    private void GetBlock(CodeGenContext ctx)
+    private void CodeGenDirectly(CodeGenContext ctx, CompilationUnit cu)
     {
-        CodeGenDirectly(ctx);
-    }
-
-    private void CodeGenDirectly(CodeGenContext ctx)
-    {
-        foreach (var s in Statements) s.CodeGen(ctx, ParentFunction);
+        foreach (var s in Statements) s.CodeGen(ctx, cu, ParentFunction);
     }
 
     private void WriteStatements(PseudoFormatter formatter)

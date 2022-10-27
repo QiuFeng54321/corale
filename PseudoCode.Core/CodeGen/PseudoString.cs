@@ -9,14 +9,14 @@ public class PseudoString : Expression
 {
     public string Value;
 
-    public override Symbol CodeGen(CodeGenContext ctx, Function function)
+    public override Symbol CodeGen(CodeGenContext ctx, CompilationUnit cu, Function function)
     {
         var name = ctx.NameGenerator.Request(ReservedNames.String);
         LLVMValueRef val;
         PseudoStringStruct str = Value;
         unsafe
         {
-            val = LLVM.BuildGlobalStringPtr(ctx.Builder, str.Pointer, name.ToSByte());
+            val = LLVM.BuildGlobalStringPtr(cu.Builder, str.Pointer, name.ToSByte());
         }
 
         val = LLVMValueRef.CreateConstNamedStruct(BuiltinTypes.String.Type.GetLLVMType(),

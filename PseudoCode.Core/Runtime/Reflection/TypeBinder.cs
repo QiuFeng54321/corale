@@ -47,7 +47,7 @@ public static class TypeBinder
             TypeName = typeName,
             Members = members
         };
-        record.CodeGen(ctx, ctx.CompilationUnit.MainFunction);
+        record.CodeGen(ctx, ctx.MainCompilationUnit, ctx.MainCompilationUnit.MainFunction);
         TypeMap.Add(structType, record.TypeSymbol);
         return record.TypeSymbol;
     }

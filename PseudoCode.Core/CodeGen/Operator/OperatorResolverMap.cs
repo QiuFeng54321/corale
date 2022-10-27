@@ -25,14 +25,14 @@ public class OperatorResolverMap
         AddResolver(Types.Type, TypeOperatorResolver = new TypeOperatorResolver());
     }
 
-    public Symbol Resolve(Symbol left, Symbol right, PseudoOperator op, CodeGenContext ctx)
+    public Symbol Resolve(Symbol left, Symbol right, PseudoOperator op, CodeGenContext ctx, CompilationUnit cu)
     {
         if (op is PseudoOperator.None) throw new InvalidAccessError(op.ToString());
         if (left.Type.Kind is Types.None) throw new InvalidTypeError("Left is none");
-        var res = _operatorResolvers[left.Type.Kind].Resolve(left, right, op, ctx);
+        var res = _operatorResolvers[left.Type.Kind].Resolve(left, right, op, ctx, cu);
         if (res == null)
         {
-            res = _operatorResolvers[Types.Type].Resolve(left, right, op, ctx); // Custom operator possibly
+            res = _operatorResolvers[Types.Type].Resolve(left, right, op, ctx, cu); // Custom operator possibly
             if (res == null) throw new InvalidTypeError($"{left.Type} {op} {right?.Type}");
         }
 

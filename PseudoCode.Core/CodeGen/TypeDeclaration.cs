@@ -20,7 +20,8 @@ public class TypeDeclaration : Statement, IGenericExpression
         DeclarationStatements = declarationStatements;
     }
 
-    public Symbol Generate(CodeGenContext ctx, Function function, List<Symbol> genericParams = default)
+    public Symbol Generate(CodeGenContext ctx, CompilationUnit cu, Function function,
+        List<Symbol> genericParams = default)
     {
         var typeName = Type.GenerateFilledGenericTypeName(TypeName, genericParams);
         if (function.BodyNamespace.TryGetSymbol(typeName, out var existingSymbol)) return existingSymbol;
@@ -34,7 +35,7 @@ public class TypeDeclaration : Statement, IGenericExpression
         for (var index = 0; index < DeclarationStatements.Count; index++)
         {
             var declarationStatement = DeclarationStatements[index];
-            var typeSym = declarationStatement.GetTypeSymbol(ctx, function, subNs);
+            var typeSym = declarationStatement.GetTypeSymbol(ctx, cu, function, subNs);
             var sym = typeSym.MakeStructMemberDeclSymbol(declarationStatement.Name);
             typeMembers.Add(sym);
             sym.TypeMemberIndex = index;
@@ -45,13 +46,13 @@ public class TypeDeclaration : Statement, IGenericExpression
             TypeName = typeName,
             Members = typeMembers
         };
-        record.CodeGen(ctx, function);
+        record.CodeGen(ctx, cu, function);
         return record.TypeSymbol;
     }
 
-    public override void CodeGen(CodeGenContext ctx, Function function)
+    public override void CodeGen(CodeGenContext ctx, CompilationUnit cu, Function function)
     {
-        Generate(ctx, function);
+        Generate(ctx, cu, function);
     }
 
     public override void Format(PseudoFormatter formatter)

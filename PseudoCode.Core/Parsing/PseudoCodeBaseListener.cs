@@ -306,6 +306,18 @@ public partial class PseudoCodeBaseListener : IPseudoCodeListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitUseNamespaceStatement([NotNull] PseudoCodeParser.UseNamespaceStatementContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="PseudoCodeParser.importStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterImportStatement([NotNull] PseudoCodeParser.ImportStatementContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="PseudoCodeParser.importStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitImportStatement([NotNull] PseudoCodeParser.ImportStatementContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="PseudoCodeParser.caseStatement"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -641,6 +653,18 @@ public partial class PseudoCodeBaseListener : IPseudoCodeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitArithmeticExpression([NotNull] PseudoCodeParser.ArithmeticExpressionContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="PseudoCodeParser.identiferAccess"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterIdentiferAccess([NotNull] PseudoCodeParser.IdentiferAccessContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="PseudoCodeParser.identiferAccess"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitIdentiferAccess([NotNull] PseudoCodeParser.IdentiferAccessContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="PseudoCodeParser.arguments"/>.
 	/// <para>The default implementation does nothing.</para>
