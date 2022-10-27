@@ -206,17 +206,18 @@ public class NewCompiler : PseudoCodeBaseListener
         }
     }
 
-    public override void ExitFunctionDefinition(PseudoCodeParser.FunctionDefinitionContext context)
+    private void MakeFunction(FunctionKind functionKind, string name,
+        PseudoCodeParser.GenericDeclarationContext genericDeclarationContext,
+        PseudoCodeParser.ArgumentsDeclarationContext argumentsDeclarationContext, DataType returnType,
+        bool isReturnByref, PseudoCodeParser.IndentedBlockContext indentedBlockContext)
     {
-        base.ExitFunctionDefinition(context);
-        var name = context.Identifier().GetText();
         List<FunctionDeclaration.ArgumentOrReturnType> arguments = new();
         var op = PseudoOperator.None;
-        if (context.OperatorKeyword() is { }) op = Enum.Parse<PseudoOperator>(name);
-        if (context.argumentsDeclaration() != null)
+        if (functionKind is FunctionKind.Operator) op = Enum.Parse<PseudoOperator>(name);
+        if (argumentsDeclarationContext != null)
         {
             var byRef = false;
-            foreach (var argumentDeclarationContext in context.argumentsDeclaration().argumentDeclaration())
+            foreach (var argumentDeclarationContext in argumentsDeclarationContext.argumentDeclaration())
             {
                 if (argumentDeclarationContext.Byref() != null) byRef = true;
                 if (argumentDeclarationContext.Byval() != null) byRef = false;
@@ -229,15 +230,15 @@ public class NewCompiler : PseudoCodeBaseListener
             }
         }
 
-        var retType = GetType(context.dataType());
         var body = (Block)CurrentBlock.Statements[^1];
         CurrentBlock.Statements.RemoveAt(CurrentBlock.Statements.Count - 1);
-        var genericParams = context.genericDeclaration()?.identifierList()?.Identifier().Select(s => s.GetText())
+        var genericParams = genericDeclarationContext?.identifierList()?.Identifier().Select(s => s.GetText())
             .ToList();
+        returnType ??= new DataType(new ModularType(new TypeLookup("VOID")));
         var funcReturnTypeSpec = new FunctionDeclaration.ArgumentOrReturnType
         {
-            DataType = retType,
-            IsRef = context.Byref() != null
+            DataType = returnType,
+            IsRef = isReturnByref
         };
         var genericDeclaration = genericParams != null ? new GenericDeclaration(genericParams) : null;
         var functionDecl = new FunctionDeclaration(name, arguments, funcReturnTypeSpec, body, genericDeclaration, op);
@@ -246,6 +247,22 @@ public class NewCompiler : PseudoCodeBaseListener
         else
             CurrentBlock.Namespace.AddSymbol(
                 Symbol.MakeGenericSymbol(name, functionDecl));
+    }
+
+    public override void ExitFunctionDefinition(PseudoCodeParser.FunctionDefinitionContext context)
+    {
+        base.ExitFunctionDefinition(context);
+        MakeFunction(context.OperatorKeyword() is { } ? FunctionKind.Operator : FunctionKind.Function,
+            context.Identifier().GetText(), context.genericDeclaration(), context.argumentsDeclaration(),
+            GetType(context.dataType()), context.Byref() != null, context.indentedBlock());
+    }
+
+    public override void ExitProcedureDefinition(PseudoCodeParser.ProcedureDefinitionContext context)
+    {
+        base.ExitProcedureDefinition(context);
+        MakeFunction(FunctionKind.Procedure,
+            context.identifierWithNew().GetText(), context.genericDeclaration(), context.argumentsDeclaration(),
+            null, false, context.indentedBlock());
     }
 
     public override void ExitArithmeticExpression(PseudoCodeParser.ArithmeticExpressionContext context)
@@ -411,5 +428,12 @@ public class NewCompiler : PseudoCodeBaseListener
                 break;
             }
         }
+    }
+
+    private enum FunctionKind
+    {
+        Procedure,
+        Function,
+        Operator
     }
 }

@@ -140,7 +140,7 @@ caseBody: INDENT caseBranch+ DEDENT;
 
 valueRange: from=scopedExpression To to=scopedExpression;
 
-externFunctionDefinition: Extern Function Identifier genericDeclaration? argumentsDeclaration? (Returns dataType);
+externFunctionDefinition: Extern Function Identifier genericDeclaration? argumentsDeclaration? (Returns Byref? dataType);
 procedureDefinition: Procedure identifierWithNew genericDeclaration? argumentsDeclaration? indentedBlock Endprocedure;
 functionDefinition: (Function | OperatorKeyword) Identifier genericDeclaration? argumentsDeclaration? Returns Byref? dataType indentedBlock Endfunction;
 argumentsDeclaration: OpenParen (argumentDeclaration (Comma argumentDeclaration)*)? CloseParen;

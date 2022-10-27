@@ -1,0 +1,27 @@
+DECLARE a : INTEGER
+DECLARE b : INTEGER
+PROCEDURE SWAP(BYREF X : INTEGER, BYREF Y : INTEGER)
+    DECLARE Temp : INTEGER
+    Temp <- X
+    X <- Y
+    Y <- Temp
+ENDPROCEDURE
+DECLARE gcd : INTEGER
+
+FUNCTION GCD (a : INTEGER, b : INTEGER) RETURNS INTEGER
+    DECLARE gcd : INTEGER
+    gcd <- a
+    WHILE a MOD gcd <> 0 OR b MOD gcd <> 0
+        gcd <- gcd - 1
+    ENDWHILE
+    RETURN gcd
+ENDFUNCTION
+
+INPUT a
+INPUT b
+gcd <- GCD(a, b)
+OUTPUT gcd
+a <- 1
+b <- 2
+CALL SWAP(a, b)
+OUTPUT a, b
