@@ -167,7 +167,7 @@ public static class BuiltinFunctions
     [BuiltinNativeFunction("TODAY")]
     public static DateOnly Today() => DateOnly.FromDateTime(DateTime.Today);
 
-    [BuiltinNativeFunction("long")]
+    [BuiltinNativeFunction("INT")]
     [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
     public static long Int(double x)
     {

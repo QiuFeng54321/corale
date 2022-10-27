@@ -27,4 +27,17 @@ public class TypeOperatorResolver : OperatorResolver
         var overload = Casters.FindFunctionOverload(args.ToList(), toType);
         return CallExpression.CodeGenCallFunc(ctx, overload, args);
     }
+
+    public bool TryAddOperator(PseudoOperator @operator, Symbol overload, out Symbol funcGroup)
+    {
+        if (!Operators.ContainsKey(@operator))
+            Operators.Add(@operator, Symbol.MakeFunctionGroupSymbol(@operator.ToString(), null));
+        funcGroup = Operators[@operator];
+        return funcGroup.AddOverload(overload);
+    }
+
+    public bool TryAddCaster(Symbol overload)
+    {
+        return Casters.AddOverload(overload);
+    }
 }

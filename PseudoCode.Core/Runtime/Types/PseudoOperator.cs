@@ -14,6 +14,7 @@ public enum PseudoOperator
     Pow,
     GetPointer,
     GetPointed,
+    ArrayAccess,
     Equal,
     Greater,
     Smaller,

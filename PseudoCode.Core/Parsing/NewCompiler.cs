@@ -211,6 +211,8 @@ public class NewCompiler : PseudoCodeBaseListener
         base.ExitFunctionDefinition(context);
         var name = context.Identifier().GetText();
         List<FunctionDeclaration.ArgumentOrReturnType> arguments = new();
+        var op = PseudoOperator.None;
+        if (context.OperatorKeyword() is { }) op = Enum.Parse<PseudoOperator>(name);
         if (context.argumentsDeclaration() != null)
         {
             var byRef = false;
@@ -238,7 +240,7 @@ public class NewCompiler : PseudoCodeBaseListener
             IsRef = context.Byref() != null
         };
         var genericDeclaration = genericParams != null ? new GenericDeclaration(genericParams) : null;
-        var functionDecl = new FunctionDeclaration(name, arguments, funcReturnTypeSpec, body, genericDeclaration);
+        var functionDecl = new FunctionDeclaration(name, arguments, funcReturnTypeSpec, body, genericDeclaration, op);
         if (genericParams == null)
             CurrentBlock.Statements.Add(functionDecl);
         else

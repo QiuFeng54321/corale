@@ -1,5 +1,7 @@
 using LLVMSharp.Interop;
+using PseudoCode.Core.CodeGen.Operator;
 using PseudoCode.Core.Formatting;
+using PseudoCode.Core.Runtime.Types;
 
 namespace PseudoCode.Core.CodeGen.Containers;
 
@@ -13,6 +15,7 @@ public class Function : Statement
     public bool IsExtern;
     public LLVMValueRef LLVMFunction;
     public string Name;
+    public PseudoOperator Operator = PseudoOperator.None;
     public Function ParentFunction;
     public Namespace ParentNamespace;
     public Symbol ResultFunction;
@@ -30,27 +33,43 @@ public class Function : Statement
         }
         else
         {
-            BodyNamespace ??= ParentNamespace.AddNamespace(ResultFunction.Name);
-            if (Block == null) CreateBlock("entry");
-            CurrentBlockRef = LLVMFunction.AppendBasicBlock("entry");
-            ctx.Builder.PositionAtEnd(CurrentBlockRef);
+            MakeFunctionBodyBlock(ctx);
         }
 
         for (uint index = 0; index < Arguments.Count; index++)
         {
             var argument = Arguments[(int)index];
-            LLVMValueRef paramValue = LLVM.GetParam(LLVMFunction, index);
-            LLVM.SetValueName(paramValue, argument.Name.ToSByte());
+            var paramValue = SetArgumentName(index, argument);
             if (!IsExtern)
             {
-                var symbol = new Symbol(argument.Name, false, argument.Type);
-                if (argument.DefinitionAttribute.HasFlag(DefinitionAttribute.Reference))
-                    symbol.MemoryPointer = paramValue;
-                else
-                    symbol.ValueRef = paramValue;
-                BodyNamespace.AddSymbol(symbol);
+                AddArgumentToBodyNs(argument, paramValue);
             }
         }
+    }
+
+    private void AddArgumentToBodyNs(Symbol argument, LLVMValueRef paramValue)
+    {
+        var symbol = new Symbol(argument.Name, false, argument.Type);
+        if (argument.DefinitionAttribute.HasFlag(DefinitionAttribute.Reference))
+            symbol.MemoryPointer = paramValue;
+        else
+            symbol.ValueRef = paramValue;
+        BodyNamespace.AddSymbol(symbol);
+    }
+
+    private unsafe LLVMValueRef SetArgumentName(uint index, Symbol argument)
+    {
+        LLVMValueRef paramValue = LLVM.GetParam(LLVMFunction, index);
+        LLVM.SetValueName(paramValue, argument.Name.ToSByte());
+        return paramValue;
+    }
+
+    private void MakeFunctionBodyBlock(CodeGenContext ctx)
+    {
+        BodyNamespace ??= ParentNamespace.AddNamespace(ResultFunction.Name);
+        if (Block == null) CreateBlock("entry");
+        CurrentBlockRef = LLVMFunction.AppendBasicBlock("entry");
+        ctx.Builder.PositionAtEnd(CurrentBlockRef);
     }
 
     public void LinkToFunctionPointer(CodeGenContext ctx, IntPtr ptr)
@@ -85,7 +104,7 @@ public class Function : Statement
         {
             Arguments = Arguments,
             ReturnType = ReturnType,
-            TypeName = Type.GenerateFunctionTypeName(Arguments, ReturnType.Type),
+            TypeName = Type.GetFunctionSignature(Arguments, ReturnType),
             Kind = Types.Function
         };
         pseudoFunctionType.SetLLVMType(functionType);
@@ -93,14 +112,33 @@ public class Function : Statement
         {
             ValueRef = LLVMFunction
         };
+        if (Operator != PseudoOperator.None)
+            AddFuncToOperator(ctx.OperatorResolverMap, ResultFunction);
+        else
+            AddFuncToFuncGroup(pseudoFunctionType, ResultFunction);
+    }
+
+    private bool AddFuncToOperator(OperatorResolverMap resolverMap, Symbol resultFunction)
+    {
+        if (Operator is PseudoOperator.Cast)
+        {
+            ResultFunctionGroup = resolverMap.TypeOperatorResolver.Casters;
+            return resolverMap.TypeOperatorResolver.Casters.AddOverload(resultFunction);
+        }
+
+        return resolverMap.TypeOperatorResolver.TryAddOperator(Operator, resultFunction, out ResultFunctionGroup);
+    }
+
+    private void AddFuncToFuncGroup(Type pseudoFunctionType, Symbol resultFunction)
+    {
         // Add to function group
         if (!ParentNamespace.TryGetSymbol(Name, out var functionOverloadsSymbol))
         {
-            functionOverloadsSymbol = new Symbol(Name, false, pseudoFunctionType);
+            functionOverloadsSymbol = Symbol.MakeFunctionGroupSymbol(Name, pseudoFunctionType);
             ParentNamespace.AddSymbol(functionOverloadsSymbol);
         }
 
-        functionOverloadsSymbol.FunctionOverloads.Add(ResultFunction);
+        functionOverloadsSymbol.AddOverload(resultFunction);
         ResultFunctionGroup = functionOverloadsSymbol;
     }
 

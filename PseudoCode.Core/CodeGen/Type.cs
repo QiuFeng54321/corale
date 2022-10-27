@@ -44,9 +44,30 @@ public class Type
     /// </summary>
     public string TypeName;
 
+
     public void SetLLVMType(LLVMTypeRef type)
     {
         _llvmTypeRef = type;
+    }
+
+    public string GetSignature(Namespace ns)
+    {
+        return Kind switch
+        {
+            Types.Pointer => $"^{ElementType.GetSignature(ns)}",
+            Types.Function => GenerateFunctionSignature(),
+            _ => ns?.GetFullQualifier(TypeName) ?? TypeName
+        };
+    }
+
+    public string GenerateFunctionSignature()
+    {
+        return GetFunctionSignature(Arguments, ReturnType);
+    }
+
+    public static string GetFunctionSignature(List<Symbol> arguments, Symbol returnType)
+    {
+        return $"{returnType.GetTypeString()}({string.Join(",", arguments.Select(a => a.GetTypeString()))})";
     }
 
     public LLVMTypeRef GetLLVMType()
@@ -135,11 +156,6 @@ public class Type
         return $"{typeName}<{string.Join(",", genericArguments.Select(a => a.Type.TypeName))}>";
     }
 
-    public static string GenerateFunctionTypeName(List<Symbol> arguments, Type returnType)
-    {
-        return $"{returnType.TypeName}({string.Join(",", arguments.Select(a => a.Type.TypeName))})";
-    }
-
     public override bool Equals(object obj)
     {
         if (obj is not Type t) return false;
@@ -148,7 +164,13 @@ public class Type
 
     protected bool Equals(Type other)
     {
-        return _llvmTypeRef.Equals(other._llvmTypeRef) && Kind == other.Kind && TypeName == other.TypeName;
+        return _llvmTypeRef.Equals(other._llvmTypeRef) || (Kind == other.Kind && Kind switch
+        {
+            Types.Pointer => ElementType == other.ElementType,
+            Types.Function => ReturnType == other.ReturnType && Arguments.SequenceEqual(other.Arguments),
+            Types.Type => Members.SequenceEqual(other.Members),
+            _ => Kind == other.Kind
+        });
     }
 
     public override int GetHashCode()

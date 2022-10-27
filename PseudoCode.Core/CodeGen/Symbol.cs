@@ -63,6 +63,8 @@ public class Symbol
         Namespace = ns;
     }
 
+    public bool IsReference => DefinitionAttribute.HasFlag(DefinitionAttribute.Reference);
+
     public Symbol GetRealValue(CodeGenContext ctx)
     {
         return ValueRef != null
@@ -207,6 +209,11 @@ public class Symbol
         };
     }
 
+    public string GetTypeString()
+    {
+        return (IsReference ? "&" : "") + Type.GetSignature(Namespace);
+    }
+
     /// <summary>
     ///     Fill the generic arguments (kinda like making types from template)
     /// </summary>
@@ -267,5 +274,17 @@ public class Symbol
         hashCode.Add(TypeMemberIndex);
         hashCode.Add(ValueRef);
         return hashCode.ToHashCode();
+    }
+
+    public static Symbol MakeFunctionGroupSymbol(string name, Type pseudoFunctionType)
+    {
+        return new Symbol(name, false, pseudoFunctionType);
+    }
+
+    public bool AddOverload(Symbol overload)
+    {
+        if (FunctionOverloads.Any(s => s.Type == overload.Type)) return false;
+        FunctionOverloads.Add(overload);
+        return true;
     }
 }
