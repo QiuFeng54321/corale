@@ -3,7 +3,8 @@
 - [x] BYREF
 - [x] Native function byref
 - [x] Struct mapping
-- [ ] Cast, Custom operator
+- [x] Custom operator
+- [ ] Cast
 - [x] Generic function
 - [x] Member access
 - [ ] Complete control flow
