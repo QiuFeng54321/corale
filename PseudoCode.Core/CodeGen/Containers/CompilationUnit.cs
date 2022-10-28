@@ -16,19 +16,29 @@ public class CompilationUnit : Statement
     public Namespace Namespace;
     public CompilationUnit Parent;
 
-    public CompilationUnit(CodeGenContext ctx, string path)
+    public CompilationUnit(CodeGenContext ctx, string path, CompilationUnit useParent = default)
     {
         FilePath = path;
         ModuleName = Path.GetFileNameWithoutExtension(path);
-        Module = LLVMModuleRef.CreateWithName(ModuleName);
-        DIBuilder = Module.CreateDIBuilder();
-        Builder = Module.Context.CreateBuilder();
+        if (useParent != null)
+        {
+            Module = useParent.Module;
+            DIBuilder = useParent.DIBuilder;
+            Builder = useParent.Builder;
+        }
+        else
+        {
+            Module = LLVMModuleRef.CreateWithName(ModuleName);
+            DIBuilder = Module.CreateDIBuilder();
+            Builder = Module.Context.CreateBuilder();
+        }
+
         MakeMainFunction(ctx, ModuleName);
     }
 
-    public CompilationUnit MakeSubUnit(CodeGenContext ctx, string path)
+    public CompilationUnit MakeSubUnit(CodeGenContext ctx, string path, CompilationUnit useParent = default)
     {
-        return new CompilationUnit(ctx, path)
+        return new CompilationUnit(ctx, path, useParent)
         {
             Parent = this,
             Namespace = Namespace
@@ -45,10 +55,11 @@ public class CompilationUnit : Statement
 
     public CompilationUnit ImportUnit(CodeGenContext ctx, string path)
     {
-        var subUnit = MakeSubUnit(ctx, FindSubUnitPath(path));
+        // TODO: Make new modules
+        var subUnit = MakeSubUnit(ctx, FindSubUnitPath(path), this);
         ctx.PseudoCodeCompiler.CompileFile(subUnit);
         Imports.Add(subUnit);
-        ctx.Engine.AddModule(subUnit.Module);
+        // ctx.Engine.AddModule(subUnit.Module);
         return subUnit;
     }
 
@@ -85,6 +96,6 @@ public class CompilationUnit : Statement
     public override unsafe void CodeGen(CodeGenContext ctx, CompilationUnit cu, Function _)
     {
         foreach (var function in Functions) function.CodeGen(ctx, cu, _);
-        foreach (var import in Imports) LLVM.LinkModules2(Module, import.Module);
+        // foreach (var import in Imports) Console.WriteLine(LLVM.LinkModules2(Module, import.Module));
     }
 }

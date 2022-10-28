@@ -33,6 +33,7 @@ public class Function : Statement
         }
         else
         {
+            LLVMFunction.Linkage = LLVMLinkage.LLVMWeakAnyLinkage;
             MakeFunctionBodyBlock(cu);
         }
 

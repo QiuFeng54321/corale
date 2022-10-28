@@ -20,5 +20,6 @@ public class ImportStatement : Statement
     public override void CodeGen(CodeGenContext ctx, CompilationUnit cu, Function function)
     {
         cu.ImportUnit(ctx, Path);
+        cu.Builder.PositionAtEnd(function.CurrentBlockRef);
     }
 }
