@@ -36,12 +36,14 @@ public class IfStatement : Statement
 
         // Emit then value.
         cu.Builder.PositionAtEnd(thenBlockRef);
+        function.CurrentBlockRef = thenBlockRef;
         Then.CodeGen(ctx, cu, function);
         cu.Builder.BuildBr(continueBlockRef);
 
         if (Else != null)
         {
             cu.Builder.PositionAtEnd(elseBlockRef);
+            function.CurrentBlockRef = elseBlockRef;
             Else.CodeGen(ctx, cu, function);
             cu.Builder.BuildBr(continueBlockRef);
         }
