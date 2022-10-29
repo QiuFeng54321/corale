@@ -11,6 +11,7 @@
 *.userosscache
 *.sln.docstates
 Build/
+genCopyrightPdf.sh
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
