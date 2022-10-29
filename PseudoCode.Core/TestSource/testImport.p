@@ -1,5 +1,6 @@
 // IMPORT "malloc.p"
 IMPORT "testModule.p"
+IMPORT "testModule.p"
 DECLARE i : REAL
 i <- RAND(100)
 OUTPUT i

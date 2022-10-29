@@ -10,7 +10,9 @@ public class CompilationUnit : Statement
     public readonly List<CompilationUnit> Imports = new();
     public readonly string ModuleName;
     public LLVMBuilderRef Builder;
+    public LLVMMetadataRef CompileUnitMetadata;
     public LLVMDIBuilderRef DIBuilder;
+    public LLVMMetadataRef FileMetadataRef;
     public Function MainFunction;
     public LLVMModuleRef Module;
     public Namespace Namespace;
@@ -23,15 +25,20 @@ public class CompilationUnit : Statement
         if (useParent != null)
         {
             Module = useParent.Module;
-            DIBuilder = useParent.DIBuilder;
+            // DIBuilder = useParent.DIBuilder;
             Builder = useParent.Builder;
         }
         else
         {
             Module = LLVMModuleRef.CreateWithName(ModuleName);
-            DIBuilder = Module.CreateDIBuilder();
             Builder = Module.Context.CreateBuilder();
         }
+
+        DIBuilder = Module.CreateDIBuilder();
+        FileMetadataRef = DIBuilder.CreateFile(FilePath, Path.GetDirectoryName(FilePath));
+        CompileUnitMetadata = DIBuilder.CreateCompileUnit(LLVMDWARFSourceLanguage.LLVMDWARFSourceLanguageC,
+            FileMetadataRef, "PseudoCode",
+            0, "", 0, "", LLVMDWARFEmissionKind.LLVMDWARFEmissionFull, 0, 0, 0, "", "");
 
         MakeMainFunction(ctx, ModuleName);
     }
@@ -56,6 +63,7 @@ public class CompilationUnit : Statement
     public CompilationUnit ImportUnit(CodeGenContext ctx, string path)
     {
         // TODO: Make new modules
+        if (Imports.FirstOrDefault(i => i.FilePath == path) is { } f) return f;
         var subUnit = MakeSubUnit(ctx, FindSubUnitPath(path), this);
         ctx.PseudoCodeCompiler.CompileFile(subUnit);
         Imports.Add(subUnit);
@@ -96,6 +104,7 @@ public class CompilationUnit : Statement
     public override unsafe void CodeGen(CodeGenContext ctx, CompilationUnit cu, Function _)
     {
         foreach (var function in Functions) function.CodeGen(ctx, cu, _);
+        DIBuilder.DIBuilderFinalize();
         // foreach (var import in Imports) Console.WriteLine(LLVM.LinkModules2(Module, import.Module));
     }
 }

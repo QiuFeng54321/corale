@@ -12,6 +12,6 @@
 - [ ] File IO
 - [x] Malloc, Sizeof
 - [ ] Array
-- [ ] Import
+- [x] Import
 - [ ] Find function through namespace
 - [ ] Debug info
