@@ -2,7 +2,7 @@ using PseudoCode.Core.CodeGen.Containers;
 
 namespace PseudoCode.Core.CodeGen.TypeLookups;
 
-public class GenericUtilisation
+public class GenericUtilisation : AstNode
 {
     public readonly List<DataType> TypeParameters;
 

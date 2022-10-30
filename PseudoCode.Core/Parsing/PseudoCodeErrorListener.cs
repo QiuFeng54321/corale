@@ -1,5 +1,6 @@
 using Antlr4.Runtime;
 using PseudoCode.Core.Analyzing;
+using PseudoCode.Core.CodeGen;
 
 namespace PseudoCode.Core.Parsing;
 
@@ -22,7 +23,7 @@ public class PseudoCodeErrorListener : BaseErrorListener
         {
             Message = $"Syntax error: {msg}",
             Severity = Feedback.SeverityType.Error,
-            SourceRange = SourceLocationHelper.SourceRange(offendingSymbol)
+            DebugInformation = new DebugInformation(PseudoCodeCompiler.CompilationUnit, offendingSymbol.SourceRange())
         });
     }
 }

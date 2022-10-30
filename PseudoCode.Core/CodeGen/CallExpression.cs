@@ -31,7 +31,7 @@ public class CallExpression : Expression
             var argValue = arguments[index];
             var funcArg = overload.Type.Arguments[index];
             llvmArguments.Add(funcArg.DefinitionAttribute.HasFlag(DefinitionAttribute.Reference)
-                ? argValue.GetPointerValueRef()
+                ? argValue.GetPointerValueRef(ctx)
                 : argValue.GetRealValueRef(ctx, cu));
         }
 

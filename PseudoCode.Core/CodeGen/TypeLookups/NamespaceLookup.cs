@@ -1,9 +1,9 @@
+using PseudoCode.Core.Analyzing;
 using PseudoCode.Core.CodeGen.Containers;
-using PseudoCode.Core.Runtime.Errors;
 
 namespace PseudoCode.Core.CodeGen.TypeLookups;
 
-public class NamespaceLookup
+public class NamespaceLookup : AstNode
 {
     public readonly string Identifier;
     public readonly NamespaceLookup ParentNs;
@@ -14,26 +14,42 @@ public class NamespaceLookup
         ParentNs = parentNs;
     }
 
-    public Namespace LookupNs(Function function)
+    public Namespace LookupNs(CodeGenContext ctx, Function function)
     {
         if (ParentNs is null)
         {
             if (function.BodyNamespace.TryGetNamespace(Identifier, out var rtNs)) return rtNs;
-
-            throw new InvalidAccessError(ToString());
+            return null;
         }
 
-        if (ParentNs.LookupNs(function).TryGetNamespace(Identifier, out var ns)) return ns;
-
-        throw new InvalidAccessError(ToString());
+        var parentNs = ParentNs.LookupNs(ctx, function);
+        if (parentNs == null) return null;
+        if (parentNs.TryGetNamespace(Identifier, out var ns)) return ns;
+        return null;
     }
 
-    public Symbol Lookup(Function function)
+    public Symbol Lookup(CodeGenContext ctx, Function function)
     {
-        var ns = ParentNs?.LookupNs(function) ?? function.BodyNamespace;
-        if (ns.TryGetSymbol(Identifier, out var sym)) return sym;
+        var ns = ParentNs?.LookupNs(ctx, function) ?? function.BodyNamespace;
+        if (ns == null)
+        {
+            ctx.Analysis.Feedbacks.Add(new Feedback
+            {
+                Message = $"Unknown namespace: {ToString()}",
+                Severity = Feedback.SeverityType.Error,
+                DebugInformation = DebugInformation
+            });
+            return Symbol.ErrorSymbol;
+        }
 
-        throw new InvalidAccessError(ToString());
+        if (ns.TryGetSymbol(Identifier, out var sym)) return sym;
+        ctx.Analysis.Feedbacks.Add(new Feedback
+        {
+            Message = $"Unknown symbol: {ToString()}",
+            Severity = Feedback.SeverityType.Error,
+            DebugInformation = DebugInformation
+        });
+        return Symbol.ErrorSymbol;
     }
 
     public override string ToString()

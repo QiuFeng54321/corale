@@ -16,7 +16,7 @@ public class ReturnStatement : Statement
     {
         var returnSym = Expression.CodeGen(ctx, cu, function);
         cu.Builder.BuildRet(function.ReturnType.DefinitionAttribute.HasFlag(DefinitionAttribute.Reference)
-            ? returnSym.GetPointerValueRef()
+            ? returnSym.GetPointerValueRef(ctx)
             : returnSym.GetRealValueRef(ctx, cu));
     }
 }

@@ -2,7 +2,7 @@ using PseudoCode.Core.CodeGen.Containers;
 
 namespace PseudoCode.Core.CodeGen.TypeLookups;
 
-public class DataType
+public class DataType : AstNode
 {
     // For pointer and array type
     private readonly DataType _elementType;

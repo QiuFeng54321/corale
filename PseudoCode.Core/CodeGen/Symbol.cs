@@ -1,11 +1,13 @@
 using LLVMSharp.Interop;
+using PseudoCode.Core.Analyzing;
 using PseudoCode.Core.CodeGen.Containers;
 using PseudoCode.Core.Runtime.Errors;
 
 namespace PseudoCode.Core.CodeGen;
 
-public class Symbol
+public class Symbol : WithDebugInformation
 {
+    public static readonly Symbol ErrorSymbol = new("!ERROR!", false, null);
     public readonly DefinitionAttribute DefinitionAttribute;
 
     /// <summary>
@@ -67,6 +69,7 @@ public class Symbol
 
     public Symbol GetRealValue(CodeGenContext ctx, CompilationUnit cu)
     {
+        if (this == ErrorSymbol) return null;
         return ValueRef != null
             ? this
             : MakeTemp(Type, GetRealValueRef(ctx, cu));
@@ -74,26 +77,35 @@ public class Symbol
 
     public LLVMValueRef GetRealValueRef(CodeGenContext ctx, CompilationUnit cu)
     {
+        if (this == ErrorSymbol) return null;
         return ValueRef != null
             ? ValueRef
-            : cu.Builder.BuildLoad2(Type.GetLLVMType(), GetPointerValueRef(),
+            : cu.Builder.BuildLoad2(Type.GetLLVMType(), GetPointerValueRef(ctx),
                 ctx.NameGenerator.RequestTemp(ReservedNames.Load));
     }
 
-    public LLVMValueRef GetPointerValueRef()
+    public LLVMValueRef GetPointerValueRef(CodeGenContext ctx)
     {
-        if (MemoryPointer == null) throw new InvalidOperationException();
-        return MemoryPointer;
+        if (MemoryPointer != null) return MemoryPointer;
+        if (this == ErrorSymbol) return null;
+        ctx.Analysis.Feedbacks.Add(new Feedback
+        {
+            Message = $"Symbol not a reference: {Namespace?.GetFullQualifier(Name) ?? Name}",
+            Severity = Feedback.SeverityType.Error,
+            DebugInformation = DebugInformation
+        });
+        return null;
     }
 
     public Symbol MakePointer(CodeGenContext ctx)
     {
+        if (this == ErrorSymbol) return ErrorSymbol;
         return MakeTemp(new Type
         {
             Kind = Types.Pointer,
             ElementType = Type,
             TypeName = "^" + Type.TypeName
-        }, GetPointerValueRef());
+        }, GetPointerValueRef(ctx));
     }
 
     /// <summary>
@@ -144,6 +156,7 @@ public class Symbol
 
     public Symbol MakePointerType()
     {
+        if (this == ErrorSymbol) return null;
         return MakeTypeSymbol(new Type
         {
             ElementType = Type,

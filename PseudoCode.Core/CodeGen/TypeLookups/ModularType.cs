@@ -2,7 +2,7 @@ using PseudoCode.Core.CodeGen.Containers;
 
 namespace PseudoCode.Core.CodeGen.TypeLookups;
 
-public class ModularType
+public class ModularType : AstNode
 {
     private readonly GenericUtilisation _genericParameters;
     private readonly TypeLookup _typeLookup;
@@ -15,7 +15,7 @@ public class ModularType
 
     public Symbol Lookup(CodeGenContext ctx, CompilationUnit cu, Function function, Namespace ns)
     {
-        var symbol = _typeLookup.Lookup(ns).Symbol;
+        var symbol = _typeLookup.Lookup(ctx, ns).Symbol;
         if (_genericParameters != null)
             symbol = symbol.FillGeneric(ctx, cu, function,
                 _genericParameters.GetSymbols(ctx, cu, function, ns));

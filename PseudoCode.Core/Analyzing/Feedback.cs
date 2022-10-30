@@ -1,4 +1,4 @@
-using PseudoCode.Core.Runtime;
+using PseudoCode.Core.CodeGen;
 
 namespace PseudoCode.Core.Analyzing;
 
@@ -13,14 +13,14 @@ public class Feedback
     }
 
     public List<CodeFix> CodeFixes = new();
+    public DebugInformation DebugInformation;
 
     public string Message;
 
     public SeverityType Severity;
-    public SourceRange SourceRange;
 
     public override string ToString()
     {
-        return $"{Severity}: {Message} at {SourceRange}";
+        return $"{Severity}: {Message} at {DebugInformation}";
     }
 }

@@ -84,7 +84,7 @@ public class FunctionDeclaration : Statement, IGenericExpression
         Generate(ctx, cu, function, new List<Symbol>());
     }
 
-    public class ArgumentOrReturnType
+    public class ArgumentOrReturnType : AstNode
     {
         public DataType DataType;
         public bool IsRef;

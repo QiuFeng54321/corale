@@ -22,6 +22,10 @@ public class Analysis
 
     public void PrintFeedbacks()
     {
-        Feedbacks.ForEach(Console.WriteLine);
+        foreach (var feedback in Feedbacks)
+            if (feedback.Severity is Feedback.SeverityType.Error)
+                Console.Error.WriteLine(feedback);
+            else
+                Console.WriteLine(feedback);
     }
 }
