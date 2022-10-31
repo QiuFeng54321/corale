@@ -22,4 +22,9 @@ public static class Extensions
     {
         return astNode.AddDebugInformation(new DebugInformation(cu, full, partial ?? full));
     }
+
+    public static Symbol MakeErrorSymbol(this DebugInformation debugInformation)
+    {
+        return Symbol.MakeErrorSymbol(debugInformation);
+    }
 }

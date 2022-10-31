@@ -1,3 +1,4 @@
+using PseudoCode.Core.Analyzing;
 using PseudoCode.Core.CodeGen.Containers;
 using PseudoCode.Core.Runtime.Types;
 
@@ -12,7 +13,21 @@ public class BinaryExpression : Expression
     {
         var left = Left.CodeGen(ctx, cu, function);
         var right = Right?.CodeGen(ctx, cu, function);
-        return ctx.OperatorResolverMap.Resolve(left, right, Operator, ctx, cu);
+        if (left.IsError || (right != null && right.IsError)) return DebugInformation.MakeErrorSymbol();
+        var res = ctx.OperatorResolverMap.Resolve(left, right, Operator, ctx, cu);
+        if (res == null)
+        {
+            ctx.Analysis.Feedbacks.Add(new Feedback
+            {
+                Message = $"Operator {Operator} not implemented for {left.GetTypeString()}" +
+                          (right != null ? $" and {right.GetTypeString()}" : ""),
+                Severity = Feedback.SeverityType.Error,
+                DebugInformation = DebugInformation
+            });
+            return DebugInformation.MakeErrorSymbol();
+        }
+
+        return res;
     }
 
     public override string ToFormatString()

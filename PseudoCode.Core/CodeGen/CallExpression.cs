@@ -13,7 +13,7 @@ public class CallExpression : Expression
     {
         var function = Function.CodeGen(ctx, cu, function1);
         var arguments = Arguments.Select(a => a.CodeGen(ctx, cu, function1)).ToArray();
-        if (function == Symbol.ErrorSymbol)
+        if (function.IsError)
         {
             ctx.Analysis.Feedbacks.Add(new Feedback
             {
@@ -21,7 +21,7 @@ public class CallExpression : Expression
                 DebugInformation = DebugInformation,
                 Severity = Feedback.SeverityType.Error
             });
-            return Symbol.ErrorSymbol;
+            return DebugInformation.MakeErrorSymbol();
         }
 
         return CodeGenCallFuncGroup(ctx, cu, function, arguments);
@@ -39,7 +39,7 @@ public class CallExpression : Expression
                 Severity = Feedback.SeverityType.Error,
                 DebugInformation = functionGroup.DebugInformation
             });
-            return Symbol.ErrorSymbol;
+            return functionGroup.DebugInformation.MakeErrorSymbol();
         }
 
         return CodeGenCallFunc(ctx, cu, overload, arguments);

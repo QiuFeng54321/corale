@@ -39,7 +39,7 @@ public class NamespaceLookup : AstNode
                 Severity = Feedback.SeverityType.Error,
                 DebugInformation = DebugInformation
             });
-            return Symbol.ErrorSymbol;
+            return DebugInformation.MakeErrorSymbol();
         }
 
         if (ns.TryGetSymbol(Identifier, out var sym)) return sym;
@@ -49,7 +49,7 @@ public class NamespaceLookup : AstNode
             Severity = Feedback.SeverityType.Error,
             DebugInformation = DebugInformation
         });
-        return Symbol.ErrorSymbol;
+        return DebugInformation.MakeErrorSymbol();
     }
 
     public override string ToString()

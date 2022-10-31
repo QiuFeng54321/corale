@@ -7,7 +7,6 @@ namespace PseudoCode.Core.CodeGen;
 
 public class Symbol : WithDebugInformation
 {
-    public static readonly Symbol ErrorSymbol = new("!ERROR!", false, null);
     public readonly DefinitionAttribute DefinitionAttribute;
 
     /// <summary>
@@ -29,6 +28,8 @@ public class Symbol : WithDebugInformation
     ///     This stores an expression which can generate a symbol when supplied with generic parameters.
     /// </summary>
     public IGenericExpression GenericExpression;
+
+    public bool IsError;
 
     /// <summary>
     ///     Pointer to the variable in memory
@@ -67,9 +68,17 @@ public class Symbol : WithDebugInformation
 
     public bool IsReference => DefinitionAttribute.HasFlag(DefinitionAttribute.Reference);
 
+    public static Symbol MakeErrorSymbol(DebugInformation debugInformation)
+    {
+        return new Symbol("!ERROR", false, null)
+        {
+            IsError = true
+        }.AddDebugInformation(debugInformation);
+    }
+
     public Symbol GetRealValue(CodeGenContext ctx, CompilationUnit cu)
     {
-        if (this == ErrorSymbol) return null;
+        if (IsError) return null;
         return ValueRef != null
             ? this
             : MakeTemp(Type, GetRealValueRef(ctx, cu));
@@ -77,7 +86,7 @@ public class Symbol : WithDebugInformation
 
     public LLVMValueRef GetRealValueRef(CodeGenContext ctx, CompilationUnit cu)
     {
-        if (this == ErrorSymbol) return null;
+        if (IsError) return null;
         return ValueRef != null
             ? ValueRef
             : cu.Builder.BuildLoad2(Type.GetLLVMType(), GetPointerValueRef(ctx),
@@ -87,7 +96,7 @@ public class Symbol : WithDebugInformation
     public LLVMValueRef GetPointerValueRef(CodeGenContext ctx)
     {
         if (MemoryPointer != null) return MemoryPointer;
-        if (this == ErrorSymbol) return null;
+        if (IsError) return null;
         ctx.Analysis.Feedbacks.Add(new Feedback
         {
             Message = $"Symbol not a reference: {Namespace?.GetFullQualifier(Name) ?? Name}",
@@ -99,7 +108,7 @@ public class Symbol : WithDebugInformation
 
     public Symbol MakePointer(CodeGenContext ctx)
     {
-        if (this == ErrorSymbol) return ErrorSymbol;
+        if (IsError) return this;
         return MakeTemp(new Type
         {
             Kind = Types.Pointer,
@@ -156,7 +165,7 @@ public class Symbol : WithDebugInformation
 
     public Symbol MakePointerType()
     {
-        if (this == ErrorSymbol) return null;
+        if (IsError) return null;
         return MakeTypeSymbol(new Type
         {
             ElementType = Type,

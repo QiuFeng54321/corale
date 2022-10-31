@@ -14,7 +14,7 @@ public class TypeOperatorResolver : OperatorResolver
 
     public override Symbol Resolve(Symbol left, Symbol right, PseudoOperator op, CodeGenContext ctx, CompilationUnit cu)
     {
-        if (!Operators.TryGetValue(op, out var operatorFuncGroup)) throw new InvalidOperationException();
+        if (!Operators.TryGetValue(op, out var operatorFuncGroup)) return null;
 
         var args = right == null ? new[] { left } : new[] { left, right };
         var overload = operatorFuncGroup.FindFunctionOverload(args.ToList());

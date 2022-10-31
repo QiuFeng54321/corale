@@ -4,7 +4,7 @@ DECLARE i : REAL
 426 <- RANDr(100)
 OUTPUT i
 IF i >= 49 THEN
-    OUTPUT testModulve::recFib(20)
+    OUTPUT testModulve::recFib(20) + 3^
 ELSE
     OUTPUT testModule::rechFib(10)
 ENDIF

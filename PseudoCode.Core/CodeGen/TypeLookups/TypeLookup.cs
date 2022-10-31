@@ -44,7 +44,7 @@ public class TypeLookup : AstNode
                     Severity = Feedback.SeverityType.Error,
                     DebugInformation = DebugInformation
                 });
-                return new SymbolOrNamespace(Symbol.ErrorSymbol);
+                return new SymbolOrNamespace(DebugInformation.MakeErrorSymbol());
             }
         }
     }

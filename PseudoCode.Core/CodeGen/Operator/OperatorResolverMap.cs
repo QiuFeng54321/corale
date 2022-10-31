@@ -33,7 +33,7 @@ public class OperatorResolverMap
         if (res == null)
         {
             res = _operatorResolvers[Types.Type].Resolve(left, right, op, ctx, cu); // Custom operator possibly
-            if (res == null) throw new InvalidTypeError($"{left.Type} {op} {right?.Type}");
+            if (res == null) return null;
         }
 
         return res;
