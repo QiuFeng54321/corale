@@ -1,4 +1,5 @@
 using LLVMSharp.Interop;
+using PseudoCode.Core.Analyzing;
 using PseudoCode.Core.CodeGen.Operator;
 using PseudoCode.Core.Formatting;
 using PseudoCode.Core.Runtime.Types;
@@ -173,5 +174,16 @@ public class Function : Statement
         cu.Builder.PositionAtEnd(CurrentBlockRef);
         cu.Builder.BuildRetVoid();
         if (ParentFunction != null) cu.Builder.PositionAtEnd(ParentFunction.CurrentBlockRef);
+        var status = LLVMFunction.VerifyFunction(LLVMVerifierFailureAction.LLVMPrintMessageAction);
+        if (!status)
+        {
+            LLVMFunction.DeleteFunction();
+            ctx.Analysis.Feedbacks.Add(new Feedback
+            {
+                Message = "Function is not valid as LLVM function",
+                Severity = Feedback.SeverityType.Error,
+                DebugInformation = DebugInformation
+            });
+        }
     }
 }

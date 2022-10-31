@@ -54,6 +54,6 @@ public class NamespaceLookup : AstNode
 
     public override string ToString()
     {
-        return ParentNs == null ? Identifier : $"{ParentNs}.{Identifier}";
+        return ParentNs == null ? Identifier : $"{ParentNs}::{Identifier}";
     }
 }

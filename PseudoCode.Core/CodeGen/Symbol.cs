@@ -130,7 +130,7 @@ public class Symbol : WithDebugInformation
             }
 
             if (!found) continue;
-            if (returnSym == default || Equals(returnSym.Type, functionOverload.Type.ReturnType))
+            if (returnSym == default || Equals(returnSym.Type, functionOverload.Type.ReturnType.Type))
                 return functionOverload;
         }
 

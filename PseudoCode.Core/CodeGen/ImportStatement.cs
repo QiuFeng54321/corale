@@ -1,3 +1,4 @@
+using PseudoCode.Core.Analyzing;
 using PseudoCode.Core.CodeGen.Containers;
 using PseudoCode.Core.Formatting;
 
@@ -19,7 +20,14 @@ public class ImportStatement : Statement
 
     public override void CodeGen(CodeGenContext ctx, CompilationUnit cu, Function function)
     {
-        cu.ImportUnit(ctx, Path);
+        var res = cu.ImportUnit(ctx, Path);
+        if (res == null)
+            ctx.Analysis.Feedbacks.Add(new Feedback
+            {
+                Message = $"Module not found: {Path}",
+                Severity = Feedback.SeverityType.Error,
+                DebugInformation = DebugInformation
+            });
         cu.Builder.PositionAtEnd(function.CurrentBlockRef);
     }
 }

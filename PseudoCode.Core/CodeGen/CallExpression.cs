@@ -1,4 +1,5 @@
 using LLVMSharp.Interop;
+using PseudoCode.Core.Analyzing;
 using PseudoCode.Core.CodeGen.Containers;
 
 namespace PseudoCode.Core.CodeGen;
@@ -12,6 +13,17 @@ public class CallExpression : Expression
     {
         var function = Function.CodeGen(ctx, cu, function1);
         var arguments = Arguments.Select(a => a.CodeGen(ctx, cu, function1)).ToArray();
+        if (function == Symbol.ErrorSymbol)
+        {
+            ctx.Analysis.Feedbacks.Add(new Feedback
+            {
+                Message = $"Function not found: {Function}",
+                DebugInformation = DebugInformation,
+                Severity = Feedback.SeverityType.Error
+            });
+            return Symbol.ErrorSymbol;
+        }
+
         return CodeGenCallFuncGroup(ctx, cu, function, arguments);
     }
 
@@ -19,6 +31,17 @@ public class CallExpression : Expression
         Symbol[] arguments)
     {
         var overload = functionGroup.FindFunctionOverload(arguments.ToList());
+        if (overload == null)
+        {
+            ctx.Analysis.Feedbacks.Add(new Feedback
+            {
+                Message = $"No overload found for {functionGroup.Name}",
+                Severity = Feedback.SeverityType.Error,
+                DebugInformation = functionGroup.DebugInformation
+            });
+            return Symbol.ErrorSymbol;
+        }
+
         return CodeGenCallFunc(ctx, cu, overload, arguments);
     }
 

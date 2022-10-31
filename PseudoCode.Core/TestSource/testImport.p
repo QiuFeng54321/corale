@@ -2,7 +2,7 @@
 IMPORT "testModule.p"
 IMPORT "testModule.p"
 DECLARE i : REAL
-i3 <- RAND(100)
+i <- RAND(100)
 OUTPUT i
 IF i >= 49 THEN
     OUTPUT testModule::recFib(20)

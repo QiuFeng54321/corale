@@ -56,7 +56,7 @@ public class CompilationUnit : Statement
     {
         if (Path.IsPathRooted(givenPath)) return givenPath;
         var concatPath = Path.Combine(Path.GetDirectoryName(FilePath)!, givenPath!);
-        if (!File.Exists(concatPath)) throw new FileNotFoundException(concatPath);
+        if (!File.Exists(concatPath)) return string.Empty;
         return concatPath;
     }
 
@@ -64,7 +64,9 @@ public class CompilationUnit : Statement
     {
         // TODO: Make new modules
         if (Imports.FirstOrDefault(i => i.FilePath == path) is { } f) return f;
-        var subUnit = MakeSubUnit(ctx, FindSubUnitPath(path), this);
+        var subUnitPath = FindSubUnitPath(path);
+        if (string.IsNullOrEmpty(subUnitPath)) return null;
+        var subUnit = MakeSubUnit(ctx, subUnitPath, this);
         ctx.PseudoCodeCompiler.CompileFile(subUnit);
         Imports.Add(subUnit);
         // ctx.Engine.AddModule(subUnit.Module);
