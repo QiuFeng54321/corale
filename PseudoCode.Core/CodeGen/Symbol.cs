@@ -1,6 +1,7 @@
 using LLVMSharp.Interop;
 using PseudoCode.Core.Analyzing;
 using PseudoCode.Core.CodeGen.Containers;
+using PseudoCode.Core.CodeGen.Expressions;
 using PseudoCode.Core.Runtime.Errors;
 
 namespace PseudoCode.Core.CodeGen;

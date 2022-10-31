@@ -2,7 +2,7 @@ using PseudoCode.Core.CodeGen.Containers;
 using PseudoCode.Core.CodeGen.TypeLookups;
 using PseudoCode.Core.Formatting;
 
-namespace PseudoCode.Core.CodeGen;
+namespace PseudoCode.Core.CodeGen.SimpleStatements;
 
 public class DeclarationStatement : Statement
 {

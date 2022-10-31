@@ -1,7 +1,7 @@
 using LLVMSharp.Interop;
 using PseudoCode.Core.CodeGen.Containers;
 
-namespace PseudoCode.Core.CodeGen;
+namespace PseudoCode.Core.CodeGen.Expressions;
 
 public class PseudoCharacter : Expression
 {

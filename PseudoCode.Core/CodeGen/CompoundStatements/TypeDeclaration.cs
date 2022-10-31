@@ -1,7 +1,9 @@
 using PseudoCode.Core.CodeGen.Containers;
+using PseudoCode.Core.CodeGen.Expressions;
+using PseudoCode.Core.CodeGen.SimpleStatements;
 using PseudoCode.Core.Formatting;
 
-namespace PseudoCode.Core.CodeGen;
+namespace PseudoCode.Core.CodeGen.CompoundStatements;
 
 /// <summary>
 ///     This is for type declaration, but will be used to make classes too

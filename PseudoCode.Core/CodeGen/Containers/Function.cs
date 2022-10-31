@@ -177,6 +177,7 @@ public class Function : Statement
         var status = LLVMFunction.VerifyFunction(LLVMVerifierFailureAction.LLVMPrintMessageAction);
         if (!status)
         {
+            LLVMFunction.Dump();
             LLVMFunction.DeleteFunction();
             ctx.Analysis.Feedbacks.Add(new Feedback
             {

@@ -2,7 +2,7 @@ using LLVMSharp.Interop;
 using PseudoCode.Core.CodeGen.Containers;
 using PseudoCode.Core.Formatting;
 
-namespace PseudoCode.Core.CodeGen;
+namespace PseudoCode.Core.CodeGen.CompoundStatements;
 
 public class IfStatement : Statement
 {

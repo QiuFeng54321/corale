@@ -3,7 +3,10 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using PseudoCode.Core.Analyzing;
 using PseudoCode.Core.CodeGen;
+using PseudoCode.Core.CodeGen.CompoundStatements;
 using PseudoCode.Core.CodeGen.Containers;
+using PseudoCode.Core.CodeGen.Expressions;
+using PseudoCode.Core.CodeGen.SimpleStatements;
 using PseudoCode.Core.CodeGen.TypeLookups;
 using PseudoCode.Core.Runtime.Types;
 
@@ -36,7 +39,6 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
         ParseTreeWalker.Default.Walk(this, tree);
         CompilationUnit.CodeGen(Context, CompilationUnit, null);
         Console.WriteLine("-------------");
-        // CompilationUnit.Module.Dump();
         return Context;
         // var func = Context.Module.GetNamedFunction(ReservedNames.Main);
     }
@@ -183,6 +185,21 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
         };
         ifStatement.AddDebugInformation(CompilationUnit, context.SourceRange());
         CurrentBlock.Statements.Add(ifStatement);
+    }
+
+    public override void ExitWhileStatement(PseudoCodeParser.WhileStatementContext context)
+    {
+        base.ExitWhileStatement(context);
+        var thenBlock = (Block)CurrentBlock.Statements[^1];
+        CurrentBlock.Statements.RemoveAt(CurrentBlock.Statements.Count - 1);
+        var condExpr = Context.ExpressionStack.Pop();
+        var whileStmt = new WhileStatement
+        {
+            Condition = condExpr,
+            Then = thenBlock
+        };
+        whileStmt.AddDebugInformation(CompilationUnit, context.SourceRange());
+        CurrentBlock.Statements.Add(whileStmt);
     }
 
     public override void EnterIndentedBlock(PseudoCodeParser.IndentedBlockContext context)

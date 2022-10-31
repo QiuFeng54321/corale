@@ -2,7 +2,7 @@ using PseudoCode.Core.Analyzing;
 using PseudoCode.Core.CodeGen.Containers;
 using PseudoCode.Core.Runtime.Types;
 
-namespace PseudoCode.Core.CodeGen;
+namespace PseudoCode.Core.CodeGen.Expressions;
 
 public class BinaryExpression : Expression
 {

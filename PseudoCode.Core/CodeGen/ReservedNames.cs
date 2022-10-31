@@ -18,6 +18,7 @@ public static class ReservedNames
     public const string Block = "block";
     public const string Temp = "_";
     public const string BlockRefContinuation = "continue";
+    public const string Condition = "condition";
     public const string Then = "then";
     public const string Else = "else";
     public const string Operator = "__operator_";

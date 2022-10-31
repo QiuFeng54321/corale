@@ -2,7 +2,7 @@ using LLVMSharp.Interop;
 using PseudoCode.Core.Analyzing;
 using PseudoCode.Core.CodeGen.Containers;
 
-namespace PseudoCode.Core.CodeGen;
+namespace PseudoCode.Core.CodeGen.Expressions;
 
 public class CallExpression : Expression
 {

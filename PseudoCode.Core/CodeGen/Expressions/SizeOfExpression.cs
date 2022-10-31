@@ -1,7 +1,7 @@
 using PseudoCode.Core.CodeGen.Containers;
 using PseudoCode.Core.CodeGen.TypeLookups;
 
-namespace PseudoCode.Core.CodeGen;
+namespace PseudoCode.Core.CodeGen.Expressions;
 
 public class SizeOfExpression : Expression
 {

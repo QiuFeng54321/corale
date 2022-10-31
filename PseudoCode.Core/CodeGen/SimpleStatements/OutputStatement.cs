@@ -1,10 +1,11 @@
 using LLVMSharp.Interop;
 using PseudoCode.Core.CodeGen.Containers;
+using PseudoCode.Core.CodeGen.Expressions;
 using PseudoCode.Core.Formatting;
 using PseudoCode.Core.Runtime.Reflection;
 using PseudoCode.Core.Runtime.Reflection.Builtin;
 
-namespace PseudoCode.Core.CodeGen;
+namespace PseudoCode.Core.CodeGen.SimpleStatements;
 
 public class OutputStatement : Statement
 {

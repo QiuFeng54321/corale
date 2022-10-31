@@ -3,7 +3,7 @@ using LLVMSharp.Interop;
 using PseudoCode.Core.CodeGen.Containers;
 using PseudoCode.Core.Runtime.Reflection.Builtin;
 
-namespace PseudoCode.Core.CodeGen;
+namespace PseudoCode.Core.CodeGen.Expressions;
 
 public class PseudoString : Expression
 {

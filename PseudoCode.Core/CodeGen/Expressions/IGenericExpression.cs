@@ -1,6 +1,6 @@
 using PseudoCode.Core.CodeGen.Containers;
 
-namespace PseudoCode.Core.CodeGen;
+namespace PseudoCode.Core.CodeGen.Expressions;
 
 public interface IGenericExpression
 {

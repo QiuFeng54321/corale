@@ -1,9 +1,10 @@
 using PseudoCode.Core.CodeGen.Containers;
+using PseudoCode.Core.CodeGen.Expressions;
 using PseudoCode.Core.CodeGen.TypeLookups;
 using PseudoCode.Core.Formatting;
 using PseudoCode.Core.Runtime.Types;
 
-namespace PseudoCode.Core.CodeGen;
+namespace PseudoCode.Core.CodeGen.CompoundStatements;
 
 public class FunctionDeclaration : Statement, IGenericExpression
 {
