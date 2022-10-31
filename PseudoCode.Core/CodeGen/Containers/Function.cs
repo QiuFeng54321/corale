@@ -13,6 +13,8 @@ public class Function : Statement
     public Namespace BodyNamespace;
     public CompilationUnit CompilationUnit;
     public LLVMBasicBlockRef CurrentBlockRef;
+    public string FullQualifier;
+    public LLVMTypeRef FunctionType;
     public bool IsExtern;
     public LLVMValueRef LLVMFunction;
     public string Name;
@@ -97,10 +99,12 @@ public class Function : Statement
         var returnType = ReturnType.Type.GetLLVMType();
         if (ReturnType.DefinitionAttribute.HasFlag(DefinitionAttribute.Reference))
             returnType = LLVMTypeRef.CreatePointer(returnType, 0);
-        var functionType = LLVMTypeRef.CreateFunction(returnType,
+        FunctionType = LLVMTypeRef.CreateFunction(returnType,
             llvmParamTypes.ToArray());
-        LLVMFunction = LLVM.AddFunction(cu.Module, ParentNamespace.GetFullQualifier(Name).ToSByte(),
-            functionType);
+        FullQualifier = ParentNamespace.GetFullQualifier(Name);
+        cu.MakeDIFunc(this);
+        LLVMFunction = LLVM.AddFunction(cu.Module, FullQualifier.ToSByte(),
+            FunctionType);
 
         var pseudoFunctionType = new Type
         {
@@ -109,7 +113,7 @@ public class Function : Statement
             TypeName = Type.GetFunctionSignature(Arguments, ReturnType),
             Kind = Types.Function
         };
-        pseudoFunctionType.SetLLVMType(functionType);
+        pseudoFunctionType.SetLLVMType(FunctionType);
         ResultFunction = new Symbol(Name, false, pseudoFunctionType)
         {
             ValueRef = LLVMFunction
@@ -168,21 +172,22 @@ public class Function : Statement
     {
         if (LLVMFunction == null) GeneratePrototype(ctx, cu);
         if (IsExtern) return;
+        // cu.MakeDIFunc(this);
         Block.ParentFunction = this;
         cu.Builder.PositionAtEnd(CurrentBlockRef);
         Block.CodeGen(ctx, cu, this);
         cu.Builder.PositionAtEnd(CurrentBlockRef);
-        cu.Builder.BuildRetVoid();
+        if (ReturnType.Type.Kind is Types.None) cu.Builder.BuildRetVoid();
         if (ParentFunction != null) cu.Builder.PositionAtEnd(ParentFunction.CurrentBlockRef);
         var status = LLVMFunction.VerifyFunction(LLVMVerifierFailureAction.LLVMPrintMessageAction);
         if (!status)
         {
             LLVMFunction.Dump();
-            LLVMFunction.DeleteFunction();
+            // LLVMFunction.DeleteFunction();
             ctx.Analysis.Feedbacks.Add(new Feedback
             {
                 Message = "Function is not valid as LLVM function",
-                Severity = Feedback.SeverityType.Error,
+                // Severity = Feedback.SeverityType.Error,
                 DebugInformation = DebugInformation
             });
         }

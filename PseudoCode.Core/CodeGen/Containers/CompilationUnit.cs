@@ -90,6 +90,21 @@ public class CompilationUnit : Statement
         return func;
     }
 
+    public LLVMMetadataRef MakeDIFunc(Function function)
+    {
+        if (function.DebugInformation == null) return null;
+        var functionMetaType = DIBuilder.CreateSubroutineType(FileMetadataRef,
+            ReadOnlySpan<LLVMMetadataRef>.Empty, LLVMDIFlags.LLVMDIFlagZero);
+        var startLine = (uint)function.DebugInformation.FullSourceRange.Start.Line;
+        var startColumn = (uint)function.DebugInformation.FullSourceRange.Start.Column;
+        var func = DIBuilder.CreateFunction(FileMetadataRef, function.Name, function.FullQualifier, FileMetadataRef,
+            startLine, functionMetaType, 1, 1,
+            startLine, LLVMDIFlags.LLVMDIFlagZero, 0);
+        var currentLine =
+            Module.Context.CreateDebugLocation(startLine, startColumn, func, default);
+        return currentLine;
+    }
+
     public void MakeMainFunction(CodeGenContext ctx, string name)
     {
         MainFunction = MakeFunction(name, new List<Symbol>(), BuiltinTypes.Void);

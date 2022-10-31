@@ -8,6 +8,12 @@ FUNCTION swap<T>(BYREF a : T, b : T) RETURNS VOID
     a <- b
     b <- tmp
 ENDFUNCTION
+FUNCTION recFib(n : INTEGER) RETURNS INTEGER
+    IF n = 1 OR n = 2 THEN
+        RETURN 1
+    ENDIF
+    RETURN recFib(n - 1) + recFib(n - 2)
+ENDFUNCTION
 i1 <- 1 + 2
 INPUT i2
 CALL swap<INTEGER>(i1, i2)

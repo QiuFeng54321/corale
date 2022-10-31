@@ -17,7 +17,7 @@ public class Feedback
 
     public string Message;
 
-    public SeverityType Severity;
+    public SeverityType Severity = SeverityType.Hint;
 
     public override string ToString()
     {

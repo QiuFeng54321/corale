@@ -58,6 +58,7 @@ public class FunctionDeclaration : Statement, IGenericExpression
             addToList: false);
         func.BodyNamespace = subNs;
         func.Operator = Operator;
+        func.DebugInformation = DebugInformation;
         // func.GeneratePrototype(ctx);
         FunctionBody.ParentFunction = func;
         func.ParentFunction = function;
