@@ -9,3 +9,12 @@ WHILE i < 10
 ENDWHILE
 
 OUTPUT i, res
+
+i <- 1
+res <- 1
+REPEAT
+    res <- res * i
+    i <- i + 1
+UNTIL i = 10
+
+OUTPUT i, res

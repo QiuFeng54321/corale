@@ -202,6 +202,21 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
         CurrentBlock.Statements.Add(whileStmt);
     }
 
+    public override void ExitRepeatStatement(PseudoCodeParser.RepeatStatementContext context)
+    {
+        base.ExitRepeatStatement(context);
+        var condExpr = Context.ExpressionStack.Pop();
+        var thenBlock = (Block)CurrentBlock.Statements[^1];
+        CurrentBlock.Statements.RemoveAt(CurrentBlock.Statements.Count - 1);
+        var repeatStatement = new RepeatStatement
+        {
+            Condition = condExpr,
+            Then = thenBlock
+        };
+        repeatStatement.AddDebugInformation(CompilationUnit, context.SourceRange());
+        CurrentBlock.Statements.Add(repeatStatement);
+    }
+
     public override void EnterIndentedBlock(PseudoCodeParser.IndentedBlockContext context)
     {
         base.EnterIndentedBlock(context);
