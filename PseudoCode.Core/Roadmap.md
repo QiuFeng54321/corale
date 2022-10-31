@@ -13,5 +13,5 @@
 - [x] Malloc, Sizeof
 - [ ] Array
 - [x] Import
-- [ ] Find function through namespace
-- [ ] Debug info
+- [x] Find function through namespace
+- [x] Debug info
