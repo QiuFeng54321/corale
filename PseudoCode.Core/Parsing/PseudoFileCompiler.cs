@@ -155,13 +155,15 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
                 .AddDebugInformation(CompilationUnit, context.SourceRange(),
                     context.Identifier().SourceRange()));
         else
-            CurrentBlock.Namespace.AddSymbol(
-                Symbol.MakeGenericSymbol(name,
+            CurrentBlock.Statements.Add(new AddGenericSymbolStatement
+            {
+                Symbol = Symbol.MakeGenericSymbol(name,
                     new TypeDeclaration(name,
                             new GenericDeclaration(genericParams).AddDebugInformation(CompilationUnit,
                                 context.genericDeclaration().SourceRange()), block)
                         .AddDebugInformation(CompilationUnit, context.SourceRange(),
-                            context.Identifier().SourceRange())));
+                            context.Identifier().SourceRange()))
+            });
     }
 
     public override void ExitIfStatement(PseudoCodeParser.IfStatementContext context)
@@ -340,8 +342,10 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
         if (genericParams == null)
             CurrentBlock.Statements.Add(functionDecl);
         else
-            CurrentBlock.Namespace.AddSymbol(
-                Symbol.MakeGenericSymbol(name, functionDecl));
+            CurrentBlock.Statements.Add(new AddGenericSymbolStatement
+            {
+                Symbol = Symbol.MakeGenericSymbol(name, functionDecl)
+            });
     }
 
     public override void ExitFunctionDefinition(PseudoCodeParser.FunctionDefinitionContext context)
@@ -358,6 +362,29 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
         MakeFunction(FunctionKind.Procedure,
             context.identifierWithNew().GetText(), context.genericDeclaration(), context.argumentsDeclaration(),
             null, false, context.indentedBlock());
+    }
+
+    public override void ExitNamespaceStatement(PseudoCodeParser.NamespaceStatementContext context)
+    {
+        base.ExitNamespaceStatement(context);
+        var nsLookup = GetNamespaceLookup(context.identiferAccess());
+        Block block = null;
+        if (context.indentedBlock() != null) block = PopStatement<Block>();
+        CurrentBlock.Statements.Add(new NamespaceStatement
+        {
+            NamespaceLookup = nsLookup,
+            Block = block
+        }.AddDebugInformation(CompilationUnit, context.SourceRange(), context.Namespace().SourceRange()));
+    }
+
+    public override void ExitUseNamespaceStatement(PseudoCodeParser.UseNamespaceStatementContext context)
+    {
+        base.ExitUseNamespaceStatement(context);
+        var nsLookup = GetNamespaceLookup(context.identiferAccess());
+        CurrentBlock.Statements.Add(new UseNamespaceStatement
+        {
+            NamespaceLookup = nsLookup
+        }.AddDebugInformation(CompilationUnit, context.SourceRange()));
     }
 
     public override void ExitArithmeticExpression(PseudoCodeParser.ArithmeticExpressionContext context)

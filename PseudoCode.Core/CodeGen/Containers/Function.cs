@@ -148,12 +148,11 @@ public class Function : Statement
         ResultFunctionGroup = functionOverloadsSymbol;
     }
 
-    public Block CreateBlock(string name, Namespace ns = null)
+    public Block CreateBlock(string name)
     {
         Block = new Block
         {
             Name = name,
-            Namespace = ns ?? BodyNamespace,
             ParentFunction = this
         };
         return Block;

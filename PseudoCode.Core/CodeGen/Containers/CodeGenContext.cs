@@ -31,6 +31,7 @@ public class CodeGenContext
         NameGenerator = new NameGenerator();
         OperatorResolverMap = new OperatorResolverMap();
         OperatorResolverMap.Initialize();
+        GlobalNamespace.AddNamespace(GlobalNamespace);
         // CompilationUnit.MainFunction.GeneratePrototype(this);
     }
 

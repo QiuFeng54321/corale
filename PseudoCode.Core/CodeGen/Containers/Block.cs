@@ -10,7 +10,6 @@ public class Block : Statement
     public readonly List<Statement> Statements = new();
     private Function _parentFunction;
     public string Name;
-    public Namespace Namespace;
     public Block ParentBlock;
 
     public Function ParentFunction
@@ -30,15 +29,13 @@ public class Block : Statement
     ///     Creates a child block.
     /// </summary>
     /// <param name="name">Name of the sub-block</param>
-    /// <param name="ns">The namespace of the sub-block</param>
     /// <param name="dangling">If the sub-block will be added to Statements</param>
     /// <returns>The created block</returns>
-    public Block EnterBlock(string name, Namespace ns = null, bool dangling = false)
+    public Block EnterBlock(string name, bool dangling = false)
     {
         var block = new Block();
         if (!dangling) Statements.Add(block);
         block.ParentBlock = this;
-        block.Namespace = ns ?? Namespace;
         block.Name = name;
         return block;
     }

@@ -1694,8 +1694,8 @@ public partial class PseudoCodeParser : Parser {
 
 	public partial class NamespaceStatementContext : ParserRuleContext {
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Namespace() { return GetToken(PseudoCodeParser.Namespace, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public TypeLookupContext typeLookup() {
-			return GetRuleContext<TypeLookupContext>(0);
+		[System.Diagnostics.DebuggerNonUserCode] public IdentiferAccessContext identiferAccess() {
+			return GetRuleContext<IdentiferAccessContext>(0);
 		}
 		[System.Diagnostics.DebuggerNonUserCode] public IndentedBlockContext indentedBlock() {
 			return GetRuleContext<IndentedBlockContext>(0);
@@ -1728,7 +1728,7 @@ public partial class PseudoCodeParser : Parser {
 			State = 290;
 			Match(Namespace);
 			State = 291;
-			typeLookup(0);
+			identiferAccess(0);
 			State = 295;
 			ErrorHandler.Sync(this);
 			switch ( Interpreter.AdaptivePredict(TokenStream,11,Context) ) {
@@ -1757,8 +1757,8 @@ public partial class PseudoCodeParser : Parser {
 	public partial class UseNamespaceStatementContext : ParserRuleContext {
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Use() { return GetToken(PseudoCodeParser.Use, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Namespace() { return GetToken(PseudoCodeParser.Namespace, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public TypeLookupContext typeLookup() {
-			return GetRuleContext<TypeLookupContext>(0);
+		[System.Diagnostics.DebuggerNonUserCode] public IdentiferAccessContext identiferAccess() {
+			return GetRuleContext<IdentiferAccessContext>(0);
 		}
 		public UseNamespaceStatementContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -1789,7 +1789,7 @@ public partial class PseudoCodeParser : Parser {
 			State = 298;
 			Match(Namespace);
 			State = 299;
-			typeLookup(0);
+			identiferAccess(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -5394,9 +5394,9 @@ public partial class PseudoCodeParser : Parser {
 		0,0,276,277,3,28,14,0,277,278,5,19,0,0,278,279,3,26,13,0,279,35,1,0,0,
 		0,280,281,5,20,0,0,281,282,3,26,13,0,282,283,3,28,14,0,283,284,5,22,0,
 		0,284,37,1,0,0,0,285,286,5,23,0,0,286,287,3,28,14,0,287,288,5,24,0,0,288,
-		289,3,26,13,0,289,39,1,0,0,0,290,291,5,60,0,0,291,295,3,116,58,0,292,293,
+		289,3,26,13,0,289,39,1,0,0,0,290,291,5,60,0,0,291,295,3,102,51,0,292,293,
 		3,28,14,0,293,294,5,61,0,0,294,296,1,0,0,0,295,292,1,0,0,0,295,296,1,0,
-		0,0,296,41,1,0,0,0,297,298,5,62,0,0,298,299,5,60,0,0,299,300,3,116,58,
+		0,0,296,41,1,0,0,0,297,298,5,62,0,0,298,299,5,60,0,0,299,300,3,102,51,
 		0,300,43,1,0,0,0,301,302,5,65,0,0,302,303,3,106,53,0,303,45,1,0,0,0,304,
 		305,5,12,0,0,305,306,3,96,48,0,306,307,5,13,0,0,307,308,3,50,25,0,308,
 		309,5,15,0,0,309,47,1,0,0,0,310,314,5,14,0,0,311,314,3,26,13,0,312,314,

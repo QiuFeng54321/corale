@@ -129,8 +129,8 @@ ifStatement locals [bool HasElse]: If scopedExpression Then indentedBlock (Else 
 forStatement locals [bool HasStep]: For assignmentStatement To scopedExpression (Step scopedExpression {$HasStep = true;})? indentedBlock Next scopedExpression;
 whileStatement: While scopedExpression indentedBlock Endwhile;
 repeatStatement: Repeat indentedBlock Until scopedExpression;
-namespaceStatement: Namespace typeLookup (indentedBlock EndNamespace)?;
-useNamespaceStatement: Use Namespace typeLookup;
+namespaceStatement: Namespace identiferAccess (indentedBlock EndNamespace)?;
+useNamespaceStatement: Use Namespace identiferAccess;
 importStatement: Import atom;
 
 caseStatement: Case expression Of caseBody Endcase;

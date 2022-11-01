@@ -52,6 +52,12 @@ public class NamespaceLookup : AstNode
         return DebugInformation.MakeErrorSymbol();
     }
 
+    public Namespace GenerateNs(CodeGenContext ctx, Namespace rootNs = default)
+    {
+        var currentNs = ParentNs?.GenerateNs(ctx, rootNs) ?? rootNs ?? ctx.GlobalNamespace;
+        return currentNs.TryGetNamespace(Identifier, out var res) ? res : currentNs.AddNamespace(Identifier);
+    }
+
     public override string ToString()
     {
         return ParentNs == null ? Identifier : $"{ParentNs}::{Identifier}";

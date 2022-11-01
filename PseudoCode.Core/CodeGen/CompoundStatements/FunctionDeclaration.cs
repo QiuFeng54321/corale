@@ -32,7 +32,7 @@ public class FunctionDeclaration : Statement, IGenericExpression
     {
         // Make function name
         // Fill generic parameters
-        var subNs = FunctionBody.Namespace.AddNamespace(ctx.NameGenerator.Request(Name));
+        var subNs = function.BodyNamespace.AddNamespace(ctx.NameGenerator.Request(Name));
         if (genericParams != null)
             for (var i = 0; i < genericParams.Count; i++)
                 subNs.AddSymbol(genericParams[i], false, GenericDeclaration.Identifiers[i]);
@@ -48,13 +48,13 @@ public class FunctionDeclaration : Statement, IGenericExpression
             filledReturnTypeSym.Namespace, ReturnType.IsRef ? DefinitionAttribute.Reference : DefinitionAttribute.None);
         var funcName = MakeFunctionName(Name, filledReturnSym, genericParams ?? new List<Symbol>());
         // Return existing function
-        if (FunctionBody.Namespace.TryGetSymbol(Name, out var res))
+        if (function.BodyNamespace.TryGetSymbol(Name, out var res))
             if (res.FindFunctionOverload(filledArgumentSymbols) is { })
                 return res;
 
         // Make function
         var func = cu.MakeFunction(Name, filledArgumentSymbols.ToList(), filledReturnSym,
-            FunctionBody.Namespace,
+            function.BodyNamespace,
             addToList: false);
         func.BodyNamespace = subNs;
         func.Operator = Operator;
