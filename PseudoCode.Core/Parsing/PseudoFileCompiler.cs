@@ -170,12 +170,10 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
         Block elseBlock = null;
         if (context.HasElse)
         {
-            elseBlock = (Block)CurrentBlock.Statements[^1];
-            CurrentBlock.Statements.RemoveAt(CurrentBlock.Statements.Count - 1);
+            elseBlock = PopStatement<Block>();
         }
 
-        var thenBlock = (Block)CurrentBlock.Statements[^1];
-        CurrentBlock.Statements.RemoveAt(CurrentBlock.Statements.Count - 1);
+        var thenBlock = PopStatement<Block>();
         var condExpr = Context.ExpressionStack.Pop();
         var ifStatement = new IfStatement
         {
@@ -190,8 +188,7 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
     public override void ExitWhileStatement(PseudoCodeParser.WhileStatementContext context)
     {
         base.ExitWhileStatement(context);
-        var thenBlock = (Block)CurrentBlock.Statements[^1];
-        CurrentBlock.Statements.RemoveAt(CurrentBlock.Statements.Count - 1);
+        var thenBlock = PopStatement<Block>();
         var condExpr = Context.ExpressionStack.Pop();
         var whileStmt = new WhileStatement
         {
@@ -200,6 +197,34 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
         };
         whileStmt.AddDebugInformation(CompilationUnit, context.SourceRange());
         CurrentBlock.Statements.Add(whileStmt);
+    }
+
+    public override void ExitForStatement(PseudoCodeParser.ForStatementContext context)
+    {
+        base.ExitForStatement(context);
+        var nextExpr = Context.ExpressionStack.Pop();
+        var block = PopStatement<Block>();
+        Expression step = null;
+        if (context.HasStep) step = Context.ExpressionStack.Pop();
+        var toExpr = Context.ExpressionStack.Pop();
+        var assignmentStmt = PopStatement<AssignmentStatement>();
+        var forStmt = new ForStatement
+        {
+            Initial = assignmentStmt,
+            Target = toExpr,
+            Step = step,
+            Block = block,
+            Next = nextExpr
+        };
+        forStmt.AddDebugInformation(CompilationUnit, context.SourceRange());
+        CurrentBlock.Statements.Add(forStmt);
+    }
+
+    public T PopStatement<T>() where T : Statement
+    {
+        var statement = (T)CurrentBlock.Statements[^1];
+        CurrentBlock.Statements.RemoveAt(CurrentBlock.Statements.Count - 1);
+        return statement;
     }
 
     public override void ExitRepeatStatement(PseudoCodeParser.RepeatStatementContext context)
@@ -297,8 +322,7 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
             }
         }
 
-        var body = (Block)CurrentBlock.Statements[^1];
-        CurrentBlock.Statements.RemoveAt(CurrentBlock.Statements.Count - 1);
+        var body = PopStatement<Block>();
         var genericParams = genericDeclarationContext?.identifierList()?.Identifier().Select(s => s.GetText())
             .ToList();
         returnType ??= new DataType(new ModularType(new TypeLookup("VOID")));
