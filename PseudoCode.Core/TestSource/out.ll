@@ -28,11 +28,13 @@ entry:
   %arr = alloca <{ i64*, <{ i64, i64 }>*, i64 }>, align 8
   %_type.0 = call <{ i64*, <{ i64, i64 }>*, i64 }> @.testMalloc.Make1DArray(i64 5)
   store <{ i64*, <{ i64, i64 }>*, i64 }> %_type.0, <{ i64*, <{ i64, i64 }>*, i64 }>* %arr, align 1
-  %_int.13 = call i64* @.testMalloc.Add(<{ i64*, <{ i64, i64 }>*, i64 }>* %arr, i64 2)
+  %_load.19 = load <{ i64*, <{ i64, i64 }>*, i64 }>, <{ i64*, <{ i64, i64 }>*, i64 }>* %arr, align 1
+  %_int.13 = call i64* @.testMalloc.Add(<{ i64*, <{ i64, i64 }>*, i64 }> %_load.19, i64 2)
   store i64 3, i64* %_int.13, align 8
-  %_int.14 = call i64* @.testMalloc.Subtract(<{ i64*, <{ i64, i64 }>*, i64 }>* %arr, i64 4)
-  %_load.16 = load i64, i64* %_int.14, align 8
-  call void @__PRINTF(i64 %_load.16)
+  %_load.20 = load <{ i64*, <{ i64, i64 }>*, i64 }>, <{ i64*, <{ i64, i64 }>*, i64 }>* %arr, align 1
+  %_int.14 = call i64* @.testMalloc.Subtract(<{ i64*, <{ i64, i64 }>*, i64 }> %_load.20, i64 4)
+  %_load.21 = load i64, i64* %_int.14, align 8
+  call void @__PRINTF(i64 %_load.21)
   call void @__PRINTF.1(i8 10)
   ret void
 }
@@ -111,16 +113,21 @@ declare void @__SCAN.11(<{ i64, i64, i64 }>*)
 
 declare noalias i8* @malloc(i32)
 
-define weak i64* @.testMalloc.Add(<{ i64*, <{ i64, i64 }>*, i64 }>* %arr, i64 %index) {
+define weak i64* @.testMalloc.Add(<{ i64*, <{ i64, i64 }>*, i64 }> %arr, i64 %index) {
 entry:
-  %_int.4 = call i64* @.testMalloc.Add.0.ElementAt(<{ i64*, <{ i64, i64 }>*, i64 }>* %arr, i64 %index)
+  %0 = alloca <{ i64*, <{ i64, i64 }>*, i64 }>, align 8
+  store <{ i64*, <{ i64, i64 }>*, i64 }> %arr, <{ i64*, <{ i64, i64 }>*, i64 }>* %0, align 1
+  %_load.7 = load <{ i64*, <{ i64, i64 }>*, i64 }>, <{ i64*, <{ i64, i64 }>*, i64 }>* %0, align 1
+  %_int.4 = call i64* @.testMalloc.Add.0.ElementAt(<{ i64*, <{ i64, i64 }>*, i64 }> %_load.7, i64 %index)
   ret i64* %_int.4
 }
 
-define weak i64* @.testMalloc.Add.0.ElementAt(<{ i64*, <{ i64, i64 }>*, i64 }>* %arr, i64 %index) {
+define weak i64* @.testMalloc.Add.0.ElementAt(<{ i64*, <{ i64, i64 }>*, i64 }> %arr, i64 %index) {
 entry:
-  %_ElementPtr.0 = getelementptr inbounds <{ i64*, <{ i64, i64 }>*, i64 }>, <{ i64*, <{ i64, i64 }>*, i64 }>* %arr, i32 0, i32 0
-  %_Dimensions.0 = getelementptr inbounds <{ i64*, <{ i64, i64 }>*, i64 }>, <{ i64*, <{ i64, i64 }>*, i64 }>* %arr, i32 0, i32 1
+  %0 = alloca <{ i64*, <{ i64, i64 }>*, i64 }>, align 8
+  store <{ i64*, <{ i64, i64 }>*, i64 }> %arr, <{ i64*, <{ i64, i64 }>*, i64 }>* %0, align 1
+  %_ElementPtr.0 = getelementptr inbounds <{ i64*, <{ i64, i64 }>*, i64 }>, <{ i64*, <{ i64, i64 }>*, i64 }>* %0, i32 0, i32 0
+  %_Dimensions.0 = getelementptr inbounds <{ i64*, <{ i64, i64 }>*, i64 }>, <{ i64*, <{ i64, i64 }>*, i64 }>* %0, i32 0, i32 1
   %_load.4 = load <{ i64, i64 }>*, <{ i64, i64 }>** %_Dimensions.0, align 8
   %_Lower.0 = getelementptr inbounds <{ i64, i64 }>, <{ i64, i64 }>* %_load.4, i32 0, i32 0
   %_load.5 = load i64, i64* %_Lower.0, align 8
@@ -130,31 +137,37 @@ entry:
   ret i64* %_int.3
 }
 
-define weak i64* @.testMalloc.Subtract(<{ i64*, <{ i64, i64 }>*, i64 }>* %arr, i64 %index) {
+define weak i64* @.testMalloc.Subtract(<{ i64*, <{ i64, i64 }>*, i64 }> %arr, i64 %index) {
 entry:
-  %_int.7 = call i64 @.testMalloc.Subtract.0.Get1DArrayLength(<{ i64*, <{ i64, i64 }>*, i64 }>* %arr)
+  %0 = alloca <{ i64*, <{ i64, i64 }>*, i64 }>, align 8
+  store <{ i64*, <{ i64, i64 }>*, i64 }> %arr, <{ i64*, <{ i64, i64 }>*, i64 }>* %0, align 1
+  %_load.12 = load <{ i64*, <{ i64, i64 }>*, i64 }>, <{ i64*, <{ i64, i64 }>*, i64 }>* %0, align 1
+  %_int.7 = call i64 @.testMalloc.Subtract.0.Get1DArrayLength(<{ i64*, <{ i64, i64 }>*, i64 }> %_load.12)
   %_int.8 = sub i64 %_int.7, %index
-  %_Dimensions.3 = getelementptr inbounds <{ i64*, <{ i64, i64 }>*, i64 }>, <{ i64*, <{ i64, i64 }>*, i64 }>* %arr, i32 0, i32 1
-  %_load.11 = load <{ i64, i64 }>*, <{ i64, i64 }>** %_Dimensions.3, align 8
-  %_Lower.2 = getelementptr inbounds <{ i64, i64 }>, <{ i64, i64 }>* %_load.11, i32 0, i32 0
-  %_load.12 = load i64, i64* %_Lower.2, align 8
-  %_int.9 = add i64 %_int.8, %_load.12
+  %_Dimensions.3 = getelementptr inbounds <{ i64*, <{ i64, i64 }>*, i64 }>, <{ i64*, <{ i64, i64 }>*, i64 }>* %0, i32 0, i32 1
+  %_load.13 = load <{ i64, i64 }>*, <{ i64, i64 }>** %_Dimensions.3, align 8
+  %_Lower.2 = getelementptr inbounds <{ i64, i64 }>, <{ i64, i64 }>* %_load.13, i32 0, i32 0
+  %_load.14 = load i64, i64* %_Lower.2, align 8
+  %_int.9 = add i64 %_int.8, %_load.14
   %_int.10 = add i64 %_int.9, 1
-  %_int.11 = call i64* @.testMalloc.Add.0.ElementAt(<{ i64*, <{ i64, i64 }>*, i64 }>* %arr, i64 %_int.10)
+  %_load.15 = load <{ i64*, <{ i64, i64 }>*, i64 }>, <{ i64*, <{ i64, i64 }>*, i64 }>* %0, align 1
+  %_int.11 = call i64* @.testMalloc.Add.0.ElementAt(<{ i64*, <{ i64, i64 }>*, i64 }> %_load.15, i64 %_int.10)
   ret i64* %_int.11
 }
 
-define weak i64 @.testMalloc.Subtract.0.Get1DArrayLength(<{ i64*, <{ i64, i64 }>*, i64 }>* %arr) {
+define weak i64 @.testMalloc.Subtract.0.Get1DArrayLength(<{ i64*, <{ i64, i64 }>*, i64 }> %arr) {
 entry:
-  %_Dimensions.1 = getelementptr inbounds <{ i64*, <{ i64, i64 }>*, i64 }>, <{ i64*, <{ i64, i64 }>*, i64 }>* %arr, i32 0, i32 1
-  %_load.7 = load <{ i64, i64 }>*, <{ i64, i64 }>** %_Dimensions.1, align 8
-  %_Upper.0 = getelementptr inbounds <{ i64, i64 }>, <{ i64, i64 }>* %_load.7, i32 0, i32 1
-  %_Dimensions.2 = getelementptr inbounds <{ i64*, <{ i64, i64 }>*, i64 }>, <{ i64*, <{ i64, i64 }>*, i64 }>* %arr, i32 0, i32 1
-  %_load.8 = load <{ i64, i64 }>*, <{ i64, i64 }>** %_Dimensions.2, align 8
-  %_Lower.1 = getelementptr inbounds <{ i64, i64 }>, <{ i64, i64 }>* %_load.8, i32 0, i32 0
-  %_load.9 = load i64, i64* %_Upper.0, align 8
-  %_load.10 = load i64, i64* %_Lower.1, align 8
-  %_int.5 = sub i64 %_load.9, %_load.10
+  %0 = alloca <{ i64*, <{ i64, i64 }>*, i64 }>, align 8
+  store <{ i64*, <{ i64, i64 }>*, i64 }> %arr, <{ i64*, <{ i64, i64 }>*, i64 }>* %0, align 1
+  %_Dimensions.1 = getelementptr inbounds <{ i64*, <{ i64, i64 }>*, i64 }>, <{ i64*, <{ i64, i64 }>*, i64 }>* %0, i32 0, i32 1
+  %_load.8 = load <{ i64, i64 }>*, <{ i64, i64 }>** %_Dimensions.1, align 8
+  %_Upper.0 = getelementptr inbounds <{ i64, i64 }>, <{ i64, i64 }>* %_load.8, i32 0, i32 1
+  %_Dimensions.2 = getelementptr inbounds <{ i64*, <{ i64, i64 }>*, i64 }>, <{ i64*, <{ i64, i64 }>*, i64 }>* %0, i32 0, i32 1
+  %_load.9 = load <{ i64, i64 }>*, <{ i64, i64 }>** %_Dimensions.2, align 8
+  %_Lower.1 = getelementptr inbounds <{ i64, i64 }>, <{ i64, i64 }>* %_load.9, i32 0, i32 0
+  %_load.10 = load i64, i64* %_Upper.0, align 8
+  %_load.11 = load i64, i64* %_Lower.1, align 8
+  %_int.5 = sub i64 %_load.10, %_load.11
   %_int.6 = add i64 %_int.5, 1
   ret i64 %_int.6
 }
@@ -177,16 +190,16 @@ entry:
   %_DimensionCount.0 = getelementptr inbounds <{ i64*, <{ i64, i64 }>*, i64 }>, <{ i64*, <{ i64, i64 }>*, i64 }>* %res, i32 0, i32 2
   store i64 1, i64* %_DimensionCount.0, align 8
   %_Dimensions.5 = getelementptr inbounds <{ i64*, <{ i64, i64 }>*, i64 }>, <{ i64*, <{ i64, i64 }>*, i64 }>* %res, i32 0, i32 1
-  %_load.13 = load <{ i64, i64 }>*, <{ i64, i64 }>** %_Dimensions.5, align 8
-  %_Lower.3 = getelementptr inbounds <{ i64, i64 }>, <{ i64, i64 }>* %_load.13, i32 0, i32 0
+  %_load.16 = load <{ i64, i64 }>*, <{ i64, i64 }>** %_Dimensions.5, align 8
+  %_Lower.3 = getelementptr inbounds <{ i64, i64 }>, <{ i64, i64 }>* %_load.16, i32 0, i32 0
   store i64 0, i64* %_Lower.3, align 8
   %_int.12 = sub i64 %count, 1
   %_Dimensions.6 = getelementptr inbounds <{ i64*, <{ i64, i64 }>*, i64 }>, <{ i64*, <{ i64, i64 }>*, i64 }>* %res, i32 0, i32 1
-  %_load.14 = load <{ i64, i64 }>*, <{ i64, i64 }>** %_Dimensions.6, align 8
-  %_Upper.1 = getelementptr inbounds <{ i64, i64 }>, <{ i64, i64 }>* %_load.14, i32 0, i32 1
+  %_load.17 = load <{ i64, i64 }>*, <{ i64, i64 }>** %_Dimensions.6, align 8
+  %_Upper.1 = getelementptr inbounds <{ i64, i64 }>, <{ i64, i64 }>* %_load.17, i32 0, i32 1
   store i64 %_int.12, i64* %_Upper.1, align 8
-  %_load.15 = load <{ i64*, <{ i64, i64 }>*, i64 }>, <{ i64*, <{ i64, i64 }>*, i64 }>* %res, align 1
-  ret <{ i64*, <{ i64, i64 }>*, i64 }> %_load.15
+  %_load.18 = load <{ i64*, <{ i64, i64 }>*, i64 }>, <{ i64*, <{ i64, i64 }>*, i64 }>* %res, align 1
+  ret <{ i64*, <{ i64, i64 }>*, i64 }> %_load.18
 }
 
 attributes #0 = { "frame-pointer"="none" }

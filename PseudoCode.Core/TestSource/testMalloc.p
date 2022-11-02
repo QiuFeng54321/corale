@@ -28,16 +28,16 @@ FUNCTION Make1DArray<T>(count : INTEGER) RETURNS __ARRAY<T>
     res.Dimensions^.Upper <- count - 1
     RETURN res
 ENDFUNCTION
-FUNCTION Get1DArrayLength<T>(BYREF arr : __ARRAY<T>) RETURNS INTEGER
+FUNCTION Get1DArrayLength<T>(arr : __ARRAY<T>) RETURNS INTEGER
     RETURN arr.Dimensions^.Upper - arr.Dimensions^.Lower + 1
 ENDFUNCTION
-FUNCTION ElementAt<T>(BYREF arr : __ARRAY<T>, BYVAL index : INTEGER) RETURNS BYREF T
+FUNCTION ElementAt<T>(arr : __ARRAY<T>, index : INTEGER) RETURNS BYREF T
     RETURN (arr.ElementPtr + index - arr.Dimensions^.Lower)^
 ENDFUNCTION
-OPERATOR Add(BYREF arr : __ARRAY<INTEGER>, BYVAL index : INTEGER) RETURNS BYREF INTEGER
+OPERATOR Add(arr : __ARRAY<INTEGER>, index : INTEGER) RETURNS BYREF INTEGER
     RETURN ElementAt<INTEGER>(arr, index)
 ENDFUNCTION
-OPERATOR Subtract(BYREF arr : __ARRAY<INTEGER>, BYVAL index : INTEGER) RETURNS BYREF INTEGER
+OPERATOR Subtract(arr : __ARRAY<INTEGER>, index : INTEGER) RETURNS BYREF INTEGER
     RETURN ElementAt<INTEGER>(arr, Get1DArrayLength<INTEGER>(arr) - index + arr.Dimensions^.Lower + 1)
 ENDFUNCTION
 DECLARE arr : __ARRAY<INTEGER>

@@ -46,18 +46,32 @@ public class Function : Statement
             var paramValue = SetArgumentName(index, argument);
             if (!IsExtern)
             {
-                AddArgumentToBodyNs(argument, paramValue);
+                AddArgumentToBodyNs(ctx, cu, argument, paramValue);
             }
         }
     }
 
-    private void AddArgumentToBodyNs(Symbol argument, LLVMValueRef paramValue)
+    private void AddArgumentToBodyNs(CodeGenContext ctx, CompilationUnit cu, Symbol argument, LLVMValueRef paramValue)
     {
         var symbol = new Symbol(argument.Name, false, argument.Type);
         if (argument.DefinitionAttribute.HasFlag(DefinitionAttribute.Reference))
+        {
             symbol.MemoryPointer = paramValue;
+        }
         else
-            symbol.ValueRef = paramValue;
+        {
+            if (argument.Type.Kind is Types.Type)
+            {
+                var alloca = cu.Builder.BuildAlloca(argument.Type.GetLLVMType());
+                var store = cu.Builder.BuildStore(paramValue, alloca);
+                symbol.MemoryPointer = alloca;
+            }
+            else
+            {
+                symbol.ValueRef = paramValue;
+            }
+        }
+
         BodyNamespace.AddSymbol(symbol);
     }
 
