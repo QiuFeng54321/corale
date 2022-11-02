@@ -23,6 +23,7 @@ void RunProgram(CommandLines.Options opts)
         Console.WriteLine(ctx.MainCompilationUnit.MainFunction.ToString());
         var func = ctx.Engine.FindFunction(ctx.MainCompilationUnit.ModuleName);
         ctx.MainCompilationUnit.Module.Dump();
+        ctx.MainCompilationUnit.Module.PrintToFile("out.ll");
         if (ctx.Analysis.Feedbacks.Any(f => f.Severity == Feedback.SeverityType.Error))
             Console.WriteLine("Program will not start because there's an error");
         else

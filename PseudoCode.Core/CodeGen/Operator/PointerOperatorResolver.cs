@@ -27,18 +27,27 @@ public class PointerOperatorResolver : OperatorResolver
         LLVMValueRef res = null;
         if (right.Type.Kind is Types.Integer)
         {
-            res = cu.Builder.BuildPtrToInt(leftLLVMValue, LLVMTypeRef.Int64, Types.Integer.RequestTemp(ctx));
-            rightLLVMValue =
-                cu.Builder.BuildIntCast(rightLLVMValue, LLVMTypeRef.Int64, Types.Integer.RequestTemp(ctx));
+            res = leftLLVMValue;
+            // rightLLVMValue =
+            // cu.Builder.BuildIntCast(rightLLVMValue, LLVMTypeRef.Int64, Types.Integer.RequestTemp(ctx));
             if (op is PseudoOperator.Add)
-                res = cu.Builder.BuildAdd(res, rightLLVMValue, Types.Integer.RequestTemp(ctx));
+            {
+                res = cu.Builder.BuildInBoundsGEP2(res.TypeOf.ElementType, res, new[] { rightLLVMValue },
+                    Types.Integer.RequestTemp(ctx));
+            }
             else if (op is PseudoOperator.Subtract)
-                res = cu.Builder.BuildSub(res, rightLLVMValue, Types.Integer.RequestTemp(ctx));
-            res = cu.Builder.BuildIntToPtr(res, left.Type.GetLLVMType(), left.Type.Kind.RequestTemp(ctx));
+            {
+                rightLLVMValue = cu.Builder.BuildNeg(rightLLVMValue);
+                res = cu.Builder.BuildInBoundsGEP2(res.TypeOf, res, new[] { rightLLVMValue },
+                    Types.Integer.RequestTemp(ctx));
+            }
+
+            // res = cu.Builder.BuildIntToPtr(res, left.Type.GetLLVMType(), left.Type.Kind.RequestTemp(ctx));
         }
         else if (right.Type.Kind is Types.Pointer && op is PseudoOperator.Subtract)
         {
             if (!Equals(right.Type.ElementType, left.Type.ElementType)) throw new InvalidOperationException();
+
             res = cu.Builder.BuildPtrDiff2(left.Type.ElementType.GetLLVMType(), leftLLVMValue, rightLLVMValue,
                 left.Type.Kind.RequestTemp(ctx));
             resType = BuiltinTypes.Integer.Type;
