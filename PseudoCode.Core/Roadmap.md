@@ -15,3 +15,4 @@
 - [x] Import
 - [x] Find function through namespace
 - [x] Debug info
+- [ ] Class

@@ -1,0 +1,13 @@
+TYPE S
+    DECLARE a, b : INTEGER
+ENDTYPE
+
+FUNCTION test(s : S) RETURNS INTEGER
+    RETURN s.a
+ENDFUNCTION
+
+DECLARE s : S
+s.a <- 3
+s.b <- 4
+
+OUTPUT test(s)

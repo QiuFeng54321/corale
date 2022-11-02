@@ -178,10 +178,10 @@ public class Function : Statement
         cu.Builder.PositionAtEnd(CurrentBlockRef);
         if (ReturnType.Type.Kind is Types.None) cu.Builder.BuildRetVoid();
         if (ParentFunction != null) cu.Builder.PositionAtEnd(ParentFunction.CurrentBlockRef);
+        LLVMFunction.Dump();
         var status = LLVMFunction.VerifyFunction(LLVMVerifierFailureAction.LLVMPrintMessageAction);
         if (!status)
         {
-            LLVMFunction.Dump();
             // LLVMFunction.DeleteFunction();
             ctx.Analysis.Feedbacks.Add(new Feedback
             {

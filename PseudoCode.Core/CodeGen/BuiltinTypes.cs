@@ -7,6 +7,7 @@ namespace PseudoCode.Core.CodeGen;
 public static class BuiltinTypes
 {
     public static Symbol Integer, Real, CharPtr, Boolean, Char, Void, String, Date;
+    public static Symbol Address => Integer;
 
     public static void Initialize()
     {
