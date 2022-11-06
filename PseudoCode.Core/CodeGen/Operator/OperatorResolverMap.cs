@@ -7,6 +7,7 @@ namespace PseudoCode.Core.CodeGen.Operator;
 public class OperatorResolverMap
 {
     private readonly Dictionary<Types, OperatorResolver> _operatorResolvers = new();
+    public readonly CasterMap CasterMap = new();
     public TypeOperatorResolver TypeOperatorResolver;
 
     public void AddResolver(Types type, OperatorResolver resolver)
@@ -23,6 +24,7 @@ public class OperatorResolverMap
         AddResolver(Types.Boolean, new BooleanOperatorResolver());
         AddResolver(Types.Pointer, new PointerOperatorResolver());
         AddResolver(Types.Type, TypeOperatorResolver = new TypeOperatorResolver());
+        CasterMap.TryAddNativeCaster(new ArrayPtrCasterResolver());
     }
 
     public Symbol Resolve(Symbol left, Symbol right, PseudoOperator op, CodeGenContext ctx, CompilationUnit cu)

@@ -10,8 +10,12 @@ public class AssignmentStatement : Statement
 
     public override void CodeGen(CodeGenContext ctx, CompilationUnit cu, Function function)
     {
-        var val = Value.CodeGen(ctx, cu, function).GetRealValueRef(ctx, cu);
-        var target = Target.CodeGen(ctx, cu, function).GetPointerValueRef(ctx);
+        var valueSym = Value.CodeGen(ctx, cu, function);
+        var targetSym = Target.CodeGen(ctx, cu, function);
+        if (targetSym.Type != valueSym.Type)
+            valueSym = ctx.OperatorResolverMap.CasterMap.Cast(valueSym, targetSym, ctx, cu, function);
+        var val = valueSym.GetRealValueRef(ctx, cu);
+        var target = targetSym.GetPointerValueRef(ctx);
         if (target == null)
         {
             ctx.Analysis.Feedbacks.Add(new Feedback

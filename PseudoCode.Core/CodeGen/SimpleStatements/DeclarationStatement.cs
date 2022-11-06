@@ -20,6 +20,7 @@ public class DeclarationStatement : Statement
         var symbol = typeSymbol.MakeStructMemberDeclSymbol(Name);
         function.BodyNamespace.AddSymbol(symbol);
         symbol.MemoryPointer = cu.Builder.BuildAlloca(typeSymbol.Type.GetLLVMType(), symbol.Name);
+        symbol.DI(DebugInformation);
     }
 
     public override void Format(PseudoFormatter formatter)

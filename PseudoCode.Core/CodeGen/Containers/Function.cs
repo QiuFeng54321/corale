@@ -142,8 +142,8 @@ public class Function : Statement
     {
         if (Operator is PseudoOperator.Cast)
         {
-            ResultFunctionGroup = resolverMap.TypeOperatorResolver.Casters;
-            return resolverMap.TypeOperatorResolver.Casters.AddOverload(resultFunction);
+            ResultFunctionGroup = resolverMap.CasterMap.Casters;
+            return resolverMap.CasterMap.TryAddCaster(resultFunction);
         }
 
         return resolverMap.TypeOperatorResolver.TryAddOperator(Operator, resultFunction, out ResultFunctionGroup);

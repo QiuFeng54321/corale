@@ -13,6 +13,11 @@ public class Type
     public List<Symbol> Arguments;
 
     /// <summary>
+    ///     If the type is a <see cref="Types.CArray" />, this stores the number of elements in the array.
+    /// </summary>
+    public uint ArrayLength;
+
+    /// <summary>
     ///     Stores where the type is declared
     /// </summary>
     public DebugInformation DebugInformation;
@@ -93,6 +98,12 @@ public class Type
             return _llvmTypeRef;
         }
 
+        if (Kind == Types.CArray)
+        {
+            _llvmTypeRef = LLVMTypeRef.CreateArray(ElementType.GetLLVMType(), ArrayLength);
+            return _llvmTypeRef;
+        }
+
         throw new NotImplementedException();
     }
 
@@ -133,6 +144,34 @@ public class Type
         }
 
         return resType;
+    }
+
+    public Type MakeArrayType(uint length)
+    {
+        return new Type
+        {
+            Kind = Types.CArray,
+            ElementType = this,
+            DebugInformation = DebugInformation,
+            TypeName = $"{TypeName}[{length}]",
+            ArrayLength = length
+        };
+    }
+
+    public Type MakePointerTypeFromArray()
+    {
+        return ElementType.MakePointerType();
+    }
+
+    public Type MakePointerType()
+    {
+        return new Type
+        {
+            Kind = Types.Pointer,
+            ElementType = this,
+            TypeName = "^" + TypeName,
+            DebugInformation = DebugInformation
+        };
     }
 
     public Type Clone()

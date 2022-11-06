@@ -45,13 +45,17 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
 
     public DataType GetType(PseudoCodeParser.DataTypeContext context)
     {
-        if (context.modularDataType() != null)
+        if (context.modularDataType() is { })
             return new DataType(GetType(context.modularDataType()))
-                .AddDebugInformation(CompilationUnit, context.SourceRange());
+                .DI(CompilationUnit, context.SourceRange());
 
-        if (context.Array() == null)
+        if (context.arrayRange() is { } || (context.OpenBrack() is { } && context.expression() == null))
             return new DataType(GetType(context.dataType()))
-                .AddDebugInformation(CompilationUnit, context.SourceRange());
+                .DI(CompilationUnit, context.SourceRange());
+
+        if (context.expression() is { })
+            return new DataType(GetType(context.dataType()), Context.ExpressionStack.Pop())
+                .DI(CompilationUnit, context.SourceRange());
 
         throw new NotImplementedException("Array not implemented yet");
     }
@@ -64,7 +68,7 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
             genericParams = GetGenericUtilisation(genericUtilisation);
 
         return new ModularType(typeLookup, genericParams)
-            .AddDebugInformation(CompilationUnit, context.SourceRange());
+            .DI(CompilationUnit, context.SourceRange());
     }
 
     public NamespaceLookup GetNamespaceLookup(PseudoCodeParser.IdentiferAccessContext context)
@@ -73,7 +77,7 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
         if (context.identiferAccess() is { } parentCtx) parent = GetNamespaceLookup(parentCtx);
 
         return new NamespaceLookup(context.Identifier().GetText(), parent)
-            .AddDebugInformation(CompilationUnit, context.SourceRange());
+            .DI(CompilationUnit, context.SourceRange());
     }
 
     public IEnumerable<DataType> GetGenericParameters(PseudoCodeParser.GenericUtilisationContext context)
@@ -84,7 +88,7 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
     public GenericUtilisation GetGenericUtilisation(PseudoCodeParser.GenericUtilisationContext context)
     {
         var symbols = GetGenericParameters(context).ToList();
-        return new GenericUtilisation(symbols).AddDebugInformation(CompilationUnit, context.SourceRange());
+        return new GenericUtilisation(symbols).DI(CompilationUnit, context.SourceRange());
     }
 
     public TypeLookup GetType(PseudoCodeParser.TypeLookupContext context)
@@ -93,7 +97,7 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
         if (context.typeLookup() != null) parentLookup = GetType(context.typeLookup());
 
         return new TypeLookup(context.Identifier().GetText(), parentLookup)
-            .AddDebugInformation(CompilationUnit, context.SourceRange());
+            .DI(CompilationUnit, context.SourceRange());
     }
 
     public override void ExitDeclarationStatement(PseudoCodeParser.DeclarationStatementContext context)
@@ -106,7 +110,7 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
             {
                 Name = id.GetText(),
                 DataType = GetType(context.dataType())
-            }.AddDebugInformation(di));
+            }.DI(di));
         }
     }
 
@@ -117,7 +121,7 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
         {
             Context.ExpressionStack.Push(
                 new ParenthesisExpression(Context.ExpressionStack.Pop())
-                    .AddDebugInformation(CompilationUnit, context.SourceRange(), context.SourceRange()));
+                    .DI(CompilationUnit, context.SourceRange(), context.SourceRange()));
             return;
         }
 
@@ -132,7 +136,7 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
             Left = left,
             Operator = context.Operator,
             Right = right
-        }.AddDebugInformation(CompilationUnit, context.SourceRange(), context.op.SourceRange()));
+        }.DI(CompilationUnit, context.SourceRange(), context.op.SourceRange()));
     }
 
     public override void EnterTypeDefinition(PseudoCodeParser.TypeDefinitionContext context)
@@ -152,16 +156,16 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
         CurrentBlock.Statements.RemoveAt(CurrentBlock.Statements.Count - 1);
         if (genericParams == null)
             CurrentBlock.Statements.Add(new TypeDeclaration(name, null, block)
-                .AddDebugInformation(CompilationUnit, context.SourceRange(),
+                .DI(CompilationUnit, context.SourceRange(),
                     context.Identifier().SourceRange()));
         else
             CurrentBlock.Statements.Add(new AddGenericSymbolStatement
             {
                 Symbol = Symbol.MakeGenericSymbol(name,
                     new TypeDeclaration(name,
-                            new GenericDeclaration(genericParams).AddDebugInformation(CompilationUnit,
+                            new GenericDeclaration(genericParams).DI(CompilationUnit,
                                 context.genericDeclaration().SourceRange()), block)
-                        .AddDebugInformation(CompilationUnit, context.SourceRange(),
+                        .DI(CompilationUnit, context.SourceRange(),
                             context.Identifier().SourceRange()))
             });
     }
@@ -183,7 +187,7 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
             Then = thenBlock,
             Else = elseBlock
         };
-        ifStatement.AddDebugInformation(CompilationUnit, context.SourceRange());
+        ifStatement.DI(CompilationUnit, context.SourceRange());
         CurrentBlock.Statements.Add(ifStatement);
     }
 
@@ -197,7 +201,7 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
             Condition = condExpr,
             Then = thenBlock
         };
-        whileStmt.AddDebugInformation(CompilationUnit, context.SourceRange());
+        whileStmt.DI(CompilationUnit, context.SourceRange());
         CurrentBlock.Statements.Add(whileStmt);
     }
 
@@ -218,7 +222,7 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
             Block = block,
             Next = nextExpr
         };
-        forStmt.AddDebugInformation(CompilationUnit, context.SourceRange());
+        forStmt.DI(CompilationUnit, context.SourceRange());
         CurrentBlock.Statements.Add(forStmt);
     }
 
@@ -240,7 +244,7 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
             Condition = condExpr,
             Then = thenBlock
         };
-        repeatStatement.AddDebugInformation(CompilationUnit, context.SourceRange());
+        repeatStatement.DI(CompilationUnit, context.SourceRange());
         CurrentBlock.Statements.Add(repeatStatement);
     }
 
@@ -253,7 +257,7 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
     public override void ExitIndentedBlock(PseudoCodeParser.IndentedBlockContext context)
     {
         base.ExitIndentedBlock(context);
-        CurrentBlock.AddDebugInformation(CompilationUnit, context.SourceRange());
+        CurrentBlock.DI(CompilationUnit, context.SourceRange());
         CurrentBlock = CurrentBlock.ParentBlock;
     }
 
@@ -264,7 +268,7 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
         CurrentBlock.Statements.Add(new CallStatement
         {
             Expression = callExpr
-        }.AddDebugInformation(CompilationUnit, context.SourceRange(), context.Call().SourceRange()));
+        }.DI(CompilationUnit, context.SourceRange(), context.Call().SourceRange()));
     }
 
     public override void ExitReturnStatement(PseudoCodeParser.ReturnStatementContext context)
@@ -273,7 +277,7 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
         CurrentBlock.Statements.Add(new ReturnStatement
         {
             Expression = Context.ExpressionStack.Pop()
-        }.AddDebugInformation(CompilationUnit, context.SourceRange(), context.Return().SourceRange()));
+        }.DI(CompilationUnit, context.SourceRange(), context.Return().SourceRange()));
     }
 
     public override void ExitIoStatement(PseudoCodeParser.IoStatementContext context)
@@ -287,12 +291,12 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
             for (var i = 0; i < exprCount; i++) exprs.Add(Context.ExpressionStack.Pop());
 
             exprs.Reverse();
-            CurrentBlock.Statements.Add(new OutputStatement(exprs).AddDebugInformation(di));
+            CurrentBlock.Statements.Add(new OutputStatement(exprs).DI(di));
         }
         else if (context.IoKeyword().GetText() == "INPUT")
         {
             var expr = Context.ExpressionStack.Pop();
-            CurrentBlock.Statements.Add(new InputStatement(expr).AddDebugInformation(di));
+            CurrentBlock.Statements.Add(new InputStatement(expr).DI(di));
         }
     }
 
@@ -319,7 +323,7 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
                     Name = argumentDeclarationContext.Identifier().GetText(),
                     DataType = GetType(argumentDeclarationContext.dataType()),
                     IsRef = byRef
-                }.AddDebugInformation(CompilationUnit, argumentDeclarationContext.SourceRange(),
+                }.DI(CompilationUnit, argumentDeclarationContext.SourceRange(),
                     argumentDeclarationContext.Identifier().SourceRange()));
             }
         }
@@ -332,13 +336,13 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
         {
             DataType = returnType,
             IsRef = isReturnByref
-        }.AddDebugInformation(returnType.DebugInformation);
+        }.DI(returnType.DebugInformation);
         var genericDeclaration = genericParams != null
             ? new GenericDeclaration(genericParams)
             : null;
-        genericDeclaration?.AddDebugInformation(CompilationUnit, genericDeclarationContext.SourceRange());
+        genericDeclaration?.DI(CompilationUnit, genericDeclarationContext.SourceRange());
         var functionDecl = new FunctionDeclaration(name, arguments, funcReturnTypeSpec, body, genericDeclaration, op);
-        functionDecl.AddDebugInformation(CompilationUnit, indentedBlockContext.SourceRange());
+        functionDecl.DI(CompilationUnit, indentedBlockContext.SourceRange());
         if (genericParams == null)
             CurrentBlock.Statements.Add(functionDecl);
         else
@@ -374,7 +378,7 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
         {
             NamespaceLookup = nsLookup,
             Block = block
-        }.AddDebugInformation(CompilationUnit, context.SourceRange(), context.Namespace().SourceRange()));
+        }.DI(CompilationUnit, context.SourceRange(), context.Namespace().SourceRange()));
     }
 
     public override void ExitUseNamespaceStatement(PseudoCodeParser.UseNamespaceStatementContext context)
@@ -384,7 +388,7 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
         CurrentBlock.Statements.Add(new UseNamespaceStatement
         {
             NamespaceLookup = nsLookup
-        }.AddDebugInformation(CompilationUnit, context.SourceRange()));
+        }.DI(CompilationUnit, context.SourceRange()));
     }
 
     public override void ExitArithmeticExpression(PseudoCodeParser.ArithmeticExpressionContext context)
@@ -401,7 +405,7 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
                 Left = left,
                 Operator = context.Operator,
                 Right = right
-            }.AddDebugInformation(CompilationUnit, context.SourceRange(), context.op.SourceRange()));
+            }.DI(CompilationUnit, context.SourceRange(), context.op.SourceRange()));
             return;
         }
 
@@ -411,10 +415,10 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
                 Context.ExpressionStack.Push(new LoadExpr
                 {
                     NamespaceLookup = GetNamespaceLookup(id)
-                }.AddDebugInformation(CompilationUnit, id.SourceRange()));
+                }.DI(CompilationUnit, id.SourceRange()));
             else if (context.OpenParen() != null)
                 Context.ExpressionStack.Push(new ParenthesisExpression(Context.ExpressionStack.Pop())
-                    .AddDebugInformation(CompilationUnit, context.SourceRange()));
+                    .DI(CompilationUnit, context.SourceRange()));
         }
         else
         {
@@ -434,7 +438,7 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
                 {
                     Function = functionExpression,
                     Arguments = argumentSymbols
-                }.AddDebugInformation(CompilationUnit, context.SourceRange(),
+                }.DI(CompilationUnit, context.SourceRange(),
                     arguments.OpenParen().SourceRange()));
             }
 
@@ -446,7 +450,7 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
                 {
                     Before = parentExpr,
                     MemberName = memberName.GetText()
-                }.AddDebugInformation(CompilationUnit, context.SourceRange(), context.Dot().SourceRange()));
+                }.DI(CompilationUnit, context.SourceRange(), context.Dot().SourceRange()));
             }
 
             if (context.genericUtilisation() is { } genericUtilisationContext)
@@ -456,7 +460,7 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
                 {
                     Expression = expr,
                     GenericUtilisation = GetGenericUtilisation(genericUtilisationContext)
-                }.AddDebugInformation(CompilationUnit, context.SourceRange(), genericUtilisationContext.SourceRange()));
+                }.DI(CompilationUnit, context.SourceRange(), genericUtilisationContext.SourceRange()));
             }
         }
     }
@@ -467,7 +471,7 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
         var sizeExpr = Context.ExpressionStack.Pop();
         var dataType = GetType(context.dataType());
         Context.ExpressionStack.Push(new MallocExpression(sizeExpr, dataType)
-            .AddDebugInformation(CompilationUnit, context.SourceRange()));
+            .DI(CompilationUnit, context.SourceRange()));
     }
 
     public override void ExitSizeOfExpression(PseudoCodeParser.SizeOfExpressionContext context)
@@ -475,7 +479,7 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
         base.ExitSizeOfExpression(context);
         var dataType = GetType(context.dataType());
         Context.ExpressionStack.Push(new SizeOfExpression(dataType)
-            .AddDebugInformation(CompilationUnit, context.SourceRange()));
+            .DI(CompilationUnit, context.SourceRange()));
     }
 
     public override void ExitAssignmentStatement(PseudoCodeParser.AssignmentStatementContext context)
@@ -485,7 +489,7 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
         {
             Value = Context.ExpressionStack.Pop(),
             Target = Context.ExpressionStack.Pop()
-        }.AddDebugInformation(CompilationUnit, context.SourceRange(), context.AssignmentNotation().SourceRange()));
+        }.DI(CompilationUnit, context.SourceRange(), context.AssignmentNotation().SourceRange()));
     }
 
     public override void ExitImportStatement(PseudoCodeParser.ImportStatementContext context)
@@ -495,7 +499,7 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
         if (expr is not PseudoString pseudoString) return;
 
         CurrentBlock.Statements.Add(new ImportStatement(pseudoString.Value)
-            .AddDebugInformation(CompilationUnit, context.SourceRange()));
+            .DI(CompilationUnit, context.SourceRange()));
     }
 
     public override void ExitAtom(PseudoCodeParser.AtomContext context)
@@ -530,7 +534,7 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
                 Context.ExpressionStack.Push(new PseudoString
                 {
                     Value = (string)val
-                }.AddDebugInformation(di));
+                }.DI(di));
                 break;
             }
             case "CHAR":
@@ -538,7 +542,7 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
                 Context.ExpressionStack.Push(new PseudoCharacter
                 {
                     Value = (char)val
-                }.AddDebugInformation(di));
+                }.DI(di));
                 break;
             }
             case "INTEGER":
@@ -546,7 +550,7 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
                 Context.ExpressionStack.Push(new PseudoInteger
                 {
                     Value = (long)val
-                }.AddDebugInformation(di));
+                }.DI(di));
                 break;
             }
             case "REAL":
@@ -554,7 +558,7 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
                 Context.ExpressionStack.Push(new PseudoReal
                 {
                     Value = (double)val
-                }.AddDebugInformation(di));
+                }.DI(di));
                 break;
             }
             case "BOOLEAN":
@@ -562,10 +566,17 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
                 Context.ExpressionStack.Push(new PseudoBoolean
                 {
                     Value = (bool)val
-                }.AddDebugInformation(di));
+                }.DI(di));
                 break;
             }
         }
+    }
+
+    public override void ExitArray(PseudoCodeParser.ArrayContext context)
+    {
+        base.ExitArray(context);
+        var exprs = context.expression().Select(_ => Context.ExpressionStack.Pop()).Reverse().ToList();
+        Context.ExpressionStack.Push(new ArrayExpression(exprs));
     }
 
     private enum FunctionKind

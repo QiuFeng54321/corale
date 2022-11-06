@@ -30,6 +30,9 @@ public class Symbol : WithDebugInformation
     /// </summary>
     public IGenericExpression GenericExpression;
 
+    /// <summary>
+    ///     Marks if the symbol is errored (Poison)
+    /// </summary>
     public bool IsError;
 
     /// <summary>
@@ -74,7 +77,7 @@ public class Symbol : WithDebugInformation
         return new Symbol("!ERROR", false, null)
         {
             IsError = true
-        }.AddDebugInformation(debugInformation);
+        }.DI(debugInformation);
     }
 
     public Symbol GetRealValue(CodeGenContext ctx, CompilationUnit cu)
@@ -110,12 +113,7 @@ public class Symbol : WithDebugInformation
     public Symbol MakePointer(CodeGenContext ctx)
     {
         if (IsError) return this;
-        return MakeTemp(new Type
-        {
-            Kind = Types.Pointer,
-            ElementType = Type,
-            TypeName = "^" + Type.TypeName
-        }, GetPointerValueRef(ctx));
+        return MakeTemp(Type.MakePointerType(), GetPointerValueRef(ctx));
     }
 
     /// <summary>

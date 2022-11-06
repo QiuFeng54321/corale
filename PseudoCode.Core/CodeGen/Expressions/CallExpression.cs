@@ -62,7 +62,7 @@ public class CallExpression : Expression
             llvmArguments.ToArray(),
             retType.Type.Kind == Types.None ? "" : retType.Type.Kind.RequestTemp(ctx));
         return retType.Type.Kind == Types.None
-            ? null
+            ? Symbol.MakeErrorSymbol(null)
             : Symbol.MakeTemp(retType.Type, ret, retType.DefinitionAttribute.HasFlag(DefinitionAttribute.Reference));
     }
 

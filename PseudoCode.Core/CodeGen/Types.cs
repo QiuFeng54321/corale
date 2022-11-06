@@ -9,5 +9,6 @@ public enum Types
     Boolean,
     Type,
     Function,
-    Pointer
+    Pointer,
+    CArray
 }

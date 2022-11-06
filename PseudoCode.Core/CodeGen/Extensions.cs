@@ -11,16 +11,16 @@ public static class Extensions
         return (sbyte*)Marshal.StringToHGlobalAnsi(str);
     }
 
-    public static T AddDebugInformation<T>(this T astNode, DebugInformation di) where T : WithDebugInformation
+    public static T DI<T>(this T astNode, DebugInformation di) where T : WithDebugInformation
     {
         astNode.DebugInformation = di;
         return astNode;
     }
 
-    public static T AddDebugInformation<T>(this T astNode, CompilationUnit cu, SourceRange full,
+    public static T DI<T>(this T astNode, CompilationUnit cu, SourceRange full,
         SourceRange partial = default) where T : WithDebugInformation
     {
-        return astNode.AddDebugInformation(new DebugInformation(cu, full, partial ?? full));
+        return astNode.DI(new DebugInformation(cu, full, partial ?? full));
     }
 
     public static Symbol MakeErrorSymbol(this DebugInformation debugInformation)
