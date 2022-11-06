@@ -3,9 +3,9 @@ arr <- [2, 3, 4]
 DECLARE len : INTEGER
 len <- 10
 
-TYPE testArrType
-    DECLARE arr : INTEGER[][]
+TYPE TestArrType
+    DECLARE arr : INTEGER[3][len]
 ENDTYPE
 
-DECLARE testVal : testArrType
-testVal.arr <- [[3, 4, 5], [4, 3, 2], [3, 4, 9]]
+DECLARE testVal : TestArrType
+testVal.arr <- [[3, 4], [4, 3], [3, 4]]

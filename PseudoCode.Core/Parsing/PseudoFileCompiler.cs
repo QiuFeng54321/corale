@@ -49,13 +49,19 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
             return new DataType(GetType(context.modularDataType()))
                 .DI(CompilationUnit, context.SourceRange());
 
-        if (context.arrayRange() is { } || (context.OpenBrack() is { } && context.expression() == null))
+        if (context.arrayRange() != null && context.arrayRange()?.Length > 0)
             return new DataType(GetType(context.dataType()))
                 .DI(CompilationUnit, context.SourceRange());
 
-        if (context.expression() is { })
-            return new DataType(GetType(context.dataType()), Context.ExpressionStack.Pop())
+        if (context.expression() is { } expressionsContexts)
+        {
+            List<Expression> expressions = new();
+            foreach (var expressionsContext in expressionsContexts) expressions.Add(Context.ExpressionStack.Pop());
+
+            expressions.Reverse();
+            return new DataType(GetType(context.dataType()), expressions.ToArray())
                 .DI(CompilationUnit, context.SourceRange());
+        }
 
         throw new NotImplementedException("Array not implemented yet");
     }

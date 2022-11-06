@@ -10,7 +10,7 @@ public class PseudoInteger : Expression
     public override Symbol CodeGen(CodeGenContext ctx, CompilationUnit cu, Function function)
     {
         var val = LLVMValueRef.CreateConstInt(LLVMTypeRef.Int64, (ulong)Value);
-        return Symbol.MakeTemp(ReservedNames.Integer, BuiltinTypes.Integer.Type, ctx, val);
+        return Symbol.MakeTemp(ReservedNames.Integer, BuiltinTypes.Integer.Type, ctx, val, Value);
     }
 
     public override string ToFormatString()

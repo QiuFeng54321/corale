@@ -26,6 +26,11 @@ public class Symbol : WithDebugInformation
     public readonly Type Type;
 
     /// <summary>
+    ///     Stores the constant value
+    /// </summary>
+    public object ConstValue;
+
+    /// <summary>
     ///     This stores an expression which can generate a symbol when supplied with generic parameters.
     /// </summary>
     public IGenericExpression GenericExpression;
@@ -153,11 +158,13 @@ public class Symbol : WithDebugInformation
     /// <param name="ctx">The context of the symbol. This is used to access <see cref="NameGenerator" /></param>
     /// <param name="value">The value of the symbol</param>
     /// <returns>The symbol generated</returns>
-    public static Symbol MakeTemp(string nameTemplate, Type type, CodeGenContext ctx, LLVMValueRef value)
+    public static Symbol MakeTemp(string nameTemplate, Type type, CodeGenContext ctx, LLVMValueRef value,
+        object constVal = null)
     {
         var sym = new Symbol(ctx.NameGenerator.Request(nameTemplate), false, type)
         {
-            ValueRef = value
+            ValueRef = value,
+            ConstValue = constVal
         };
         return sym;
     }
