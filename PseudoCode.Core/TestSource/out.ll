@@ -8,10 +8,13 @@ entry:
   store [3 x i64] [i64 2, i64 3, i64 4], [3 x i64]* %arr, align 8
   %len = alloca i64, align 8
   store i64 10, i64* %len, align 8
-  %_load.0 = load i64, i64* %len, align 8
-  %testVal = alloca <{ [3 x i64*] }>, align 8
-  %_arr.0 = getelementptr inbounds <{ [3 x i64*] }>, <{ [3 x i64*] }>* %testVal, i32 0, i32 0
-  store [3 x [2 x i64]] [[2 x i64] [i64 3, i64 4], [2 x i64] [i64 4, i64 3], [2 x i64] [i64 3, i64 4]], [3 x i64*]* %_arr.0, align 8
+  %testVal = alloca <{ i64** }>, align 8
+  %_arr.0 = getelementptr inbounds <{ i64** }>, <{ i64** }>* %testVal, i32 0, i32 0
+  %0 = alloca [3 x [2 x i64]], align 8
+  store [3 x [2 x i64]] [[2 x i64] [i64 3, i64 4], [2 x i64] [i64 4, i64 3], [2 x i64] [i64 3, i64 4]], [3 x [2 x i64]]* %0, align 8
+  %_load.0 = load [3 x [2 x i64]], [3 x [2 x i64]]* %0, align 8
+  %1 = bitcast [3 x [2 x i64]] %_load.0 to i64**
+  store i64** %1, i64*** %_arr.0, align 8
   ret void
 }
 

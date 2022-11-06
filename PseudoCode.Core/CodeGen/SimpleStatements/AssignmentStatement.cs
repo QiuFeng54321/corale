@@ -13,7 +13,22 @@ public class AssignmentStatement : Statement
         var valueSym = Value.CodeGen(ctx, cu, function);
         var targetSym = Target.CodeGen(ctx, cu, function);
         if (targetSym.Type != valueSym.Type)
-            valueSym = ctx.OperatorResolverMap.CasterMap.Cast(valueSym, targetSym, ctx, cu, function);
+        {
+            var castedValueSym = ctx.OperatorResolverMap.CasterMap.Cast(valueSym, targetSym, ctx, cu, function);
+            if (castedValueSym.IsError)
+            {
+                ctx.Analysis.Feedbacks.Add(new Feedback
+                {
+                    Message = $"Cannot assign {valueSym.GetTypeString()} to {targetSym.GetTypeString()}",
+                    DebugInformation = DebugInformation,
+                    Severity = Feedback.SeverityType.Error
+                });
+                return;
+            }
+
+            valueSym = castedValueSym;
+        }
+
         var val = valueSym.GetRealValueRef(ctx, cu);
         var target = targetSym.GetPointerValueRef(ctx);
         if (target == null)

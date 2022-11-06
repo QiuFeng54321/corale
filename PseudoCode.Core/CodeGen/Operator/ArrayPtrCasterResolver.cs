@@ -10,8 +10,9 @@ public class ArrayPtrCasterResolver : NativeCasterResolver
         if (from.Type.Kind is not Types.CArray || toType.Type.Kind is not Types.Pointer)
             return Symbol.MakeErrorSymbol(from.DebugInformation);
         var arrAlloca = cu.Builder.BuildAlloca(from.Type);
+        var arrSym = Symbol.MakeTemp(from.Type, arrAlloca, true);
         cu.Builder.BuildStore(from.GetRealValueRef(ctx, cu), arrAlloca);
-        var casted = cu.Builder.BuildBitCast(arrAlloca, toType.Type);
+        var casted = cu.Builder.BuildBitCast(arrSym.GetRealValueRef(ctx, cu), toType.Type);
         return Symbol.MakeTemp(toType.Type, casted);
     }
 }

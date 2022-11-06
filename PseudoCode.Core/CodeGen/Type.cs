@@ -195,12 +195,6 @@ public class Type
         return $"{typeName}<{string.Join(",", genericArguments.Select(a => a.Type.TypeName))}>";
     }
 
-    public override bool Equals(object obj)
-    {
-        if (obj is not Type t) return false;
-        return t.Equals(this);
-    }
-
     protected bool Equals(Type other)
     {
         return _llvmTypeRef.Equals(other._llvmTypeRef) || (Kind == other.Kind && Kind switch
@@ -208,9 +202,11 @@ public class Type
             Types.Pointer => ElementType == other.ElementType,
             Types.Function => ReturnType == other.ReturnType && Arguments.SequenceEqual(other.Arguments),
             Types.Type => Members.SequenceEqual(other.Members),
+            Types.CArray => ElementType == other.ElementType,
             _ => Kind == other.Kind
         });
     }
+
 
     public override int GetHashCode()
     {
@@ -219,12 +215,12 @@ public class Type
 
     public static bool operator ==(Type left, Type right)
     {
-        return Equals(left, right);
+        return left?.Equals(right) ?? false;
     }
 
     public static bool operator !=(Type left, Type right)
     {
-        return !Equals(left, right);
+        return !(left?.Equals(right) ?? true);
     }
 
     public static implicit operator LLVMTypeRef(Type type)

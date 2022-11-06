@@ -39,8 +39,8 @@ public class DataType : AstNode
         {
             var arrType = _elementType.Lookup(ctx, cu, function, ns).Type;
             var ptrSym = arrType.MakePointerType();
-            if (_cArrayLengths == null || _cArrayLengths.Length == 0) return Symbol.MakeTypeSymbol(arrType, ns);
-            Symbol arrTypeSym = null;
+            if (_cArrayLengths == null || _cArrayLengths.Length == 0) return Symbol.MakeTypeSymbol(ptrSym, ns);
+            // INTEGER[2][3] -> [2 x [3 x i64]], so it's reversed
             foreach (var cArrayLength in _cArrayLengths.Reverse())
             {
                 var arrayLength = cArrayLength.CodeGen(ctx, cu, function);
@@ -56,8 +56,7 @@ public class DataType : AstNode
                 }
             }
 
-            arrTypeSym = Symbol.MakeTypeSymbol(arrType, ns);
-            return arrTypeSym;
+            return Symbol.MakeTypeSymbol(arrType, ns);
         }
 
         throw new NotImplementedException();

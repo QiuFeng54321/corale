@@ -4,7 +4,7 @@ DECLARE len : INTEGER
 len <- 10
 
 TYPE TestArrType
-    DECLARE arr : INTEGER[3][len]
+    DECLARE arr : ^^INTEGER
 ENDTYPE
 
 DECLARE testVal : TestArrType

@@ -18,6 +18,7 @@ public class CasterMap
 
         var args = new[] { from };
         var overload = Casters.FindFunctionOverload(args.ToList(), toType);
+        if (overload == null) return Symbol.MakeErrorSymbol(from.DebugInformation);
         return CallExpression.CodeGenCallFunc(ctx, cu, overload, args);
     }
 
