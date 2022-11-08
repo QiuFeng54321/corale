@@ -45,18 +45,18 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
 
     public DataType GetType(PseudoCodeParser.DataTypeContext context)
     {
+        if (context.OpenParen() != null) return GetType(context.dataType());
         if (context.modularDataType() is { })
             return new DataType(GetType(context.modularDataType()))
                 .DI(CompilationUnit, context.SourceRange());
 
-        if (context.arrayRange() != null && context.arrayRange()?.Length > 0)
+        if (context.Caret() != null)
             return new DataType(GetType(context.dataType()))
                 .DI(CompilationUnit, context.SourceRange());
 
         if (context.expression() is { } expressionsContexts)
         {
-            List<Expression> expressions = new();
-            foreach (var expressionsContext in expressionsContexts) expressions.Add(Context.ExpressionStack.Pop());
+            var expressions = expressionsContexts.Select(_ => Context.ExpressionStack.Pop()).ToList();
 
             expressions.Reverse();
             return new DataType(GetType(context.dataType()), expressions.ToArray())
@@ -68,7 +68,7 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
 
     public ModularType GetType(PseudoCodeParser.ModularDataTypeContext context)
     {
-        var typeLookup = GetType(context.typeLookup());
+        var typeLookup = GetNamespaceLookup(context.identiferAccess());
         GenericUtilisation genericParams = null;
         if (context.genericUtilisation() is { } genericUtilisation)
             genericParams = GetGenericUtilisation(genericUtilisation);
@@ -97,14 +97,6 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
         return new GenericUtilisation(symbols).DI(CompilationUnit, context.SourceRange());
     }
 
-    public TypeLookup GetType(PseudoCodeParser.TypeLookupContext context)
-    {
-        TypeLookup parentLookup = null;
-        if (context.typeLookup() != null) parentLookup = GetType(context.typeLookup());
-
-        return new TypeLookup(context.Identifier().GetText(), parentLookup)
-            .DI(CompilationUnit, context.SourceRange());
-    }
 
     public override void ExitDeclarationStatement(PseudoCodeParser.DeclarationStatementContext context)
     {
@@ -337,7 +329,7 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
         var body = PopStatement<Block>();
         var genericParams = genericDeclarationContext?.identifierList()?.Identifier().Select(s => s.GetText())
             .ToList();
-        returnType ??= new DataType(new ModularType(new TypeLookup("VOID")));
+        returnType ??= new DataType(new ModularType(new NamespaceLookup("VOID")));
         var funcReturnTypeSpec = new FunctionDeclaration.ArgumentOrReturnType
         {
             DataType = returnType,
@@ -411,7 +403,7 @@ public class PseudoFileCompiler : PseudoCodeBaseListener
                 Left = left,
                 Operator = context.Operator,
                 Right = right
-            }.DI(CompilationUnit, context.SourceRange(), context.op.SourceRange()));
+            }.DI(CompilationUnit, context.SourceRange(), context.op?.SourceRange()));
             return;
         }
 

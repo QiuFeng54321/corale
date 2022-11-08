@@ -272,14 +272,11 @@ dataType
  : Array OpenBrack arrayRange (Comma arrayRange)* CloseBrack Of dataType
  | Caret dataType
  | modularDataType
+ | OpenParen dataType CloseParen
  | dataType (OpenBrack expression CloseBrack)+
  ;
-modularDataType : typeLookup genericUtilisation?;
-typeLookup
- : typeLookup Dot Identifier
- | Identifier
- ;
- 
+modularDataType : identiferAccess genericUtilisation?;
+
 arrayRange
  : s=expression Colon e=expression
  ;

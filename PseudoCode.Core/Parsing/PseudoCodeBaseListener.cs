@@ -738,18 +738,6 @@ public partial class PseudoCodeBaseListener : IPseudoCodeListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitModularDataType([NotNull] PseudoCodeParser.ModularDataTypeContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="PseudoCodeParser.typeLookup"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterTypeLookup([NotNull] PseudoCodeParser.TypeLookupContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="PseudoCodeParser.typeLookup"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitTypeLookup([NotNull] PseudoCodeParser.TypeLookupContext context) { }
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="PseudoCodeParser.arrayRange"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

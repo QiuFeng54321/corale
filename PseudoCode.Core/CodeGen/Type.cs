@@ -80,11 +80,9 @@ public class Type
         if (_llvmTypeRef != null) return _llvmTypeRef;
         if (Kind == Types.Type)
         {
-            var i = 0;
             List<LLVMTypeRef> llvmTypeMembers = new();
             foreach (var sym in Members)
             {
-                sym.TypeMemberIndex = i++;
                 llvmTypeMembers.Add(sym.Type.GetLLVMType());
             }
 

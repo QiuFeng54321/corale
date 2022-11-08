@@ -65,7 +65,8 @@ public class DataType : AstNode
     public override string ToString()
     {
         if (_modularType != null) return _modularType.ToString();
-        if (_cArrayLengths != null) return $"{_elementType}[{_cArrayLengths}]";
+        if (_cArrayLengths != null)
+            return $"{_elementType}[{string.Join(", ", _cArrayLengths.Select(s => s.ToString()))}]";
         return "^" + _elementType;
     }
 }

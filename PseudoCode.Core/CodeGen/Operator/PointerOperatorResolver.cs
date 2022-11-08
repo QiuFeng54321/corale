@@ -1,5 +1,6 @@
 using LLVMSharp.Interop;
 using PseudoCode.Core.CodeGen.Containers;
+using PseudoCode.Core.CodeGen.Expressions;
 using PseudoCode.Core.Runtime.Types;
 
 namespace PseudoCode.Core.CodeGen.Operator;
@@ -14,7 +15,9 @@ public class PointerOperatorResolver : OperatorResolver
             if (op == PseudoOperator.GetPointed)
             {
                 resType = left.Type.ElementType;
-                var val = left.GetRealValueRef(ctx, cu);
+                var val = cu.Builder.BuildInBoundsGEP2(resType, left.GetRealValueRef(ctx, cu),
+                    new[] { PseudoInteger.Zero });
+                // val = cu.Builder.BuildLoad2(resType, val);
                 var resSym = Symbol.MakeTemp(resType, val, true);
                 return resSym;
             }

@@ -617,16 +617,6 @@ public interface IPseudoCodeListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitModularDataType([NotNull] PseudoCodeParser.ModularDataTypeContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="PseudoCodeParser.typeLookup"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterTypeLookup([NotNull] PseudoCodeParser.TypeLookupContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="PseudoCodeParser.typeLookup"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitTypeLookup([NotNull] PseudoCodeParser.TypeLookupContext context);
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="PseudoCodeParser.arrayRange"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

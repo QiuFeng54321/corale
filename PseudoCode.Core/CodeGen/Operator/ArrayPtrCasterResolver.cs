@@ -9,10 +9,18 @@ public class ArrayPtrCasterResolver : NativeCasterResolver
     {
         if (from.Type.Kind is not Types.CArray || toType.Type.Kind is not Types.Pointer)
             return Symbol.MakeErrorSymbol(from.DebugInformation);
-        var arrAlloca = cu.Builder.BuildAlloca(from.Type);
-        var arrSym = Symbol.MakeTemp(from.Type, arrAlloca, true);
-        cu.Builder.BuildStore(from.GetRealValueRef(ctx, cu), arrAlloca);
-        var casted = cu.Builder.BuildBitCast(arrSym.GetRealValueRef(ctx, cu), toType.Type);
-        return Symbol.MakeTemp(toType.Type, casted);
+        // var list = new List<LLVMValueRef>() {PseudoInteger.Zero};
+        // var curType = from.Type?.ElementType;
+        // while (curType is {})
+        // {
+        //     list.Add(PseudoInteger.Zero);
+        //     curType = curType.ElementType;
+        // }
+        // var arrAlloca = cu.Builder.BuildInBoundsGEP2(from.Type, from.GetRealValueRef(ctx, cu),
+        //     list.ToArray(), "gep");
+        var tmpAlloca = cu.Builder.BuildAlloca(from.Type);
+        cu.Builder.BuildStore(from.GetRealValueRef(ctx, cu), tmpAlloca);
+        var ptr = cu.Builder.BuildBitCast(tmpAlloca, toType.Type);
+        return Symbol.MakeTemp(toType.Type, ptr);
     }
 }

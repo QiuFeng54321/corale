@@ -14,6 +14,7 @@ public class ArrayExpression : Expression
 
     public override Symbol CodeGen(CodeGenContext ctx, CompilationUnit cu, Function function)
     {
+        // TODO: For non-constants, store manually
         var elementSymbols = _elementExpressions.Select(e => e.CodeGen(ctx, cu, function)).ToList();
         var arrType = elementSymbols[0].Type.MakeArrayType((uint)_elementExpressions.Count);
         var arrSto =
