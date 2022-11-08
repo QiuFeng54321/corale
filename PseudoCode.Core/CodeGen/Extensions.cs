@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using LLVMSharp.Interop;
 using PseudoCode.Core.CodeGen.Containers;
 using PseudoCode.Core.Runtime;
 
@@ -26,5 +27,20 @@ public static class Extensions
     public static Symbol MakeErrorSymbol(this DebugInformation debugInformation)
     {
         return Symbol.MakeErrorSymbol(debugInformation);
+    }
+
+    public static LLVMValueRef Const(this ulong n)
+    {
+        return LLVMValueRef.CreateConstInt(BuiltinTypes.Integer.Type, n);
+    }
+
+    public static LLVMValueRef Const(this long n)
+    {
+        return ((ulong)n).Const();
+    }
+
+    public static LLVMValueRef Const(this int n)
+    {
+        return ((ulong)n).Const();
     }
 }
