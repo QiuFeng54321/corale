@@ -15,7 +15,7 @@ public class ModularType : AstNode
 
     public Symbol Lookup(CodeGenContext ctx, CompilationUnit cu, Function function, Namespace ns)
     {
-        var symbol = _typeLookup.Lookup(ctx, function);
+        var symbol = _typeLookup.Lookup(ctx, function, ns);
         if (_genericParameters != null)
             symbol = symbol.FillGeneric(ctx, cu, function,
                 _genericParameters.GetSymbols(ctx, cu, function, ns));

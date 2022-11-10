@@ -23,7 +23,7 @@ c <- "hello world"
 OUTPUT (c.Pointer + 9) - (c.Pointer + 2), TO_UPPER("啊adFSEf"), MID("fa哈哈哈", 2, 3)
 r1 <- 2.3
 r2 <- r1 + i1
-b1 <- TRUE + 2
+b1 <- TRUE
 b2 <- FALSE
 OUTPUT b1, recFib(10)
 IF FALSE THEN

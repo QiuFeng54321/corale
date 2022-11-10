@@ -1,5 +1,5 @@
 NAMESPACE algorithms::math
-    FUNCTION recFib(n : INTEGER) RETURNS INTEGER
+    FUNCTION recFib<T>(n : T) RETURNS T
         IF n = 1 OR n = 2 THEN
             RETURN 1
             // n <- 1
@@ -8,4 +8,4 @@ NAMESPACE algorithms::math
     ENDFUNCTION
 ENDNAMESPACE
 USE NAMESPACE algorithms
-OUTPUT math::recFib(30)
+OUTPUT math::recFib<INTEGER>(30)

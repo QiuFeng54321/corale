@@ -14,24 +14,24 @@ public class NamespaceLookup : AstNode
         ParentNs = parentNs;
     }
 
-    public Namespace LookupNs(CodeGenContext ctx, Function function)
+    public Namespace LookupNs(CodeGenContext ctx, Function function, Namespace ns)
     {
         if (ParentNs is null)
         {
-            if (function.BodyNamespace.TryGetNamespace(Identifier, out var rtNs)) return rtNs;
+            if (ns.TryGetNamespace(Identifier, out var rtNs)) return rtNs;
             return null;
         }
 
-        var parentNs = ParentNs.LookupNs(ctx, function);
+        var parentNs = ParentNs.LookupNs(ctx, function, ns);
         if (parentNs == null) return null;
-        if (parentNs.TryGetNamespace(Identifier, out var ns)) return ns;
+        if (parentNs.TryGetNamespace(Identifier, out var nsres)) return nsres;
         return null;
     }
 
-    public Symbol Lookup(CodeGenContext ctx, Function function)
+    public Symbol Lookup(CodeGenContext ctx, Function function, Namespace ns)
     {
-        var ns = ParentNs?.LookupNs(ctx, function) ?? function.BodyNamespace;
-        if (ns == null)
+        var parentNs = ParentNs?.LookupNs(ctx, function, ns) ?? ns ?? function.BodyNamespace;
+        if (parentNs == null)
         {
             ctx.Analysis.Feedbacks.Add(new Feedback
             {
@@ -42,7 +42,8 @@ public class NamespaceLookup : AstNode
             return DebugInformation.MakeErrorSymbol();
         }
 
-        if (ns.TryGetSymbol(Identifier, out var sym)) return sym;
+        if (parentNs.TryGetSymbol(Identifier, out var sym)) return sym;
+
         ctx.Analysis.Feedbacks.Add(new Feedback
         {
             Message = $"Unknown symbol: {ToString()}",

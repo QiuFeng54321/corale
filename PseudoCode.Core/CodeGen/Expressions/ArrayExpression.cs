@@ -14,14 +14,11 @@ public class ArrayExpression : Expression
 
     public override Symbol CodeGen(CodeGenContext ctx, CompilationUnit cu, Function function)
     {
-        // TODO: For non-constants, store manually
-        var elementSymbols = _elementExpressions.Select(e => e.CodeGen(ctx, cu, function)).ToList();
-        var elementTy = elementSymbols[0].Type;
-        var arrType = elementTy.MakeArrayType((uint)_elementExpressions.Count);
+        GetElementSymbols(ctx, cu, function, out var elementSymbols, out var elementTy, out var arrType);
         var elementValRefs = elementSymbols.Select(e => e.GetRealValueRef(ctx, cu)).ToArray();
         LLVMValueRef arrSto;
-        var isMem = false;
-        if (elementValRefs.Any(e => !e.IsConstant))
+        var isMem = elementValRefs.Any(e => !e.IsConstant);
+        if (isMem)
         {
             arrSto = cu.Builder.BuildAlloca(arrType);
             for (var index = 0; index < elementValRefs.Length; index++)
@@ -31,17 +28,22 @@ public class ArrayExpression : Expression
                     new[] { index.Const() });
                 cu.Builder.BuildStore(elementValRef, gep);
             }
-
-            isMem = true;
         }
         else
         {
-            arrSto =
-                LLVMValueRef.CreateConstArray(elementTy,
-                    elementValRefs);
+            arrSto = LLVMValueRef.CreateConstArray(elementTy, elementValRefs);
         }
 
         return Symbol.MakeTemp(arrType, arrSto, isMem);
+    }
+
+    public void GetElementSymbols(CodeGenContext ctx, CompilationUnit cu, Function function,
+        out List<Symbol> elementSymbols,
+        out Type elementTy, out Type arrType)
+    {
+        elementSymbols = _elementExpressions.Select(e => e.CodeGen(ctx, cu, function)).ToList();
+        elementTy = elementSymbols[0].Type;
+        arrType = elementTy.MakeArrayType((uint)_elementExpressions.Count);
     }
 
     public override string ToFormatString()

@@ -195,6 +195,7 @@ public class Type
 
     protected bool Equals(Type other)
     {
+        if (other is not { }) return false;
         return _llvmTypeRef.Equals(other._llvmTypeRef) || (Kind == other.Kind && Kind switch
         {
             Types.Pointer => ElementType == other.ElementType,

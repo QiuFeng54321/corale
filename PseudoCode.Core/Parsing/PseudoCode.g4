@@ -62,7 +62,6 @@ public override IToken NextToken()
 }
 @parser::header {
 using PseudoCode.Core.Runtime;
-using Range = PseudoCode.Core.Runtime.Range;
 using System.Globalization;
 using PseudoCode.Core.Runtime.Types;
 }

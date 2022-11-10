@@ -15,7 +15,7 @@ public class UseNamespaceStatement : Statement
 
     public override void CodeGen(CodeGenContext ctx, CompilationUnit cu, Function function)
     {
-        var ns = NamespaceLookup.LookupNs(ctx, function);
+        var ns = NamespaceLookup.LookupNs(ctx, function, function.BodyNamespace);
         function.BodyNamespace.AddNamespaceAlias(ns);
     }
 }

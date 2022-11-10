@@ -9,7 +9,7 @@ public class LoadExpr : Expression
 
     public override Symbol CodeGen(CodeGenContext ctx, CompilationUnit cu, Function function)
     {
-        return NamespaceLookup.Lookup(ctx, function);
+        return NamespaceLookup.Lookup(ctx, function, function.BodyNamespace);
     }
 
     public override string ToFormatString()
