@@ -8,11 +8,12 @@ namespace PseudoCode.LSP;
 public class AnalysisService
 {
     private readonly Dictionary<DocumentUri, Analysis> _analyses = new();
-    private readonly ILogger<AnalysisService> _logger;
-    private readonly BufferService _documentService;
     private readonly DiagnosticService _diagnosticService;
+    private readonly BufferService _documentService;
+    private readonly ILogger<AnalysisService> _logger;
 
-    public AnalysisService(ILogger<AnalysisService> logger, BufferService documentService, DiagnosticService diagnosticService)
+    public AnalysisService(ILogger<AnalysisService> logger, BufferService documentService,
+        DiagnosticService diagnosticService)
     {
         _logger = logger;
         _documentService = documentService;
@@ -35,6 +36,7 @@ public class AnalysisService
 
     public Analysis GetAnalysis(DocumentUri key)
     {
+        if (!_analyses.ContainsKey(key)) Reparse(key);
         return _analyses[key];
     }
 
@@ -56,7 +58,7 @@ public class AnalysisService
 
         stopwatch.Stop();
         _logger.LogInformation("Analysed {Uri} in {ElapsedMilliseconds}ms", key, stopwatch.ElapsedMilliseconds);
-        
+
         _diagnosticService.Update(key, doc);
 
         try
