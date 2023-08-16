@@ -1,5 +1,5 @@
-TYPE Animal = (Cat, Dog, Fox)
-TYPE Plant = (Flower, Tree, Grass)
+TYPE Animal = (Cat = 3, Dog, Fox)
+TYPE Plant = (Flower, Tree = 4, Grass, Tree)
 DECLARE animal : Animal
 DECLARE plant : Plant
 animal <- Cat

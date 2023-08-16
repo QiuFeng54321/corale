@@ -738,10 +738,31 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
     public override void ExitEnumDefinition(PseudoCodeParser.EnumDefinitionContext context)
     {
         base.ExitEnumDefinition(context);
+
+        var autoVal = -1;
+        Dictionary<string, int> enumItems = new();
+        Dictionary<int, string> names = new();
+        foreach (var enumItemContext in context.enumBody().enumItem())
+        {
+            var name = enumItemContext.Identifier().GetText();
+            var valueContext = enumItemContext.integer();
+            var value = valueContext == null ? ++autoVal : autoVal = int.Parse(valueContext.GetText());
+            if (!enumItems.TryAdd(name, value))
+                Program.AnalyserFeedbacks.Add(new Feedback
+                {
+                    Message = $"Duplicate enum name {name}",
+                    Severity = Feedback.SeverityType.Error,
+                    SourceRange = SourceLocationHelper.SourceRange(enumItemContext)
+                });
+
+            names[value] = name;
+        }
+
         CurrentScope.AddOperation(new MakeEnumOperation(CurrentScope, Program)
         {
             Name = context.name.Text,
-            Names = context.enumBody().Identifier().Select(i => i.GetText()).ToList(),
+            Values = enumItems,
+            Names = names,
             PoiLocation = SourceLocationHelper.SourceLocation(context),
             SourceRange = SourceLocationHelper.SourceRange(context)
         });

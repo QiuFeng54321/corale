@@ -143,7 +143,8 @@ argumentDeclaration: (Byval | Byref)? Identifier Colon dataType;
 tuple: expression (Comma expression)*;
 
 enumDefinition: Type name=Identifier Equal OpenParen enumBody CloseParen;
-enumBody: Identifier (Comma Identifier)*;
+enumBody: enumItem (Comma enumItem)*;
+enumItem: Identifier (Equal integer)?;
 typeAliasDefinition: Type Identifier Equal dataType;
 typeDefinition: Type Identifier typeBody Endtype;
 typeBody: INDENT typeChild+ DEDENT;

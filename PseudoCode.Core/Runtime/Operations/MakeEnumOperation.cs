@@ -1,13 +1,14 @@
-using PseudoCode.Core.Analyzing;
 using PseudoCode.Core.Runtime.Types;
 
 namespace PseudoCode.Core.Runtime.Operations;
 
 public class MakeEnumOperation : Operation
 {
-    public string Name;
-    public List<string> Names;
     public readonly List<Definition> ElementDefinitions = new();
+    public string Name;
+    public Dictionary<int, string> Names;
+    public Dictionary<string, int> Values;
+
     public MakeEnumOperation(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {
     }
@@ -17,7 +18,8 @@ public class MakeEnumOperation : Operation
         base.Operate();
         foreach (var definition in ElementDefinitions)
         {
-            ParentScope.ScopeStates.InstanceAddresses.Add(definition.Name, Program.AllocateId(definition.ConstantInstance));
+            ParentScope.ScopeStates.InstanceAddresses.Add(definition.Name,
+                Program.AllocateId(definition.ConstantInstance));
         }
     }
 
@@ -26,6 +28,7 @@ public class MakeEnumOperation : Operation
         base.MetaOperate();
         var enumType = new EnumType(ParentScope, Program)
         {
+            Values = Values,
             Names = Names
         };
         ParentScope.AddTypeDefinition(Name, new Definition(ParentScope, Program)
@@ -36,22 +39,24 @@ public class MakeEnumOperation : Operation
             References = new List<SourceRange> { SourceRange },
             Attributes = Definition.Attribute.Type
         }, SourceRange);
-        for (var index = 0; index < Names.Count; index++)
+        foreach (var (name, value) in Values)
         {
-            var elementName = Names[index];
             var definition = new Definition(ParentScope, Program)
             {
-                Name = elementName,
+                Name = name,
                 Type = enumType,
                 SourceRange = SourceRange,
                 Attributes = Definition.Attribute.Immutable | Definition.Attribute.Const,
                 References = new List<SourceRange> { SourceRange },
-                ConstantInstance = enumType.Instance(index, ParentScope)
+                ConstantInstance = enumType.Instance(value, ParentScope)
             };
             ElementDefinitions.Add(definition);
-            ParentScope.AddVariableDefinition(elementName, definition, SourceRange);
+            ParentScope.AddVariableDefinition(name, definition, SourceRange);
         }
     }
 
-    public override string ToPlainString() => $"Enum {Name} = ({string.Join(", ", Names)})";
+    public override string ToPlainString()
+    {
+        return $"Enum {Name} = ({string.Join(", ", Values)})";
+    }
 }

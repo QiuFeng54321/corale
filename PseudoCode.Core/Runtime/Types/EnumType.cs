@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using PseudoCode.Core.Runtime.Instances;
 using PseudoCode.Core.Runtime.Operations;
 
@@ -6,12 +5,16 @@ namespace PseudoCode.Core.Runtime.Types;
 
 public class EnumType : PrimitiveType<int>
 {
-    public override string Name => "ENUM";
-    public override uint Id => EnumId;
-    public List<string> Names = new();
+    public Dictionary<int, string> Names = new();
+    public Dictionary<string, int> Values = new();
+
     public EnumType(Scope parentScope, PseudoProgram program) : base(parentScope, program)
     {
     }
+
+    public override string Name => "ENUM";
+    public override uint Id => EnumId;
+
     public override Type BinaryResultType(PseudoOperator type, Type right)
     {
         if (right is not (IntegerType or RealType or EnumType)) return new NullType(ParentScope, Program);
