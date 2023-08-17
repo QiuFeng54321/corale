@@ -58,6 +58,11 @@ public class EnumType : PrimitiveType<int>
         // return Add(i1, Negative(i2));
     }
 
+    public override Instance Multiply(Instance i1, Instance i2)
+    {
+        return ArithmeticOperation(i1, i2, (arg1, arg2) => arg1 * arg2);
+    }
+
     public override Instance Greater(Instance i1, Instance i2)
     {
         return LogicOperation(i1, i2, (arg1, arg2) => arg1 > arg2);

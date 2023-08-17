@@ -1,8 +1,8 @@
 TYPE Animal = (Cat = 3, Dog, Fox)
-TYPE Plant = (Flower, Tree = 4, Grass, Tree)
+TYPE Plant = (Flower, Watermelon, Tree = 4, Grass)
 DECLARE animal : Animal
 DECLARE plant : Plant
 animal <- Cat
 animal <- animal + 1
 plant <- animal
-OUTPUT animal, plant
+OUTPUT animal, plant, Watermelon * 4
