@@ -11,9 +11,9 @@ namespace PseudoCode.Core.Parsing;
 
 public class PseudoCodeCompiler : PseudoCodeBaseListener
 {
+    public readonly PseudoProgram Program = new();
     public Scope CurrentScope;
     public Type CurrentType;
-    public PseudoProgram Program = new();
 
     public PseudoProgram Compile(IParseTree tree)
     {
@@ -56,11 +56,9 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
     public override void ExitFileInput(PseudoCodeParser.FileInputContext context)
     {
         base.ExitFileInput(context);
-        if (Program.DisplayOperationsAfterCompiled)
-        {
-            Console.WriteLine(Program.GlobalScope);
-            Console.WriteLine(strings.PseudoCodeInterpreter_ExitFileInput_OperationsStart);
-        }
+        if (!Program.DisplayOperationsAfterCompiled) return;
+        Console.WriteLine(Program.GlobalScope);
+        Console.WriteLine(strings.PseudoCodeInterpreter_ExitFileInput_OperationsStart);
     }
 
     public void EnterScope(ParserRuleContext context)
@@ -89,7 +87,7 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         else if (context.Caret() != null)
             context.TypeDescriptor = new PointerDescriptor(context.dataType().TypeDescriptor);
         else
-            Program.AnalyserFeedbacks.Add(new Feedback()
+            Program.AnalyserFeedbacks.Add(new Feedback
             {
                 Message = $"Data type is not properly specified: {context.GetText()}",
                 Severity = Feedback.SeverityType.Error,
@@ -411,21 +409,21 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
     {
         base.ExitLogicExpression(context);
         var op = context.op;
-        if (op != null)
-            if (context.IsUnary)
-                CurrentScope.AddOperation(new UnaryOperation(CurrentScope, Program)
-                {
-                    OperatorMethod = context.Operator,
-                    PoiLocation = SourceLocationHelper.SourceLocation(context.op),
-                    SourceRange = SourceLocationHelper.SourceRange(context)
-                });
-            else
-                CurrentScope.AddOperation(new BinaryOperation(CurrentScope, Program)
-                {
-                    OperatorMethod = context.Operator,
-                    PoiLocation = SourceLocationHelper.SourceLocation(context.op),
-                    SourceRange = SourceLocationHelper.SourceRange(context)
-                });
+        if (op == null) return;
+        if (context.IsUnary)
+            CurrentScope.AddOperation(new UnaryOperation(CurrentScope, Program)
+            {
+                OperatorMethod = context.Operator,
+                PoiLocation = SourceLocationHelper.SourceLocation(context.op),
+                SourceRange = SourceLocationHelper.SourceRange(context)
+            });
+        else
+            CurrentScope.AddOperation(new BinaryOperation(CurrentScope, Program)
+            {
+                OperatorMethod = context.Operator,
+                PoiLocation = SourceLocationHelper.SourceLocation(context.op),
+                SourceRange = SourceLocationHelper.SourceRange(context)
+            });
     }
 
     public override void ExitFileStatement(PseudoCodeParser.FileStatementContext context)

@@ -5,7 +5,7 @@ namespace PseudoCode.Core.Parsing;
 
 public class PseudoCodeErrorListener : BaseErrorListener
 {
-    public PseudoCodeCompiler PseudoCodeCompiler;
+    public readonly PseudoCodeCompiler PseudoCodeCompiler;
 
     public PseudoCodeErrorListener(PseudoCodeCompiler pseudoCodeCompiler)
     {

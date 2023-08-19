@@ -4,8 +4,8 @@ namespace PseudoCode.Core.Runtime.Errors;
 
 public class Error : Exception
 {
+    public readonly List<Operation> OperationStackTrace;
     public Operation Operation;
-    public List<Operation> OperationStackTrace;
     public IEnumerable<string> PossibleCauses;
 
     public Error(string message, Operation operation, IEnumerable<string> possibleCauses = default,

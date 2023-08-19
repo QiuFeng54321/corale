@@ -4,10 +4,10 @@ namespace PseudoCode.Core.Runtime;
 
 public class PseudoFileStream : IDisposable
 {
-    public FileAccess FileAccess;
-    public FileMode FileMode;
+    public readonly FileAccess FileAccess;
+    public readonly FileMode FileMode;
+    public readonly bool IsBinary;
     public FileStream FileStream;
-    public bool IsBinary;
     public PseudoBinaryStream PseudoBinaryStream;
     public StreamReader StreamReader;
     public StreamWriter StreamWriter;

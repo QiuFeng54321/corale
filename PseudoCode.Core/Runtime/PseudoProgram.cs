@@ -15,32 +15,22 @@ public class PseudoProgram
     /// <summary>
     ///     Stores feedbacks during parsing and typechecking (metaoperation)
     /// </summary>
-    public List<Feedback> AnalyserFeedbacks = new();
-
-    /// <summary>
-    ///     Front address uninitialized
-    /// </summary>
-    public uint CurrentInstanceAddress;
-
-    /// <summary>
-    ///     If true, the values being output will specify its type and members
-    /// </summary>
-    public bool DebugRepresentation;
+    public readonly List<Feedback> AnalyserFeedbacks = new();
 
     /// <summary>
     ///     The outer-most scope used in this program
     /// </summary>
-    public Scope GlobalScope;
+    public readonly Scope GlobalScope;
 
     /// <summary>
     ///     Simulates a memory. (uint address, Instance instance)
     /// </summary>
-    public Dictionary<uint, Instance> Memory = new();
+    public readonly Dictionary<uint, Instance> Memory = new();
 
     /// <summary>
     ///     Stores files opened in program (OPENFILE)
     /// </summary>
-    public Dictionary<string, PseudoFileStream> OpenFiles = new();
+    public readonly Dictionary<string, PseudoFileStream> OpenFiles = new();
 
     /// <summary>
     ///     At runtime, this stack is used mainly for evaluation of an expression, kinda like postfix operations.<br />
@@ -52,7 +42,7 @@ public class PseudoProgram
     ///         Assign -> [] (Pops 2 values, assign 3 to ref a)
     ///     </example>
     /// </summary>
-    public Stack<Instance> RuntimeStack = new();
+    public readonly Stack<Instance> RuntimeStack = new();
 
     /// <summary>
     ///     After opcode generation, the program undergoes type check (meta-operate) to ensure types are right.<br />
@@ -64,7 +54,17 @@ public class PseudoProgram
     ///         Assign -> [] (Pops 2 values, check if value is assignable with/without implicit casting)
     ///     </example>
     /// </summary>
-    public Stack<Definition> TypeCheckStack = new();
+    public readonly Stack<Definition> TypeCheckStack = new();
+
+    /// <summary>
+    ///     Front address uninitialized
+    /// </summary>
+    public uint CurrentInstanceAddress;
+
+    /// <summary>
+    ///     If true, the values being output will specify its type and members
+    /// </summary>
+    public bool DebugRepresentation;
 
     public PseudoProgram()
     {
@@ -129,8 +129,7 @@ public class PseudoProgram
     public void ReleaseMemory(Range segment)
     {
         for (var i = (uint)segment.Start; i < segment.End; i++)
-            if (Memory.ContainsKey(i))
-                Memory.Remove(i);
+            Memory.Remove(i);
     }
 
     public void AddPrimitiveTypes()

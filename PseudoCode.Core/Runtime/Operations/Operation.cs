@@ -4,9 +4,9 @@ namespace PseudoCode.Core.Runtime.Operations;
 
 public class Operation
 {
+    public readonly PseudoProgram Program;
     public Scope ParentScope;
     public SourceLocation PoiLocation; // Point of interest, position of operator, etc.
-    public PseudoProgram Program;
     public SourceRange SourceRange;
 
     public Operation(Scope parentScope, PseudoProgram program)

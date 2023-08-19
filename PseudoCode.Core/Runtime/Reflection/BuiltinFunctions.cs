@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using PseudoCode.Core.Runtime.Errors;
 using PseudoCode.Core.Runtime.Instances;
 using PseudoCode.Core.Runtime.Operations;
@@ -6,9 +7,10 @@ using Type = PseudoCode.Core.Runtime.Types.Type;
 
 namespace PseudoCode.Core.Runtime.Reflection;
 
+[SuppressMessage("ReSharper", "UnusedMember.Global")]
 public static class BuiltinFunctions
 {
-    public static Random Random = new();
+    public static readonly Random Random = new();
 
     [Documentation("Checks if a file is read to the end")]
     [BuiltinFunction("EOF")]

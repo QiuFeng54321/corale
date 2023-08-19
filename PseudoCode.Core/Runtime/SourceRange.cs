@@ -4,14 +4,14 @@ public class SourceRange
 {
     public static readonly SourceRange Identity = new(SourceLocation.Identity, SourceLocation.Identity);
 
-    public SourceRange(SourceLocation Start, SourceLocation End)
+    public SourceRange(SourceLocation start, SourceLocation end)
     {
-        this.Start = Start;
-        this.End = End;
+        Start = start;
+        End = end;
     }
 
-    public SourceLocation Start { get; set; }
-    public SourceLocation End { get; set; }
+    public SourceLocation Start { get; }
+    public SourceLocation End { get; }
 
     public bool Contains(SourceLocation location)
     {

@@ -28,10 +28,10 @@ public class Type
 
     private static uint _incrementId = ArrayId;
 
-    [JsonIgnore] public Dictionary<PseudoOperator, BinaryOperator> BinaryOperators;
+    [JsonIgnore] public readonly Dictionary<PseudoOperator, BinaryOperator> BinaryOperators;
+    [JsonIgnore] public readonly PseudoProgram Program;
+    [JsonIgnore] public readonly Dictionary<PseudoOperator, UnaryOperator> UnaryOperators;
     [JsonIgnore] public Scope ParentScope;
-    [JsonIgnore] public PseudoProgram Program;
-    [JsonIgnore] public Dictionary<PseudoOperator, UnaryOperator> UnaryOperators;
 
     public Type(Scope parentScope, PseudoProgram program)
     {

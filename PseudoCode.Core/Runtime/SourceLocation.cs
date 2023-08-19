@@ -3,7 +3,8 @@ namespace PseudoCode.Core.Runtime;
 public class SourceLocation
 {
     public static readonly SourceLocation Identity = new(-1, -1);
-    public int Line, Column;
+    public readonly int Column;
+    public readonly int Line;
 
     public SourceLocation(int line, int column)
     {
@@ -25,8 +26,7 @@ public class SourceLocation
     {
         if (ReferenceEquals(null, obj)) return false;
         if (ReferenceEquals(this, obj)) return true;
-        if (obj.GetType() != GetType()) return false;
-        return Equals((SourceLocation)obj);
+        return obj.GetType() == GetType() && Equals((SourceLocation)obj);
     }
 
     public override int GetHashCode()
