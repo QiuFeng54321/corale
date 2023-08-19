@@ -22,7 +22,9 @@ public class Type
         PlaceholderId = 7,
         EnumId = 8,
         PointerId = 9,
-        ArrayId = 10;
+        ArrayId = 10,
+        SetId = 11,
+        AnyId = 12;
 
     private static uint _incrementId = ArrayId;
 

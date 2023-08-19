@@ -144,6 +144,7 @@ public class PseudoProgram
         GlobalScope.AddType(new NullType(GlobalScope, this));
         GlobalScope.AddType(new PlaceholderType(GlobalScope, this));
         GlobalScope.AddType(new ModuleType(GlobalScope, this));
+        GlobalScope.AddType(new AnyType(GlobalScope, this));
         Instance.Null = GlobalScope.FindDefinition(Type.NullId).Type.Instance(scope: GlobalScope);
     }
 

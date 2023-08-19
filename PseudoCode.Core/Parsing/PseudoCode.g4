@@ -242,10 +242,12 @@ atom locals [string AtomType, object Value]
  | Boolean {$AtomType = "BOOLEAN"; $Value = bool.Parse($Boolean.text);}
  | Date {$AtomType = "DATE";}
  | array {$AtomType = "ARRAY";}
+ | set {$AtomType = "SET";}
  ;
 
 dataType locals [ITypeDescriptor TypeDescriptor]
  : Array OpenBrack arrayRange (Comma arrayRange)* CloseBrack Of dataType
+ | Set Of dataType
  | Caret dataType
  | basicDataType
  ;
@@ -257,6 +259,10 @@ arrayRange
 
 array
  : OpenBrack expression (Comma expression)* CloseBrack
+ ;
+ 
+set
+ : OpenBrace expression (Comma expression)* CloseBrace
  ;
 
 //array_index
@@ -309,6 +315,7 @@ Constant : 'CONSTANT';
 IoKeyword : 'OUTPUT' | 'INPUT';
 Typename : 'INTEGER' | 'STRING' | 'REAL' | 'CHAR' | 'BOOLEAN' | 'DATE';
 Array : 'ARRAY';
+Set : 'SET';
 Case : 'CASE';
 Of : 'OF';
 Otherwise : 'OTHERWISE';

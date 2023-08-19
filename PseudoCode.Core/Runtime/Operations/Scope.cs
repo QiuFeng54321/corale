@@ -7,13 +7,13 @@ namespace PseudoCode.Core.Runtime.Operations;
 
 public class Scope : Operation
 {
-    public bool AllowStatements;
-    public SourceLocation FirstLocation;
-
     /// <summary>
     ///     Instances are created from the type
     /// </summary>
-    public Dictionary<string, Definition> InstanceDefinitions = new();
+    public readonly Dictionary<string, Definition> InstanceDefinitions = new();
+
+    public bool AllowStatements;
+    public SourceLocation FirstLocation;
 
     public ModuleType ModuleType;
 
@@ -29,8 +29,8 @@ public class Scope : Operation
 
     public Definition FindDefinition(string name)
     {
-        return InstanceDefinitions.ContainsKey(name)
-            ? InstanceDefinitions[name]
+        return InstanceDefinitions.TryGetValue(name, out var definition)
+            ? definition
             : ParentScope?.FindDefinition(name);
     }
 
@@ -42,8 +42,8 @@ public class Scope : Operation
 
     public uint FindInstanceAddress(string name)
     {
-        return ScopeStates.InstanceAddresses.ContainsKey(name)
-            ? ScopeStates.InstanceAddresses[name]
+        return ScopeStates.InstanceAddresses.TryGetValue(name, out var address)
+            ? address
             : ParentScope?.FindInstanceAddress(name) ??
               throw new InvalidAccessError(string.Format(strings.Scope_FindInstanceAddress_NotFound, name), null);
     }

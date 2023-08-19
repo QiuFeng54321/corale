@@ -95,6 +95,15 @@ public class DeclareOperation : Operation
                     SourceRange = SourceRange
                 });
                 break;
+            case AnyType:
+                Program.AnalyserFeedbacks.Add(new Feedback
+                {
+                    Message =
+                        "Type ANY is only used for type checking. It is not standard and is not intended to be usable.",
+                    Severity = Feedback.SeverityType.Warning,
+                    SourceRange = SourceRange
+                });
+                break;
         }
     }
 

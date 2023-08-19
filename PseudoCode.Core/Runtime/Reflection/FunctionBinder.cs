@@ -19,7 +19,9 @@ public class FunctionBinder
         [typeof(char)] = "CHAR",
         [typeof(bool)] = "BOOLEAN",
         [typeof(DateOnly)] = "DATE",
-        [typeof(void)] = "NULL"
+        [typeof(void)] = "NULL",
+        [typeof(object)] = "ANY",
+        [typeof(HashSet<Instance>)] = "SET"
     };
 
     // Will be extended to support arrays
@@ -83,7 +85,7 @@ public class FunctionBinder
                 ParameterInfos = paramList,
                 ReturnType = returnDef
             },
-            TypeDescriptor = new FunctionDescriptor(returnDef.TypeDescriptor, paramList),
+            TypeDescriptor = new FunctionDescriptor(returnDef?.TypeDescriptor, paramList),
             Documentation = documentation
         };
         return true;
@@ -114,7 +116,7 @@ public class FunctionBinder
                 ParameterInfos = paramList,
                 ReturnType = returnDef
             },
-            TypeDescriptor = new FunctionDescriptor(returnDef.TypeDescriptor, paramList),
+            TypeDescriptor = new FunctionDescriptor(returnDef?.TypeDescriptor, paramList),
             Documentation = documentation
         };
         return true;
@@ -143,6 +145,7 @@ public class FunctionBinder
 
         return methodInfo.Name;
     }
+
     private static List<Definition> GetMethodParamList(Scope parentScope, PseudoProgram program, MethodInfo methodInfo)
     {
         return methodInfo.GetCustomAttributes(typeof(ParamTypeAttribute))

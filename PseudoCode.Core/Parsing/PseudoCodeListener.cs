@@ -538,6 +538,16 @@ public interface IPseudoCodeListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitArray([NotNull] PseudoCodeParser.ArrayContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="PseudoCodeParser.set"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterSet([NotNull] PseudoCodeParser.SetContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="PseudoCodeParser.set"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitSet([NotNull] PseudoCodeParser.SetContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="PseudoCodeParser.number"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

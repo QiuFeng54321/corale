@@ -1,6 +1,7 @@
 using PseudoCode.Core.Runtime.Errors;
 using PseudoCode.Core.Runtime.Instances;
 using PseudoCode.Core.Runtime.Operations;
+using PseudoCode.Core.Runtime.Types;
 using Type = PseudoCode.Core.Runtime.Types.Type;
 
 namespace PseudoCode.Core.Runtime.Reflection;
@@ -164,5 +165,132 @@ public static class BuiltinFunctions
     {
         // ReSharper disable once RedundantCast
         return (RealNumberType)(Random.NextDouble() * x);
+    }
+
+    [Documentation("**NONSTANDARD** Inserts an item to the set")]
+    [BuiltinFunction("SET_INSERT")]
+    [ParamType("set", "ANY", isSet: true)]
+    [ParamType("item", "ANY")]
+    public static Instance SetInsert(Scope parentScope, PseudoProgram program, Instance[] arguments)
+    {
+        var setInstance = arguments[0];
+        var set = setInstance.Get<HashSet<Instance>>();
+        var item = SetCheckAndCast(setInstance, arguments[1]);
+        set.Add(item);
+        return Instance.Null;
+    }
+
+    [Documentation("**NONSTANDARD** Removes an item from the set")]
+    [BuiltinFunction("SET_REMOVE")]
+    [ParamType("set", "ANY", isSet: true)]
+    [ParamType("item", "ANY")]
+    public static Instance SetRemove(Scope parentScope, PseudoProgram program, Instance[] arguments)
+    {
+        var setInstance = arguments[0];
+        var set = setInstance.Get<HashSet<Instance>>();
+        var item = SetCheckAndCast(setInstance, arguments[1]);
+        set.Remove(item);
+        return Instance.Null;
+    }
+
+    [Documentation("**NONSTANDARD** Checks if the set contains the item")]
+    [BuiltinFunction("SET_CONTAINS")]
+    [ParamType("set", "ANY", isSet: true)]
+    [ParamType("item", "ANY")]
+    [ReturnType("BOOLEAN")]
+    public static Instance SetContains(Scope parentScope, PseudoProgram program, Instance[] arguments)
+    {
+        var setInstance = arguments[0];
+        var set = setInstance.Get<HashSet<Instance>>();
+        var item = SetCheckAndCast(setInstance, arguments[1]);
+        var res = set.Contains(item);
+        return parentScope.FindDefinition(Type.BooleanId).Type.Instance(res);
+    }
+
+    [Documentation(
+        "**NONSTANDARD** Checks if the set contains the item. If the item is found, assign the item to `out`")]
+    [BuiltinFunction("SET_TRY_GET")]
+    [ParamType("set", "ANY", isSet: true)]
+    [ParamType("item", "ANY")]
+    [ParamType("out", "ANY", isReference: true)]
+    [ReturnType("BOOLEAN")]
+    public static Instance SetTryGet(Scope parentScope, PseudoProgram program, Instance[] arguments)
+    {
+        var setInstance = arguments[0];
+        var set = setInstance.Get<HashSet<Instance>>();
+        var item = SetCheckAndCast(setInstance, arguments[1]);
+        var res = set.TryGetValue(item, out var outItem);
+        if (res) arguments[2].Type.Assign(arguments[2], outItem);
+        return parentScope.FindDefinition(Type.BooleanId).Type.Instance(res);
+    }
+
+    [Documentation("**NONSTANDARD** Only include items that are present in only one of the sets but not both")]
+    [BuiltinFunction("SET_SYMMETRIC_DIFFERENCE")]
+    [ParamType("targetSet", "ANY", isSet: true)]
+    [ParamType("anotherSet", "ANY", isSet: true)]
+    public static Instance SetSymmetricDifference(Scope parentScope, PseudoProgram program, Instance[] arguments)
+    {
+        var setInstance = arguments[0];
+        var set = setInstance.Get<HashSet<Instance>>();
+        var setType = (SetType)setInstance.Type;
+        var set2 = arguments[1];
+        set.SymmetricExceptWith(setType.HandledCastFrom(set2).Get<HashSet<Instance>>());
+        return Instance.Null;
+    }
+
+    [Documentation("**NONSTANDARD** Only include items that are present in both sets in target set")]
+    [BuiltinFunction("SET_INTERSECT")]
+    [ParamType("targetSet", "ANY", isSet: true)]
+    [ParamType("anotherSet", "ANY", isSet: true)]
+    public static Instance SetIntersect(Scope parentScope, PseudoProgram program, Instance[] arguments)
+    {
+        var setInstance = arguments[0];
+        var set = setInstance.Get<HashSet<Instance>>();
+        var setType = (SetType)setInstance.Type;
+        var set2 = arguments[1];
+        set.IntersectWith(setType.HandledCastFrom(set2).Get<HashSet<Instance>>());
+        return Instance.Null;
+    }
+
+    [Documentation("**NONSTANDARD** Adds items that are not in the target set but in the other set")]
+    [BuiltinFunction("SET_UNION")]
+    [ParamType("targetSet", "ANY", isSet: true)]
+    [ParamType("anotherSet", "ANY", isSet: true)]
+    public static Instance SetUnion(Scope parentScope, PseudoProgram program, Instance[] arguments)
+    {
+        var setInstance = arguments[0];
+        var set = setInstance.Get<HashSet<Instance>>();
+        var setType = (SetType)setInstance.Type;
+        var set2 = arguments[1];
+        set.UnionWith(setType.HandledCastFrom(set2).Get<HashSet<Instance>>());
+        return Instance.Null;
+    }
+
+    [Documentation("**NONSTANDARD** Excludes items that are present in both sets")]
+    [BuiltinFunction("SET_DIFFERENCE")]
+    [ParamType("targetSet", "ANY", isSet: true)]
+    [ParamType("anotherSet", "ANY", isSet: true)]
+    public static Instance SetDifference(Scope parentScope, PseudoProgram program, Instance[] arguments)
+    {
+        var setInstance = arguments[0];
+        var set = setInstance.Get<HashSet<Instance>>();
+        var setType = (SetType)setInstance.Type;
+        var set2 = arguments[1];
+        set.ExceptWith(setType.HandledCastFrom(set2).Get<HashSet<Instance>>());
+        return Instance.Null;
+    }
+
+    private static Instance SetCheckAndCast(Instance setInstance, Instance item)
+    {
+        var setType = (SetType)setInstance.Type;
+        if (setType.ElementType != item.Type)
+        {
+            if (setType.ElementType.IsConvertableFrom(item.Type))
+                item = setType.ElementType.HandledCastFrom(item);
+            else
+                throw new UnsupportedCastError($"Cannot insert {item.Type} into {setType}", null);
+        }
+
+        return item;
     }
 }

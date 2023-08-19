@@ -80,27 +80,21 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
     {
         base.ExitDataType(context);
         if (context.basicDataType() != null)
-        {
             context.TypeDescriptor = new PlainTypeDescriptor(context.basicDataType().GetText());
-        }
         else if (context.Array() != null)
-        {
             context.TypeDescriptor =
                 new ArrayDescriptor(context.dataType().TypeDescriptor, context.arrayRange().Length);
-        }
+        else if (context.Set() != null)
+            context.TypeDescriptor = new SetDescriptor(context.dataType().TypeDescriptor);
         else if (context.Caret() != null)
-        {
             context.TypeDescriptor = new PointerDescriptor(context.dataType().TypeDescriptor);
-        }
         else
-        {
             Program.AnalyserFeedbacks.Add(new Feedback()
             {
                 Message = $"Data type is not properly specified: {context.GetText()}",
                 Severity = Feedback.SeverityType.Error,
                 SourceRange = SourceLocationHelper.SourceRange(context)
             });
-        }
     }
 
     public override void ExitDeclarationStatement(PseudoCodeParser.DeclarationStatementContext context)
@@ -251,6 +245,7 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
     {
         base.ExitAtom(context);
         if (context.AtomType == "ARRAY") return; // Let array handle on its own
+        if (context.AtomType == "SET") return; // Let set handle on its own
         var val = context.Value;
         if (context.AtomType == "DATE")
         {
@@ -283,6 +278,18 @@ public class PseudoCodeCompiler : PseudoCodeBaseListener
         base.ExitArray(context);
         var length = context.expression().Length;
         CurrentScope.AddOperation(new FormImmediateArrayOperation(CurrentScope, Program)
+        {
+            Length = length,
+            PoiLocation = SourceLocationHelper.SourceLocation(context),
+            SourceRange = SourceLocationHelper.SourceRange(context)
+        });
+    }
+
+    public override void ExitSet(PseudoCodeParser.SetContext context)
+    {
+        base.ExitSet(context);
+        var length = context.expression().Length;
+        CurrentScope.AddOperation(new FormImmediateSetOperation(CurrentScope, Program)
         {
             Length = length,
             PoiLocation = SourceLocationHelper.SourceLocation(context),

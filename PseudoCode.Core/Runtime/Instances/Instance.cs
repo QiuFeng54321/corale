@@ -32,6 +32,8 @@ public class Instance
 
     [JsonIgnore] public virtual Instance RealInstance => this;
 
+    public static IEqualityComparer<Instance> SetComparer { get; } = new SetEqualityComparer();
+
     public virtual T Get<T>()
     {
         return (T)Value;
@@ -49,6 +51,7 @@ public class Instance
             EnumType enumType => enumType.Names.ContainsKey((int)Value)
                 ? $"{enumType.Names[(int)Value]}"
                 : "UNKNOWN",
+            SetType setType => $"{{{string.Join(", ", Get<HashSet<Instance>>())}}}",
             // Type.StringId or Type.CharId or Type.IntegerId or Type.RealId => Value?.ToString(),
             _ => Value?.ToString()
         } ?? "NULL";
@@ -71,5 +74,22 @@ public class Instance
     public override string ToString()
     {
         return Program?.DebugRepresentation ?? false ? DebugRepresent() : Represent();
+    }
+
+    private sealed class SetEqualityComparer : IEqualityComparer<Instance>
+    {
+        public bool Equals(Instance x, Instance y)
+        {
+            if (ReferenceEquals(x, y)) return true;
+            if (ReferenceEquals(x, null)) return false;
+            if (ReferenceEquals(y, null)) return false;
+            if (x.GetType() != y.GetType()) return false;
+            return Equals(x.Value, y.Value);
+        }
+
+        public int GetHashCode(Instance obj)
+        {
+            return obj.Value != null ? obj.Value.GetHashCode() : 0;
+        }
     }
 }
